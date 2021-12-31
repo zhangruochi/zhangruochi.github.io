@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Markov Decision Processes II">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Markov Decision Processes II">
+<meta property="og:url" content="https://zhangruochi.com/Markov-Decision-Processes-II/2020/09/06/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Markov Decision Processes II">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Markov-Decision-Processes-II/2020/09/06/3.png">
+<meta property="og:image" content="https://zhangruochi.com/Markov-Decision-Processes-II/2020/09/06/4.png">
+<meta property="og:image" content="https://zhangruochi.com/Markov-Decision-Processes-II/2020/09/06/1.png">
+<meta property="og:image" content="https://zhangruochi.com/Markov-Decision-Processes-II/2020/09/06/2.png">
+<meta property="article:published_time" content="2020-09-06T11:36:56.000Z">
+<meta property="article:modified_time" content="2021-12-31T07:43:18.753Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Markov-Decision-Processes-II/2020/09/06/3.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Markov-Decision-Processes-II/2020/09/06/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Markov Decision Processes II | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Markov-Decision-Processes-II/2020/09/06/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Markov Decision Processes II
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-06 19:36:56" itemprop="dateCreated datePublished" datetime="2020-09-06T19:36:56+08:00">2020-09-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 15:43:18" itemprop="dateModified" datetime="2021-12-31T15:43:18+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Reinforcement-Learning/" itemprop="url" rel="index"><span itemprop="name">Reinforcement Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Markov-Decision-Processes-II/2020/09/06/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Markov-Decision-Processes-II/2020/09/06/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Markov Decision Processes II</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="lesson-1-policies-and-value-functions">Lesson 1: Policies and Value Functions</h2>
+<h3 id="recognize-that-a-policy-is-a-distribution-over-actions-for-each-possible-state.">Recognize that a policy is a distribution over actions for each possible state.</h3>
+<p>a policy is a mapping from states to probabilities of selecting each possible action. If the agent is following policy <span class="math inline">\(\pi\)</span> at time <span class="math inline">\(t\)</span>, then <span class="math inline">\(\pi(a | s)\)</span> is the probability that <span class="math inline">\(A_t = a\)</span> if <span class="math inline">\(S_t = s\)</span></p>
+<h3 id="describe-the-similarities-and-differences-between-stochastic-and-deterministic-policies">Describe the similarities and differences between stochastic and deterministic policies</h3>
+<p>Deterministic policies: a policy assigns probabilities to each action in each state.</p>
+<p>Stochastic policy: a policy where multiple actions may be selected with non-zero probability.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="3.png" width = "50%" height="50%">
+</center>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="4.png" width = "50%" height="50%">
+</center>
+<h3 id="identify-the-characteristics-of-a-well-defined-policy">Identify the characteristics of a well-defined policy</h3>
+<ul>
+<li>An agent's behavior is specified by a policy that maps the state to a probability distribution over actions</li>
+<li>The policy can depend only on the current state, and not other things like time or previous states. See you next time.</li>
+</ul>
+<h3 id="describe-the-roles-of-state-value-and-action-value-functions-in-reinforcement-learning">Describe the roles of state-value and action-value functions in reinforcement learning</h3>
+<p>Similarly, we define the value of taking action a in state s under a policy <span class="math inline">\(\pi\)</span>, denoted <span class="math inline">\(q_{\pi}(s,a)\)</span>, as the expected return starting from <span class="math inline">\(s\)</span>, taking the action a, and thereafter following policy <span class="math inline">\(\pi\)</span>:</p>
+<p><span class="math display">\[q_{\pi}(s) = \mathbb{E}_{\pi}[ G_t | S_t = s, A_t = a] = \mathbb{E}_{\pi}[ \sum_{k=0}^{\infty} \eta^k R_{t+k+1} | S_t = s, A_t = a ] \]</span></p>
+<p>We call <span class="math inline">\(q_{\pi}\)</span> the action-value function for policy <span class="math inline">\(\pi\)</span>.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="1.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+the roles of state-value and action-value functions
+</div>
+</center>
+<h3 id="describe-the-relationship-between-value-functions-and-policies">Describe the relationship between value functions and policies</h3>
+<p>Value function enable us to judge the quality of different policies.</p>
+<p>The value function of a state s under a policy <span class="math inline">\(\pi\)</span>, denoted <span class="math inline">\(V_\pi(s)\)</span>, is the expected return when starting in s and following <span class="math inline">\(\pi\)</span> thereafter. For MDPs, we can define <span class="math inline">\(V_{\pi}\)</span> formally by</p>
+<p><span class="math display">\[V_{\pi}(s) = \mathbb{E}[ G_t | S_t = s] = \mathbb{E}_{\pi}[ \sum_{k=0}^{\infty} \eta^k R_{t+k+1} | S_t = s ], \text{for all} \quad s \in \mathbb{S}\]</span></p>
+<p>where <span class="math inline">\(\mathbb{E}[\dot]\)</span> denotes the expected value of a random variable given that the agent follows policy <span class="math inline">\(\pi\)</span>, and t is any time step.</p>
+<h3 id="create-examples-of-valid-value-functions-for-a-given-mdp">Create examples of valid value functions for a given MDP</h3>
+<h2 id="lesson-2-bellman-equations">Lesson 2: Bellman Equations</h2>
+<h3 id="derive-the-bellman-equation-for-state-value-functions">Derive the Bellman equation for state-value functions</h3>
+<p><span class="math display">\[V_{\pi}(s) = \mathbb{E}[ G_t | S_t = s] = \sum_a \pi (a | s)\sum_{s\prime,r}p(s\prime,r | s, a)[ r + \eta v_{\pi}(s\prime)], \quad \text{ for all } \quad s \in \mathbb{S}\]</span></p>
+<h3 id="derive-the-bellman-equation-for-action-value-functions">Derive the Bellman equation for action-value functions</h3>
+<p><span class="math display">\[q_{\pi}(s,a) = \mathbb{E}_{\pi}[ G_t | S_t = s, A_t = a] = \sum_{s\prime}\sum_{r}p(s\prime,r | s, a)[ r + \eta\sum_{a\prime} \pi (a\prime | q_{\pi}(s\prime, a\prime))]\]</span></p>
+<h3 id="understand-how-bellman-equations-relate-current-and-future-values">Understand how Bellman equations relate current and future values</h3>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="2.png" width = "70%" height="70%">
+</center>
+<p>The current time-step's state/action values can be written recursivelu in terms of future state/action values</p>
+<p>Bellman equation for <span class="math inline">\(V_{\pi}\)</span>, It expresses a relationship between the value of a state and the values of its successor states. Think of looking ahead from a state to its possible successor states, as suggested by the diagram to the right. Each open circle represents a state and each solid circle represents a state–action pair. Starting from state s, the root node at the top, the agent could take any of some set of actions—three are shown in the diagram—based on its policy <span class="math inline">\(\pi\)</span>. From each of these, the environment could respond with one of several next states, <span class="math inline">\(s\prime\)</span> (two are shown in the figure), along with a reward, r, depending on its dynamics given by the function <span class="math inline">\(p\)</span>. The Bellman equation averages over all the possibilities, weighting each by its probability of occurring. It states that the value of the start state must equal the(discounted) value of the expected next state, plus the reward expected along the way.</p>
+<p>We call diagrams like that above backup diagrams because they diagram relationships that form the basis of the update or backup operations that are at the heart of reinforcement learning methods. These operations transfer value information back to a state (or a state–action pair) from its successor states (or state–action pairs)</p>
+<h3 id="use-the-bellman-equations-to-compute-value-functions">Use the Bellman equations to compute value functions</h3>
+<p>The value function is the unique solution to its Bellman equation.</p>
+<h2 id="lesson-3-optimality-optimal-policies-value-functions">Lesson 3: Optimality (Optimal Policies &amp; Value Functions)</h2>
+<h3 id="define-an-optimal-policy-understand-how-a-policy-can-be-at-least-as-good-as-every-other-policy-in-every-state">Define an optimal policy, understand how a policy can be at least as good as every other policy in every state</h3>
+<p>For finite MDPs, we can precisely define an optimal policy in the following way. Value functions define a partial ordering over policies. A policy <span class="math inline">\(\pi\)</span> is defined to be better than or equal to a policy <span class="math inline">\(\pi\prime\)</span> if its expected return is greater than or equal to that of <span class="math inline">\(\pi\prime\)</span> for all states. In other words, <span class="math inline">\(\pi \geq \pi\prime\)</span> if and only if <span class="math inline">\(V_{\pi}(s) \geq V_{\pi\prime}(s)\)</span> for all <span class="math inline">\(s \in \mathbb{S}\)</span>. There is always at least one policy that is better than or equal to all other policies. This is an optimal policy. Although there may be more than one, we denote all the optimal policies by <span class="math inline">\(\pi_{\star}\)</span>. They share the same state-value function, called the optimal state-value function, denoted <span class="math inline">\(V_{\star}\)</span>, and defined as</p>
+<p><span class="math display">\[V_{\star} = max_{\pi}V_{\pi}(s) \quad \text{for all} \quad s \in \mathbb{S}\]</span></p>
+<p>Optimal policies also share the same optimal action-value function, denoted <span class="math inline">\(q_{\star}\)</span>, and defined as</p>
+<p><span class="math display">\[q_{\star}(s,a) = max_{\pi} q_{\pi}(s,a) \quad \text{for all} \quad s \in \mathbb{S} \, \text{and} \, a \in \mathbb{A}(s)\]</span></p>
+<p>For the state–action pair (s, a), this function gives the expected return for taking action <span class="math inline">\(a\)</span> in state <span class="math inline">\(s\)</span> and thereafter following an optimal policy. Thus, we can write <span class="math inline">\(q_{\star}\)</span> in terms of <span class="math inline">\(V_{\star}\)</span> as follows:</p>
+<p><span class="math display">\[q_{\star}(s,a) = \mathbb{E}[ R_{t+1} + \eta v_{\star}(S_{t+1}) | S_t = s, A_t = a]\]</span></p>
+<h3 id="derive-the-bellman-optimality-equation-for-state-value-functions">Derive the Bellman optimality equation for state-value functions</h3>
+<p><span class="math display">\[V_{\star}(s) = \sum_a \pi_{\star} (a | s)\sum_{s\prime,r}p(s\prime,r | s, a)[ r + \eta v_{\star}(s\prime)], \quad \text{ for all } \quad s \in \mathbb{S}\]</span></p>
+<p><span class="math display">\[V_{\star}(s) = max_a \sum_{s\prime,r}p(s\prime,r | s, a)[ r + \eta v_{\star}(s\prime)], \quad \text{ for all } \quad s \in \mathbb{S}\]</span></p>
+<h3 id="derive-the-bellman-optimality-equation-for-action-value-functions">Derive the Bellman optimality equation for action-value functions</h3>
+<p><span class="math display">\[q_{\star}(s,a) = \sum_{s\prime}\sum_{r}p(s\prime,r | s, a)[ r + \eta\sum_{a\prime} \pi_{\star} (a\prime | q_{\star}(s\prime, a\prime))]\]</span></p>
+<p><span class="math display">\[q_{\star}(s,a) = \sum_{s\prime}\sum_{r}p(s\prime,r | s, a)[ r + \eta max_{a\prime}q_{\star}(s\prime, a\prime))]\]</span></p>
+<h3 id="understand-the-connection-between-the-optimal-value-function-and-optimal-policies">Understand the connection between the optimal value function and optimal policies</h3>
+<p>Once we had the optimal state-value function, it's relatively easy to work out the optimal policy. If we have the optimal action-value function, working out the optimal policy is even easier. This correspondence between optimal-value functions and optimal-policies will help us to derive many of the reinforced learning algorithms we will explore later in this specialization.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Markov-Decision-Processes/2020/09/04/" rel="prev" title="Markov Decision Processes I">
+      <i class="fa fa-chevron-left"></i> Markov Decision Processes I
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Generalized-Policy-Iteration/2020/09/10/" rel="next" title="Generalized Policy Iteration">
+      Generalized Policy Iteration <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#lesson-1-policies-and-value-functions"><span class="nav-number">1.</span> <span class="nav-text">Lesson 1: Policies and Value Functions</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#recognize-that-a-policy-is-a-distribution-over-actions-for-each-possible-state."><span class="nav-number">1.1.</span> <span class="nav-text">Recognize that a policy is a distribution over actions for each possible state.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#describe-the-similarities-and-differences-between-stochastic-and-deterministic-policies"><span class="nav-number">1.2.</span> <span class="nav-text">Describe the similarities and differences between stochastic and deterministic policies</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#identify-the-characteristics-of-a-well-defined-policy"><span class="nav-number">1.3.</span> <span class="nav-text">Identify the characteristics of a well-defined policy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#describe-the-roles-of-state-value-and-action-value-functions-in-reinforcement-learning"><span class="nav-number">1.4.</span> <span class="nav-text">Describe the roles of state-value and action-value functions in reinforcement learning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#describe-the-relationship-between-value-functions-and-policies"><span class="nav-number">1.5.</span> <span class="nav-text">Describe the relationship between value functions and policies</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#create-examples-of-valid-value-functions-for-a-given-mdp"><span class="nav-number">1.6.</span> <span class="nav-text">Create examples of valid value functions for a given MDP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lesson-2-bellman-equations"><span class="nav-number">2.</span> <span class="nav-text">Lesson 2: Bellman Equations</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#derive-the-bellman-equation-for-state-value-functions"><span class="nav-number">2.1.</span> <span class="nav-text">Derive the Bellman equation for state-value functions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#derive-the-bellman-equation-for-action-value-functions"><span class="nav-number">2.2.</span> <span class="nav-text">Derive the Bellman equation for action-value functions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#understand-how-bellman-equations-relate-current-and-future-values"><span class="nav-number">2.3.</span> <span class="nav-text">Understand how Bellman equations relate current and future values</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#use-the-bellman-equations-to-compute-value-functions"><span class="nav-number">2.4.</span> <span class="nav-text">Use the Bellman equations to compute value functions</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lesson-3-optimality-optimal-policies-value-functions"><span class="nav-number">3.</span> <span class="nav-text">Lesson 3: Optimality (Optimal Policies &amp; Value Functions)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#define-an-optimal-policy-understand-how-a-policy-can-be-at-least-as-good-as-every-other-policy-in-every-state"><span class="nav-number">3.1.</span> <span class="nav-text">Define an optimal policy, understand how a policy can be at least as good as every other policy in every state</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#derive-the-bellman-optimality-equation-for-state-value-functions"><span class="nav-number">3.2.</span> <span class="nav-text">Derive the Bellman optimality equation for state-value functions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#derive-the-bellman-optimality-equation-for-action-value-functions"><span class="nav-number">3.3.</span> <span class="nav-text">Derive the Bellman optimality equation for action-value functions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#understand-the-connection-between-the-optimal-value-function-and-optimal-policies"><span class="nav-number">3.4.</span> <span class="nav-text">Understand the connection between the optimal value function and optimal policies</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

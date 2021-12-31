@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Practice of LSTM, learn from audio data of jazz music and then generate new jazz music.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Improvise a Jazz Solo with an LSTM Network">
+<meta property="og:url" content="https://zhangruochi.com/Improvise-a-Jazz-Solo-with-an-LSTM-Network/2019/03/28/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Practice of LSTM, learn from audio data of jazz music and then generate new jazz music.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Improvise-a-Jazz-Solo-with-an-LSTM-Network/2019/03/28/images/jazz.jpg">
+<meta property="og:image" content="https://zhangruochi.com/Improvise-a-Jazz-Solo-with-an-LSTM-Network/2019/03/28/images/music_generation.png">
+<meta property="og:image" content="https://zhangruochi.com/Improvise-a-Jazz-Solo-with-an-LSTM-Network/2019/03/28/images/djmodel.png">
+<meta property="og:image" content="https://zhangruochi.com/Improvise-a-Jazz-Solo-with-an-LSTM-Network/2019/03/28/images/music_gen.png">
+<meta property="article:published_time" content="2019-03-28T08:18:14.000Z">
+<meta property="article:modified_time" content="2019-07-05T10:31:14.362Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Sequence Models">
+<meta property="article:tag" content="Project">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Improvise-a-Jazz-Solo-with-an-LSTM-Network/2019/03/28/images/jazz.jpg">
+
+<link rel="canonical" href="https://zhangruochi.com/Improvise-a-Jazz-Solo-with-an-LSTM-Network/2019/03/28/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Improvise a Jazz Solo with an LSTM Network | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Improvise-a-Jazz-Solo-with-an-LSTM-Network/2019/03/28/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Improvise a Jazz Solo with an LSTM Network
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-03-28 16:18:14" itemprop="dateCreated datePublished" datetime="2019-03-28T16:18:14+08:00">2019-03-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-07-05 18:31:14" itemprop="dateModified" datetime="2019-07-05T18:31:14+08:00">2019-07-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Improvise-a-Jazz-Solo-with-an-LSTM-Network/2019/03/28/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Improvise-a-Jazz-Solo-with-an-LSTM-Network/2019/03/28/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Practice of LSTM, learn from audio data of jazz music and then generate new jazz music.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="improvise-a-jazz-solo-with-an-lstm-network">Improvise a Jazz Solo with an LSTM Network</h1>
+<p>Welcome to your final programming assignment of this week! In this notebook, you will implement a model that uses an LSTM to generate music. You will even be able to listen to your own music at the end of the assignment.</p>
+<p><strong>You will learn to:</strong> - Apply an LSTM to music generation. - Generate your own jazz music with deep learning.</p>
+<p>Please run the following cell to load all the packages required in this assignment. This may take a few minutes.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"><span class="keyword">import</span> IPython</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> music21 <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> grammar <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> qa <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> preprocess <span class="keyword">import</span> * </span><br><span class="line"><span class="keyword">from</span> music_utils <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> data_utils <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> load_model, Model</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense, Activation, Dropout, Input, LSTM, Reshape, Lambda, RepeatVector</span><br><span class="line"><span class="keyword">from</span> keras.initializers <span class="keyword">import</span> glorot_uniform</span><br><span class="line"><span class="keyword">from</span> keras.utils <span class="keyword">import</span> to_categorical</span><br><span class="line"><span class="keyword">from</span> keras.optimizers <span class="keyword">import</span> Adam</span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> backend <span class="keyword">as</span> K</span><br></pre></td></tr></table></figure>
+<h2 id="problem-statement">1 - Problem statement</h2>
+<p>You would like to create a jazz music piece specially for a friend's birthday. However, you don't know any instruments or music composition. Fortunately, you know deep learning and will solve this problem using an LSTM netwok.</p>
+<p>You will train a network to generate novel jazz solos in a style representative of a body of performed work.</p>
+<p><img src="images/jazz.jpg" style="width:450;height:300px;"></p>
+<h3 id="dataset">1.1 - Dataset</h3>
+<p>You will train your algorithm on a corpus of Jazz music. Run the cell below to listen to a snippet of the audio from the training set:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPython.display.Audio(<span class="string">&#x27;./data/30s_seq.mp3&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>We have taken care of the preprocessing of the musical data to render it in terms of musical "values." You can informally think of each "value" as a note, which comprises a pitch and a duration. For example, if you press down a specific piano key for 0.5 seconds, then you have just played a note. In music theory, a "value" is actually more complicated than this--specifically, it also captures the information needed to play multiple notes at the same time. For example, when playing a music piece, you might press down two piano keys at the same time (playng multiple notes at the same time generates what's called a "chord"). But we don't need to worry about the details of music theory for this assignment. For the purpose of this assignment, all you need to know is that we will obtain a dataset of values, and will learn an RNN model to generate sequences of values.</p>
+<p>Our music generation system will use 78 unique values. Run the following code to load the raw music data and preprocess it into values. This might take a few minutes.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">X, Y, n_values, indices_values = load_music_utils()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;shape of X:&#x27;</span>, X.shape)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;number of training examples:&#x27;</span>, X.shape[<span class="number">0</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Tx (length of sequence):&#x27;</span>, X.shape[<span class="number">1</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;total # of unique values:&#x27;</span>, n_values)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Shape of Y:&#x27;</span>, Y.shape)</span><br></pre></td></tr></table></figure>
+<pre><code>shape of X: (60, 30, 78)
+number of training examples: 60
+Tx (length of sequence): 30
+total # of unique values: 78
+Shape of Y: (30, 60, 78)</code></pre>
+<p>You have just loaded the following:</p>
+<ul>
+<li><p><code>X</code>: This is an (m, <span class="math inline">\(T_x\)</span>, 78) dimensional array. We have m training examples, each of which is a snippet of <span class="math inline">\(T_x =30\)</span> musical values. At each time step, the input is one of 78 different possible values, represented as a one-hot vector. Thus for example, X[i,t,:] is a one-hot vector representating the value of the i-th example at time t.</p></li>
+<li><p><code>Y</code>: This is essentially the same as <code>X</code>, but shifted one step to the left (to the past). Similar to the dinosaurus assignment, we're interested in the network using the previous values to predict the next value, so our sequence model will try to predict <span class="math inline">\(y^{\langle t \rangle}\)</span> given <span class="math inline">\(x^{\langle 1\rangle}, \ldots, x^{\langle t \rangle}\)</span>. However, the data in <code>Y</code> is reordered to be dimension <span class="math inline">\((T_y, m, 78)\)</span>, where <span class="math inline">\(T_y = T_x\)</span>. This format makes it more convenient to feed to the LSTM later.</p></li>
+<li><p><code>n_values</code>: The number of unique values in this dataset. This should be 78.</p></li>
+<li><p><code>indices_values</code>: python dictionary mapping from 0-77 to musical values.</p></li>
+</ul>
+<h3 id="overview-of-our-model">1.2 - Overview of our model</h3>
+<p>Here is the architecture of the model we will use. This is similar to the Dinosaurus model you had used in the previous notebook, except that in you will be implementing it in Keras. The architecture is as follows:</p>
+<p><img src="images/music_generation.png" style="width:600;height:400px;"></p>
+<!--
+<img src="images/djmodel.png" style="width:600;height:400px;">
+<br>
+<caption><center> **Figure 1**: LSTM model. $X = (x^{\langle 1 \rangle}, x^{\langle 2 \rangle}, ..., x^{\langle T_x \rangle})$ is a window of size $T_x$ scanned over the musical corpus. Each $x^{\langle t \rangle}$ is an index corresponding to a value (ex: "A,0.250,< m2,P-4 >") while $\hat{y}$ is the prediction for the next value  </center></caption>
+!-->
+<p>We will be training the model on random snippets of 30 values taken from a much longer piece of music. Thus, we won't bother to set the first input <span class="math inline">\(x^{\langle 1 \rangle} = \vec{0}\)</span>, which we had done previously to denote the start of a dinosaur name, since now most of these snippets of audio start somewhere in the middle of a piece of music. We are setting each of the snippts to have the same length <span class="math inline">\(T_x = 30\)</span> to make vectorization easier.</p>
+<h2 id="building-the-model">2 - Building the model</h2>
+<p>In this part you will build and train a model that will learn musical patterns. To do so, you will need to build a model that takes in X of shape <span class="math inline">\((m, T_x, 78)\)</span> and Y of shape <span class="math inline">\((T_y, m, 78)\)</span>. We will use an LSTM with 64 dimensional hidden states. Lets set <code>n_a = 64</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">n_a = <span class="number">64</span> </span><br></pre></td></tr></table></figure>
+<p>Here's how you can create a Keras model with multiple inputs and outputs. If you're building an RNN where even at test time entire input sequence <span class="math inline">\(x^{\langle 1 \rangle}, x^{\langle 2 \rangle}, \ldots, x^{\langle T_x \rangle}\)</span> were <em>given in advance</em>, for example if the inputs were words and the output was a label, then Keras has simple built-in functions to build the model. However, for sequence generation, at test time we don't know all the values of <span class="math inline">\(x^{\langle t\rangle}\)</span> in advance; instead we generate them one at a time using <span class="math inline">\(x^{\langle t\rangle} = y^{\langle t-1 \rangle}\)</span>. So the code will be a bit more complicated, and you'll need to implement your own for-loop to iterate over the different time steps.</p>
+<p>The function <code>djmodel()</code> will call the LSTM layer <span class="math inline">\(T_x\)</span> times using a for-loop, and it is important that all <span class="math inline">\(T_x\)</span> copies have the same weights. I.e., it should not re-initiaiize the weights every time---the <span class="math inline">\(T_x\)</span> steps should have shared weights. The key steps for implementing layers with shareable weights in Keras are: 1. Define the layer objects (we will use global variables for this). 2. Call these objects when propagating the input.</p>
+<p>We have defined the layers objects you need as global variables. Please run the next cell to create them. Please check the Keras documentation to make sure you understand what these layers are: <a target="_blank" rel="noopener" href="https://keras.io/layers/core/#reshape">Reshape()</a>, <a target="_blank" rel="noopener" href="https://keras.io/layers/recurrent/#lstm">LSTM()</a>, <a target="_blank" rel="noopener" href="https://keras.io/layers/core/#dense">Dense()</a>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reshapor = Reshape((<span class="number">1</span>, <span class="number">78</span>))                        <span class="comment"># Used in Step 2.B of djmodel(), below</span></span><br><span class="line">LSTM_cell = LSTM(n_a, return_state = <span class="literal">True</span>)         <span class="comment"># Used in Step 2.C</span></span><br><span class="line">densor = Dense(n_values, activation=<span class="string">&#x27;softmax&#x27;</span>)     <span class="comment"># Used in Step 2.D</span></span><br></pre></td></tr></table></figure>
+<p>Each of <code>reshapor</code>, <code>LSTM_cell</code> and <code>densor</code> are now layer objects, and you can use them to implement <code>djmodel()</code>. In order to propagate a Keras tensor object X through one of these layers, use <code>layer_object(X)</code> (or <code>layer_object([X,Y])</code> if it requires multiple inputs.). For example, <code>reshapor(X)</code> will propagate X through the <code>Reshape((1,78))</code> layer defined above.</p>
+<p><strong>Exercise</strong>: Implement <code>djmodel()</code>. You will need to carry out 2 steps:</p>
+<ol type="1">
+<li><p>Create an empty list "outputs" to save the outputs of the LSTM Cell at every time step.</p></li>
+<li><p>Loop for <span class="math inline">\(t \in 1, \ldots, T_x\)</span>:</p>
+<p>A. Select the "t"th time-step vector from X. The shape of this selection should be (78,). To do so, create a custom <a target="_blank" rel="noopener" href="https://keras.io/layers/core/#lambda">Lambda</a> layer in Keras by using this line of code: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x = Lambda(lambda x: X[:,t,:])(X)</span><br></pre></td></tr></table></figure> Look over the Keras documentation to figure out what this does. It is creating a "temporary" or "unnamed" function (that's what Lambda functions are) that extracts out the appropriate one-hot vector, and making this function a Keras <code>Layer</code> object to apply to <code>X</code>.</p>
+<p>B. Reshape x to be (1,78). You may find the <code>reshapor()</code> layer (defined below) helpful.</p>
+<p>C. Run x through one step of LSTM_cell. Remember to initialize the LSTM_cell with the previous step's hidden state <span class="math inline">\(a\)</span> and cell state <span class="math inline">\(c\)</span>. Use the following formatting: <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a, _, c = LSTM_cell(input_x, initial_state=[previous hidden state, previous cell state])</span><br></pre></td></tr></table></figure></p>
+<p>D. Propagate the LSTM's output activation value through a dense+softmax layer using <code>densor</code>.</p>
+<p>E. Append the predicted value to the list of "outputs"</p></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GRADED FUNCTION: djmodel</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">djmodel</span>(<span class="params">Tx, n_a, n_values</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Implement the model</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    Tx -- length of the sequence in a corpus</span></span><br><span class="line"><span class="string">    n_a -- the number of activations used in our model</span></span><br><span class="line"><span class="string">    n_values -- number of unique values in the music data </span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    model -- a keras model with the </span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Define the input of your model with a shape </span></span><br><span class="line">    X = Input(shape=(Tx, n_values))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Define s0, initial hidden state for the decoder LSTM</span></span><br><span class="line">    a0 = Input(shape=(n_a,), name=<span class="string">&#x27;a0&#x27;</span>)</span><br><span class="line">    c0 = Input(shape=(n_a,), name=<span class="string">&#x27;c0&#x27;</span>)</span><br><span class="line">    a = a0</span><br><span class="line">    c = c0</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE ### </span></span><br><span class="line">    <span class="comment"># Step 1: Create empty list to append the outputs while you iterate (≈1 line)</span></span><br><span class="line">    outputs = []</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 2: Loop</span></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(Tx):</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Step 2.A: select the &quot;t&quot;th time step vector from X. </span></span><br><span class="line">        x = Lambda(<span class="keyword">lambda</span> x: X[:,t,:])(X)</span><br><span class="line">        <span class="comment"># Step 2.B: Use reshapor to reshape x to be (1, n_values) (≈1 line)</span></span><br><span class="line">        x = reshapor(x)</span><br><span class="line">        <span class="comment"># Step 2.C: Perform one step of the LSTM_cell</span></span><br><span class="line">        a, _, c = LSTM_cell(x, initial_state=[a, c])</span><br><span class="line">        <span class="comment"># Step 2.D: Apply densor to the hidden state output of LSTM_Cell</span></span><br><span class="line">        out = densor(a)</span><br><span class="line">        <span class="comment"># Step 2.E: add the output to &quot;outputs&quot;</span></span><br><span class="line">        outputs.append(out)</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># Step 3: Create model instance</span></span><br><span class="line">    model = Model(inputs=[X, a0, c0], outputs=outputs)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> model</span><br></pre></td></tr></table></figure>
+<p>Run the following cell to define your model. We will use <code>Tx=30</code>, <code>n_a=64</code> (the dimension of the LSTM activations), and <code>n_values=78</code>. This cell may take a few seconds to run.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model = djmodel(Tx = <span class="number">30</span> , n_a = <span class="number">64</span>, n_values = <span class="number">78</span>)</span><br></pre></td></tr></table></figure>
+<p>You now need to compile your model to be trained. We will Adam and a categorical cross-entropy loss.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">opt = Adam(lr=<span class="number">0.01</span>, beta_1=<span class="number">0.9</span>, beta_2=<span class="number">0.999</span>, decay=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line">model.<span class="built_in">compile</span>(optimizer=opt, loss=<span class="string">&#x27;categorical_crossentropy&#x27;</span>, metrics=[<span class="string">&#x27;accuracy&#x27;</span>])</span><br></pre></td></tr></table></figure>
+<p>Finally, lets initialize <code>a0</code> and <code>c0</code> for the LSTM's initial state to be zero.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">m = <span class="number">60</span></span><br><span class="line">a0 = np.zeros((m, n_a))</span><br><span class="line">c0 = np.zeros((m, n_a))</span><br></pre></td></tr></table></figure>
+<p>Lets now fit the model! We will turn <code>Y</code> to a list before doing so, since the cost function expects <code>Y</code> to be provided in this format (one list item per time-step). So <code>list(Y)</code> is a list with 30 items, where each of the list items is of shape (60,78). Lets train for 100 epochs. This will take a few minutes.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model.fit([X, a0, c0], <span class="built_in">list</span>(Y), epochs=<span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+<p>You should see the model loss going down. Now that you have trained a model, lets go on the the final section to implement an inference algorithm, and generate some music!</p>
+<h2 id="generating-music">3 - Generating music</h2>
+<p>You now have a trained model which has learned the patterns of the jazz soloist. Lets now use this model to synthesize new music.</p>
+<h4 id="predicting-sampling">3.1 - Predicting &amp; Sampling</h4>
+<p><img src="images/music_gen.png" style="width:600;height:400px;"></p>
+<p>At each step of sampling, you will take as input the activation <code>a</code> and cell state <code>c</code> from the previous state of the LSTM, forward propagate by one step, and get a new output activation as well as cell state. The new activation <code>a</code> can then be used to generate the output, using <code>densor</code> as before.</p>
+<p>To start off the model, we will initialize <code>x0</code> as well as the LSTM activation and and cell value <code>a0</code> and <code>c0</code> to be zeros.</p>
+<!-- 
+You are about to build a function that will do this inference for you. Your function takes in your previous model and the number of time steps `Ty` that you want to sample. It will return a keras model that would be able to generate sequences for you. Furthermore, the function takes in a dense layer of `78` units and the number of activations. 
+!-->
+<p><strong>Exercise:</strong> Implement the function below to sample a sequence of musical values. Here are some of the key steps you'll need to implement inside the for-loop that generates the <span class="math inline">\(T_y\)</span> output characters:</p>
+<p>Step 2.A: Use <code>LSTM_Cell</code>, which inputs the previous step's <code>c</code> and <code>a</code> to generate the current step's <code>c</code> and <code>a</code>.</p>
+<p>Step 2.B: Use <code>densor</code> (defined previously) to compute a softmax on <code>a</code> to get the output for the current step.</p>
+<p>Step 2.C: Save the output you have just generated by appending it to <code>outputs</code>.</p>
+<p>Step 2.D: Sample x to the be "out"'s one-hot version (the prediction) so that you can pass it to the next LSTM's step. We have already provided this line of code, which uses a <a target="_blank" rel="noopener" href="https://keras.io/layers/core/#lambda">Lambda</a> function. <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x = Lambda(one_hot)(out) </span><br></pre></td></tr></table></figure> [Minor technical note: Rather than sampling a value at random according to the probabilities in <code>out</code>, this line of code actually chooses the single most likely note at each step using an argmax.]</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GRADED FUNCTION: music_inference_model</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">music_inference_model</span>(<span class="params">LSTM_cell, densor, n_values = <span class="number">78</span>, n_a = <span class="number">64</span>, Ty = <span class="number">100</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Uses the trained &quot;LSTM_cell&quot; and &quot;densor&quot; from model() to generate a sequence of values.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    LSTM_cell -- the trained &quot;LSTM_cell&quot; from model(), Keras layer object</span></span><br><span class="line"><span class="string">    densor -- the trained &quot;densor&quot; from model(), Keras layer object</span></span><br><span class="line"><span class="string">    n_values -- integer, umber of unique values</span></span><br><span class="line"><span class="string">    n_a -- number of units in the LSTM_cell</span></span><br><span class="line"><span class="string">    Ty -- integer, number of time steps to generate</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    inference_model -- Keras model instance</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Define the input of your model with a shape </span></span><br><span class="line">    x0 = Input(shape=(<span class="number">1</span>, n_values))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Define s0, initial hidden state for the decoder LSTM</span></span><br><span class="line">    a0 = Input(shape=(n_a,), name=<span class="string">&#x27;a0&#x27;</span>)</span><br><span class="line">    c0 = Input(shape=(n_a,), name=<span class="string">&#x27;c0&#x27;</span>)</span><br><span class="line">    a = a0</span><br><span class="line">    c = c0</span><br><span class="line">    x = x0</span><br><span class="line"></span><br><span class="line">    <span class="comment">### START CODE HERE ###</span></span><br><span class="line">    <span class="comment"># Step 1: Create an empty list of &quot;outputs&quot; to later store your predicted values (≈1 line)</span></span><br><span class="line">    outputs = []</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 2: Loop over Ty and generate a value at every time step</span></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(Ty):</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Step 2.A: Perform one step of LSTM_cell (≈1 line)</span></span><br><span class="line">        a, _, c = LSTM_cell(x, initial_state=[a, c])</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Step 2.B: Apply Dense layer to the hidden state output of the LSTM_cell (≈1 line)</span></span><br><span class="line">        out = densor(a)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Step 2.C: Append the prediction &quot;out&quot; to &quot;outputs&quot;. out.shape = (None, 78) (≈1 line)</span></span><br><span class="line">        outputs.append(out)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Step 2.D: Select the next value according to &quot;out&quot;, and set &quot;x&quot; to be the one-hot representation of the</span></span><br><span class="line">        <span class="comment">#           selected value, which will be passed as the input to LSTM_cell on the next step. We have provided </span></span><br><span class="line">        <span class="comment">#           the line of code you need to do this. </span></span><br><span class="line">        x = Lambda(one_hot)(out)</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># Step 3: Create model instance with the correct &quot;inputs&quot; and &quot;outputs&quot; (≈1 line)</span></span><br><span class="line">    inference_model = Model([x0, a0, c0], outputs)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> inference_model</span><br></pre></td></tr></table></figure>
+<p>Run the cell below to define your inference model. This model is hard coded to generate 50 values.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inference_model = music_inference_model(LSTM_cell, densor, n_values = <span class="number">78</span>, n_a = <span class="number">64</span>, Ty = <span class="number">50</span>)</span><br></pre></td></tr></table></figure>
+<p>Finally, this creates the zero-valued vectors you will use to initialize <code>x</code> and the LSTM state variables <code>a</code> and <code>c</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x_initializer = np.zeros((<span class="number">1</span>, <span class="number">1</span>, <span class="number">78</span>))</span><br><span class="line">a_initializer = np.zeros((<span class="number">1</span>, n_a))</span><br><span class="line">c_initializer = np.zeros((<span class="number">1</span>, n_a))</span><br></pre></td></tr></table></figure>
+<p><strong>Exercise</strong>: Implement <code>predict_and_sample()</code>. This function takes many arguments including the inputs [x_initializer, a_initializer, c_initializer]. In order to predict the output corresponding to this input, you will need to carry-out 3 steps: 1. Use your inference model to predict an output given your set of inputs. The output <code>pred</code> should be a list of length <span class="math inline">\(T_y\)</span> where each element is a numpy-array of shape (1, n_values). 2. Convert <code>pred</code> into a numpy array of <span class="math inline">\(T_y\)</span> indices. Each index corresponds is computed by taking the <code>argmax</code> of an element of the <code>pred</code> list. <a target="_blank" rel="noopener" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.argmax.html">Hint</a>. 3. Convert the indices into their one-hot vector representations. <a target="_blank" rel="noopener" href="https://keras.io/utils/#to_categorical">Hint</a>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GRADED FUNCTION: predict_and_sample</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">predict_and_sample</span>(<span class="params">inference_model, x_initializer = x_initializer, a_initializer = a_initializer, </span></span></span><br><span class="line"><span class="params"><span class="function">                       c_initializer = c_initializer</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Predicts the next value of values using the inference model.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    inference_model -- Keras model instance for inference time</span></span><br><span class="line"><span class="string">    x_initializer -- numpy array of shape (1, 1, 78), one-hot vector initializing the values generation</span></span><br><span class="line"><span class="string">    a_initializer -- numpy array of shape (1, n_a), initializing the hidden state of the LSTM_cell</span></span><br><span class="line"><span class="string">    c_initializer -- numpy array of shape (1, n_a), initializing the cell state of the LSTM_cel</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    results -- numpy-array of shape (Ty, 78), matrix of one-hot vectors representing the values generated</span></span><br><span class="line"><span class="string">    indices -- numpy-array of shape (Ty, 1), matrix of indices representing the values generated</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE ###</span></span><br><span class="line">    <span class="comment"># Step 1: Use your inference model to predict an output sequence given x_initializer, a_initializer and c_initializer.</span></span><br><span class="line">    pred = inference_model.predict([x_initializer, a_initializer, c_initializer])</span><br><span class="line">    <span class="comment"># Step 2: Convert &quot;pred&quot; into an np.array() of indices with the maximum probabilities</span></span><br><span class="line">    <span class="comment">#indices = np.array([np.argmax(item) for item in pred])</span></span><br><span class="line">    indices = np.argmax(pred, <span class="number">2</span>)</span><br><span class="line">    <span class="comment"># Step 3: Convert indices to one-hot vectors, the shape of the results should be (1, )</span></span><br><span class="line">    results = to_categorical(indices,num_classes=<span class="literal">None</span>)</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> results, indices</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">results, indices = predict_and_sample(inference_model, x_initializer, a_initializer, c_initializer)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;np.argmax(results[12]) =&quot;</span>, np.argmax(results[<span class="number">12</span>]))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;np.argmax(results[17]) =&quot;</span>, np.argmax(results[<span class="number">17</span>]))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;list(indices[12:18]) =&quot;</span>, <span class="built_in">list</span>(indices[<span class="number">12</span>:<span class="number">18</span>]))</span><br></pre></td></tr></table></figure>
+<pre><code>np.argmax(results[12]) = 40
+np.argmax(results[17]) = 1
+list(indices[12:18]) = [array([40]), array([1]), array([4]), array([5]), array([40]), array([1])]</code></pre>
+<p><strong>Expected Output</strong>: Your results may differ because Keras' results are not completely predictable. However, if you have trained your LSTM_cell with model.fit() for exactly 100 epochs as described above, you should very likely observe a sequence of indices that are not all identical. Moreover, you should observe that: np.argmax(results[12]) is the first element of list(indices[12:18]) and np.argmax(results[17]) is the last element of list(indices[12:18]).</p>
+<table>
+<tr>
+<td>
+<strong>np.argmax(results[12])</strong> =
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<td>
+<strong>np.argmax(results[12])</strong> =
+</td>
+<td>
+42
+</td>
+</tr>
+<tr>
+<td>
+<strong>list(indices[12:18])</strong> =
+</td>
+<td>
+[array([1]), array([42]), array([54]), array([17]), array([1]), array([42])]
+</td>
+</tr>
+</table>
+<h4 id="generate-music">3.3 - Generate music</h4>
+<p>Finally, you are ready to generate music. Your RNN generates a sequence of values. The following code generates music by first calling your <code>predict_and_sample()</code> function. These values are then post-processed into musical chords (meaning that multiple values or notes can be played at the same time).</p>
+<p>Most computational music algorithms use some post-processing because it is difficult to generate music that sounds good without such post-processing. The post-processing does things such as clean up the generated audio by making sure the same sound is not repeated too many times, that two successive notes are not too far from each other in pitch, and so on. One could argue that a lot of these post-processing steps are hacks; also, a lot the music generation literature has also focused on hand-crafting post-processors, and a lot of the output quality depends on the quality of the post-processing and not just the quality of the RNN. But this post-processing does make a huge difference, so lets use it in our implementation as well.</p>
+<p>Lets make some music!</p>
+<p>Run the following cell to generate music and record it into your <code>out_stream</code>. This can take a couple of minutes.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">out_stream = generate_music(inference_model)</span><br></pre></td></tr></table></figure>
+<pre><code>Predicting new values for different set of chords.
+Generated 51 sounds using the predicted values for the set of chords (&quot;1&quot;) and after pruning
+Generated 51 sounds using the predicted values for the set of chords (&quot;2&quot;) and after pruning
+Generated 51 sounds using the predicted values for the set of chords (&quot;3&quot;) and after pruning
+Generated 51 sounds using the predicted values for the set of chords (&quot;4&quot;) and after pruning
+Generated 51 sounds using the predicted values for the set of chords (&quot;5&quot;) and after pruning
+Your generated music is saved in output/my_music.midi</code></pre>
+<p>To listen to your music, click File-&gt;Open... Then go to "output/" and download "my_music.midi". Either play it on your computer with an application that can read midi files if you have one, or use one of the free online "MIDI to mp3" conversion tools to convert this to mp3.</p>
+<p>As reference, here also is a 30sec audio clip we generated using this algorithm.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPython.display.Audio(<span class="string">&#x27;./data/30s_trained_model.mp3&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="congratulations">Congratulations!</h3>
+<p>You have come to the end of the notebook.</p>
+<p><font color="blue"> Here's what you should remember: - A sequence model can be used to generate musical values, which are then post-processed into midi music. - Fairly similar models can be used to generate dinosaur names or to generate music, with the major difference being the input fed to the model.<br />
+- In Keras, sequence generation involves defining layers with shared weights, which are then repeated for the different time steps <span class="math inline">\(1, \ldots, T_x\)</span>.</p>
+<p>Congratulations on completing this assignment and generating a jazz solo!</p>
+<p><strong>References</strong></p>
+<p>The ideas presented in this notebook came primarily from three computational music papers cited below. The implementation here also took significant inspiration and used many components from Ji-Sung Kim's github repository.</p>
+<ul>
+<li>Ji-Sung Kim, 2016, <a target="_blank" rel="noopener" href="https://github.com/jisungk/deepjazz">deepjazz</a></li>
+<li>Jon Gillick, Kevin Tang and Robert Keller, 2009. <a target="_blank" rel="noopener" href="http://ai.stanford.edu/~kdtang/papers/smc09-jazzgrammar.pdf">Learning Jazz Grammars</a></li>
+<li>Robert Keller and David Morrison, 2007, <a target="_blank" rel="noopener" href="http://smc07.uoa.gr/SMC07%20Proceedings/SMC07%20Paper%2055.pdf">A Grammatical Approach to Automatic Improvisation</a></li>
+<li>François Pachet, 1999, <a target="_blank" rel="noopener" href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.5.7473&amp;rep=rep1&amp;type=pdf">Surprising Harmonies</a></li>
+</ul>
+<p>We're also grateful to François Germain for valuable feedback.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Sequence-Models/" rel="tag"># Sequence Models</a>
+              <a href="/tags/Project/" rel="tag"># Project</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Character-level-language-model/2019/03/28/" rel="prev" title="Character-level language model">
+      <i class="fa fa-chevron-left"></i> Character-level language model
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Operations-on-word-vectors-Debiasing/2019/03/28/" rel="next" title="Operations on word vectors - Debiasing">
+      Operations on word vectors - Debiasing <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#improvise-a-jazz-solo-with-an-lstm-network"><span class="nav-number">1.</span> <span class="nav-text">Improvise a Jazz Solo with an LSTM Network</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#problem-statement"><span class="nav-number">1.1.</span> <span class="nav-text">1 - Problem statement</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dataset"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 - Dataset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#overview-of-our-model"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 - Overview of our model</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#building-the-model"><span class="nav-number">1.2.</span> <span class="nav-text">2 - Building the model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#generating-music"><span class="nav-number">1.3.</span> <span class="nav-text">3 - Generating music</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#predicting-sampling"><span class="nav-number">1.3.0.1.</span> <span class="nav-text">3.1 - Predicting &amp; Sampling</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#generate-music"><span class="nav-number">1.3.0.2.</span> <span class="nav-text">3.3 - Generate music</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#congratulations"><span class="nav-number">1.3.1.</span> <span class="nav-text">Congratulations!</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

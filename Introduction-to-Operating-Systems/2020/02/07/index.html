@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="This is the course note from Introduction to Operating Systems of Udacity">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Introduction to Operating Systems">
+<meta property="og:url" content="https://zhangruochi.com/Introduction-to-Operating-Systems/2020/02/07/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="This is the course note from Introduction to Operating Systems of Udacity">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Introduction-to-Operating-Systems/2020/02/07/system_call.png">
+<meta property="og:image" content="https://zhangruochi.com/Introduction-to-Operating-Systems/2020/02/07/linux.png">
+<meta property="og:image" content="https://zhangruochi.com/Introduction-to-Operating-Systems/2020/02/07/macos.png">
+<meta property="article:published_time" content="2020-02-06T16:29:25.000Z">
+<meta property="article:modified_time" content="2020-02-07T05:43:31.624Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Introduction-to-Operating-Systems/2020/02/07/system_call.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Introduction-to-Operating-Systems/2020/02/07/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Introduction to Operating Systems | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Introduction-to-Operating-Systems/2020/02/07/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Introduction to Operating Systems
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-02-07 00:29:25 / Modified: 13:43:31" itemprop="dateCreated datePublished" datetime="2020-02-07T00:29:25+08:00">2020-02-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Operating-System/" itemprop="url" rel="index"><span itemprop="name">Operating System</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Introduction-to-Operating-Systems/2020/02/07/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Introduction-to-Operating-Systems/2020/02/07/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">This is the course note from Introduction to Operating Systems of Udacity</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Introduction to Operating Systems</p>
+<ul>
+<li>Topics to be covered in this lesson:
+<ul>
+<li>What is an OS (operating system)?</li>
+<li>What are key components of an OS?</li>
+<li>Design and implementation considerations of OSs</li>
+</ul></li>
+</ul>
+<h2 id="what-is-an-operating-system">What is an Operating System?</h2>
+<ul>
+<li>An OS is a special piece of software that abstracts and arbitrates the use of a computer system</li>
+<li>An <strong>OS</strong> is like <strong>a toy shop manager</strong> in that an OS:
+<ul>
+<li>Directs operational resources</li>
+<li>Enforces working policies</li>
+<li>Mitigates difficulty of complex tasks</li>
+</ul></li>
+<li>By definition, an OS is a layer of systems software that:
+<ul>
+<li>Directly has privileged access to the underlying hardware</li>
+<li>Hides the hardware complexity</li>
+<li>Manages hardware on behalf of one of more applications according to some predefined polices</li>
+<li>In addition, it ensures that applications are isolated and protected from one another</li>
+</ul></li>
+</ul>
+<h2 id="os-elements">OS Elements</h2>
+<ul>
+<li>Abstractions:
+<ul>
+<li>Process, thread, file, socket, memory page</li>
+</ul></li>
+<li>Mechanisms
+<ul>
+<li>Create, schedule, open, write, allocate</li>
+</ul></li>
+<li>Policies
+<ul>
+<li>Least recently used (LRU), earliest deadline first (EDF)</li>
+</ul></li>
+</ul>
+<h2 id="design-principles">Design Principles</h2>
+<ul>
+<li>Separation of mechanisms to policy:
+<ul>
+<li>Implement flexible mechanisms to support many policies</li>
+</ul></li>
+<li>Optimize for common case:
+<ul>
+<li>Where will the OS be used?</li>
+<li>What will the user want to execute on that machine?</li>
+<li>What are the workload requirements?</li>
+</ul></li>
+</ul>
+<h2 id="os-protection-boundary">OS Protection Boundary</h2>
+<ul>
+<li>Generally, applications operate in unprivileged mode (user level) while operating systems operate in privileged mode (kernel level)</li>
+<li>Kernel level software is able to access hardware directly</li>
+<li>User-kernel switch is supported by hardware
+<ul>
+<li>trap instructions</li>
+<li>system call(open send malloc ...)</li>
+<li>signals</li>
+</ul></li>
+</ul>
+<h2 id="crossing-the-os-boundary">Crossing The OS Boundary</h2>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="system_call.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+System Call
+</div>
+</center>
+<ul>
+<li>Applications will need to utilize user-kernel transitions which is accomplished by hardware, this involves a number of instructions and switches locality</li>
+<li>Switching locality will affect hardware cache (transitions are costly)</li>
+<li>Hardware will set <em>traps</em> on illegal instructions and os can check what cause the trap</li>
+<li>Cache
+<ul>
+<li>Because context switches will swap the data/addresses currently in cache, the performance of applications can benefit or suffer based on how a context switch changes what is in cache at the time they are accessing it.</li>
+<li>A cache would be considered hot (fire) if an application is accessing the cache when it contains the data/addresses it needs.</li>
+<li>Likewise, a cache would be considered cold (ice) if an application is accessing the cache when it does not contain the data/addresses it needs -- forcing it to retrieve data/addresses from main memory.</li>
+</ul></li>
+</ul>
+<h2 id="os-services">OS Services</h2>
+<p>An operating system provide applications with access to the underlying hardware by exporting a number of services. Thses services are directly linked to some of the components of the hardware.</p>
+<ul>
+<li>process management</li>
+<li>file management</li>
+<li>device management</li>
+<li>memory management</li>
+<li>storage management</li>
+<li>security management</li>
+</ul>
+<h2 id="monolithic-os">Monolithic OS</h2>
+<ul>
+<li>Pros:
+<ul>
+<li>Everything included</li>
+<li>Inlining, compile-time optimizations</li>
+</ul></li>
+<li>Cons:
+<ul>
+<li>Customization, portability, manageability</li>
+<li>Memory footprint</li>
+<li>Performance</li>
+</ul></li>
+</ul>
+<h2 id="modular-os">Modular OS</h2>
+<ul>
+<li>Pros:
+<ul>
+<li>Maintainability</li>
+<li>Smaller footprint</li>
+<li>Less resource needs</li>
+</ul></li>
+<li>Cons:
+<ul>
+<li>Indirection can impact performance</li>
+<li>Maintenance can still be an issue</li>
+</ul></li>
+</ul>
+<h2 id="microkernel">Microkernel</h2>
+<ul>
+<li>Pros:
+<ul>
+<li>Size</li>
+<li>Verifiability</li>
+</ul></li>
+<li>Cons:
+<ul>
+<li>Portability</li>
+<li>Complexity of software development</li>
+<li>Cost of user/kernel crossing</li>
+</ul></li>
+</ul>
+<h2 id="operating-system-architecture">Operating System Architecture</h2>
+<h3 id="linux">Linux</h3>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="linux.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Linux Architecture
+</div>
+</center>
+<h3 id="macos">MacOS</h3>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="macos.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Macos Architecture
+</div>
+</center>
+<h2 id="quiz">Quiz</h2>
+<h4 id="quiz-1-operating-systems-components">Quiz 1: Operating Systems Components</h4>
+<p>Which of the following are likely components of an operating system?</p>
+<p>A:</p>
+<p>file system (hides hardware complexity), device driver (makes decisions), scheduler (distributes processes).</p>
+<h4 id="quiz-2-operating-systems-components">Quiz 2: Operating Systems Components</h4>
+<p>For the following options, indicate if they are examples of abstraction or arbitration.</p>
+<p>A:</p>
+<ul>
+<li>Distributing memory between multiple processes (arbitration)</li>
+<li>Supporting different types of speakers (abstraction)</li>
+<li>Interchangeable access of hard disk or SSD (abstraction)</li>
+</ul>
+<h4 id="quiz-3-system-calls"># Quiz 3: System Calls</h4>
+<p>On a 64-bit Linux-based OS, which system call is used to:</p>
+<ul>
+<li>Send a signal to a process?</li>
+<li>Set the group identity of a process?</li>
+<li>Mount a file system?</li>
+<li>Read/write system parameters</li>
+</ul>
+<p>A:</p>
+<p>The answers are respectively, - <code>kill</code> - <code>setgid</code> - <code>mount</code> - <code>sysctl</code></p>
+<h2 id="reference">Reference</h2>
+<ul>
+<li>https://github.com/stevenxchung/Introduction-to-Operating-Systems</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/AI-Search/2020/02/06/" rel="prev" title="AI - Search">
+      <i class="fa fa-chevron-left"></i> AI - Search
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Improving-Performance-of-Tensorflow-ETL-pipeline/2020/02/20/" rel="next" title="Improving Performance of Tensorflow ETL Pipeline">
+      Improving Performance of Tensorflow ETL Pipeline <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#what-is-an-operating-system"><span class="nav-number">1.</span> <span class="nav-text">What is an Operating System?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#os-elements"><span class="nav-number">2.</span> <span class="nav-text">OS Elements</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#design-principles"><span class="nav-number">3.</span> <span class="nav-text">Design Principles</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#os-protection-boundary"><span class="nav-number">4.</span> <span class="nav-text">OS Protection Boundary</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#crossing-the-os-boundary"><span class="nav-number">5.</span> <span class="nav-text">Crossing The OS Boundary</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#os-services"><span class="nav-number">6.</span> <span class="nav-text">OS Services</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#monolithic-os"><span class="nav-number">7.</span> <span class="nav-text">Monolithic OS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#modular-os"><span class="nav-number">8.</span> <span class="nav-text">Modular OS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#microkernel"><span class="nav-number">9.</span> <span class="nav-text">Microkernel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#operating-system-architecture"><span class="nav-number">10.</span> <span class="nav-text">Operating System Architecture</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#linux"><span class="nav-number">10.1.</span> <span class="nav-text">Linux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#macos"><span class="nav-number">10.2.</span> <span class="nav-text">MacOS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#quiz"><span class="nav-number">11.</span> <span class="nav-text">Quiz</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#quiz-1-operating-systems-components"><span class="nav-number">11.0.1.</span> <span class="nav-text">Quiz 1: Operating Systems Components</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#quiz-2-operating-systems-components"><span class="nav-number">11.0.2.</span> <span class="nav-text">Quiz 2: Operating Systems Components</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#quiz-3-system-calls"><span class="nav-number">11.0.3.</span> <span class="nav-text"># Quiz 3: System Calls</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">12.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

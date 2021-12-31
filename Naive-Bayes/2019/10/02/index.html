@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Three types of Naive Bayes Algorithms">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Naive Bayes">
+<meta property="og:url" content="https://zhangruochi.com/Naive-Bayes/2019/10/02/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Three types of Naive Bayes Algorithms">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-10-02T03:47:59.000Z">
+<meta property="article:modified_time" content="2019-10-02T20:54:06.100Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhangruochi.com/Naive-Bayes/2019/10/02/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Naive Bayes | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Naive-Bayes/2019/10/02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Naive Bayes
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-10-02 11:47:59" itemprop="dateCreated datePublished" datetime="2019-10-02T11:47:59+08:00">2019-10-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-10-03 04:54:06" itemprop="dateModified" datetime="2019-10-03T04:54:06+08:00">2019-10-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Naive-Bayes/2019/10/02/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Naive-Bayes/2019/10/02/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Three types of Naive Bayes Algorithms</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="pre-knowledge">Pre-knowledge</h2>
+<ol type="1">
+<li>Conditionally independent <span class="math display">\[P(X,Y)=P(X)P(Y)\]</span></li>
+<li>Conditional probability <span class="math display">\[P(Y|X)=\frac{P(X,Y)}{P(X)}\]</span></li>
+<li>Total probability <span class="math display">\[P(X)= \sum_{k}P(X|Y=Y_k)P(Y_k)\]</span></li>
+<li>Bayes' theorem <span class="math display">\[P(Y_k|X) = \frac{P(X|Y_k)P(Y_k)}{\sum_k P(X|Y=Y_k)P(Y_k)}\]</span></li>
+</ol>
+<h2 id="naive-bayes">Naive Bayes</h2>
+<p>若一个样本有n个特征，分别用<span class="math inline">\(x_1,x_2,x_3,\cdots,x_n\)</span>表示，最终的目的是求将样本划分到类<span class="math inline">\(y_k\)</span>的概率，即<span class="math inline">\(P(y_k|x_1,x_2,x_3,\cdots,x_n)\)</span>。基于贝叶斯公式来估计后验概率<span class="math inline">\(P(y_k|x)\)</span>的主要在于<span class="math inline">\(P(x|c)\)</span>是所有属性上的联合概率。为了避开这个障碍，朴素贝叶斯采用“属性条件独立性假设”：对已知类别，假设所有属性相互独立。基于此，<span class="math inline">\(P(y_k|x_1,x_2,x_3,\cdots,x_n)\)</span>可重写为： <span class="math display">\[P(y_k|x_1,x_2,x_3,\cdots,x_n) = \frac{P(y_k)P(x_1,x_2,x_3,\cdots,x_n|y_k)}{P(X)} = \frac{P(y_k)}{P(X)}\prod_{i=1}^{n}p(x_i|y_k)\]</span> 对于所有类别来说<span class="math inline">\(P(X)\)</span>相同，因此最小化分类错误率的贝叶斯最优分类器为： <span class="math display">\[h_{\theta}(X) = argmax_{y_k\in y}P(y_k)\prod_{i}^{n}P(x_i|y_k)\]</span></p>
+<p><strong>显然，朴素贝叶斯分类器的训练过程就是基于训练集<span class="math inline">\(D\)</span>来估计类先验概率<span class="math inline">\(P(y_k)\)</span>,并为每个属性估计条件概率<span class="math inline">\(P(x_i|y_k)\)</span>.</strong></p>
+<p>令<span class="math inline">\(D_{y_k}\)</span>表示训练集<span class="math inline">\(D\)</span>中第<span class="math inline">\(y_k\)</span>类样本组成的集合，若有充足的独立同分布样本，则可容易地估计出类先验概率: <span class="math display">\[P(y_k) = \frac{|D_{y_k}|}{|D|}\]</span></p>
+<p>对于离散属性而言，令<span class="math inline">\(D_{y_k,x_i}\)</span>表示<span class="math inline">\(D_{y_k}\)</span>中第i个属性上取值为<span class="math inline">\(x_i\)</span>的样本组成的集合，则条件概率<span class="math inline">\(P(x_i|y_k)\)</span>可估计为：</p>
+<p><span class="math display">\[P(x_i|y_k) = \frac{|D{y_k,x_i}|}{D_{y_k}}\]</span></p>
+<h2 id="gaussian-naive-bayes">Gaussian Naive Bayes</h2>
+<p>连续属性可以考虑概率密度函数,高斯朴素贝叶斯假设<span class="math inline">\(y_k\)</span>上的属性<span class="math inline">\(x_i\)</span>呈现高斯分布。假定<span class="math inline">\(P(x_i|y_k) \sim \mathcal N (\mu_{i,y_k},\sigma^2_{i,y_k})\)</span>, 其中 <span class="math inline">\(\mu_{i,y_k}\)</span> 和 <span class="math inline">\(\sigma^2_{i,y_k}\)</span> 分别是第c类样本在第i个属性上取值的均值和方差，则有：</p>
+<p><span class="math display">\[P(x_i|y_k) = \frac{1}{\sqrt{2\pi}\sigma_{y_k i}}exp\lgroup-\frac{(x_i - \mu_{y_k,i}^{2})}{(2\sigma_{y_k i}^{2})}\rgroup \]</span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> datasets</span><br><span class="line"><span class="keyword">from</span> sklearn.naive_bayes <span class="keyword">import</span> GaussianNB</span><br><span class="line"></span><br><span class="line">iris = datasets.load_iris()</span><br><span class="line">clf = GaussianNB()</span><br><span class="line">clf.fit(iris.data, iris.target)</span><br><span class="line"><span class="built_in">print</span>(clf.predict(iris.data[<span class="number">0</span>]))</span><br></pre></td></tr></table></figure>
+<h2 id="multinomial-naive-bayes">Multinomial Naive Bayes</h2>
+<p>MultinomialNB假设特征的先验概率为多项式分布，即如下式： <span class="math display">\[P(X_i|y_k) = \frac{N_{y_k x_i} + \lambda}{N_{y_k} + n\lambda}\]</span></p>
+<p>其中,<span class="math inline">\(N_{y_{k}x_{i}}\)</span>是类别<span class="math inline">\(y_k\)</span>下第i个特征为<span class="math inline">\(x_i\)</span>的样本出现的总次数,<span class="math inline">\(N_{y_{k}}\)</span>是<span class="math inline">\(y_k\)</span>类样本组成的集合。<span class="math inline">\(\lambda\)</span>为一个大于0的常数，常常取为1，即拉普拉斯平滑。也可以取其他值。</p>
+<p>该模型常用于文本分类，特征是单词，值是单词的出现次数。对应到文本分类里，如果单词word在一篇分类为label1的文档中出现了5次，那么<span class="math inline">\(N_{label1 word}\)</span>的值会增加5。如果是去除了重复单词的，那么<span class="math inline">\(N_{label1 word}\)</span>的值会增加1。<span class="math inline">\(n\)</span>是特征的数量，在文本分类中就是去重后的所有单词的数量,<span class="math inline">\(\lambda\)</span>的取值范围是[0,1]，比较常见的是取值为1。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">X = np.random.randint(<span class="number">5</span>, size=(<span class="number">6</span>, <span class="number">100</span>))</span><br><span class="line">y = np.array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>])</span><br><span class="line"><span class="keyword">from</span> sklearn.naive_bayes <span class="keyword">import</span> MultinomialNB</span><br><span class="line">clf = MultinomialNB()</span><br><span class="line">clf.fit(X, y)</span><br><span class="line">MultinomialNB(alpha=<span class="number">1.0</span>, class_prior=<span class="literal">None</span>, fit_prior=<span class="literal">True</span>)</span><br><span class="line"><span class="built_in">print</span>(clf.predict(X[<span class="number">2</span>]))</span><br></pre></td></tr></table></figure>
+<p>值得注意的是，多项式模型在训练一个数据集结束后可以继续训练其他数据集而无需将两个数据集放在一起进行训练。在sklearn中，MultinomialNB()类的partial_fit()方法可以进行这种训练。这种方式特别适合于训练集大到内存无法一次性放入的情况。在第一次调用partial_fit()时需要给出所有的分类标号。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy</span><br><span class="line"><span class="keyword">from</span> sklearn.naive_bayes <span class="keyword">import</span> MultinomialNB</span><br><span class="line">clf = MultinomialNB() </span><br><span class="line">clf.partial_fit(numpy.array([<span class="number">1</span>,<span class="number">1</span>]), numpy.array([<span class="string">&#x27;aa&#x27;</span>]), [<span class="string">&#x27;aa&#x27;</span>,<span class="string">&#x27;bb&#x27;</span>])</span><br><span class="line">GaussianNB()</span><br><span class="line">clf.partial_fit(numpy.array([<span class="number">6</span>,<span class="number">1</span>]), numpy.array([<span class="string">&#x27;bb&#x27;</span>]))</span><br><span class="line">GaussianNB()</span><br><span class="line"><span class="built_in">print</span>(clf.predict(numpy.array([<span class="number">9</span>,<span class="number">1</span>])))</span><br></pre></td></tr></table></figure>
+<h2 id="bernoulli-naive-bayes">Bernoulli Naive Bayes</h2>
+<p>类 BernoulliNB 实现了对于服从多元伯努利分布的数据的朴素贝叶斯训练和分类算法； 也就是说，对于大量特征，每一个特征都是一个0-1变量 (Bernoulli, boolean)。 因此，这个类要求样本集合以0-1特征向量的方式展现。如果接收到了其他类型的数据作为参数， 一个 BernoulliNB 实例会把输入数据二元化(取决于 binarize 参数设置)。</p>
+<p>BernoulliNB假设特征的先验概率为二元伯努利分布，即如下式： <span class="math display">\[P(x_i|y_k) = P(i|y_k)x_i + (1 - p(i|y))(1-x_i)\]</span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.naive_bayes <span class="keyword">import</span> BernoulliNB</span><br><span class="line">X = np.random.randint(<span class="number">2</span>, size=(<span class="number">6</span>, <span class="number">100</span>))</span><br><span class="line">Y = np.array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">5</span>])</span><br><span class="line">clf = BernoulliNB()</span><br><span class="line">clf.fit(X, Y)</span><br><span class="line">BernoulliNB(alpha=<span class="number">1.0</span>, binarize=<span class="number">0.0</span>, class_prior=<span class="literal">None</span>, fit_prior=<span class="literal">True</span>)</span><br><span class="line"><span class="built_in">print</span>(clf.predict(X[<span class="number">2</span>]))</span><br></pre></td></tr></table></figure>
+<h2 id="不同的预测方法">不同的预测方法</h2>
+<ul>
+<li>predict方法就是我们最常用的预测方法，直接给出测试集的预测类别输出。</li>
+<li>predict_proba则不同，它会给出测试集样本在各个类别上预测的概率。容易理解，predict_proba预测出的各个类别概率里的最大值对应的类别，也就是predict方法得到类别。</li>
+<li>predict_log_proba和predict_proba类似，它会给出测试集样本在各个类别上预测的概率的一个对数转化。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/cs231n-assignment1/2019/10/01/" rel="prev" title="cs231n assignment1">
+      <i class="fa fa-chevron-left"></i> cs231n assignment1
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Neural-Network-Training/2019/10/05/" rel="next" title="Neural Network Training">
+      Neural Network Training <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#pre-knowledge"><span class="nav-number">1.</span> <span class="nav-text">Pre-knowledge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#naive-bayes"><span class="nav-number">2.</span> <span class="nav-text">Naive Bayes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gaussian-naive-bayes"><span class="nav-number">3.</span> <span class="nav-text">Gaussian Naive Bayes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multinomial-naive-bayes"><span class="nav-number">4.</span> <span class="nav-text">Multinomial Naive Bayes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bernoulli-naive-bayes"><span class="nav-number">5.</span> <span class="nav-text">Bernoulli Naive Bayes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E7%9A%84%E9%A2%84%E6%B5%8B%E6%96%B9%E6%B3%95"><span class="nav-number">6.</span> <span class="nav-text">不同的预测方法</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Named Entity Recognition (NER)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Named Entity Recognition (NER)">
+<meta property="og:url" content="https://zhangruochi.com/Named-Entity-Recognition-NER/2020/08/23/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Named Entity Recognition (NER)">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-08-22T17:01:04.000Z">
+<meta property="article:modified_time" content="2021-12-31T07:41:32.964Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhangruochi.com/Named-Entity-Recognition-NER/2020/08/23/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Named Entity Recognition (NER) | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Named-Entity-Recognition-NER/2020/08/23/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Named Entity Recognition (NER)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-08-23 01:01:04" itemprop="dateCreated datePublished" datetime="2020-08-23T01:01:04+08:00">2020-08-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 15:41:32" itemprop="dateModified" datetime="2021-12-31T15:41:32+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Named-Entity-Recognition-NER/2020/08/23/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Named-Entity-Recognition-NER/2020/08/23/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Named Entity Recognition (NER)</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="assignment-3---named-entity-recognition-ner">Assignment 3 - Named Entity Recognition (NER)</h1>
+<p>Welcome to the third programming assignment of Course 3. In this assignment, you will learn to build more complicated models with Trax. By completing this assignment, you will be able to:</p>
+<ul>
+<li>Design the architecture of a neural network, train it, and test it.</li>
+<li>Process features and represents them</li>
+<li>Understand word padding</li>
+<li>Implement LSTMs</li>
+<li>Test with your own sentence</li>
+</ul>
+<h2 id="outline">Outline</h2>
+<ul>
+<li><a href="#assignment-3---named-entity-recognition-ner">Assignment 3 - Named Entity Recognition (NER)</a>
+<ul>
+<li><a href="#outline">Outline</a></li>
+</ul></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#part-1--exploring-the-data">Part 1: Exploring the data</a>
+<ul>
+<li><a href="#11--importing-the-data">1.1 Importing the Data</a></li>
+<li><a href="#12--data-generator">1.2 Data generator</a>
+<ul>
+<li><a href="#exercise-01">Exercise 01</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#part-2--building-the-model">Part 2: Building the model</a>
+<ul>
+<li><a href="#exercise-02">Exercise 02</a></li>
+</ul></li>
+<li><a href="#part-3--train-the-model">Part 3: Train the Model</a>
+<ul>
+<li><a href="#31-training-the-model">3.1 Training the model</a></li>
+<li><a href="#exercise-03">Exercise 03</a></li>
+</ul></li>
+<li><a href="#part-4--compute-accuracy">Part 4: Compute Accuracy</a>
+<ul>
+<li><a href="#exercise-04">Exercise 04</a></li>
+</ul></li>
+<li><a href="#part-5--testing-with-your-own-sentence">Part 5: Testing with your own sentence</a></li>
+</ul>
+<p><a name="0"></a> # Introduction</p>
+<p>We first start by defining named entity recognition (NER). NER is a subtask of information extraction that locates and classifies named entities in a text. The named entities could be organizations, persons, locations, times, etc.</p>
+<p>For example:</p>
+<p><img src = 'ner.png' width="width" height="height" style="width:600px;height:150px;"/></p>
+<p>Is labeled as follows:</p>
+<ul>
+<li>French: geopolitical entity</li>
+<li>Morocco: geographic entity</li>
+<li>Christmas: time indicator</li>
+</ul>
+<p>Everything else that is labeled with an <code>O</code> is not considered to be a named entity. In this assignment, you will train a named entity recognition system that could be trained in a few seconds (on a GPU) and will get around 75% accuracy. Then, you will load in the exact version of your model, which was trained for a longer period of time. You could then evaluate the trained version of your model to get 96% accuracy! Finally, you will be able to test your named entity recognition system with your own sentence.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!pip -q install trax==1.3.1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> trax </span><br><span class="line"><span class="keyword">from</span> trax <span class="keyword">import</span> layers <span class="keyword">as</span> tl</span><br><span class="line"><span class="keyword">import</span> os </span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> utils <span class="keyword">import</span> get_params, get_vocab</span><br><span class="line"><span class="keyword">import</span> random <span class="keyword">as</span> rnd</span><br><span class="line"></span><br><span class="line"><span class="comment"># set random seeds to make this notebook easier to replicate</span></span><br><span class="line">trax.supervised.trainer_lib.init_random_number_generators(<span class="number">33</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>INFO:tensorflow:tokens_length=568 inputs_length=512 targets_length=114 noise_density=0.15 mean_noise_span_length=3.0 
+
+
+
+
+
+DeviceArray([ 0, 33], dtype=uint32)</code></pre>
+<p><a name="1"></a> # Part 1: Exploring the data</p>
+<p>We will be using a dataset from Kaggle, which we will preprocess for you. The original data consists of four columns, the sentence number, the word, the part of speech of the word, and the tags. A few tags you might expect to see are:</p>
+<ul>
+<li>geo: geographical entity</li>
+<li>org: organization</li>
+<li>per: person</li>
+<li>gpe: geopolitical entity</li>
+<li>tim: time indicator</li>
+<li>art: artifact</li>
+<li>eve: event</li>
+<li>nat: natural phenomenon</li>
+<li>O: filler word</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># display original kaggle data</span></span><br><span class="line">data = pd.read_csv(<span class="string">&quot;ner_dataset.csv&quot;</span>, encoding = <span class="string">&quot;ISO-8859-1&quot;</span>) </span><br><span class="line">train_sents = <span class="built_in">open</span>(<span class="string">&#x27;data/small/train/sentences.txt&#x27;</span>, <span class="string">&#x27;r&#x27;</span>).readline()</span><br><span class="line">train_labels = <span class="built_in">open</span>(<span class="string">&#x27;data/small/train/labels.txt&#x27;</span>, <span class="string">&#x27;r&#x27;</span>).readline()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;SENTENCE:&#x27;</span>, train_sents)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;SENTENCE LABEL:&#x27;</span>, train_labels)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;ORIGINAL DATA:\n&#x27;</span>, data.head(<span class="number">5</span>))</span><br><span class="line"><span class="keyword">del</span>(data, train_sents, train_labels)</span><br></pre></td></tr></table></figure>
+<pre><code>SENTENCE: Thousands of demonstrators have marched through London to protest the war in Iraq and demand the withdrawal of British troops from that country .
+
+SENTENCE LABEL: O O O O O O B-geo O O O O O B-geo O O O O O B-gpe O O O O O
+
+ORIGINAL DATA:
+     Sentence #           Word  POS Tag
+0  Sentence: 1      Thousands  NNS   O
+1          NaN             of   IN   O
+2          NaN  demonstrators  NNS   O
+3          NaN           have  VBP   O
+4          NaN        marched  VBN   O</code></pre>
+<p><a name="1.1"></a> ## 1.1 Importing the Data</p>
+<p>In this part, we will import the preprocessed data and explore it.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vocab, tag_map = get_vocab(<span class="string">&#x27;data/large/words.txt&#x27;</span>, <span class="string">&#x27;data/large/tags.txt&#x27;</span>)</span><br><span class="line">t_sentences, t_labels, t_size = get_params(vocab, tag_map, <span class="string">&#x27;data/large/train/sentences.txt&#x27;</span>, <span class="string">&#x27;data/large/train/labels.txt&#x27;</span>)</span><br><span class="line">v_sentences, v_labels, v_size = get_params(vocab, tag_map, <span class="string">&#x27;data/large/val/sentences.txt&#x27;</span>, <span class="string">&#x27;data/large/val/labels.txt&#x27;</span>)</span><br><span class="line">test_sentences, test_labels, test_size = get_params(vocab, tag_map, <span class="string">&#x27;data/large/test/sentences.txt&#x27;</span>, <span class="string">&#x27;data/large/test/labels.txt&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><code>vocab</code> is a dictionary that translates a word string to a unique number. Given a sentence, you can represent it as an array of numbers translating with this dictionary. The dictionary contains a <code>&lt;PAD&gt;</code> token.</p>
+<p>When training an LSTM using batches, all your input sentences must be the same size. To accomplish this, you set the length of your sentences to a certain number and add the generic <code>&lt;PAD&gt;</code> token to fill all the empty spaces.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vocab translates from a word to a unique number</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;vocab[&quot;the&quot;]:&#x27;</span>, vocab[<span class="string">&quot;the&quot;</span>])</span><br><span class="line"><span class="comment"># Pad token</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;padded token:&#x27;</span>, vocab[<span class="string">&#x27;&lt;PAD&gt;&#x27;</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>vocab[&quot;the&quot;]: 9
+padded token: 35180</code></pre>
+<p>The tag_map corresponds to one of the possible tags a word can have. Run the cell below to see the possible classes you will be predicting. The prepositions in the tags mean: * I: Token is inside an entity. * B: Token begins an entity.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(tag_map)</span><br></pre></td></tr></table></figure>
+<pre><code>&#123;&#39;O&#39;: 0, &#39;B-geo&#39;: 1, &#39;B-gpe&#39;: 2, &#39;B-per&#39;: 3, &#39;I-geo&#39;: 4, &#39;B-org&#39;: 5, &#39;I-org&#39;: 6, &#39;B-tim&#39;: 7, &#39;B-art&#39;: 8, &#39;I-art&#39;: 9, &#39;I-per&#39;: 10, &#39;I-gpe&#39;: 11, &#39;I-tim&#39;: 12, &#39;B-nat&#39;: 13, &#39;B-eve&#39;: 14, &#39;I-eve&#39;: 15, &#39;I-nat&#39;: 16&#125;</code></pre>
+<p>So the coding scheme that tags the entities is a minimal one where B- indicates the first token in a multi-token entity, and I- indicates one in the middle of a multi-token entity. If you had the sentence</p>
+<p><strong>"Sharon flew to Miami on Friday"</strong></p>
+<p>the outputs would look like:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Sharon B-per</span><br><span class="line">flew   O</span><br><span class="line">to     O</span><br><span class="line">Miami  B-geo</span><br><span class="line">on     O</span><br><span class="line">Friday B-tim</span><br></pre></td></tr></table></figure>
+<p>your tags would reflect three tokens beginning with B-, since there are no multi-token entities in the sequence. But if you added Sharon's last name to the sentence:</p>
+<p><strong>"Sharon Floyd flew to Miami on Friday"</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Sharon B-per</span><br><span class="line">Floyd  I-per</span><br><span class="line">flew   O</span><br><span class="line">to     O</span><br><span class="line">Miami  B-geo</span><br><span class="line">on     O</span><br><span class="line">Friday B-tim</span><br></pre></td></tr></table></figure>
+<p>then your tags would change to show first "Sharon" as B-per, and "Floyd" as I-per, where I- indicates an inner token in a multi-token sequence.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Exploring information about the data</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;The number of outputs is tag_map&#x27;</span>, <span class="built_in">len</span>(tag_map))</span><br><span class="line"><span class="comment"># The number of vocabulary tokens (including &lt;PAD&gt;)</span></span><br><span class="line">g_vocab_size = <span class="built_in">len</span>(vocab)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Num of vocabulary words: <span class="subst">&#123;g_vocab_size&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;The vocab size is&#x27;</span>, <span class="built_in">len</span>(vocab))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;The training size is&#x27;</span>, t_size)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;The validation size is&#x27;</span>, v_size)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;An example of the first sentence is&#x27;</span>, t_sentences[<span class="number">0</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;An example of its corresponding label is&#x27;</span>, t_labels[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>The number of outputs is tag_map 17
+Num of vocabulary words: 35181
+The vocab size is 35181
+The training size is 33570
+The validation size is 7194
+An example of the first sentence is [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 9, 15, 1, 16, 17, 18, 19, 20, 21]
+An example of its corresponding label is [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0]</code></pre>
+<p>So you can see that we have already encoded each sentence into a tensor by converting it into a number. We also have 16 possible classes, as shown in the tag map.</p>
+<p><a name="1.2"></a> ## 1.2 Data generator</p>
+<p>In python, a generator is a function that behaves like an iterator. It will return the next item. Here is a <a target="_blank" rel="noopener" href="https://wiki.python.org/moin/Generators">link</a> to review python generators.</p>
+<p>In many AI applications it is very useful to have a data generator. You will now implement a data generator for our NER application.</p>
+<p><a name="ex01"></a> ### Exercise 01</p>
+<p><strong>Instructions:</strong> Implement a data generator function that takes in <code>batch_size, x, y, pad, shuffle</code> where x is a large list of sentences, and y is a list of the tags associated with those sentences and pad is a pad value. Return a subset of those inputs in a tuple of two arrays <code>(X,Y)</code>. Each is an array of dimension (<code>batch_size, max_len</code>), where <code>max_len</code> is the length of the longest sentence <em>in that batch</em>. You will pad the X and Y examples with the pad argument. If <code>shuffle=True</code>, the data will be traversed in a random form.</p>
+<p><strong>Details:</strong></p>
+<p>This code as an outer loop<br />
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">while True:  </span><br><span class="line">...  </span><br><span class="line">yield((X,Y))  </span><br></pre></td></tr></table></figure></p>
+<p>Which runs continuously in the fashion of generators, pausing when yielding the next values. We will generate a batch_size output on each pass of this loop.</p>
+<p>It has two inner loops. 1. The first stores in temporal lists the data samples to be included in the next batch, and finds the maximum length of the sentences contained in it. By adjusting the length to include only the size of the longest sentence in each batch, overall computation is reduced.</p>
+<ol start="2" type="1">
+<li>The second loop moves those inputs from the temporal list into NumPy arrays pre-filled with pad values.</li>
+</ol>
+<p>There are three slightly out of the ordinary features. 1. The first is the use of the NumPy <code>full</code> function to fill the NumPy arrays with a pad value. See <a target="_blank" rel="noopener" href="https://numpy.org/doc/1.18/reference/generated/numpy.full.html">full function documentation</a>.</p>
+<ol start="2" type="1">
+<li><p>The second is tracking the current location in the incoming lists of sentences. Generators variables hold their values between invocations, so we create an <code>index</code> variable, initialize to zero, and increment by one for each sample included in a batch. However, we do not use the <code>index</code> to access the positions of the list of sentences directly. Instead, we use it to select one index from a list of indexes. In this way, we can change the order in which we traverse our original list, keeping untouched our original list.</p></li>
+<li><p>The third also relates to wrapping. Because <code>batch_size</code> and the length of the input lists are not aligned, gathering a batch_size group of inputs may involve wrapping back to the beginning of the input loop. In our approach, it is just enough to reset the <code>index</code> to 0. We can re-shuffle the list of indexes to produce different batches each time.</p></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C1 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: data_generator</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">data_generator</span>(<span class="params">batch_size, x, y, pad, shuffle=<span class="literal">False</span>, verbose=<span class="literal">False</span></span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">      Input: </span></span><br><span class="line"><span class="string">        batch_size - integer describing the batch size</span></span><br><span class="line"><span class="string">        x - list containing sentences where words are represented as integers</span></span><br><span class="line"><span class="string">        y - list containing tags associated with the sentences</span></span><br><span class="line"><span class="string">        shuffle - Shuffle the data order</span></span><br><span class="line"><span class="string">        pad - an integer representing a pad character</span></span><br><span class="line"><span class="string">        verbose - Print information during runtime</span></span><br><span class="line"><span class="string">      Output:</span></span><br><span class="line"><span class="string">        a tuple containing 2 elements:</span></span><br><span class="line"><span class="string">        X - np.ndarray of dim (batch_size, max_len) of padded sentences</span></span><br><span class="line"><span class="string">        Y - np.ndarray of dim (batch_size, max_len) of tags associated with the sentences in X</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># count the number of lines in data_lines</span></span><br><span class="line">    num_lines = <span class="built_in">len</span>(x)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># create an array with the indexes of data_lines that can be shuffled</span></span><br><span class="line">    lines_index = [*<span class="built_in">range</span>(num_lines)]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># shuffle the indexes if shuffle is set to True</span></span><br><span class="line">    <span class="keyword">if</span> shuffle:</span><br><span class="line">        rnd.shuffle(lines_index)</span><br><span class="line">    </span><br><span class="line">    index = <span class="number">0</span> <span class="comment"># tracks current location in x, y</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        buffer_x = [<span class="number">0</span>] * batch_size <span class="comment"># Temporal array to store the raw x data for this batch</span></span><br><span class="line">        buffer_y = [<span class="number">0</span>] * batch_size <span class="comment"># Temporal array to store the raw y data for this batch</span></span><br><span class="line">                </span><br><span class="line">  <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Copy into the temporal buffers the sentences in x[index : index + batch_size] </span></span><br><span class="line">        <span class="comment"># along with their corresponding labels y[index : index + batch_size]</span></span><br><span class="line">        <span class="comment"># Find maximum length of sentences in x[index : index + batch_size] for this batch. </span></span><br><span class="line">        <span class="comment"># Reset the index if we reach the end of the data set, and shuffle the indexes if needed.</span></span><br><span class="line">        max_len = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(batch_size):</span><br><span class="line">             <span class="comment"># if the index is greater than or equal to the number of lines in x</span></span><br><span class="line">            <span class="keyword">if</span> index &gt;= num_lines:</span><br><span class="line">                <span class="comment"># then reset the index to 0</span></span><br><span class="line">                index = <span class="number">0</span></span><br><span class="line">                <span class="comment"># re-shuffle the indexes if shuffle is set to True</span></span><br><span class="line">                <span class="keyword">if</span> shuffle:</span><br><span class="line">                    rnd.shuffle(lines_index)</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># The current position is obtained using `lines_index[index]`</span></span><br><span class="line">            <span class="comment"># Store the x value at the current position into the buffer_x</span></span><br><span class="line">            buffer_x[i] = x[lines_index[index]]</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># Store the y value at the current position into the buffer_y</span></span><br><span class="line">            buffer_y[i] = y[lines_index[index]]</span><br><span class="line">            </span><br><span class="line">            lenx = <span class="built_in">len</span>(x[lines_index[index]])    <span class="comment">#length of current x[]</span></span><br><span class="line">            <span class="keyword">if</span> lenx &gt; max_len:</span><br><span class="line">                max_len = lenx                   <span class="comment">#max_len tracks longest x[]</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment"># increment index by one</span></span><br><span class="line">            index += <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment"># create X,Y, NumPy arrays of size (batch_size, max_len) &#x27;full&#x27; of pad value</span></span><br><span class="line">        X = np.full((batch_size, max_len), pad)</span><br><span class="line">        Y = np.full((batch_size, max_len), pad)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># copy values from lists to NumPy arrays. Use the buffered values</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(batch_size):</span><br><span class="line">            <span class="comment"># get the example (sentence as a tensor)</span></span><br><span class="line">            <span class="comment"># in `buffer_x` at the `i` index</span></span><br><span class="line">            x_i = buffer_x[i]</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># similarly, get the example&#x27;s labels</span></span><br><span class="line">            <span class="comment"># in `buffer_y` at the `i` index</span></span><br><span class="line">            y_i = buffer_y[i]</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># Walk through each word in x_i</span></span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(x_i)):</span><br><span class="line">                <span class="comment"># store the word in x_i at position j into X</span></span><br><span class="line">                X[i, j] = x_i[j]</span><br><span class="line">                </span><br><span class="line">                <span class="comment"># store the label in y_i at position j into Y</span></span><br><span class="line">                Y[i, j] = y_i[j]</span><br><span class="line"></span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">        <span class="keyword">if</span> verbose: <span class="built_in">print</span>(<span class="string">&quot;index=&quot;</span>, index)</span><br><span class="line">        <span class="keyword">yield</span>((X,Y))</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">batch_size = <span class="number">5</span></span><br><span class="line">mini_sentences = t_sentences[<span class="number">0</span>: <span class="number">8</span>]</span><br><span class="line">mini_labels = t_labels[<span class="number">0</span>: <span class="number">8</span>]</span><br><span class="line">dg = data_generator(batch_size, mini_sentences, mini_labels, vocab[<span class="string">&quot;&lt;PAD&gt;&quot;</span>], shuffle=<span class="literal">False</span>, verbose=<span class="literal">True</span>)</span><br><span class="line">X1, Y1 = <span class="built_in">next</span>(dg)</span><br><span class="line">X2, Y2 = <span class="built_in">next</span>(dg)</span><br><span class="line"><span class="built_in">print</span>(Y1.shape, X1.shape, Y2.shape, X2.shape)</span><br><span class="line"><span class="built_in">print</span>(X1[<span class="number">0</span>][:], <span class="string">&quot;\n&quot;</span>, Y1[<span class="number">0</span>][:])</span><br></pre></td></tr></table></figure>
+<pre><code>index= 5
+index= 2
+(5, 30) (5, 30) (5, 30) (5, 30)
+[    0     1     2     3     4     5     6     7     8     9    10    11
+    12    13    14     9    15     1    16    17    18    19    20    21
+ 35180 35180 35180 35180 35180 35180] 
+ [    0     0     0     0     0     0     1     0     0     0     0     0
+     1     0     0     0     0     0     2     0     0     0     0     0
+ 35180 35180 35180 35180 35180 35180]</code></pre>
+<p><strong>Expected output:</strong><br />
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">index= 5</span><br><span class="line">index= 2</span><br><span class="line">(5, 30) (5, 30) (5, 30) (5, 30)</span><br><span class="line">[    0     1     2     3     4     5     6     7     8     9    10    11</span><br><span class="line">    12    13    14     9    15     1    16    17    18    19    20    21</span><br><span class="line"> 35180 35180 35180 35180 35180 35180] </span><br><span class="line"> [    0     0     0     0     0     0     1     0     0     0     0     0</span><br><span class="line">     1     0     0     0     0     0     2     0     0     0     0     0</span><br><span class="line"> 35180 35180 35180 35180 35180 35180]  </span><br></pre></td></tr></table></figure></p>
+<p><a name="2"></a> # Part 2: Building the model</p>
+You will now implement the model. You will be using Google's TensorFlow. Your model will be able to distinguish the following:
+<table>
+<tr>
+<td>
+<img src = 'ner1.png' width="width" height="height" style="width:500px;height:150px;"/>
+</td>
+</tr>
+</table>
+<p>The model architecture will be as follows:</p>
+<p><img src = 'ner2.png' width="width" height="height" style="width:600px;height:250px;"/></p>
+<p>Concretely:</p>
+<ul>
+<li>Use the input tensors you built in your data generator</li>
+<li>Feed it into an Embedding layer, to produce more semantic entries</li>
+<li>Feed it into an LSTM layer</li>
+<li>Run the output through a linear layer</li>
+<li>Run the result through a log softmax layer to get the predicted class for each word.</li>
+</ul>
+<p>Good news! We won't make you implement the LSTM unit drawn above. However, we will ask you to build the model.</p>
+<p><a name="ex02"></a> ### Exercise 02</p>
+<p><strong>Instructions:</strong> Implement the initialization step and the forward function of your Named Entity Recognition system.<br />
+Please utilize help function e.g. <code>help(tl.Dense)</code> for more information on a layer</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/google/trax/blob/1372b903bb66b0daccee19fd0b1fdf44f659330b/trax/layers/combinators.py#L26">tl.Serial</a>: Combinator that applies layers serially (by function composition).
+<ul>
+<li>You can pass in the layers as arguments to <code>Serial</code>, separated by commas.</li>
+<li>For example: <code>tl.Serial(tl.Embeddings(...), tl.Mean(...), tl.Dense(...), tl.LogSoftmax(...))</code></li>
+</ul></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/google/trax/blob/1372b903bb66b0daccee19fd0b1fdf44f659330b/trax/layers/core.py#L113">tl.Embedding</a>: Initializes the embedding. In this case it is the dimension of the model by the size of the vocabulary.
+<ul>
+<li><code>tl.Embedding(vocab_size, d_feature)</code>.</li>
+<li><code>vocab_size</code> is the number of unique words in the given vocabulary.</li>
+<li><code>d_feature</code> is the number of elements in the word embedding (some choices for a word embedding size range from 150 to 300, for example).</li>
+</ul></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/google/trax/blob/1372b903bb66b0daccee19fd0b1fdf44f659330b/trax/layers/rnn.py#L87">tl.LSTM</a>:<code>Trax</code> LSTM layer of size d_model.
+<ul>
+<li><code>LSTM(n_units)</code> Builds an LSTM layer of n_cells.</li>
+</ul></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/google/trax/blob/1372b903bb66b0daccee19fd0b1fdf44f659330b/trax/layers/core.py#L28">tl.Dense</a>: A dense layer.
+<ul>
+<li><code>tl.Dense(n_units)</code>: The parameter <code>n_units</code> is the number of units chosen for this dense layer.</li>
+</ul></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/google/trax/blob/1372b903bb66b0daccee19fd0b1fdf44f659330b/trax/layers/core.py#L242">tl.LogSoftmax</a>: Log of the output probabilities.
+<ul>
+<li>Here, you don't need to set any parameters for <code>LogSoftMax()</code>.</li>
+</ul></li>
+</ul>
+<p><strong>Online documentation</strong></p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#module-trax.layers.combinators">tl.Serial</a></p></li>
+<li><p><a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.core.Embedding">tl.Embedding</a></p></li>
+<li><p><a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.rnn.LSTM">tl.LSTM</a></p></li>
+<li><p><a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.core.Dense">tl.Dense</a></p></li>
+<li><p><a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.core.LogSoftmax">tl.LogSoftmax</a></p></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C2 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: NER</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">NER</span>(<span class="params">vocab_size=<span class="number">35181</span>, d_model=<span class="number">50</span>, tags=tag_map</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">      Input: </span></span><br><span class="line"><span class="string">        vocab_size - integer containing the size of the vocabulary</span></span><br><span class="line"><span class="string">        d_model - integer describing the embedding size</span></span><br><span class="line"><span class="string">      Output:</span></span><br><span class="line"><span class="string">        model - a trax serial model</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    model = tl.Serial(</span><br><span class="line">      tl.Embedding(vocab_size,d_model), <span class="comment"># Embedding layer</span></span><br><span class="line">      tl.LSTM(d_model), <span class="comment"># LSTM layer</span></span><br><span class="line">      tl.Dense(<span class="built_in">len</span>(tags)), <span class="comment"># Dense layer with len(tags) units</span></span><br><span class="line">      tl.LogSoftmax()  <span class="comment"># LogSoftmax layer</span></span><br><span class="line">      )</span><br><span class="line">      <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    <span class="keyword">return</span> model</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># initializing your model</span></span><br><span class="line">model = NER()</span><br><span class="line"><span class="comment"># display your model</span></span><br><span class="line"><span class="built_in">print</span>(model)</span><br></pre></td></tr></table></figure>
+<pre><code>Serial[
+  Embedding_35181_50
+  LSTM_50
+  Dense_17
+  LogSoftmax
+]</code></pre>
+<p><strong>Expected output:</strong><br />
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">Serial[</span><br><span class="line">  Embedding_35181_50</span><br><span class="line">  LSTM_50</span><br><span class="line">  Dense_17</span><br><span class="line">  LogSoftmax</span><br><span class="line">]</span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;a name=&quot;3&quot;&gt;&lt;/a&gt;</span><br><span class="line"># Part 3:  Train the Model </span><br><span class="line"></span><br><span class="line">This section will train your model.</span><br><span class="line"></span><br><span class="line">Before you start, you need to create the data generators for training and validation data. It is important that you mask padding in the loss weights of your data, which can be done using the `id_to_mask` argument of `trax.supervised.inputs.add_loss_weights`.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```python</span><br><span class="line">from trax.supervised import training</span><br><span class="line"></span><br><span class="line">rnd.seed(33)</span><br><span class="line"></span><br><span class="line">batch_size = 64</span><br><span class="line"></span><br><span class="line"># Create training data, mask pad id=35180 for training.</span><br><span class="line">train_generator = trax.supervised.inputs.add_loss_weights(</span><br><span class="line">    data_generator(batch_size, t_sentences, t_labels, vocab[&#x27;&lt;PAD&gt;&#x27;], True),</span><br><span class="line">    id_to_mask=vocab[&#x27;&lt;PAD&gt;&#x27;])</span><br><span class="line"></span><br><span class="line"># Create validation data, mask pad id=35180 for training.</span><br><span class="line">eval_generator = trax.supervised.inputs.add_loss_weights(</span><br><span class="line">    data_generator(batch_size, v_sentences, v_labels, vocab[&#x27;&lt;PAD&gt;&#x27;], True),</span><br><span class="line">    id_to_mask=vocab[&#x27;&lt;PAD&gt;&#x27;])</span><br></pre></td></tr></table></figure></p>
+<p><a name='3.1'></a> ### 3.1 Training the model</p>
+<p>You will now write a function that takes in your model and trains it.</p>
+<p>As you've seen in the previous assignments, you will first create the <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/stable/trax.supervised.html#trax.supervised.training.TrainTask">TrainTask</a> and <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/stable/trax.supervised.html#trax.supervised.training.EvalTask">EvalTask</a> using your data generator. Then you will use the <code>training.Loop</code> to train your model.</p>
+<p><a name="ex03"></a> ### Exercise 03</p>
+<p><strong>Instructions:</strong> Implement the <code>train_model</code> program below to train the neural network above. Here is a list of things you should do: - Create the trainer object by calling <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.supervised.html#trax.supervised.training.Loop"><code>trax.supervised.training.Loop</code></a> and pass in the following:</p>
+<pre><code>- model = [NER](#ex02)
+- [training task](https://trax-ml.readthedocs.io/en/latest/trax.supervised.html#trax.supervised.training.TrainTask) that uses the train data generator defined in the cell above
+    - loss_layer = [tl.CrossEntropyLoss()](https://github.com/google/trax/blob/22765bb18608d376d8cd660f9865760e4ff489cd/trax/layers/metrics.py#L71)
+    - optimizer = [trax.optimizers.Adam(0.01)](https://github.com/google/trax/blob/03cb32995e83fc1455b0c8d1c81a14e894d0b7e3/trax/optimizers/adam.py#L23)
+- [evaluation task](https://trax-ml.readthedocs.io/en/latest/trax.supervised.html#trax.supervised.training.EvalTask) that uses the validation data generator defined in the cell above
+    - metrics for `EvalTask`: `tl.CrossEntropyLoss()` and `tl.Accuracy()`
+    - in `EvalTask` set `n_eval_batches=10` for better evaluation accuracy
+- output_dir = output_dir</code></pre>
+<p>You'll be using a <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.metrics.CrossEntropyLoss">cross entropy loss</a>, with an <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.optimizers.html#trax.optimizers.adam.Adam">Adam optimizer</a>. Please read the <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.html">trax</a> documentation to get a full understanding. The <a target="_blank" rel="noopener" href="https://github.com/google/trax">trax GitHub</a> also contains some useful information and a link to a colab notebook.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C3 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: train_model</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train_model</span>(<span class="params">NER, train_generator, eval_generator, train_steps=<span class="number">1</span>, output_dir=<span class="string">&#x27;model&#x27;</span></span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Input: </span></span><br><span class="line"><span class="string">        NER - the model you are building</span></span><br><span class="line"><span class="string">        train_generator - The data generator for training examples</span></span><br><span class="line"><span class="string">        eval_generator - The data generator for validation examples,</span></span><br><span class="line"><span class="string">        train_steps - number of training steps</span></span><br><span class="line"><span class="string">        output_dir - folder to save your model</span></span><br><span class="line"><span class="string">    Output:</span></span><br><span class="line"><span class="string">        training_loop - a trax supervised training Loop</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    train_task = training.TrainTask(</span><br><span class="line">      train_generator, <span class="comment"># A train data generator</span></span><br><span class="line">      loss_layer = tl.CrossEntropyLoss(), <span class="comment"># A cross-entropy loss function</span></span><br><span class="line">      optimizer =  trax.optimizers.Adam(<span class="number">0.01</span>),  <span class="comment"># The adam optimizer</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    eval_task = training.EvalTask(</span><br><span class="line">      labeled_data = eval_generator, <span class="comment"># A labeled data generator</span></span><br><span class="line">      metrics = [tl.CrossEntropyLoss(), tl.Accuracy()], <span class="comment"># Evaluate with cross-entropy loss and accuracy</span></span><br><span class="line">      n_eval_batches = <span class="number">10</span> <span class="comment"># Number of batches to use on each evaluation</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    training_loop = training.Loop(</span><br><span class="line">        NER, <span class="comment"># A model to train</span></span><br><span class="line">        train_task, <span class="comment"># A train task</span></span><br><span class="line">        eval_task = eval_task, <span class="comment"># The evaluation task</span></span><br><span class="line">        output_dir = output_dir) <span class="comment"># The output directory</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Train with train_steps</span></span><br><span class="line">    training_loop.run(n_steps = train_steps)</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    <span class="keyword">return</span> training_loop</span><br></pre></td></tr></table></figure>
+<p>On your local machine, you can run this training for 1000 train_steps and get your own model. This training takes about 5 to 10 minutes to run.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">train_steps = <span class="number">100</span>            <span class="comment"># In coursera we can only train 100 steps</span></span><br><span class="line">!rm -f <span class="string">&#x27;model/model.pkl.gz&#x27;</span>  <span class="comment"># Remove old model.pkl if it exists</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Train the model</span></span><br><span class="line">training_loop = train_model(NER(), train_generator, eval_generator, train_steps)</span><br></pre></td></tr></table></figure>
+<pre><code>Step      1: train CrossEntropyLoss |  3.29933977
+Step      1: eval  CrossEntropyLoss |  2.27930465
+Step      1: eval          Accuracy |  0.22279498
+Step    100: train CrossEntropyLoss |  0.61237383
+Step    100: eval  CrossEntropyLoss |  0.37608672
+Step    100: eval          Accuracy |  0.90983244</code></pre>
+<p><strong>Expected output (Approximately)</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">Step      1: train CrossEntropyLoss |  2.94375849</span><br><span class="line">Step      1: eval  CrossEntropyLoss |  1.93172036</span><br><span class="line">Step      1: eval          Accuracy |  0.78727312</span><br><span class="line">Step    100: train CrossEntropyLoss |  0.57727730</span><br><span class="line">Step    100: eval  CrossEntropyLoss |  0.36356260</span><br><span class="line">Step    100: eval          Accuracy |  0.90943187</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>This value may change between executions, but it must be around 90% of accuracy on train and validations sets, after 100 training steps.</p>
+<p>We have trained the model longer, and we give you such a trained model. In that way, we ensure you can continue with the rest of the assignment even if you had some troubles up to here, and also we are sure that everybody will get the same outputs for the last example. However, you are free to try your model, as well.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># loading in a pretrained model..</span></span><br><span class="line">model = NER()</span><br><span class="line">model.init(trax.shapes.ShapeDtype((<span class="number">1</span>, <span class="number">1</span>), dtype=np.int32))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Load the pretrained model</span></span><br><span class="line">model.init_from_file(<span class="string">&#x27;model.pkl.gz&#x27;</span>, weights_only=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p><a name="4"></a> # Part 4: Compute Accuracy</p>
+<p>You will now evaluate in the test set. Previously, you have seen the accuracy on the training set and the validation (noted as eval) set. You will now evaluate on your test set. To get a good evaluation, you will need to create a mask to avoid counting the padding tokens when computing the accuracy.</p>
+<p><a name="ex04"></a> ### Exercise 04</p>
+<p><strong>Instructions:</strong> Write a program that takes in your model and uses it to evaluate on the test set. You should be able to get an accuracy of 95%.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>More Detailed Instructions </b></font>
+</summary>
+<ul>
+<li><p><em>Step 1</em>: model(sentences) will give you the predicted output.</p></li>
+<li><p><em>Step 2</em>: Prediction will produce an output with an added dimension. For each sentence, for each word, there will be a vector of probabilities for each tag type. For each sentence,word, you need to pick the maximum valued tag. This will require <code>np.argmax</code> and careful use of the <code>axis</code> argument.</p></li>
+<li><p><em>Step 3</em>: Create a mask to prevent counting pad characters. It has the same dimension as output. An example below on matrix comparison provides a hint.</p></li>
+<li><p><em>Step 4</em>: Compute the accuracy metric by comparing your outputs against your test labels. Take the sum of that and divide by the total number of <strong>unpadded</strong> tokens. Use your mask value to mask the padded tokens. Return the accuracy. </detail></p></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#Example of a comparision on a matrix </span></span><br><span class="line">a = np.array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>])</span><br><span class="line">a == <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([False,  True, False, False])</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># create the evaluation inputs</span></span><br><span class="line">x, y = <span class="built_in">next</span>(data_generator(<span class="built_in">len</span>(test_sentences), test_sentences, test_labels, vocab[<span class="string">&#x27;&lt;PAD&gt;&#x27;</span>]))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;input shapes&quot;</span>, x.shape, y.shape)</span><br></pre></td></tr></table></figure>
+<pre><code>input shapes (7194, 70) (7194, 70)</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sample prediction</span></span><br><span class="line">tmp_pred = model(x)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(tmp_pred))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;tmp_pred has shape: <span class="subst">&#123;tmp_pred.shape&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>&lt;class &#39;jax.interpreters.xla.DeviceArray&#39;&gt;
+tmp_pred has shape: (7194, 70, 17)</code></pre>
+<p>Note that the model's prediction has 3 axes: - the number of examples - the number of words in each example (padded to be as long as the longest sentence in the batch) - the number of possible targets (the 17 named entity tags).</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C4 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: evaluate_prediction</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">evaluate_prediction</span>(<span class="params">pred, labels, pad</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Inputs:</span></span><br><span class="line"><span class="string">        pred: prediction array with shape </span></span><br><span class="line"><span class="string">            (num examples, max sentence length in batch, num of classes)</span></span><br><span class="line"><span class="string">        labels: array of size (batch_size, seq_len)</span></span><br><span class="line"><span class="string">        pad: integer representing pad character</span></span><br><span class="line"><span class="string">    Outputs:</span></span><br><span class="line"><span class="string">        accuracy: float</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line"><span class="comment">## step 1 ##</span></span><br><span class="line">    outputs = np.argmax(pred, axis=-<span class="number">1</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;outputs shape:&quot;</span>, outputs.shape)</span><br><span class="line"></span><br><span class="line"><span class="comment">## step 2 ##</span></span><br><span class="line">    mask = ~(labels == pad)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;mask shape:&quot;</span>, mask.shape, <span class="string">&quot;mask[0][20:30]:&quot;</span>, mask[<span class="number">0</span>][<span class="number">20</span>:<span class="number">30</span>])</span><br><span class="line"><span class="comment">## step 3 ##</span></span><br><span class="line">    accuracy = np.<span class="built_in">sum</span>(outputs == labels) / np.<span class="built_in">sum</span>(mask)</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    <span class="keyword">return</span> accuracy</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">accuracy = evaluate_prediction(model(x), y, vocab[<span class="string">&#x27;&lt;PAD&gt;&#x27;</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;accuracy: &quot;</span>, accuracy)</span><br></pre></td></tr></table></figure>
+<pre><code>outputs shape: (7194, 70)
+mask shape: (7194, 70) mask[0][20:30]: [ True  True  True False False False False False False False]
+accuracy:  0.9543761281155191</code></pre>
+<p><strong>Expected output (Approximately)</strong><br />
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">outputs shape: (7194, 70)</span><br><span class="line">mask shape: (7194, 70) mask[0][20:30]: [ True  True  True False False False False False False False]</span><br><span class="line">accuracy:  0.9543761281155191</span><br></pre></td></tr></table></figure></p>
+<p><a name="5"></a> # Part 5: Testing with your own sentence</p>
+<p>Below, you can test it out with your own sentence!</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This is the function you will be using to test your own sentence.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">predict</span>(<span class="params">sentence, model, vocab, tag_map</span>):</span></span><br><span class="line">    s = [vocab[token] <span class="keyword">if</span> token <span class="keyword">in</span> vocab <span class="keyword">else</span> vocab[<span class="string">&#x27;UNK&#x27;</span>] <span class="keyword">for</span> token <span class="keyword">in</span> sentence.split(<span class="string">&#x27; &#x27;</span>)]</span><br><span class="line">    batch_data = np.ones((<span class="number">1</span>, <span class="built_in">len</span>(s)))</span><br><span class="line">    batch_data[<span class="number">0</span>][:] = s</span><br><span class="line">    sentence = np.array(batch_data).astype(<span class="built_in">int</span>)</span><br><span class="line">    output = model(sentence)</span><br><span class="line">    outputs = np.argmax(output, axis=<span class="number">2</span>)</span><br><span class="line">    labels = <span class="built_in">list</span>(tag_map.keys())</span><br><span class="line">    pred = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(outputs[<span class="number">0</span>])):</span><br><span class="line">        idx = outputs[<span class="number">0</span>][i] </span><br><span class="line">        pred_label = labels[idx]</span><br><span class="line">        pred.append(pred_label)</span><br><span class="line">    <span class="keyword">return</span> pred</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Try the output for the introduction example</span></span><br><span class="line"><span class="comment">#sentence = &quot;Many French citizens are goin to visit Morocco for summer&quot;</span></span><br><span class="line"><span class="comment">#sentence = &quot;Sharon Floyd flew to Miami last Friday&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># New york times news:</span></span><br><span class="line">sentence = <span class="string">&quot;Peter Navarro, the White House director of trade and manufacturing policy of U.S, said in an interview on Sunday morning that the White House was working to prepare for the possibility of a second wave of the coronavirus in the fall, though he said it wouldn’t necessarily come&quot;</span></span><br><span class="line">s = [vocab[token] <span class="keyword">if</span> token <span class="keyword">in</span> vocab <span class="keyword">else</span> vocab[<span class="string">&#x27;UNK&#x27;</span>] <span class="keyword">for</span> token <span class="keyword">in</span> sentence.split(<span class="string">&#x27; &#x27;</span>)]</span><br><span class="line">predictions = predict(sentence, model, vocab, tag_map)</span><br><span class="line"><span class="keyword">for</span> x,y <span class="keyword">in</span> <span class="built_in">zip</span>(sentence.split(<span class="string">&#x27; &#x27;</span>), predictions):</span><br><span class="line">    <span class="keyword">if</span> y != <span class="string">&#x27;O&#x27;</span>:</span><br><span class="line">        <span class="built_in">print</span>(x,y)</span><br></pre></td></tr></table></figure>
+<pre><code>Peter B-per
+Navarro, I-per
+White B-org
+House I-org
+Sunday B-tim
+morning I-tim
+White B-org
+House I-org
+coronavirus B-tim
+fall, B-tim</code></pre>
+<p>** Expected Results **</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Peter B-per</span><br><span class="line">Navarro, I-per</span><br><span class="line">White B-org</span><br><span class="line">House I-org</span><br><span class="line">Sunday B-tim</span><br><span class="line">morning I-tim</span><br><span class="line">White B-org</span><br><span class="line">House I-org</span><br><span class="line">coronavirus B-tim</span><br><span class="line">fall, B-tim</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/ML-Interview-Computer-Vision/2020/05/29/" rel="prev" title="ML-Interview-Computer-Vision">
+      <i class="fa fa-chevron-left"></i> ML-Interview-Computer-Vision
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Markov-Decision-Processes/2020/09/04/" rel="next" title="Markov Decision Processes I">
+      Markov Decision Processes I <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#assignment-3---named-entity-recognition-ner"><span class="nav-number">1.</span> <span class="nav-text">Assignment 3 - Named Entity Recognition (NER)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#outline"><span class="nav-number">1.1.</span> <span class="nav-text">Outline</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

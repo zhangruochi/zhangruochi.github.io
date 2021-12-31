@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Summary of Attention">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Attention">
+<meta property="og:url" content="https://zhangruochi.com/Attention/2019/12/16/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Summary of Attention">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Attention/2019/12/16/1.png">
+<meta property="og:image" content="https://zhangruochi.com/Attention/2019/12/16/2.png">
+<meta property="og:image" content="https://zhangruochi.com/Attention/2019/12/16/3.png">
+<meta property="og:image" content="https://zhangruochi.com/Attention/2019/12/16/4.png">
+<meta property="og:image" content="https://zhangruochi.com/Attention/2019/12/16/5.png">
+<meta property="og:image" content="https://zhangruochi.com/Attention/2019/12/16/6.png">
+<meta property="article:published_time" content="2019-12-16T12:55:07.000Z">
+<meta property="article:modified_time" content="2021-12-31T08:10:40.974Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="cs224n">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Attention/2019/12/16/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Attention/2019/12/16/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Attention | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Attention/2019/12/16/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Attention
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-16 20:55:07" itemprop="dateCreated datePublished" datetime="2019-12-16T20:55:07+08:00">2019-12-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 16:10:40" itemprop="dateModified" datetime="2021-12-31T16:10:40+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Attention/2019/12/16/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Attention/2019/12/16/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Summary of Attention</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="reference">reference</h2>
+<ol type="1">
+<li>course slides and notes from cs224n (http://web.stanford.edu/class/cs224n/)</li>
+</ol>
+<h2 id="general-definition-of-attention">General definition of attention</h2>
+<p>Given a set of vector <strong>values</strong>, and a vector <strong>query</strong>, attention is a technique to compute a <strong>weighted sum</strong> of the values, dependent on the query.</p>
+<ul>
+<li>We sometimes say that the query attends to the values.</li>
+<li>For example, in the seq2seq + attention model, each decoder hidden state (query) attends to all the encoder hidden states 75 (values).
+<ul>
+<li>The weighted sum is a <strong>selective</strong> summary of the information contained in the values, where the query determines which values to focus on.</li>
+<li>Attention is a way to obtain a <strong>fixed-size representation</strong> of an arbitrary set of representations (the values), dependent on some other representation (the query).</li>
+</ul></li>
+</ul>
+<h2 id="how-to-do-attention">How to do attention</h2>
+<ol type="1">
+<li>We have some <strong>values</strong> <span class="math inline">\(h1\)</span>,<span class="math inline">\(\cdots\)</span>,<span class="math inline">\(h_N\)</span> <span class="math inline">\(\in \mathbb{R}^{d_1}\)</span> and a <strong>query</strong> <span class="math inline">\(s \in \mathbb{R}^{d_2}\)</span></li>
+<li>Computing the attention scores (multiple ways to do this) <span class="math display">\[e \in \mathbb{R}^{N}\]</span></li>
+<li>Taking softmax to get attention distribution <span class="math inline">\(\alpha\)</span> <span class="math display">\[\alpha = softmax(e) \in \mathbb{R}^{N}\]</span></li>
+<li>Using attention distribution to take weighted sum of values: <span class="math display">\[a = \sum_{i=1}^{N}\alpha_i h_i \in \mathbb{R}^{d_1}\]</span> thus obtaining the attention output a (sometimes called the <strong>context vector</strong>)</li>
+</ol>
+<h2 id="bidirectional-rnns">Bidirectional RNNs</h2>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="1.png" width = "50%" height="50%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+picture from lecture notes of cs224n
+</div>
+<br> <br>
+</center>
+<p>Bidirectional RNNs fix this problem by traversing a sequence in both directions and concatenating the resulting outputs (both cell outputs and final hidden states). For every RNN cell, we simply add another cell but feed inputs to it in the opposite direction; the output <span class="math inline">\(O_t\)</span> corresponding to the <span class="math inline">\(t\prime\)</span> word is the concatenated vector <span class="math inline">\(\left [ o_t^{(f)}, o_t^{(b)} \right ]\)</span> where <span class="math inline">\(o_t^{(f)}\)</span> is the output of the forward-direction RNN on word t and <span class="math inline">\(o_t^{(b)}\)</span> is the corresponding output from the reverse-direction RNN. Similarly, the final hidden state is <span class="math inline">\(h = \left [ h^{(f)}, h^{(b)} \right ]\)</span>.</p>
+<h2 id="seq2seq">Seq2Seq</h2>
+<p>Sequence-to-sequence, or "Seq2Seq", is a relatively new paradigm,with its first published usage in 2014 for English-French translation. At a high level, a sequence-to-sequence model is an end-to-end model made up of two recurrent neural networks: Sutskever et al. 2014, "Sequence to Sequence Learning with Neural Networks" - an encoder, which takes the model’s input sequence as input and encodes it into a fixed-size "context vector" - a decoder, which uses the context vector from above as a "seed" from which to generate an output sequence. For this reason, Seq2Seq models are often referred to as "encoder- decoder models." We’ll look at the details of these two networks separately.</p>
+<h3 id="seq2seq-architecture---encoder">Seq2Seq architecture - encoder</h3>
+<blockquote>
+<p>Encoder RNN produces an encoding of the source sentence.</p>
+</blockquote>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="2.png" width = "50%" height="50%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+picture from lecture notes of cs224n
+</div>
+<br> <br>
+</center>
+<p>The encoder network’s job is to read the input sequence to our Seq2Seq model and generate a fixed-dimensional context vector <strong>C</strong> for the sequence. To do so, the encoder will use a recurrent neural network cell – usually an LSTM – to read the input tokens one at a time. The final hidden state of the cell will then become C. However, because it’s so difficult to compress an arbitrary-length sequence into a single fixed-size vector (especially for difficult tasks like transla- tion), the encoder will usually consist of stacked LSTMs: a series of LSTM "layers" where each layer’s outputs are the input sequence to the next layer. The final layer’s LSTM hidden state will be used as <strong>C</strong>.</p>
+<p>Seq2Seq encoders will often do something strange: they will pro- cess the input sequence in reverse. This is actually done on purpose. The idea is that, by doing this, the last thing that the encoder sees will (roughly) corresponds to the first thing that the model outputs; this makes it easier for the decoder to "get started" on the output, which makes then gives the decoder an easier time generating a proper output sentence. In the context of translation, we’re allowing the network to translate the first few words of the input as soon as it sees them; once it has the first few words translated correctly, it’s much easier to go on to construct a correct sentence than it is to do so from scratch.</p>
+<h3 id="seq2seq-architecture---decoder">Seq2Seq architecture - decoder</h3>
+<blockquote>
+<p>Decoder RNN is a Language Model that generates target sentence, conditioned on encoding.</p>
+</blockquote>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="3.png" width = "50%" height="50%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+picture from lecture notes of cs224n
+</div>
+<br> <br>
+</center>
+<p>The decoder is also an LSTM network, but its usage is a little more complex than the encoder network. Essentially, we’d like to use it as a <strong>language model</strong> that’s "aware" of the words that it’s generated so far and of the input. To that end, we’ll keep the "stacked" LSTM architecture from the encoder, but we’ll initialize the hidden state of our first layer with the context vector from above; the decoder will literally use the context of the input to generate an output.</p>
+<p>Once the decoder is set up with its context, we’ll pass in a special token to signify the start of output generation; in literature, this is usually an <EOS> token appended to the end of the input (there’s also one at the end of the output). Then, we’ll run all three layers of LSTM, one after the other, following up with a softmax on the final layer’s output to generate the first output word. Then, we pass that word into the first layer, and repeat the generation. This is how we get the LSTMs to act like a language model. See Fig. 2 for an example of a decoder network.</p>
+<p>Once we have the output sequence, we use the same learning strat- egy as usual. We define a loss, the cross entropy on the prediction sequence, and we minimize it with a gradient descent algorithm and back-propagation. Both the encoder and decoder are trained at the same time, so that they both learn the same context vector represen- tation.</p>
+<h2 id="training-a-neural-machine-translation-system">Training a Neural Machine Translation system</h2>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="4.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+picture from lecture notes of cs224n
+</div>
+<br> <br>
+</center>
+<h3 id="greedy-search">Greedy Search</h3>
+<p>At each time step, we pick the most probable token. In other words <span class="math display">\[x_t = argmax_{\tilde{x_t} \mathbb{P}(\tilde(x_t)| x_1, \cdots, x_t)}\]</span></p>
+<p>This technique is efficient and natural, however it explores a small part of the search space and if we make a mistake at one time step, the rest of the sentence could be heavily impacted.</p>
+<h3 id="beam-search-decoding">Beam search decoding</h3>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="5.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+picture from lecture notes of cs224n
+</div>
+<br> <br>
+</center>
+<p>the idea is to maintain K candidates at each time step.</p>
+<p><span class="math display">\[ H_t = \left\{ (x_1^{1}, \cdots, x_t^1), \cdots, (x_1^k, \cdots, x_t^k) \right\}\]</span></p>
+<p>and compute <span class="math inline">\(H_{t+1}\)</span> by expanding <span class="math inline">\(H_t\)</span> and keeping the best K candi- dates. In other words, we pick the best K sequence in the following set</p>
+<p><span class="math display">\[\tilde{H_{t+1}} = \cup_{k=1}^{k}H_{t+1}^{\tilde{k}}\]</span></p>
+<p>where <span class="math display">\[ \tilde{H_t} = \left\{ (x_1^{k}, \cdots, x_t^{k}, v_1), \cdots, (x_1^{k}, \cdots, x_t^{k}, V_{|v|}) \right\}\]</span></p>
+<p>As we increase K, we gain precision and we are asymptotically exact. However, the improvement is not monotonic and we can set a K that combines reasonable performance and computational efficiency.</p>
+<h2 id="cs224n-assignment4">CS224n Assignment4</h2>
+<p>In Machine Translation, our goal is to convert a sentence from the source language (e.g. Spanish) to the target language (e.g. English). In this assignment, we will implement a sequence-to-sequence (Seq2Seq) network with attention, to build a Neural Machine Translation (NMT) system. In this section, we describe the training procedure for the proposed NMT system, which uses a Bidirectional LSTM Encoder and a Unidirectional LSTM Decoder.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="6.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+picture from lecture notes of cs224n
+</div>
+<br> <br>
+</center>
+<h3 id="initialize">Initialize</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, embed_size, hidden_size, vocab, dropout_rate=<span class="number">0.2</span></span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot; Init NMT Model.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @param embed_size (int): Embedding size (dimensionality)</span></span><br><span class="line"><span class="string">        @param hidden_size (int): Hidden Size (dimensionality)</span></span><br><span class="line"><span class="string">        @param vocab (Vocab): Vocabulary object containing src and tgt languages</span></span><br><span class="line"><span class="string">                              See vocab.py for documentation.</span></span><br><span class="line"><span class="string">        @param dropout_rate (float): Dropout probability, for attention</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">super</span>(NMT, self).__init__()</span><br><span class="line">        self.model_embeddings = ModelEmbeddings(embed_size, vocab)</span><br><span class="line">        self.hidden_size = hidden_size</span><br><span class="line">        self.dropout_rate = dropout_rate</span><br><span class="line">        self.vocab = vocab</span><br><span class="line"></span><br><span class="line">        <span class="comment"># default values</span></span><br><span class="line">        self.encoder = <span class="literal">None</span> </span><br><span class="line">        self.decoder = <span class="literal">None</span></span><br><span class="line">        self.h_projection = <span class="literal">None</span></span><br><span class="line">        self.c_projection = <span class="literal">None</span></span><br><span class="line">        self.att_projection = <span class="literal">None</span></span><br><span class="line">        self.combined_output_projection = <span class="literal">None</span></span><br><span class="line">        self.target_vocab_projection = <span class="literal">None</span></span><br><span class="line">        self.dropout = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">### YOUR CODE HERE (~8 Lines)</span></span><br><span class="line">        <span class="comment">### TODO - Initialize the following variables:</span></span><br><span class="line">        <span class="comment">###     self.encoder (Bidirectional LSTM with bias)</span></span><br><span class="line">        <span class="comment">###     self.decoder (LSTM Cell with bias)</span></span><br><span class="line">        <span class="comment">###     self.h_projection (Linear Layer with no bias), called W_&#123;h&#125; in the PDF.</span></span><br><span class="line">        <span class="comment">###     self.c_projection (Linear Layer with no bias), called W_&#123;c&#125; in the PDF.</span></span><br><span class="line">        <span class="comment">###     self.att_projection (Linear Layer with no bias), called W_&#123;attProj&#125; in the PDF.</span></span><br><span class="line">        <span class="comment">###     self.combined_output_projection (Linear Layer with no bias), called W_&#123;u&#125; in the PDF.</span></span><br><span class="line">        <span class="comment">###     self.target_vocab_projection (Linear Layer with no bias), called W_&#123;vocab&#125; in the PDF.</span></span><br><span class="line">        <span class="comment">###     self.dropout (Dropout Layer)</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">### Use the following docs to properly initialize these variables:</span></span><br><span class="line">        <span class="comment">###     LSTM:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/nn.html#torch.nn.LSTM</span></span><br><span class="line">        <span class="comment">###     LSTM Cell:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/nn.html#torch.nn.LSTMCell</span></span><br><span class="line">        <span class="comment">###     Linear Layer:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/nn.html#torch.nn.Linear</span></span><br><span class="line">        <span class="comment">###     Dropout Layer:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/nn.html#torch.nn.Dropout</span></span><br><span class="line"></span><br><span class="line">        self.encoder = nn.LSTM(embed_size, self.hidden_size, dropout=self.dropout_rate,bias = <span class="literal">True</span>, bidirectional = <span class="literal">True</span>)</span><br><span class="line">        self.decoder = nn.LSTMCell(embed_size + self.hidden_size, self.hidden_size, bias = <span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">        self.h_projection = nn.Linear(<span class="number">2</span> * self.hidden_size, self.hidden_size, bias = <span class="literal">False</span>)</span><br><span class="line">        self.c_projection = nn.Linear(<span class="number">2</span> * self.hidden_size, self.hidden_size, bias = <span class="literal">False</span>)</span><br><span class="line">        self.att_projection = nn.Linear(<span class="number">2</span> * self.hidden_size, self.hidden_size, bias = <span class="literal">False</span>)</span><br><span class="line">        self.combined_output_projection = nn.Linear(<span class="number">3</span> * self.hidden_size, self.hidden_size, bias=<span class="literal">False</span>)</span><br><span class="line">        self.target_vocab_projection = nn.Linear(self.hidden_size, self.model_embeddings.target.weight.shape[<span class="number">0</span>])</span><br><span class="line">        self.dropout = nn.Dropout(p = self.dropout_rate)</span><br><span class="line"></span><br><span class="line">        <span class="comment">### END YOUR CODE</span></span><br></pre></td></tr></table></figure>
+<h3 id="encode">Encode</h3>
+<p>Given a sentence in the source language, we look up the word embeddings from an embeddings matrix, yielding <span class="math inline">\(x_1,\cdots,x_m | x_i \in \mathbb{R}^{e x 1}\)</span>, where m is the length of the source sentence and e is the embedding size. We feed these embeddings to the bidirectional Encoder, yielding hidden states and cell states for both the forwards (-&gt;) and backwards (&lt;-) LSTMs. The forwards and backwards versions are concatenated to give hidden states <span class="math inline">\(h_i^{enc}\)</span> and cell states <span class="math inline">\(c_i^{enc}\)</span></p>
+<p><span class="math display">\[
+\begin{align}
+&amp; h_i^{enc} = \left [  \overleftarrow{h_i^{enc}}; \overrightarrow{h_i^{enc}} \right ] \qquad \text{where} \qquad h_i^{enc} \in \mathbb{R}^{2h x 1},  \overleftarrow{h_i^{enc}}, \overrightarrow{h_i^{enc}} \in \mathbb{R}^{h x 1}  \qquad 1 \leq i \leq m  \\
+&amp; c_i^{enc} = \left [  \overleftarrow{c_i^{enc}}; \overrightarrow{c_i^{enc}} \right ] \qquad \text{where}  \qquad c_i^{enc} \in \mathbb{R}^{2h x 1},  \overleftarrow{c_i^{enc}}, \overrightarrow{c_i^{enc}} \in \mathbb{R}^{h x 1}  \qquad 1 \leq i \leq m \\ 
+\end{align}
+\]</span></p>
+<p>We then initialize the Decoder’s first hidden state <span class="math inline">\(h_0^{dec}\)</span> and cell state <span class="math inline">\(c_0^{dec}\)</span> with a linear projection of the Encoder’s final hidden state and final cell state</p>
+<p><span class="math display">\[
+\begin{align}
+&amp; h_0^{dec} = W_h \left [  \overleftarrow{h_1^{enc}}; \overrightarrow{h_m^{enc}} \right ] \qquad \text{where} \qquad h_0^{dec} \in \mathbb{R}^{h x 1},  W_h \in \mathbb{R}^{h x 2h} \\
+&amp; c_0^{dec} = W_h \left [  \overleftarrow{c_1^{enc}}; \overrightarrow{c_m^{enc}} \right ] \qquad \text{where} \qquad c_0^{dec} \in \mathbb{R}^{h x 1},  W_c \in \mathbb{R}^{h x 2h} \\
+\end{align}
+\]</span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">encode</span>(<span class="params">self, source_padded: torch.Tensor, source_lengths: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">Tuple</span>[torch.Tensor, <span class="type">Tuple</span>[torch.Tensor, torch.Tensor]]:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot; Apply the encoder to source sentences to obtain encoder hidden states.</span></span><br><span class="line"><span class="string">            Additionally, take the final states of the encoder and project them to obtain initial states for decoder.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @param source_padded (Tensor): Tensor of padded source sentences with shape (src_len, b), where</span></span><br><span class="line"><span class="string">                                        b = batch_size, src_len = maximum source sentence length. Note that </span></span><br><span class="line"><span class="string">                                       these have already been sorted in order of longest to shortest sentence.</span></span><br><span class="line"><span class="string">        @param source_lengths (List[int]): List of actual lengths for each of the source sentences in the batch</span></span><br><span class="line"><span class="string">        @returns enc_hiddens (Tensor): Tensor of hidden units with shape (b, src_len, h*2), where</span></span><br><span class="line"><span class="string">                                        b = batch size, src_len = maximum source sentence length, h = hidden size.</span></span><br><span class="line"><span class="string">        @returns dec_init_state (tuple(Tensor, Tensor)): Tuple of tensors representing the decoder&#x27;s initial</span></span><br><span class="line"><span class="string">                                                hidden state and cell.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        enc_hiddens, dec_init_state = <span class="literal">None</span>, <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">### YOUR CODE HERE (~ 8 Lines)</span></span><br><span class="line">        <span class="comment">### <span class="doctag">TODO:</span></span></span><br><span class="line">        <span class="comment">###     1. Construct Tensor `X` of source sentences with shape (src_len, b, e) using the source model embeddings.</span></span><br><span class="line">        <span class="comment">###         src_len = maximum source sentence length, b = batch size, e = embedding size. Note</span></span><br><span class="line">        <span class="comment">###         that there is no initial hidden state or cell for the decoder.</span></span><br><span class="line">        <span class="comment">###     2. Compute `enc_hiddens`, `last_hidden`, `last_cell` by applying the encoder to `X`.</span></span><br><span class="line">        <span class="comment">###         - Before you can apply the encoder, you need to apply the `pack_padded_sequence` function to X.</span></span><br><span class="line">        <span class="comment">###         - After you apply the encoder, you need to apply the `pad_packed_sequence` function to enc_hiddens.</span></span><br><span class="line">        <span class="comment">###         - Note that the shape of the tensor returned by the encoder is (src_len b, h*2) and we want to</span></span><br><span class="line">        <span class="comment">###           return a tensor of shape (b, src_len, h*2) as `enc_hiddens`.</span></span><br><span class="line">        <span class="comment">###     3. Compute `dec_init_state` = (init_decoder_hidden, init_decoder_cell):</span></span><br><span class="line">        <span class="comment">###         - `init_decoder_hidden`:</span></span><br><span class="line">        <span class="comment">###             `last_hidden` is a tensor shape (2, b, h). The first dimension corresponds to forwards and backwards.</span></span><br><span class="line">        <span class="comment">###             Concatenate the forwards and backwards tensors to obtain a tensor shape (b, 2*h).</span></span><br><span class="line">        <span class="comment">###             Apply the h_projection layer to this in order to compute init_decoder_hidden.</span></span><br><span class="line">        <span class="comment">###             This is h_0^&#123;dec&#125; in the PDF. Here b = batch size, h = hidden size</span></span><br><span class="line">        <span class="comment">###         - `init_decoder_cell`:</span></span><br><span class="line">        <span class="comment">###             `last_cell` is a tensor shape (2, b, h). The first dimension corresponds to forwards and backwards.</span></span><br><span class="line">        <span class="comment">###             Concatenate the forwards and backwards tensors to obtain a tensor shape (b, 2*h).</span></span><br><span class="line">        <span class="comment">###             Apply the c_projection layer to this in order to compute init_decoder_cell.</span></span><br><span class="line">        <span class="comment">###             This is c_0^&#123;dec&#125; in the PDF. Here b = batch size, h = hidden size</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">### See the following docs, as you may need to use some of the following functions in your implementation:</span></span><br><span class="line">        <span class="comment">###     Pack the padded sequence X before passing to the encoder:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/nn.html#torch.nn.utils.rnn.pack_padded_sequence</span></span><br><span class="line">        <span class="comment">###     Pad the packed sequence, enc_hiddens, returned by the encoder:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/nn.html#torch.nn.utils.rnn.pad_packed_sequence</span></span><br><span class="line">        <span class="comment">###     Tensor Concatenation:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/torch.html#torch.cat</span></span><br><span class="line">        <span class="comment">###     Tensor Permute:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/tensors.html#torch.Tensor.permute</span></span><br><span class="line"></span><br><span class="line">        X = self.model_embeddings.source(source_padded)</span><br><span class="line">        output, (h_enc, c_enc) = self.encoder(</span><br><span class="line">            pack_padded_sequence(X, source_lengths))</span><br><span class="line">        enc_hiddens,sequence_length = pad_packed_sequence(output, batch_first = <span class="literal">True</span>) <span class="comment"># output of shape (batch, seq_len, num_directions * hidden_size)</span></span><br><span class="line">        h_0_dec = self.h_projection(torch.cat((h_enc[<span class="number">0</span>,:],h_enc[<span class="number">1</span>,:]), <span class="number">1</span>))</span><br><span class="line">        c_0_dec = self.c_projection(torch.cat((c_enc[<span class="number">0</span>,:],c_enc[<span class="number">1</span>,:]), <span class="number">1</span>))</span><br><span class="line">        dec_init_state = (h_0_dec,c_0_dec)</span><br><span class="line"></span><br><span class="line">        <span class="comment">### END YOUR CODE</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> enc_hiddens, dec_init_state</span><br></pre></td></tr></table></figure>
+<h3 id="decode">Decode</h3>
+<p>With the Decoder initialized, we must now feed it a matching sentence in the target language. On the <span class="math inline">\(t^{th}\)</span> step, we look up the embedding for the <span class="math inline">\(t^{th}\)</span> word, <span class="math inline">\(y_t \in \mathbb{R}^{e x 1}\)</span>, we then concatenate <span class="math inline">\(y_t\)</span> with the combined-output vector <span class="math inline">\(O_{t-1} \in \mathbb{R}^{h x 1}\)</span> from the previous step to produce <span class="math inline">\(\bar{y_t} \in \mathbb{R}^{(e+h) x 1}\)</span>. Note that for the first target word <span class="math inline">\(O_0\)</span> is zero-vector. We then fedd <span class="math inline">\(\bar{y_t}\)</span> as input to the Decoder LSTM.</p>
+<p><span class="math display">\[h_t^{dec}, c_t^{dec} = Decoder(\bar{y_t},h_{t-1}^{dec}, c_{t-1}^{dec} ) \quad \text{where} \quad h_t^{dec} \in \mathbb{R}^{h x 1}\]</span></p>
+<p><strong>We then use <span class="math inline">\(h_t^{dec}\)</span> to compute multiplicative attention ovev <span class="math inline">\(h_t^{enc}, \cdots, h_m^{enc}\)</span></strong></p>
+<p><span class="math display">\[\begin{align}
+&amp; e_{t_i} = (h_t^{dec})^{T}W_{attProj}h_i^{enc} \quad \text{where} \quad e_t \in \mathbb{R}^{m x 1}, W_{attProj} \in \mathbb{R}^{h x 2h} \\ 
+&amp; \alpha_{t} = Softmax(e_t) \quad \text{where} \quad \alpha_t \in \mathbb{R}^{m x 1} \\ 
+&amp; a_t = \sum_i^{m} \alpha_{t,i}h_i^{enc}  \quad \text{where} \quad a_t \in \mathbb{R}^{2h x 1}\\
+\end{align}
+\]</span></p>
+<p>We now <strong>concatenate</strong> the attention output <span class="math inline">\(a_t\)</span> with the decoder hidden state <span class="math inline">\(h_t^{dec}\)</span> and pass this through a linear layer, Tanh, and Dropout to attain the <strong>combined-output vector</strong> <span class="math inline">\(o_t\)</span></p>
+<p><span class="math display">\[\begin{align}
+&amp; u_t = \left[ a_t; h_t^{dec} \right ]  \quad \text{where} \quad u_t \in \mathbb{R}^{3h x 1} \\
+&amp; v_t = W_u u_t \quad \text{where} \quad v_t \in \mathbb{R}^{h x 1}, W_u \in \mathbb{R}^{h x 1} \\
+&amp; O_t = Dropout(Tanh(v_t)) \quad \text{where} \quad o_t \in \mathbb{R}^{h x 1} \\
+\end{align}\]</span></p>
+<p>Then, we produce a probability distribution <span class="math inline">\(P_t\)</span> over target words at the <span class="math inline">\(t^{th}\)</span> timestep: <span class="math display">\[P_t = Softmax(W_{vocab}O_t)  \quad \text{where} \quad P_t \in \mathbb{R}^{v_t x h} \]</span></p>
+<p>Here, <span class="math inline">\(V_t\)</span> is the size of the target vocabulary. Finally, to train the network we then compute the softmax cross entropy loss between <span class="math inline">\(P_t\)</span> and <span class="math inline">\(g_t\)</span>, where <span class="math inline">\(g_t\)</span> is the 1-hot vector of the target word at timestep t:</p>
+<p><span class="math display">\[J(\theta) = CE(P_t, g_t)\]</span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decode</span>(<span class="params">self, enc_hiddens: torch.Tensor, enc_masks: torch.Tensor,</span></span></span><br><span class="line"><span class="params"><span class="function">                dec_init_state: <span class="type">Tuple</span>[torch.Tensor, torch.Tensor], target_padded: torch.Tensor</span>) -&gt; torch.Tensor:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;Compute combined output vectors for a batch.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @param enc_hiddens (Tensor): Hidden states (b, src_len, h*2), where</span></span><br><span class="line"><span class="string">                                     b = batch size, src_len = maximum source sentence length, h = hidden size.</span></span><br><span class="line"><span class="string">        @param enc_masks (Tensor): Tensor of sentence masks (b, src_len), where</span></span><br><span class="line"><span class="string">                                     b = batch size, src_len = maximum source sentence length.</span></span><br><span class="line"><span class="string">        @param dec_init_state (tuple(Tensor, Tensor)): Initial state and cell for decoder</span></span><br><span class="line"><span class="string">        @param target_padded (Tensor): Gold-standard padded target sentences (tgt_len, b), where</span></span><br><span class="line"><span class="string">                                       tgt_len = maximum target sentence length, b = batch size. </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @returns combined_outputs (Tensor): combined output tensor  (tgt_len, b,  h), where</span></span><br><span class="line"><span class="string">                                        tgt_len = maximum target sentence length, b = batch_size,  h = hidden size</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># Chop of the &lt;END&gt; token for max length sentences.</span></span><br><span class="line">        target_padded = target_padded[:-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initialize the decoder state (hidden and cell)</span></span><br><span class="line">        dec_state = dec_init_state</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initialize previous combined output vector o_&#123;t-1&#125; as zero</span></span><br><span class="line">        batch_size = enc_hiddens.size(<span class="number">0</span>)</span><br><span class="line">        o_prev = torch.zeros(batch_size, self.hidden_size, device=self.device)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initialize a list we will use to collect the combined output o_t on each step</span></span><br><span class="line">        combined_outputs = []</span><br><span class="line"></span><br><span class="line">        <span class="comment">### YOUR CODE HERE (~9 Lines)</span></span><br><span class="line">        <span class="comment">### <span class="doctag">TODO:</span></span></span><br><span class="line">        <span class="comment">###     1. Apply the attention projection layer to `enc_hiddens` to obtain `enc_hiddens_proj`,</span></span><br><span class="line">        <span class="comment">###         which should be shape (b, src_len, h),</span></span><br><span class="line">        <span class="comment">###         where b = batch size, src_len = maximum source length, h = hidden size.</span></span><br><span class="line">        <span class="comment">###         This is applying W_&#123;attProj&#125; to h^enc, as described in the PDF.</span></span><br><span class="line">        <span class="comment">###     2. Construct tensor `Y` of target sentences with shape (tgt_len, b, e) using the target model embeddings.</span></span><br><span class="line">        <span class="comment">###         where tgt_len = maximum target sentence length, b = batch size, e = embedding size.</span></span><br><span class="line">        <span class="comment">###     3. Use the torch.split function to iterate over the time dimension of Y.</span></span><br><span class="line">        <span class="comment">###         Within the loop, this will give you Y_t of shape (1, b, e) where b = batch size, e = embedding size.</span></span><br><span class="line">        <span class="comment">###             - Squeeze Y_t into a tensor of dimension (b, e). </span></span><br><span class="line">        <span class="comment">###             - Construct Ybar_t by concatenating Y_t with o_prev.</span></span><br><span class="line">        <span class="comment">###             - Use the step function to compute the the Decoder&#x27;s next (cell, state) values</span></span><br><span class="line">        <span class="comment">###               as well as the new combined output o_t.</span></span><br><span class="line">        <span class="comment">###             - Append o_t to combined_outputs</span></span><br><span class="line">        <span class="comment">###             - Update o_prev to the new o_t.</span></span><br><span class="line">        <span class="comment">###     4. Use torch.stack to convert combined_outputs from a list length tgt_len of</span></span><br><span class="line">        <span class="comment">###         tensors shape (b, h), to a single tensor shape (tgt_len, b, h)</span></span><br><span class="line">        <span class="comment">###         where tgt_len = maximum target sentence length, b = batch size, h = hidden size.</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">### Note:</span></span><br><span class="line">        <span class="comment">###    - When using the squeeze() function make sure to specify the dimension you want to squeeze</span></span><br><span class="line">        <span class="comment">###      over. Otherwise, you will remove the batch dimension accidentally, if batch_size = 1.</span></span><br><span class="line">        <span class="comment">###   </span></span><br><span class="line">        <span class="comment">### Use the following docs to implement this functionality:</span></span><br><span class="line">        <span class="comment">###     Zeros Tensor:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/torch.html#torch.zeros</span></span><br><span class="line">        <span class="comment">###     Tensor Splitting (iteration):</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/torch.html#torch.split</span></span><br><span class="line">        <span class="comment">###     Tensor Dimension Squeezing:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/torch.html#torch.squeeze</span></span><br><span class="line">        <span class="comment">###     Tensor Concatenation:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/torch.html#torch.cat</span></span><br><span class="line">        <span class="comment">###     Tensor Stacking:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/torch.html#torch.stack</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">#   (b, src_len, h*2) * [2h , h]  = (b, src_len, h)</span></span><br><span class="line">        enc_hiddens_proj = self.att_projection(enc_hiddens)</span><br><span class="line">        <span class="comment">#   (tgt_len, b, e)</span></span><br><span class="line">        Y = self.model_embeddings.target(target_padded)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> Y_t <span class="keyword">in</span> torch.split(Y, split_size_or_sections = <span class="number">1</span>, dim = <span class="number">0</span>):</span><br><span class="line">            squeezed_Y_t = torch.squeeze(Y_t) <span class="comment"># (b, e) + (b,h) = (b,e+h)</span></span><br><span class="line">            Ybar_t = torch.cat((o_prev,squeezed_Y_t), dim = <span class="number">1</span>)</span><br><span class="line">            dec_state, o_t, _ = self.step(Ybar_t,dec_state,enc_hiddens,enc_hiddens_proj,enc_masks)</span><br><span class="line">            combined_outputs.append(o_t)</span><br><span class="line">            o_prev = o_t</span><br><span class="line"></span><br><span class="line">        <span class="comment">#  (b, h) -&gt; (tgt_len, b, h)</span></span><br><span class="line">        combined_outputs = torch.stack(combined_outputs,dim = <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">### END YOUR CODE</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> combined_outputs</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, Ybar_t: torch.Tensor,</span></span></span><br><span class="line"><span class="params"><span class="function">            dec_state: <span class="type">Tuple</span>[torch.Tensor, torch.Tensor],</span></span></span><br><span class="line"><span class="params"><span class="function">            enc_hiddens: torch.Tensor,</span></span></span><br><span class="line"><span class="params"><span class="function">            enc_hiddens_proj: torch.Tensor,</span></span></span><br><span class="line"><span class="params"><span class="function">            enc_masks: torch.Tensor</span>) -&gt; <span class="type">Tuple</span>[<span class="type">Tuple</span>, torch.Tensor, torch.Tensor]:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot; Compute one forward step of the LSTM decoder, including the attention computation.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @param Ybar_t (Tensor): Concatenated Tensor of [Y_t o_prev], with shape (b, e + h). The input for the decoder,</span></span><br><span class="line"><span class="string">                                where b = batch size, e = embedding size, h = hidden size.</span></span><br><span class="line"><span class="string">        @param dec_state (tuple(Tensor, Tensor)): Tuple of tensors both with shape (b, h), where b = batch size, h = hidden size.</span></span><br><span class="line"><span class="string">                First tensor is decoder&#x27;s prev hidden state, second tensor is decoder&#x27;s prev cell.</span></span><br><span class="line"><span class="string">        @param enc_hiddens (Tensor): Encoder hidden states Tensor, with shape (b, src_len, h * 2), where b = batch size,</span></span><br><span class="line"><span class="string">                                    src_len = maximum source length, h = hidden size.</span></span><br><span class="line"><span class="string">        @param enc_hiddens_proj (Tensor): Encoder hidden states Tensor, projected from (h * 2) to h. Tensor is with shape (b, src_len, h),</span></span><br><span class="line"><span class="string">                                    where b = batch size, src_len = maximum source length, h = hidden size.</span></span><br><span class="line"><span class="string">        @param enc_masks (Tensor): Tensor of sentence masks shape (b, src_len),</span></span><br><span class="line"><span class="string">                                    where b = batch size, src_len is maximum source length. </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @returns dec_state (tuple (Tensor, Tensor)): Tuple of tensors both shape (b, h), where b = batch size, h = hidden size.</span></span><br><span class="line"><span class="string">                First tensor is decoder&#x27;s new hidden state, second tensor is decoder&#x27;s new cell.</span></span><br><span class="line"><span class="string">        @returns combined_output (Tensor): Combined output Tensor at timestep t, shape (b, h), where b = batch size, h = hidden size.</span></span><br><span class="line"><span class="string">        @returns e_t (Tensor): Tensor of shape (b, src_len). It is attention scores distribution.</span></span><br><span class="line"><span class="string">                                Note: You will not use this outside of this function.</span></span><br><span class="line"><span class="string">                                      We are simply returning this value so that we can sanity check</span></span><br><span class="line"><span class="string">                                      your implementation.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">        combined_output = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">### YOUR CODE HERE (~3 Lines)</span></span><br><span class="line">        <span class="comment">### <span class="doctag">TODO:</span></span></span><br><span class="line">        <span class="comment">###     1. Apply the decoder to `Ybar_t` and `dec_state`to obtain the new dec_state.</span></span><br><span class="line">        <span class="comment">###     2. Split dec_state into its two parts (dec_hidden, dec_cell)</span></span><br><span class="line">        <span class="comment">###     3. Compute the attention scores e_t, a Tensor shape (b, src_len). </span></span><br><span class="line">        <span class="comment">###        Note: b = batch_size, src_len = maximum source length, h = hidden size.</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">###       Hints:</span></span><br><span class="line">        <span class="comment">###         - dec_hidden is shape (b, h) and corresponds to h^dec_t in the PDF (batched)</span></span><br><span class="line">        <span class="comment">###         - enc_hiddens_proj is shape (b, src_len, h) and corresponds to W_&#123;attProj&#125; h^enc (batched).</span></span><br><span class="line">        <span class="comment">###         - Use batched matrix multiplication (torch.bmm) to compute e_t.</span></span><br><span class="line">        <span class="comment">###         - To get the tensors into the right shapes for bmm, you will need to do some squeezing and unsqueezing.</span></span><br><span class="line">        <span class="comment">###         - When using the squeeze() function make sure to specify the dimension you want to squeeze</span></span><br><span class="line">        <span class="comment">###             over. Otherwise, you will remove the batch dimension accidentally, if batch_size = 1.</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">### Use the following docs to implement this functionality:</span></span><br><span class="line">        <span class="comment">###     Batch Multiplication:</span></span><br><span class="line">        <span class="comment">###        https://pytorch.org/docs/stable/torch.html#torch.bmm</span></span><br><span class="line">        <span class="comment">###     Tensor Unsqueeze:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/torch.html#torch.unsqueeze</span></span><br><span class="line">        <span class="comment">###     Tensor Squeeze:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/torch.html#torch.squeeze</span></span><br><span class="line"></span><br><span class="line">        dec_state = self.decoder(Ybar_t, dec_state)</span><br><span class="line">        h_t_dec, c_t_dec = dec_state</span><br><span class="line">        <span class="comment">#  enc_hiddens_proj(b, src_len, h) * h_t_dec (b,h,1) = (b,src_len)</span></span><br><span class="line">        e_t = torch.squeeze(torch.bmm(enc_hiddens_proj, torch.unsqueeze(h_t_dec,<span class="number">2</span>)),<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">### END YOUR CODE</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Set e_t to -inf where enc_masks has 1</span></span><br><span class="line">        <span class="keyword">if</span> enc_masks <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            e_t.data.masked_fill_(enc_masks.byte(), -<span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment">### YOUR CODE HERE (~6 Lines)</span></span><br><span class="line">        <span class="comment">### <span class="doctag">TODO:</span></span></span><br><span class="line">        <span class="comment">###     1. Apply softmax to e_t to yield alpha_t</span></span><br><span class="line">        <span class="comment">###     2. Use batched matrix multiplication between alpha_t and enc_hiddens to obtain the</span></span><br><span class="line">        <span class="comment">###         attention output vector, a_t.</span></span><br><span class="line">        <span class="comment">#$$     Hints:</span></span><br><span class="line">        <span class="comment">###           - alpha_t is shape (b, src_len)</span></span><br><span class="line">        <span class="comment">###           - enc_hiddens is shape (b, src_len, 2h)</span></span><br><span class="line">        <span class="comment">###           - a_t should be shape (b, 2h)</span></span><br><span class="line">        <span class="comment">###           - You will need to do some squeezing and unsqueezing.</span></span><br><span class="line">        <span class="comment">###     Note: b = batch size, src_len = maximum source length, h = hidden size.</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">###     3. Concatenate dec_hidden with a_t to compute tensor U_t</span></span><br><span class="line">        <span class="comment">###     4. Apply the combined output projection layer to U_t to compute tensor V_t</span></span><br><span class="line">        <span class="comment">###     5. Compute tensor O_t by first applying the Tanh function and then the dropout layer.</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">### Use the following docs to implement this functionality:</span></span><br><span class="line">        <span class="comment">###     Softmax:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/nn.html#torch.nn.functional.softmax</span></span><br><span class="line">        <span class="comment">###     Batch Multiplication:</span></span><br><span class="line">        <span class="comment">###        https://pytorch.org/docs/stable/torch.html#torch.bmm</span></span><br><span class="line">        <span class="comment">###     Tensor View:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/tensors.html#torch.Tensor.view</span></span><br><span class="line">        <span class="comment">###     Tensor Concatenation:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/torch.html#torch.cat</span></span><br><span class="line">        <span class="comment">###     Tanh:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/torch.html#torch.tanh</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># (b,src_len)</span></span><br><span class="line">        alpha_t = nn.functional.softmax(e_t, dim = <span class="number">1</span>) </span><br><span class="line">        <span class="comment"># alpha_t(b,src_len) - (b,1,src_len) * enc_hiddens(b, src_len, h * 2) = (b, 1, h * 2) -&gt; (b,2h)</span></span><br><span class="line">        a_t = torch.squeeze(torch.bmm(torch.unsqueeze(alpha_t,<span class="number">1</span>),enc_hiddens),<span class="number">1</span>)</span><br><span class="line">        <span class="comment">#(b,2h) + (b,h)</span></span><br><span class="line">        U_t = torch.cat((a_t,h_t_dec), dim = <span class="number">1</span>)</span><br><span class="line">        V_t = self.combined_output_projection(U_t)</span><br><span class="line">        O_t = self.dropout(nn.functional.tanh(V_t))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">### END YOUR CODE</span></span><br><span class="line">        combined_output = O_t</span><br><span class="line">        <span class="keyword">return</span> dec_state, combined_output, e_t</span><br></pre></td></tr></table></figure>
+<h3 id="helpers">Helpers</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, source: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">str</span>]], target: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">str</span>]]</span>) -&gt; torch.Tensor:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot; Take a mini-batch of source and target sentences, compute the log-likelihood of</span></span><br><span class="line"><span class="string">        target sentences under the language models learned by the NMT system.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @param source (List[List[str]]): list of source sentence tokens</span></span><br><span class="line"><span class="string">        @param target (List[List[str]]): list of target sentence tokens, wrapped by `&lt;s&gt;` and `&lt;/s&gt;`</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @returns scores (Tensor): a variable/tensor of shape (b, ) representing the</span></span><br><span class="line"><span class="string">                                    log-likelihood of generating the gold-standard target sentence for</span></span><br><span class="line"><span class="string">                                    each example in the input batch. Here b = batch size.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># Compute sentence lengths</span></span><br><span class="line">        source_lengths = [<span class="built_in">len</span>(s) <span class="keyword">for</span> s <span class="keyword">in</span> source]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Convert list of lists into tensors</span></span><br><span class="line">        source_padded = self.vocab.src.to_input_tensor(source, device=self.device)   <span class="comment"># Tensor: (src_len, b)</span></span><br><span class="line">        target_padded = self.vocab.tgt.to_input_tensor(target, device=self.device)   <span class="comment"># Tensor: (tgt_len, b)</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">###     Run the network forward:</span></span><br><span class="line">        <span class="comment">###     1. Apply the encoder to `source_padded` by calling `self.encode()`</span></span><br><span class="line">        <span class="comment">###     2. Generate sentence masks for `source_padded` by calling `self.generate_sent_masks()`</span></span><br><span class="line">        <span class="comment">###     3. Apply the decoder to compute combined-output by calling `self.decode()`</span></span><br><span class="line">        <span class="comment">###     4. Compute log probability distribution over the target vocabulary using the</span></span><br><span class="line">        <span class="comment">###        combined_outputs returned by the `self.decode()` function.</span></span><br><span class="line"></span><br><span class="line">        enc_hiddens, dec_init_state = self.encode(source_padded, source_lengths)</span><br><span class="line">        enc_masks = self.generate_sent_masks(enc_hiddens, source_lengths)</span><br><span class="line">        combined_outputs = self.decode(enc_hiddens, enc_masks, dec_init_state, target_padded)</span><br><span class="line">        P = F.log_softmax(self.target_vocab_projection(combined_outputs), dim=-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Zero out, probabilities for which we have nothing in the target text</span></span><br><span class="line">        target_masks = (target_padded != self.vocab.tgt[<span class="string">&#x27;&lt;pad&gt;&#x27;</span>]).<span class="built_in">float</span>()</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Compute log probability of generating true target words</span></span><br><span class="line">        target_gold_words_log_prob = torch.gather(P, index=target_padded[<span class="number">1</span>:].unsqueeze(-<span class="number">1</span>), dim=-<span class="number">1</span>).squeeze(-<span class="number">1</span>) * target_masks[<span class="number">1</span>:]</span><br><span class="line">        scores = target_gold_words_log_prob.<span class="built_in">sum</span>(dim=<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> scores</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">CS224N 2018-19: Homework 4</span></span><br><span class="line"><span class="string">model_embeddings.py: Embeddings for the NMT model</span></span><br><span class="line"><span class="string">Pencheng Yin &lt;pcyin@cs.cmu.edu&gt;</span></span><br><span class="line"><span class="string">Sahil Chopra &lt;schopra8@stanford.edu&gt;</span></span><br><span class="line"><span class="string">Anand Dhoot &lt;anandd@stanford.edu&gt;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ModelEmbeddings</span>(<span class="params">nn.Module</span>):</span> </span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Class that converts input words to their embeddings.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, embed_size, vocab</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Init the Embedding layers.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @param embed_size (int): Embedding size (dimensionality)</span></span><br><span class="line"><span class="string">        @param vocab (Vocab): Vocabulary object containing src and tgt languages</span></span><br><span class="line"><span class="string">                              See vocab.py for documentation.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">super</span>(ModelEmbeddings, self).__init__()</span><br><span class="line">        self.embed_size = embed_size</span><br><span class="line"></span><br><span class="line">        <span class="comment"># default values</span></span><br><span class="line">        self.source = <span class="literal">None</span></span><br><span class="line">        self.target = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        src_pad_token_idx = vocab.src[<span class="string">&#x27;&lt;pad&gt;&#x27;</span>]</span><br><span class="line">        tgt_pad_token_idx = vocab.tgt[<span class="string">&#x27;&lt;pad&gt;&#x27;</span>]</span><br><span class="line"></span><br><span class="line">        <span class="comment">### YOUR CODE HERE (~2 Lines)</span></span><br><span class="line">        <span class="comment">### TODO - Initialize the following variables:</span></span><br><span class="line">        <span class="comment">###     self.source (Embedding Layer for source language)</span></span><br><span class="line">        <span class="comment">###     self.target (Embedding Layer for target langauge)</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">### Note:</span></span><br><span class="line">        <span class="comment">###     1. `vocab` object contains two vocabularies:</span></span><br><span class="line">        <span class="comment">###            `vocab.src` for source</span></span><br><span class="line">        <span class="comment">###            `vocab.tgt` for target</span></span><br><span class="line">        <span class="comment">###     2. You can get the length of a specific vocabulary by running:</span></span><br><span class="line">        <span class="comment">###             `len(vocab.&lt;specific_vocabulary&gt;)`</span></span><br><span class="line">        <span class="comment">###     3. Remember to include the padding token for the specific vocabulary</span></span><br><span class="line">        <span class="comment">###        when creating your Embedding.</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">### Use the following docs to properly initialize these variables:</span></span><br><span class="line">        <span class="comment">###     Embedding Layer:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/nn.html#torch.nn.Embedding</span></span><br><span class="line">        self.source = nn.Embedding(<span class="built_in">len</span>(vocab.src),self.embed_size, padding_idx = src_pad_token_idx)</span><br><span class="line">        self.target = nn.Embedding(<span class="built_in">len</span>(vocab.tgt), self.embed_size, padding_idx = tgt_pad_token_idx) </span><br><span class="line">        <span class="comment">### END YOUR CODE</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pad_sents</span>(<span class="params">sents, pad_token</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Pad list of sentences according to the longest sentence in the batch.</span></span><br><span class="line"><span class="string">    @param sents (list[list[str]]): list of sentences, where each sentence</span></span><br><span class="line"><span class="string">                                    is represented as a list of words</span></span><br><span class="line"><span class="string">    @param pad_token (str): padding token</span></span><br><span class="line"><span class="string">    @returns sents_padded (list[list[str]]): list of sentences where sentences shorter</span></span><br><span class="line"><span class="string">        than the max length sentence are padded out with the pad_token, such that</span></span><br><span class="line"><span class="string">        each sentences in the batch now has equal length.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    sents_padded = []</span><br><span class="line"></span><br><span class="line">    <span class="comment">### YOUR CODE HERE (~6 Lines)</span></span><br><span class="line">    max_sentence_len = <span class="built_in">max</span>([<span class="built_in">len</span>(s) <span class="keyword">for</span> s <span class="keyword">in</span> sents])</span><br><span class="line">    <span class="keyword">for</span> sent <span class="keyword">in</span> sents:</span><br><span class="line">        sents_padded.append(sent + [pad_token] * (max_sentence_len - <span class="built_in">len</span>(sent)))</span><br><span class="line"></span><br><span class="line">    <span class="comment">### END YOUR CODE</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sents_padded</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/cs224n/" rel="tag"># cs224n</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Gated-RNN-Units/2019/12/15/" rel="prev" title="Gated RNN Units">
+      <i class="fa fa-chevron-left"></i> Gated RNN Units
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Metaprogramming-in-Ruby/2020/01/17/" rel="next" title="Metaprogramming in Ruby">
+      Metaprogramming in Ruby <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">1.</span> <span class="nav-text">reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#general-definition-of-attention"><span class="nav-number">2.</span> <span class="nav-text">General definition of attention</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how-to-do-attention"><span class="nav-number">3.</span> <span class="nav-text">How to do attention</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bidirectional-rnns"><span class="nav-number">4.</span> <span class="nav-text">Bidirectional RNNs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#seq2seq"><span class="nav-number">5.</span> <span class="nav-text">Seq2Seq</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#seq2seq-architecture---encoder"><span class="nav-number">5.1.</span> <span class="nav-text">Seq2Seq architecture - encoder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#seq2seq-architecture---decoder"><span class="nav-number">5.2.</span> <span class="nav-text">Seq2Seq architecture - decoder</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#training-a-neural-machine-translation-system"><span class="nav-number">6.</span> <span class="nav-text">Training a Neural Machine Translation system</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#greedy-search"><span class="nav-number">6.1.</span> <span class="nav-text">Greedy Search</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#beam-search-decoding"><span class="nav-number">6.2.</span> <span class="nav-text">Beam search decoding</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cs224n-assignment4"><span class="nav-number">7.</span> <span class="nav-text">CS224n Assignment4</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#initialize"><span class="nav-number">7.1.</span> <span class="nav-text">Initialize</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#encode"><span class="nav-number">7.2.</span> <span class="nav-text">Encode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#decode"><span class="nav-number">7.3.</span> <span class="nav-text">Decode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#helpers"><span class="nav-number">7.4.</span> <span class="nav-text">Helpers</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

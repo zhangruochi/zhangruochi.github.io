@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Gossip,Member,Grid">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gossip,Member,Grid">
+<meta property="og:url" content="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Gossip,Member,Grid">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/10.png">
+<meta property="og:image" content="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/gossip_member_grid01.png">
+<meta property="og:image" content="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/gossip_member_grid02.png">
+<meta property="og:image" content="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/gossip_member_grid03.png">
+<meta property="og:image" content="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/11.png">
+<meta property="og:image" content="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/gossip_member_grid04.png">
+<meta property="og:image" content="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/gossip_member_grid05.png">
+<meta property="og:image" content="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/gossip_member_grid06.png">
+<meta property="og:image" content="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/12.png">
+<meta property="og:image" content="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/gossip_member_grid07.png">
+<meta property="og:image" content="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/gossip_member_grid08.png">
+<meta property="og:image" content="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/gossip_member_grid09.png">
+<meta property="article:published_time" content="2019-02-14T01:16:31.000Z">
+<meta property="article:modified_time" content="2021-12-31T07:48:40.150Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Course Note">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/10.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Gossip,Member,Grid | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Gossip-Member-Grid/2019/02/14/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Gossip,Member,Grid
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-02-14 09:16:31" itemprop="dateCreated datePublished" datetime="2019-02-14T09:16:31+08:00">2019-02-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 15:48:40" itemprop="dateModified" datetime="2021-12-31T15:48:40+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/" itemprop="url" rel="index"><span itemprop="name">Big Data Architecture</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/Distributed-Cloud-Computing/" itemprop="url" rel="index"><span itemprop="name">Distributed & Cloud Computing</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Gossip-Member-Grid/2019/02/14/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Gossip-Member-Grid/2019/02/14/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Gossip,Member,Grid</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="table-of-contents">Table of Contents</h1>
+<ul>
+<li><a href="#overview">Overview</a>
+<ul>
+<li><a href="#goals-and-objectives">Goals and Objectives</a></li>
+<li><a href="#key-phrasesconcepts">Key Phrases/Concepts</a></li>
+<li><a href="#guiding-questions">Guiding Questions</a></li>
+</ul></li>
+<li><a href="#gossip">Gossip</a>
+<ul>
+<li><a href="#what-is-multicast">what is multicast?</a></li>
+<li><a href="#what-are-the-requirements-for-multicast-protocol">What are the requirements for multicast protocol?</a></li>
+<li><a href="#centralized-multicast-protocol">Centralized Multicast Protocol</a></li>
+<li><a href="#tree-based-multicast-protocol">Tree-Based Multicast Protocol</a></li>
+<li><a href="#epidemic-multicast">Epidemic Multicast</a></li>
+<li><a href="#topology-aware-gossip">Topology-Aware Gossip</a></li>
+<li><a href="#gossip-summary">Gossip Summary</a></li>
+</ul></li>
+<li><a href="#member">Member</a>
+<ul>
+<li><a href="#two-sub-protocals">Two sub-protocals</a></li>
+<li><a href="#failure-detection">Failure Detection</a>
+<ul>
+<li><a href="#gossip-style-failure-detection">Gossip Style Failure Detection</a></li>
+<li><a href="#swim-failure-detection">Swim Failure Detection</a></li>
+</ul></li>
+<li><a href="#dissemination">Dissemination</a></li>
+<li><a href="#suspicion-mechanism">Suspicion Mechanism</a></li>
+<li><a href="#member-summary">Member Summary</a></li>
+</ul></li>
+<li><a href="#grid">Grid</a></li>
+</ul>
+<h2 id="overview">Overview</h2>
+<p>This week’s video lectures cover the topics of Grids, Membership, and Gossip. With this, you have all the concepts you need to complete the Programming Assignment in this course.</p>
+<h3 id="goals-and-objectives">Goals and Objectives</h3>
+<p>After you actively engage in the learning experiences in this module, you should be able to:</p>
+<ul>
+<li>Analyze various gossip/epidemic protocols.</li>
+<li>Design and analyze various distributed membership protocols.</li>
+<li>Know what grid computing is.</li>
+</ul>
+<h3 id="key-phrasesconcepts">Key Phrases/Concepts</h3>
+<p>Keep your eyes open for the following key terms or phrases as you interact with the lectures. These topics will help you better understand the content in this module.</p>
+<ul>
+<li>Failure detectors</li>
+<li>Membership protocols</li>
+<li>Gossip/epidemic protocols</li>
+<li>Grid computing</li>
+</ul>
+<h3 id="guiding-questions">Guiding Questions</h3>
+<p>Develop your answers to the following guiding questions while completing the activities throughout the week.</p>
+<ul>
+<li>Why are gossip and epidemic protocols fast and reliable?</li>
+<li>What is the most efficient way for cloud computing systems to detect failures of servers?</li>
+<li>How is grid computing related to cloud computing?</li>
+</ul>
+<h2 id="gossip">Gossip</h2>
+<h3 id="what-is-multicast">what is multicast?</h3>
+<p>Suppose you have a group of processes or a group of nodes. Each of these processes or each of these nodes is potentially a process at some host on the Internet or connected to the network. And essentially, all we need is that these processes or nodes need to be able to talk with each other by being able to <strong>send</strong> and <strong>receive</strong> messages.</p>
+<h3 id="what-are-the-requirements-for-multicast-protocol">What are the requirements for multicast protocol?</h3>
+<ul>
+<li>fault tolerance</li>
+<li>scalability</li>
+</ul>
+<h3 id="centralized-multicast-protocol">Centralized Multicast Protocol</h3>
+<p><img src="10.png" /></p>
+<ul>
+<li>If the sender fails, no one can received the multicast.</li>
+<li>the overhead on the sender is very high. O(n)</li>
+</ul>
+<h3 id="tree-based-multicast-protocol">Tree-Based Multicast Protocol</h3>
+<ul>
+<li>Build a spanning tree among the processes of the multicast group</li>
+<li>Use spanning tree to disseminate multicasts</li>
+<li>Use either acknowledgments (ACKs) or negative acknowledgements (NAKs) to repair multicasts not received</li>
+<li><strong>SRM</strong> (Scalable Reliable Multicast)
+<ul>
+<li>Uses NAKs</li>
+<li>But adds random delays, and uses exponential backoff to avoid NAK storms</li>
+</ul></li>
+<li><strong>RMTP</strong> (Reliable Multicast Transport Protocol)
+<ul>
+<li>Uses ACKs</li>
+<li>But ACKs only sent to designated receivers, which then re-transmit missing multicasts</li>
+</ul></li>
+<li>These protocols still cause an O(N) ACK/NAK overhead</li>
+<li><img src="gossip_member_grid01.png" title="fig:" alt="gossip_member_grid01.png" /></li>
+</ul>
+<h3 id="epidemic-multicast">Epidemic Multicast</h3>
+<p><img src="gossip_member_grid02.png" /></p>
+<p>the sender periodically picks b nodes as gossip targets and sends them copies of the multicast message using what is known as a gossip message. When b turns from uninfected into infected they starts periodically sending out gossip message.</p>
+<ul>
+<li><strong>Push</strong> gossip
+<ul>
+<li>Once you have a multicast message, you start gossiping about it</li>
+<li>Multiple messages? Gossip a random subset of them, or recently-received ones, or higher priority ones</li>
+</ul></li>
+<li><strong>Pull</strong> gossip
+<ul>
+<li>Periodically poll a few randomly selected processes for new multicast messages that you haven’t received</li>
+<li>Get those messages</li>
+</ul></li>
+<li><strong>Hybrid variant</strong>: Push-Pull
+<ul>
+<li>As the name suggests</li>
+</ul></li>
+</ul>
+<h3 id="topology-aware-gossip">Topology-Aware Gossip</h3>
+<p><img src="gossip_member_grid03.png" /></p>
+<ul>
+<li>Network topology is hierachical</li>
+<li>Random gossip target selection =&gt; core routers face O(N) load</li>
+<li>In subnet i, which contains <span class="math inline">\(n_i\)</span> nodes, pick gossip target in your subnet with probability <span class="math inline">\(\frac{1}{n_i}\)</span></li>
+<li>Router <span class="math inline">\(load=O(1)\)</span></li>
+<li>Dissemination <span class="math inline">\(time=O(log(N))\)</span></li>
+</ul>
+<h3 id="gossip-summary">Gossip Summary</h3>
+<ul>
+<li>Multicast is an important problem</li>
+<li>Tree-bases multicast protocols</li>
+<li>When concerns the scalability and fault tolerance, the gossip protocol is a good choice</li>
+<li>Also known as epidemic</li>
+<li>Fast, reliable, Fault-tolerant, scalability, topology-aware</li>
+</ul>
+<h2 id="member">Member</h2>
+<p>The membership list Which maintains the list of most or all of the other processes that are currently in your system and that have not yet failed. That means non-faulty processes. This membership list is accessed by a variety of applications, for instance the application might be a distributed hash table.</p>
+<p><img src="11.png" /></p>
+<h3 id="two-sub-protocals">Two sub-protocals</h3>
+<ul>
+<li>Failure Detection</li>
+<li>Dissemination</li>
+</ul>
+<p><img src="gossip_member_grid04.png" /></p>
+<h3 id="failure-detection">Failure Detection</h3>
+<p>some process find out the failure process quickly</p>
+<ul>
+<li>Desirable propertities
+<ul>
+<li>Completeness (most important)</li>
+<li>Accuracy</li>
+<li>Speed</li>
+<li>Scale</li>
+</ul></li>
+</ul>
+<h4 id="gossip-style-failure-detection">Gossip Style Failure Detection</h4>
+<p><img src="gossip_member_grid05.png" /> <img src="gossip_member_grid06.png" /></p>
+<ol type="1">
+<li>If the heartbeat has not increased for more than <span class="math inline">\(T_{tail}\)</span> seconds, the member is considered fail.</li>
+<li>After <span class="math inline">\(T_{cleanup}\)</span> seconds, it will delete the member from the list.</li>
+<li>N heartbeats take:
+<ul>
+<li>O(log(n)) time to propagate if bandwith allowed per node is O(n)</li>
+<li>O(Nlog(n)) time to propagate if bandwith allowed per node is O(1)</li>
+</ul></li>
+<li>Multi-level Gossip
+<ul>
+<li><img src="12.png" /></li>
+</ul></li>
+<li>All-to-all and gossip-based heartbeating are in fact suboptimal because they have in fact they are O(Nlog(N)) for the gossip-based heartbeating. The key here is to realize that these two protocols mix up the <strong>failure detection</strong> and the <strong>dissemination components</strong>. Essentially they are trying to have all the processes in the system detect the failure by themselves and not really using dissemination component separately.</li>
+</ol>
+<h4 id="swim-failure-detection">Swim Failure Detection</h4>
+<ul>
+<li>Two choice for the <span class="math inline">\(P_j\)</span>(failure process)</li>
+<li>Directed ping to <span class="math inline">\(P_j\)</span> and indirected ping to <span class="math inline">\(P_j\)</span> (Randomly select another process and then send ping to <span class="math inline">\(P_j\)</span>)</li>
+<li>Constant time =&gt; <span class="math inline">\(O(1)\)</span></li>
+<li><img src="gossip_member_grid07.png" /></li>
+</ul>
+<h3 id="dissemination">Dissemination</h3>
+<ul>
+<li>Multicast Dissemination(Hardware/IP)
+<ul>
+<li>unreliable</li>
+</ul></li>
+<li>Point-to-Point
+<ul>
+<li>expensive</li>
+</ul></li>
+<li>Infection style Dissemination</li>
+</ul>
+<h3 id="suspicion-mechanism">Suspicion Mechanism</h3>
+<p>Suspect a process before <strong>declaring</strong> it as failed in the group</p>
+<p><img src="gossip_member_grid08.png" /></p>
+<h3 id="member-summary">Member Summary</h3>
+<ul>
+<li>在数据中心中，出错是常态，并不是意外</li>
+<li>每一个分布式系统都会使用错误检测器</li>
+<li>很多分布式系统使用了成员关系服务</li>
+<li>使用环形错误检测的有 – IBM SP2和很多其他相似的集群/机器</li>
+<li>使用流言式的错误检测的有 – 亚马逊Amazon EC2/S3</li>
+</ul>
+<h2 id="grid">Grid</h2>
+<blockquote>
+<p>src: https://www.zhihu.com/question/20773707/answer/16583447 网格计算的设计目标是解决对于任何单一的超级计算机来说仍然大得难以解决的问题，并同时保持解决多个较小的问题的灵活性。这样，网格计算就提供了一个多用户环境。它的第二个目标就是：更好的利用可用计算力，迎合大型的计算练习的断断续续的需求。有了网格计算技术，您可以将服务器、存储系统和网络联合在一起，组成一个大的系统，从而为用户提供功能强大的多系统资源来处理特定的任务。对于最终用户或应用程序来说，数据文件、应用程序和系统看起来就像是一个巨大的虚拟计算系统。网格计算与其他所有的分布式计算范例都有所区别：网格计算的本质在于以有效且优化的方式来利用组织中各种异构松耦合资源，来实现复杂的工作负载管理和信息虚拟化功能。</p>
+</blockquote>
+<figure>
+<img src="gossip_member_grid09.png" alt="gossip_member_grid09.png" /><figcaption aria-hidden="true">gossip_member_grid09.png</figcaption>
+</figure>
+<p>two level scheduling infrastructure</p>
+<ul>
+<li>Inter-site protol</li>
+<li>Globus</li>
+<li>No single entity controls the entire infrastructure(federate)</li>
+</ul>
+<p>网格通常使用两级调度基础架构，每个站点都运行一个站内协议，然后不同站点之间有一个协议。有时候，站内和站间协议可以是一种通用的协议。协议会进行任务的分发，决定哪个任务工作在哪个机器上面。计算资源空闲的时候，会运行协议的守护进程，去访问协议的中央服务器，寻求任务，此时协议将会分发一个任务给该计算资源。如果任务完成过程中，计算资源被本地用户使用，此时意味着计算资源不是闲置的了。那么它会停止手头得到的子任务，要么直接杀死子任务的进程，要么将中间结果整理之后返回中央服务器，以便后续的计算资源接手其任务继续运算。但是通常而言，协议的策略都是直接杀死子任务，不再返回中间结果了，因为这样的实现方法要简单一些。</p>
+<p><strong>Reference from some slides from Coursera course <a target="_blank" rel="noopener" href="https://www.coursera.org/learn/cloud-computing">Cloud Computing</a></strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Course-Note/" rel="tag"># Course Note</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Dive-into-blog/2019/02/13/" rel="prev" title="Dive into blog">
+      <i class="fa fa-chevron-left"></i> Dive into blog
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Introduction-to-Cloud-Computing/2019/02/14/" rel="next" title="Introduction to Cloud Computing">
+      Introduction to Cloud Computing <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#table-of-contents"><span class="nav-number">1.</span> <span class="nav-text">Table of Contents</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#overview"><span class="nav-number">1.1.</span> <span class="nav-text">Overview</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#goals-and-objectives"><span class="nav-number">1.1.1.</span> <span class="nav-text">Goals and Objectives</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#key-phrasesconcepts"><span class="nav-number">1.1.2.</span> <span class="nav-text">Key Phrases&#x2F;Concepts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#guiding-questions"><span class="nav-number">1.1.3.</span> <span class="nav-text">Guiding Questions</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gossip"><span class="nav-number">1.2.</span> <span class="nav-text">Gossip</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#what-is-multicast"><span class="nav-number">1.2.1.</span> <span class="nav-text">what is multicast?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#what-are-the-requirements-for-multicast-protocol"><span class="nav-number">1.2.2.</span> <span class="nav-text">What are the requirements for multicast protocol?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#centralized-multicast-protocol"><span class="nav-number">1.2.3.</span> <span class="nav-text">Centralized Multicast Protocol</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tree-based-multicast-protocol"><span class="nav-number">1.2.4.</span> <span class="nav-text">Tree-Based Multicast Protocol</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#epidemic-multicast"><span class="nav-number">1.2.5.</span> <span class="nav-text">Epidemic Multicast</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#topology-aware-gossip"><span class="nav-number">1.2.6.</span> <span class="nav-text">Topology-Aware Gossip</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gossip-summary"><span class="nav-number">1.2.7.</span> <span class="nav-text">Gossip Summary</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#member"><span class="nav-number">1.3.</span> <span class="nav-text">Member</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#two-sub-protocals"><span class="nav-number">1.3.1.</span> <span class="nav-text">Two sub-protocals</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#failure-detection"><span class="nav-number">1.3.2.</span> <span class="nav-text">Failure Detection</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#gossip-style-failure-detection"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">Gossip Style Failure Detection</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#swim-failure-detection"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">Swim Failure Detection</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dissemination"><span class="nav-number">1.3.3.</span> <span class="nav-text">Dissemination</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#suspicion-mechanism"><span class="nav-number">1.3.4.</span> <span class="nav-text">Suspicion Mechanism</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#member-summary"><span class="nav-number">1.3.5.</span> <span class="nav-text">Member Summary</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#grid"><span class="nav-number">1.4.</span> <span class="nav-text">Grid</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

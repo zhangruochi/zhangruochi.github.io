@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="How to develop a Hack assembler—a program that generates binary code that can run as is on the hardware platform built in last chapter.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Assembler">
+<meta property="og:url" content="https://zhangruochi.com/Assembler/2019/06/05/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="How to develop a Hack assembler—a program that generates binary code that can run as is on the hardware platform built in last chapter.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Assembler/2019/06/05/1.png">
+<meta property="og:image" content="https://zhangruochi.com/Assembler/2019/06/05/2.png">
+<meta property="article:published_time" content="2019-06-05T05:55:25.000Z">
+<meta property="article:modified_time" content="2021-12-31T07:12:01.228Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Nand2Tetris">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Assembler/2019/06/05/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Assembler/2019/06/05/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Assembler | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Assembler/2019/06/05/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Assembler
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-06-05 13:55:25" itemprop="dateCreated datePublished" datetime="2019-06-05T13:55:25+08:00">2019-06-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 15:12:01" itemprop="dateModified" datetime="2021-12-31T15:12:01+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Software-Architecture/" itemprop="url" rel="index"><span itemprop="name">Software Architecture</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Assembler/2019/06/05/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Assembler/2019/06/05/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">How to develop a Hack assembler—a program that generates binary code that can run as is on the hardware platform built in last chapter.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="table-of-contents">Table of Contents</h1>
+<ul>
+<li><a href="#hack-language-specification">Hack language specification</a>
+<ul>
+<li><a href="#a-instruction">A-instruction</a></li>
+<li><a href="#c-instruction">C-instruction</a></li>
+<li><a href="#symbolspre-defined-symbols">Symbols(Pre-defined symbols)</a></li>
+<li><a href="#a-translators-perspective">A translator’s perspective</a></li>
+</ul></li>
+<li><a href="#the-assembly-process-instructions">The assembly process: instructions</a></li>
+<li><a href="#the-assembly-process-symbols">The assembly process: symbols</a></li>
+<li><a href="#symbol-table">Symbol table</a></li>
+<li><a href="#the-assembly-process">The assembly process</a></li>
+</ul>
+<h2 id="hack-language-specification">Hack language specification</h2>
+<h3 id="a-instruction">A-instruction</h3>
+<p><strong>Symbolic syntax</strong> &gt; <span class="citation" data-cites="value">@value</span></p>
+<p>Where value is either - a non-negative decimal constant - a symbol referring to such a constant</p>
+<p><strong>Example</strong> &gt; <span class="citation" data-cites="21">@21</span>, <span class="citation" data-cites="foo">@foo</span></p>
+<p><strong>Binary syntax</strong> &gt; 0valueInBinary <strong>Example</strong>: &gt; 0000000000010101</p>
+<h3 id="c-instruction">C-instruction</h3>
+<p><strong>Symbolic syntax</strong> &gt; dest = comp ; jump</p>
+<p><strong>Binary syntax</strong> &gt; 1 1 1 a c1 c2 c3 c4 c5 c6 d1 d2 d3 j1 j2 j3</p>
+<p><img src="1.png" /></p>
+<h3 id="symbolspre-defined-symbols">Symbols(Pre-defined symbols)</h3>
+<p>Label declaration: (label) Variable declaration: <span class="citation" data-cites="variableName">@variableName</span></p>
+<p>The Hack language specification describes 23 pre-defined symbols</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Symbol</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Symbol</th>
+<th style="text-align: left;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">R0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">SP</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">R1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">LCL</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R2</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">ARG</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">...</td>
+<td style="text-align: left;">...</td>
+<td style="text-align: left;">THIS</td>
+<td style="text-align: left;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R15</td>
+<td style="text-align: left;">15</td>
+<td style="text-align: left;">THAT</td>
+<td style="text-align: left;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SCREEN</td>
+<td style="text-align: left;">16384</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">KBD</td>
+<td style="text-align: left;">24576</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<h3 id="a-translators-perspective">A translator’s perspective</h3>
+<p>Assembly program elements:</p>
+<p><strong>White space</strong> - q Empty lines / indentation - Linecomments - In-line comments</p>
+<p><strong>Instructions</strong> - A-instructions - C-instructions</p>
+<p><strong>Symbols</strong> - References - Label declarations</p>
+<h2 id="the-assembly-process-instructions">The assembly process: instructions</h2>
+<p>For each instruction</p>
+<ol type="1">
+<li>Parse the instruction: break it into its underlying fields</li>
+<li>A-instruction: translate the decimal value into a binary value</li>
+<li>C-instruction: for each field in the instruction, generate the corresponding binary code;</li>
+<li>Assemble the translated binary codes into a complete 16-bit machine instruction</li>
+<li>Write the 16-bit instruction to the output file.</li>
+</ol>
+<h2 id="the-assembly-process-symbols">The assembly process: symbols</h2>
+<ol type="1">
+<li>Translating <span class="citation" data-cites="preDefinedSymbol">@preDefinedSymbol</span>: <strong>Replace preDefinedSymbol with its value.</strong></li>
+<li>Label symbols
+<ul>
+<li>Used to label destinations of goto commands</li>
+<li>Declared by the pseudo-command (XXX)</li>
+<li>This directive defines the symbol XXX to refer to the memory location holding the next instruction in the program</li>
+<li>Translating <span class="citation" data-cites="labelSymbol">@labelSymbol</span> : <strong>Replace <em>labelSymbol</em> with its value</strong></li>
+</ul></li>
+</ol>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">LOOP</td>
+<td style="text-align: left;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STOP</td>
+<td style="text-align: left;">18</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">END</td>
+<td style="text-align: left;">22</td>
+</tr>
+</tbody>
+</table>
+<ol start="3" type="1">
+<li>Variable symbols
+<ul>
+<li>Any symbol XXX appearing in an assembly program which is <strong>not</strong> predefined and is not defined elsewhere using the (XXX) directive is treated as a variable</li>
+<li>Each variable is assigned a unique memory address, starting at 16</li>
+<li>Translating <span class="citation" data-cites="variableSymbol">@variableSymbol</span> :
+<ul>
+<li>If seen for the first time, assign a unique memory address</li>
+<li>Replace <em>variableSymbol</em> with this address</li>
+</ul></li>
+</ul></li>
+</ol>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">i</td>
+<td style="text-align: left;">16</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sum</td>
+<td style="text-align: left;">17</td>
+</tr>
+</tbody>
+</table>
+<h2 id="symbol-table">Symbol table</h2>
+<p>To resolve a symbol, look up its value in the symbol table</p>
+<p><img src="2.png" /></p>
+<h2 id="the-assembly-process">The assembly process</h2>
+<ol type="1">
+<li><strong>Initialization</strong></li>
+</ol>
+<ul>
+<li>Construct an empty symbol table</li>
+<li>Add the pre-defined symbols to the symbol table</li>
+</ul>
+<ol start="2" type="1">
+<li><strong>First pass</strong></li>
+</ol>
+<ul>
+<li>Scan the entire program;</li>
+<li>For each <strong>instruction</strong> of the form (xxx):
+<ul>
+<li>Add the pair (xxx, address) to the symbol table, where address is the number of the instruction following (xxx)</li>
+</ul></li>
+</ul>
+<ol start="3" type="1">
+<li><strong>Second pass</strong></li>
+</ol>
+<ul>
+<li>Set n to 16</li>
+<li>Scan the entire program again, for each instruction:
+<ul>
+<li>If the instruction is <span class="citation" data-cites="symbol">@symbol</span>, look up symbol in the symbol table;
+<ul>
+<li>If (symbol, value) is found, use value to complete the instruction’s translation;</li>
+<li>If not found:
+<ul>
+<li>Add (symbol, n) to the symbol table,</li>
+<li>Use n to complete the instruction’s translation,</li>
+<li>n++</li>
+</ul></li>
+</ul></li>
+<li>If the instruction is a C-instruction, complete the instruction’s translation</li>
+<li>Write the translated instruction to the output file.</li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Nand2Tetris/" rel="tag"># Nand2Tetris</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Low-Level-Programming-Taste-Project/2019/06/04/" rel="prev" title="Low Level Programming Taste Project">
+      <i class="fa fa-chevron-left"></i> Low Level Programming Taste Project
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Assembler-Project/2019/06/05/" rel="next" title="Assembler Project">
+      Assembler Project <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#table-of-contents"><span class="nav-number">1.</span> <span class="nav-text">Table of Contents</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hack-language-specification"><span class="nav-number">1.1.</span> <span class="nav-text">Hack language specification</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-instruction"><span class="nav-number">1.1.1.</span> <span class="nav-text">A-instruction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-instruction"><span class="nav-number">1.1.2.</span> <span class="nav-text">C-instruction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#symbolspre-defined-symbols"><span class="nav-number">1.1.3.</span> <span class="nav-text">Symbols(Pre-defined symbols)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-translators-perspective"><span class="nav-number">1.1.4.</span> <span class="nav-text">A translator’s perspective</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#the-assembly-process-instructions"><span class="nav-number">1.2.</span> <span class="nav-text">The assembly process: instructions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#the-assembly-process-symbols"><span class="nav-number">1.3.</span> <span class="nav-text">The assembly process: symbols</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#symbol-table"><span class="nav-number">1.4.</span> <span class="nav-text">Symbol table</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#the-assembly-process"><span class="nav-number">1.5.</span> <span class="nav-text">The assembly process</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
