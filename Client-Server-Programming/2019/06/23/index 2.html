@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Client-Server Programming">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Client-Server Programming">
+<meta property="og:url" content="https://zhangruochi.com/Client-Server-Programming/2019/06/23/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Client-Server Programming">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Client-Server-Programming/2019/06/23/1.png">
+<meta property="og:image" content="https://zhangruochi.com/Client-Server-Programming/2019/06/23/2.png">
+<meta property="article:published_time" content="2019-06-23T15:54:03.000Z">
+<meta property="article:modified_time" content="2021-12-31T10:11:50.130Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Client-Server-Programming/2019/06/23/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Client-Server-Programming/2019/06/23/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Client-Server Programming | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Client-Server-Programming/2019/06/23/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Client-Server Programming
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-06-23 23:54:03" itemprop="dateCreated datePublished" datetime="2019-06-23T23:54:03+08:00">2019-06-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 18:11:50" itemprop="dateModified" datetime="2021-12-31T18:11:50+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/" itemprop="url" rel="index"><span itemprop="name">Big Data Architecture</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/Distributed-Cloud-Computing/" itemprop="url" rel="index"><span itemprop="name">Distributed & Cloud Computing</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Client-Server-Programming/2019/06/23/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Client-Server-Programming/2019/06/23/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Client-Server Programming</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="table-of-contents">Table of Contents</h1>
+<ul>
+<li><a href="#introduction-to-sockets">Introduction to Sockets</a></li>
+<li><a href="#serialization-and-deserialization">Serialization and Deserialization</a></li>
+<li><a href="#remote-method-invocation">Remote Method Invocation</a>
+<ul>
+<li><a href="#远程调用">远程调用</a>
+<ul>
+<li><a href="#rpc">RPC</a></li>
+<li><a href="#rmi">RMI</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#multicast-sockets">Multicast Sockets</a></li>
+<li><a href="#publish-subscribe-pattern">Publish-Subscribe Pattern</a></li>
+</ul>
+<h2 id="introduction-to-sockets">Introduction to Sockets</h2>
+<p><strong>Lecture Summary</strong>: In this lecture, we learned about client-server programming, and how two distributed Java applications can communicate with each other using sockets. Since each application in this scenario runs on a distinct Java Virtual Machine (JVM) process, we used the terms "application'', "JVM'' and "process'' interchangeably in the lecture. For JVM A and JVM B to communicate with each other, we assumed that JVM A plays the "client'' role and JVM B the "server'' role. To establish the connection, the main thread in JVM B first creates a ServerSocket which is initialized with a designated URL and port number. It then waits for client processes to connect to this socket by invoking the socket.accept() method, which returns an object of type Socket. The s.getInputStream() and s.getOutputStream() methods can be invoked on this object to perform read and write operations via the socket, using the same APIs that you use for file I/O via streams.</p>
+<p>Once JVM B has set up a server socket, JVM A can connect to it as a client by creating a Socket object with the appropriate parameters to identify JVM B's server port. As in the server case, the getInputStream() and getOutputStream() methods can be invoked on this object to perform read and write operations. With this setup, JVM A and JVM B can communicate with each other by using read and write operations, which get implemented as messages that flow across the network. Client-server communication occurs at a lower level and scale than MapReduce, which implicitly accomplishes communication among large numbers of processes. Hence, client-server programming is typically used for building distributed applications with small numbers of processes.</p>
+<p><img src="1.png" /></p>
+<h2 id="serialization-and-deserialization">Serialization and Deserialization</h2>
+<p><strong>Lecture Summary</strong>: This lecture reviewed serialization and deserialization, which are essential concepts for all forms of data transfers in Java applications, including file I/O and communication in distributed applications. When communications are performed using input and output streams, as discussed in the previous lecture, the unit of data transfer is a sequence of bytes. Thus, it becomes important to serialize objects into bytes in the sender process, and to deserialize bytes into objects in the receiver process.</p>
+<ol type="1">
+<li><strong>custom approach</strong>: the programmer provides custom code to perform the serialization and deserialization. However, writing custom serializers and deserializers can become complicated when nested objects are involved, e.g.,if object x contains a field,f3, which points to object y. In this case, the serialization of object x by default also needs to include a serialization of object y.</li>
+<li><strong>XML</strong>: since XML was designed to serve as a data interchange standard. There are many application frameworks that support conversion of application objects into XML objects, which is convenient because typical XML implementations in Java include built-in serializers and deserializers. However, the downside is that there can be a lot of <strong>metadata</strong> created when converting Java objects into XML, and that metadata can add to the size of the serialized data being communicated.</li>
+<li><strong>Java Serialization and Deserialization</strong>: This works by identifying classes that implement the Serializable interface, and relying on a guarantee that such classes will have built-in serializers and deserializers, analogous to classes with built-in toString() methods. In this situation, if object x is an instance of a serializable class and its field f3 points to object y, then object y must also be an instance of a serializable class (otherwise an exception will be thrown when attempting to serialize object x). An important benefit of this approach is that only one copy of each object is included in the serialization, even if there may be multiple references to the object, e.g., if fields f2 and f3 both point to object y. Another benefit is that cycles in object references are handled intelligently, without getting into an infinite loop when following object references. Yet another important benefit is that this approach allows identification of fields that should be skipped during the serialization/deserialization steps because it may be unnecessary and inefficient to include them in the communication. Such fields are identified by declaring them as transient.</li>
+<li><strong>Interface Definition Language (IDL)</strong>: A recent example of using the IDL approach can be found in Google's Protocol Buffers framework. A notable benefit of this approach relative to Java serialization is that protocol buffers can support communication of objects across processes implemented in different languages, e.g., Java, C++, Python. The downside is that extra effort is required to enable the serialization (e.g., creating a .proto file as an IDL, and including an extra compile step for the IDL in the build process), which is not required when using Java serialization for communication among Java processes.</li>
+</ol>
+<h2 id="remote-method-invocation">Remote Method Invocation</h2>
+<p><strong>Lecture Summary</strong>: This lecture reviewed the concept of Remote Method Invocation (RMI), which extends the notion of method invocation in a sequential program to a distributed programming setting. As an example, let us consider a scenario in which a thread running on JVM A wants to invoke a method, foo(), on object x located on JVM B. This can be accomplished using sockets and messages, but that approach would entail writing a lot of extra code for encoding and decoding the method call, its arguments, and its return value. In contrast, Java RMI provides a very convenient way to directly address this use case.</p>
+<p>To enable RMI, we run an RMI client on JVM A and an RMI server on JVM B. Further, JVM A is set up to contain a <strong>stub object</strong> or proxy object for remote object x located on JVM B. (In early Java RMI implementations, a skeleton object would also need to be allocated on the server side, JVM B, as a proxy for the shared object, but this is no longer necessary in modern implementations.) When a stub method is invoked, it transparently initiates a connection with the remote JVM containing the remote object, x, serializes and communicates the method parameters to the remote JVM, receives the result of the method invocation, and deserializes the result into object y(say) which is then passed on to the caller of method x.foo() as the result of the RMI call.</p>
+<p>Thus, RMI takes care of a number of tedious details related to remote communication. However, this convenience comes with a few setup requirements as well. First, objects x and y must be serializable, because their values need to be communicated between JVMs A and B, Second, object x must be included in the RMI registry, so that it can be accessed through a global name rather than a local object reference. The registry in turn assists in mapping from global names to references to local stub objects. In summary, a key advantage of RMI is that, once this setup in place, method invocations across distributed processes can be implemented almost as simply as standard method invocations.</p>
+<h3 id="远程调用">远程调用</h3>
+<blockquote>
+<p>src: https://www.jb51.net/article/49436.htm</p>
+</blockquote>
+<p>远程调用使得调用远程服务器的对象、方法的方式就和调用本地对象、方法的方式差不多，因为我们通过网络编程把这些都隐藏起来了。远程调用是分布式系统的基础。</p>
+<ol type="1">
+<li>远程过程调用（RPC）</li>
+<li>远程方法调用（RMI）</li>
+</ol>
+<h4 id="rpc">RPC</h4>
+<p>RPC属于函数级别的远程调用，其多是通过HTTP传输数据，数据形式有XML、JSON、序列化数据等。在此，用python做一个xml-rpc的示例。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 服务器端server.py</span></span><br><span class="line"><span class="comment">## s是一个绑定了本地8080端口的服务器对象，register_function()方法将函数add注册到s中。serve_forever()启动服务器。</span></span><br><span class="line"><span class="keyword">from</span> SimpleXMLRPCServer <span class="keyword">import</span> SimpleXMLRPCServer   </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">x, y</span>):</span></span><br><span class="line">    <span class="keyword">return</span> x + y    </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    s = SimpleXMLRPCServer((<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>))</span><br><span class="line">    s.register_function(add)</span><br><span class="line">    s.serve_forever()</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"><span class="comment">## 客户端client.py：</span></span><br><span class="line"><span class="keyword">from</span> xmlrpclib <span class="keyword">import</span> ServerProxy</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    s = ServerProxy(<span class="string">&quot;http://127.0.0.1:8080&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span> s.add(<span class="number">3</span>,<span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+<p>我们用wireshark看一下这期间传递的数据是什么样子的。</p>
+<ol type="1">
+<li>请求的数据:</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&#x27;1.0&#x27; ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">methodCall</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">methodName</span>&gt;</span></span><br><span class="line">        add</span><br><span class="line">    <span class="tag">&lt;/<span class="name">methodName</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">params</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">int</span>&gt;</span> 3 <span class="tag">&lt;/<span class="name">int</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">param</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">int</span>&gt;</span> 4 <span class="tag">&lt;/<span class="name">int</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">params</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">methodCall</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li>响应的数据</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&#x27;1.0&#x27; ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">methodResponse</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">params</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">int</span>&gt;</span> 7 <span class="tag">&lt;/<span class="name">int</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">params</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">methodResponse</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="rmi">RMI</h4>
+<p>RMI意为远程方法调用，粒度比RPC要大，因为它的基本单位是对象。其大致思路是这样的：创建RMI服务器对象，将实例化的某个对象以指定的服务名称（也可以是多个对象，但是服务名称不应相同）注册到RMI服务器对象中，之后启动RMI服务器。服务器等待客户端发送的数据（包括服务名称、函数名、参数），将处理结果返回给客户端。 Pyro4是一个基于python的RMI实现，下面我们用Pyro4创建一个RMI服务器，</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 服务器端 server2.py：</span></span><br><span class="line"><span class="comment">## uri变量是Pyro4用自己的方法为greeting_maker对象生成的uri，其中包括套接字以及为greeting_maker生成的唯一的id。这个id相当于服务名称，当然也可以指定更易懂的服务名称。</span></span><br><span class="line"><span class="keyword">import</span> Pyro4</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GreetingMaker</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_fortune</span>(<span class="params">self, name</span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Hello, &#123;0&#125;. \n&quot;</span> .<span class="built_in">format</span>(name)</span><br><span class="line">greeting_maker=GreetingMaker()</span><br><span class="line">daemon=Pyro4.Daemon()                </span><br><span class="line">uri=daemon.register(greeting_maker)   </span><br><span class="line"><span class="built_in">print</span> <span class="string">&quot;Ready. Object uri =&quot;</span>, uri      </span><br><span class="line">daemon.requestLoop()</span><br><span class="line"></span><br><span class="line"><span class="comment">## 客户端 client.py</span></span><br><span class="line"><span class="comment">## 这其中要输入的uri也就是server2.py生成的uri。通过给Pyro4.Proxy传递greeting_maker的uri，可以认为和服务器端的greeting_maker建立的连接，然后调用greeting_maker的get_fortune()方法。</span></span><br><span class="line"><span class="keyword">import</span> Pyro4</span><br><span class="line">uri=uri</span><br><span class="line">name=<span class="string">&quot;zhang ruochi&quot;</span></span><br><span class="line">greeting_maker=Pyro4.Proxy(uri)        </span><br><span class="line"><span class="built_in">print</span> greeting_maker.get_fortune(name)</span><br></pre></td></tr></table></figure>
+<h2 id="multicast-sockets">Multicast Sockets</h2>
+<p><strong>Lecture Summary</strong>: In this lecture, we learned about multicast sockets, which are a generalization of the standard socket interface that we studied earlier. Standard sockets can be viewed as unicast communications, in which a message is sent from a source to a single destination. Broadcast communications represent a simple extension to unicast, in which a message can be sent efficiently to all nodes in the same local area network as the sender. In contrast, multicast sockets enable a sender to efficiently send the same message to a specified set of receivers on the Internet. This capability can be very useful for a number of applications, which include news feeds, video conferencing, and multi-player games.<br />
+&gt; One reason why a 1:n multicast socket is more efficient than n 1:1 sockets is because Internet routers have built-in support for the multicast capability.</p>
+<p>In recognition of this need, the Java platform includes support for a 𝙼𝚞𝚕𝚝𝚒𝚌𝚊𝚜𝚝𝚂𝚘𝚌𝚔𝚎𝚝 class, which can be used to enable a process to join a group associated with a given 𝙼𝚞𝚕𝚝𝚒𝚌𝚊𝚜𝚝𝚂𝚘𝚌𝚔𝚎𝚝 instance. A member of a group can send a message to all other processes in the group, and can also receive messages sent by other members.This is analogous to how members of a group-chat communicate with each other. Multicast messages are restricted to datagrams, which are usually limited in size to 64KB. Membership in the group can vary dynamically, i.e., processes can decide to join or leave a group associated with a 𝙼𝚞𝚕𝚝𝚒𝚌𝚊𝚜𝚝𝚂𝚘𝚌𝚔𝚎𝚝 instance as they choose. Further, just as with group-chats, a process can be a member of multiple groups.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## sender.py</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">SENDERIP = <span class="string">&#x27;192.168.0.116&#x27;</span><span class="comment">#本地ip</span></span><br><span class="line">SENDERPORT = <span class="number">1501</span><span class="comment">#本地接口</span></span><br><span class="line">MYPORT = <span class="number">1234</span><span class="comment">#发送数据到该端口</span></span><br><span class="line">MYGROUP = <span class="string">&#x27;224.1.1.1&#x27;</span><span class="comment">#组播组</span></span><br><span class="line">MYTTL = <span class="number">255</span> <span class="comment"># 发送数据的TTL值</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sender</span>():</span></span><br><span class="line">    s = socket(AF_INET, SOCK_DGRAM,IPPROTO_UDP)</span><br><span class="line">    s.bind((SENDERIP,SENDERPORT))</span><br><span class="line">    <span class="comment"># Set Time-to-live (optional)</span></span><br><span class="line">    ttl_bin = struct.pack(<span class="string">&#x27;@i&#x27;</span>, MYTTL)</span><br><span class="line">    s.setsockopt(IPPROTO_IP, IP_MULTICAST_TTL, ttl_bin)</span><br><span class="line">    status = s.setsockopt(IPPROTO_IP,</span><br><span class="line">        IP_ADD_MEMBERSHIP,</span><br><span class="line">        inet_aton(MYGROUP) + inet_aton(SENDERIP))<span class="comment">#加入到组播组</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        data = <span class="string">&#x27;cisco&#x27;</span></span><br><span class="line">        s.sendto(data + <span class="string">&#x27;\\0&#x27;</span>, (MYGROUP, MYPORT))</span><br><span class="line">        <span class="built_in">print</span> <span class="string">&quot;send data ok !&quot;</span></span><br><span class="line">        time.sleep(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    sender()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## receiver.py</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">SENDERIP = <span class="string">&#x27;192.168.0.116&#x27;</span></span><br><span class="line">MYPORT = <span class="number">1234</span></span><br><span class="line">MYGROUP = <span class="string">&#x27;224.1.1.1&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">receiver</span>():</span></span><br><span class="line">    <span class="comment">#create a UDP socket</span></span><br><span class="line">    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)</span><br><span class="line">    <span class="comment">#allow multiple sockets to use the same PORT number</span></span><br><span class="line">    sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,<span class="number">1</span>)</span><br><span class="line">    <span class="comment">#Bind to the port that we know will receive multicast data</span></span><br><span class="line">    sock.bind((SENDERIP,MYPORT))</span><br><span class="line">    <span class="comment">#tell the kernel that we are a multicast socket</span></span><br><span class="line">    <span class="comment">#sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 255)</span></span><br><span class="line">    <span class="comment">#Tell the kernel that we want to add ourselves to a multicast group</span></span><br><span class="line">    <span class="comment">#The address for the multicast group is the third param</span></span><br><span class="line">    status = sock.setsockopt(socket.IPPROTO_IP,</span><br><span class="line">        socket.IP_ADD_MEMBERSHIP,</span><br><span class="line">        socket.inet_aton(MYGROUP) + socket.inet_aton(SENDERIP));</span><br><span class="line"></span><br><span class="line">    sock.setblocking(<span class="number">0</span>)</span><br><span class="line">    <span class="comment">#ts = time.time()</span></span><br><span class="line">    <span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            data, addr = sock.recvfrom(<span class="number">1024</span>)</span><br><span class="line">        <span class="keyword">except</span> socket.error, e:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;Receive data!&quot;</span></span><br><span class="line"></span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;TIME:&quot;</span> , time.time()</span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;FROM: &quot;</span>, addr</span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;DATA: &quot;</span>, data</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line"></span><br><span class="line">    receiver()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 作者：最后一次被盗 </span></span><br><span class="line"><span class="comment"># 来源：CSDN </span></span><br><span class="line"><span class="comment"># 原文：https://blog.csdn.net/ztb3214/article/details/19285363 </span></span><br><span class="line"><span class="comment"># 版权声明：本文为博主原创文章，转载请附上博文链接！</span></span><br></pre></td></tr></table></figure>
+<h2 id="publish-subscribe-pattern">Publish-Subscribe Pattern</h2>
+<p>In this lecture, we studied the publish-subscribe pattern, which represents a further generalization of the multicast concept. In this pattern, publisher processes add messages to designated topics, and subscriber processes receive those messages by registering on the topics that they are interested in. A key advantage of this approach is that publishers need not be aware of which processes are the subscribers, and vice versa. Another advantage is that it lends itself to very efficient implementations because it can enable a number of communication optimizations, which include batching and topic partitioning across broker nodes. Yet another advantage is improved reliability, because broker nodes can replicate messages in a topic, so that if one node hosting a topic fails, the entire publish-subscribe system can continue execution with another node that contains a copy of all messages in that topic.</p>
+<p>We also studied how publish-subscribe patterns can be implemented in Java by using APIs available in the open-source Apache Kafka project. To become a publisher, a process simply needs to create a <strong>KafkaProducer</strong> object, and use it to perform <strong>send()</strong> operations to designated topics. Likewise, to become a consumer, a process needs to create a <strong>KafkaConsumer</strong> object, which can then be used to subscribe to topics of interest. The consumer then performs repeated <strong>poll()</strong> operations, each of which returns a batch of messages from the requested topics. Kafka is commonly used as to produce input for, or receive output from, MapReduce systems such as Hadoop or Spark. By storing Kafka messages as key-value pairs, data analytics applications written using MapReduce programming models can seamlessly interface with Kafka. A common use case for Kafka is to structure messages in a topic to be as key-value pairs, so that they can be conveniently used as inputs to, or outputs from, data analytics applications written in Hadoop or Spark. Each key-value message also generally includes an offset which represents the index of the message in the topic. In summary, publish-subscribe is a higher-level pattern than communicating via sockets, which is both convenient and efficient to use in situations where producers and consumers of information are set up to communicate via message groups (topics).</p>
+<p><img src="2.png" /></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Distributed-Map-Reduce/2019/06/23/" rel="prev" title="Distributed Map Reduce">
+      <i class="fa fa-chevron-left"></i> Distributed Map Reduce
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Message-Passing/2019/06/24/" rel="next" title="Message Passing">
+      Message Passing <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#table-of-contents"><span class="nav-number">1.</span> <span class="nav-text">Table of Contents</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction-to-sockets"><span class="nav-number">1.1.</span> <span class="nav-text">Introduction to Sockets</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#serialization-and-deserialization"><span class="nav-number">1.2.</span> <span class="nav-text">Serialization and Deserialization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#remote-method-invocation"><span class="nav-number">1.3.</span> <span class="nav-text">Remote Method Invocation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8"><span class="nav-number">1.3.1.</span> <span class="nav-text">远程调用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rpc"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">RPC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rmi"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">RMI</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multicast-sockets"><span class="nav-number">1.4.</span> <span class="nav-text">Multicast Sockets</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#publish-subscribe-pattern"><span class="nav-number">1.5.</span> <span class="nav-text">Publish-Subscribe Pattern</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

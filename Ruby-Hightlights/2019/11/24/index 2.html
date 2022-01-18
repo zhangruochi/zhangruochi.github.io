@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Some important concepts in Ruby">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ruby Hightlights">
+<meta property="og:url" content="https://zhangruochi.com/Ruby-Hightlights/2019/11/24/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Some important concepts in Ruby">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Ruby-Hightlights/2019/11/24/methods.jpg">
+<meta property="og:image" content="https://zhangruochi.com/Ruby-Hightlights/2019/11/24/self.jpg">
+<meta property="og:image" content="https://zhangruochi.com/Ruby-Hightlights/2019/11/24/scope.jpg">
+<meta property="article:published_time" content="2019-11-24T12:11:56.000Z">
+<meta property="article:modified_time" content="2019-11-25T20:14:53.587Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Ruby-Hightlights/2019/11/24/methods.jpg">
+
+<link rel="canonical" href="https://zhangruochi.com/Ruby-Hightlights/2019/11/24/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Ruby Hightlights | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Ruby-Hightlights/2019/11/24/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ruby Hightlights
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-11-24 20:11:56" itemprop="dateCreated datePublished" datetime="2019-11-24T20:11:56+08:00">2019-11-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-26 04:14:53" itemprop="dateModified" datetime="2019-11-26T04:14:53+08:00">2019-11-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Programming-Language/" itemprop="url" rel="index"><span itemprop="name">Programming Language</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Ruby-Hightlights/2019/11/24/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Ruby-Hightlights/2019/11/24/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Some important concepts in Ruby</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="标识符">标识符</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">标识符</th>
+<th style="text-align: left;">例子</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">局部变量</td>
+<td style="text-align: left;">first_name</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">实例变量</td>
+<td style="text-align: left;"><span class="citation" data-cites="first_name">@first_name</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">类变量</td>
+<td style="text-align: left;">@<span class="citation" data-cites="first_name">@first_name</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">全局变量</td>
+<td style="text-align: left;">$FIRST_NAME</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">常量</td>
+<td style="text-align: left;">FIRST_NAME</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">关键字</td>
+<td style="text-align: left;">class</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">方法名</td>
+<td style="text-align: left;">同局部变量</td>
+</tr>
+</tbody>
+</table>
+<h3 id="类变量">类变量</h3>
+<p>类变量的作用域并不属于类作用域，而是输入类层级的作用域。它提供了一种可以在类和类的实例之间共享数据的存储机制，但是对其他对象不可见。 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Car</span></span></span><br><span class="line">    <span class="variable">@@makes</span> = []</span><br><span class="line">    <span class="variable">@@cars</span> = &#123;&#125;</span><br><span class="line">    <span class="variable">@@total_count</span> = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">attr_reader</span> <span class="symbol">:make</span></span><br><span class="line"></span><br><span class="line">    def <span class="keyword">self</span>.add_make(make)</span><br><span class="line">        <span class="keyword">unless</span> <span class="variable">@@makes</span>.<span class="keyword">include</span>?(make)</span><br><span class="line">            <span class="variable">@@makes</span> &lt;&lt; make</span><br><span class="line">            <span class="variable">@@cars</span>[make] = <span class="number">0</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    def <span class="keyword">self</span>.total_count</span><br><span class="line">        puts <span class="string">&quot;<span class="subst">#&#123;<span class="variable">@@total_count</span>&#125;</span>&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">initialize</span><span class="params">(make)</span></span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable">@@makes</span>.<span class="keyword">include</span>? make</span><br><span class="line">            puts <span class="string">&quot;Create a new make <span class="subst">#&#123;make&#125;</span>&quot;</span></span><br><span class="line">            <span class="variable">@make</span> = make</span><br><span class="line">            <span class="variable">@@cars</span>[make] += <span class="number">1</span></span><br><span class="line">            <span class="variable">@@total_count</span> += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            raise <span class="string">&quot;no such make&quot;</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">make_mates</span></span></span><br><span class="line">        <span class="variable">@@cars</span>[<span class="keyword">self</span>.make]</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">total_count</span></span></span><br><span class="line">        puts <span class="string">&quot;<span class="subst">#&#123;<span class="variable">@@total_count</span>&#125;</span>&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># my_car = Car.new &quot;xx&quot;</span></span><br><span class="line">Car.add_make(<span class="string">&quot;BMW&quot;</span>)</span><br><span class="line">my_car = Car.new <span class="string">&quot;BMW&quot;</span></span><br><span class="line">Car.total_count</span><br><span class="line">puts my_car.make</span><br><span class="line">my_car.total_count</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">=begin</span></span><br><span class="line"><span class="comment">Create a new make BMW</span></span><br><span class="line"><span class="comment">1</span></span><br><span class="line"><span class="comment">BMW</span></span><br><span class="line"><span class="comment">1</span></span><br><span class="line"><span class="comment">=end</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="父类和子类共享类变量">父类和子类共享类变量</h3>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Parent</span></span></span><br><span class="line">    <span class="variable">@@value</span> = <span class="number">100</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Child</span> &lt; Parent</span></span><br><span class="line">    <span class="variable">@@value</span> = <span class="number">200</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Parent</span></span></span><br><span class="line">    puts <span class="variable">@@value</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">Parent.new <span class="comment"># 200</span></span><br></pre></td></tr></table></figure>
+<h3 id="常量">常量</h3>
+<p>定义在类中的实例方法可以看到同样定义在类中的常量，但其他程序也可以看到这些常量</p>
+<h3 id="私有方法">私有方法</h3>
+<p>私有方法不能显式地被接收者调用。因为当没有明确接收对象时，接收对象是self。所以如果接收对象是Test的一个实例时，是可以调用成功的。 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">a</span></span></span><br><span class="line">        puts <span class="string">&quot;a&quot;</span> </span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">b</span></span></span><br><span class="line">        <span class="comment"># self.a error</span></span><br><span class="line">        a</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    private <span class="symbol">:a</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">test = Test.new</span><br><span class="line">test.a <span class="comment"># error!</span></span><br><span class="line">test.b <span class="comment"># &quot;a&quot;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="保护方法">保护方法</h3>
+<p>只能在此对象的实例方法或此类(或子类)的另一个对象中直接调用受保护的方法。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">a</span></span></span><br><span class="line">        puts <span class="string">&quot;a&quot;</span> </span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">b</span></span></span><br><span class="line">        a</span><br><span class="line">        puts <span class="string">&quot;<span class="subst">#&#123;<span class="keyword">self</span>&#125;</span>&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    protected <span class="symbol">:a</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">test = Test.new</span><br><span class="line">test.b</span><br></pre></td></tr></table></figure>
+<h2 id="class-and-object">Class and object</h2>
+<h3 id="查看对象的原生方法">查看对象的原生方法</h3>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">p Object.new.methods.sort</span><br><span class="line"><span class="comment">=begin</span></span><br><span class="line"><span class="comment">[:!, :!=, :!~, :&lt;=&gt;, :==, :===, :=~, :__id__, :__send__, :class, :clone, :define_singleton_method, :display, :dup, :enum_for, :eql?, :equal?, :extend, :freeze, :frozen?, :hash, :inspect, :instance_eval, :instance_exec, :instance_of?, :instance_variable_defined?, :instance_variable_get, :instance_variable_set, :instance_variables, :is_a?, :itself, :kind_of?, :method, :methods, :nil?, :object_id, :private_methods, :protected_methods, :public_method, :public_methods, :public_send, :remove_instance_variable, :respond_to?, :send, :singleton_class, :singleton_method, :singleton_methods, :taint, :tainted?, :tap, :then, :to_enum, :to_s, :trust, :untaint, :untrust, :untrusted?, :yield_self]</span></span><br><span class="line"><span class="comment">=end</span></span><br></pre></td></tr></table></figure>
+<h3 id="重开类">重开类</h3>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span></span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">m</span></span></span><br><span class="line">        puts <span class="string">&quot;method m&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span></span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">y</span></span></span><br><span class="line">        puts <span class="string">&quot;methods y&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">p C.new.methods.sort</span><br><span class="line"></span><br><span class="line"><span class="comment"># [...... :m, ...... :y, ......]</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="单例方法">单例方法</h3>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">obj = Object.new</span><br><span class="line"></span><br><span class="line">def obj.test</span><br><span class="line">    p <span class="string">&quot;test&quot;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">cla = Class.new</span><br><span class="line">def cla.test</span><br><span class="line">    p <span class="string">&quot;test&quot;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj.test</span><br><span class="line">cla.test</span><br><span class="line"></span><br><span class="line"><span class="comment"># &quot;test&quot;</span></span><br><span class="line"><span class="comment"># &quot;test&quot;</span></span><br></pre></td></tr></table></figure>
+<h3 id="对象方法查找规则">对象方法查找规则</h3>
+<p><img src="methods.jpg" /></p>
+<h3 id="类对象怎样查找方法">类对象怎样查找方法</h3>
+<ul>
+<li>类是对象</li>
+<li>类的实例也是对象</li>
+<li>类对象有自己的方法、自己的状态和唯一标识</li>
+</ul>
+<p>因此，类的对象方法查找规则是</p>
+<ol type="1">
+<li>从他的类</li>
+<li>从超类和他们类更早的祖先</li>
+<li>从存储在他们自身的单例方法</li>
+</ol>
+<h3 id="顶层方法">顶层方法</h3>
+<p>顶层方法作为Object类的私有方法被保存下来，它在任何地方可用，但是不能现式地指定接收者。</p>
+<h2 id="self">Self</h2>
+<p><img src="self.jpg" /></p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">puts <span class="string">&quot;In top level, self is:  <span class="subst">#&#123;<span class="keyword">self</span>&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">A</span></span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">n</span></span></span><br><span class="line">        puts <span class="string">&quot;In module A, self is:  <span class="subst">#&#123;<span class="keyword">self</span>&#125;</span>&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line">    puts <span class="string">&quot;In Test, self is: <span class="subst">#&#123;<span class="keyword">self</span>&#125;</span>&quot;</span>  <span class="comment"># 类对象</span></span><br><span class="line">    <span class="keyword">include</span> A</span><br><span class="line">    def <span class="keyword">self</span>.x</span><br><span class="line">        puts <span class="string">&quot;In x, self is: <span class="subst">#&#123;<span class="keyword">self</span>&#125;</span>&quot;</span>   <span class="comment"># 类对象</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">m</span></span></span><br><span class="line">        puts <span class="string">&quot;In m, self is: <span class="subst">#&#123;<span class="keyword">self</span>&#125;</span>&quot;</span>  <span class="comment"># 实例对象</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">test = Test.new</span><br><span class="line">Test.x</span><br><span class="line">test.m</span><br><span class="line">test.n</span><br><span class="line"></span><br><span class="line"><span class="comment">=begin</span></span><br><span class="line"><span class="comment">In top level, self is:  main</span></span><br><span class="line"><span class="comment">In Test, self is: Test</span></span><br><span class="line"><span class="comment">In x, self is: Test</span></span><br><span class="line"><span class="comment">In m, self is: #&lt;Test:0x00007fa01a04cbc8&gt;</span></span><br><span class="line"><span class="comment">In module A, self is:  #&lt;Test:0x00007fa01a04cbc8&gt;</span></span><br><span class="line"><span class="comment">=end</span></span><br></pre></td></tr></table></figure>
+<h2 id="scope">Scope</h2>
+<p><img src="scope.jpg" /></p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">t</span></span></span><br><span class="line">    puts <span class="string">&quot;Top level method t&quot;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span></span></span><br><span class="line">    a = <span class="number">1</span></span><br><span class="line">    def <span class="keyword">self</span>.x</span><br><span class="line">        a = <span class="number">2</span></span><br><span class="line">        puts <span class="string">&quot;C.x, a = <span class="subst">#&#123;a&#125;</span>&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">m</span></span></span><br><span class="line">        a = <span class="number">3</span></span><br><span class="line">        puts <span class="string">&quot;C#m; a = <span class="subst">#&#123;a&#125;</span>&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">n</span></span></span><br><span class="line">        a = <span class="number">4</span></span><br><span class="line">        puts <span class="string">&quot;C#n; a = <span class="subst">#&#123;a&#125;</span>&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    puts <span class="string">&quot;class scope: a = <span class="subst">#&#123;a&#125;</span>&quot;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">C.x</span><br><span class="line">c = C.new</span><br><span class="line">c.m</span><br><span class="line">c.n</span><br><span class="line"></span><br><span class="line"><span class="comment">=begin</span></span><br><span class="line"><span class="comment">class scope: a = 1</span></span><br><span class="line"><span class="comment">C.x, a = 2</span></span><br><span class="line"><span class="comment">C#m; a = 3</span></span><br><span class="line"><span class="comment">C#n; a = 4</span></span><br><span class="line"><span class="comment">=end</span></span><br></pre></td></tr></table></figure>
+<h2 id="控制流">控制流</h2>
+<h3 id="case-子句">case 子句</h3>
+<p>每个 ruby 对象都有一个 case 相等性判断方法: <strong>===</strong></p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span></span><br><span class="line">    <span class="keyword">attr_accessor</span> <span class="symbol">:age</span>, <span class="symbol">:height</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">initialize</span><span class="params">(age,height)</span></span></span><br><span class="line">        <span class="keyword">self</span>.age = age</span><br><span class="line">        <span class="keyword">self</span>.height = height</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">===</span><span class="params">(other_obj)</span></span></span><br><span class="line">        (<span class="keyword">self</span>.age == other_obj.age) &amp; (<span class="keyword">self</span>.height == other_obj.height)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="variable">$person1</span> = Person.new(<span class="number">10</span>,<span class="number">10</span>)</span><br><span class="line"><span class="variable">$person2</span> = Person.new(<span class="number">10</span>,<span class="number">20</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test</span><span class="params">(person)</span></span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">case</span> person</span><br><span class="line">    <span class="keyword">when</span> <span class="variable">$person1</span></span><br><span class="line">        puts <span class="string">&quot;person 1&quot;</span></span><br><span class="line">    <span class="keyword">when</span> <span class="variable">$person2</span></span><br><span class="line">        puts <span class="string">&quot;person&quot;</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        puts <span class="string">&quot;not matching&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">person = Person.new(<span class="number">10</span>,<span class="number">10</span>)</span><br><span class="line">test(person) <span class="comment"># person 1</span></span><br></pre></td></tr></table></figure>
+<h3 id="比较和-comparable-模块">比较和 Comparable 模块</h3>
+<p>如果类需要有完整的比较方法，可以由如下解决方案： - 混合名为 Comparable 的模块 - 定义 <strong>&lt;=&gt;</strong> 的比较方法做为实例方法，在这个方法内部需要定义"小于"，"等于"，"大于"的含义。</p>
+<h3 id="代码块block-和-关键字-yield">代码块（block) 和 关键字 (yield)</h3>
+<p>ruby 中的每个方法调用都遵循如下语法： 1. 接收者对象或者变量 2. 点（如果有明确的接收者则为必要条件） 3. 方法名 4. 参数列表（可选，默认为（）） 6. 代码块 （可选，没有默认）</p>
+<ul>
+<li>代码块可以使用 {}, 也可以使用 do while 提供；</li>
+<li>如果提供的代码块在方法中不能提供，并不会发生错误；</li>
+<li>代码块和方法一样，可以接受参数；</li>
+<li>yeild 的实际总用是转移控制权与作用域到代码块（可以跳回来）。</li>
+<li>代码块是一个闭包(closure)</li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">block_scope</span></span></span><br><span class="line">    x = <span class="number">10</span></span><br><span class="line">    <span class="number">1</span>.times &#123; puts x&#125;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">block_scope <span class="comment"># 10</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">block_scope</span></span></span><br><span class="line">    x = <span class="number">10</span></span><br><span class="line">    <span class="number">1</span>.times <span class="keyword">do</span></span><br><span class="line">        x = <span class="number">20</span></span><br><span class="line">        puts x</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">block_scope <span class="comment"># 20</span></span><br></pre></td></tr></table></figure>
+<h2 id="string">String</h2>
+<ol type="1">
+<li><p>here-doc <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">text = &lt;&lt;EOM.to_i</span><br><span class="line"><span class="number">10</span></span><br><span class="line">EOM</span><br><span class="line"></span><br><span class="line">puts text <span class="comment"># 10</span></span><br></pre></td></tr></table></figure></p></li>
+<li><p>索引</p></li>
+</ol>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">string = <span class="string">&quot;zhangruochi&quot;</span></span><br><span class="line"></span><br><span class="line">puts string[<span class="number">0</span>,<span class="number">2</span>] <span class="comment"># zh</span></span><br><span class="line">puts string[<span class="number">0</span>..<span class="number">2</span>] <span class="comment"># zha</span></span><br><span class="line">puts string[<span class="number">0</span>...<span class="number">2</span>] <span class="comment"># zh</span></span><br><span class="line">puts string[<span class="number">0</span>..-<span class="number">1</span>] <span class="comment"># zhangruochi</span></span><br><span class="line">puts string[<span class="string">&quot;zhang&quot;</span>] <span class="comment">#zhang</span></span><br><span class="line">puts string[<span class="string">&quot;xxx&quot;</span>] <span class="comment">#nil</span></span><br></pre></td></tr></table></figure>
+<h2 id="enumerable">Enumerable</h2>
+<p>在ruby中，对象之间共有的特性通常都被放在模块里，集合类型也不例外：Ruby中的集合类型对象通常都包含 Enumerable 模块。</p>
+<h2 id="each">Each</h2>
+<p>任何枚举类型都包含一个each方法，其作用是将其中的元素逐个地作为参数传递给代码块。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里的每个方法都是基于each构建</span></span><br><span class="line">p Enumerable.instance_methods(<span class="literal">false</span>).sort</span><br><span class="line"><span class="comment">=begin</span></span><br><span class="line"><span class="comment">[:all?, :any?, :chain, :chunk, :chunk_while, :collect, :collect_concat, :count, :cycle, :detect, :drop, :drop_while, :each_cons, :each_entry, :each_slice, :each_with_index, :each_with_object, :entries, :filter, :find, :find_all, :find_index, :first, :flat_map, :grep, :grep_v, :group_by, :include?, :inject, :lazy, :map, :max, :max_by, :member?, :min, :min_by, :minmax, :minmax_by, :none?, :one?, :partition, :reduce, :reject, :reverse_each, :select, :slice_after, :slice_before, :slice_when, :sort, :sort_by, :sum, :take, :take_while, :to_a, :to_h, :uniq, :zip]</span></span><br><span class="line"><span class="comment">=end</span></span><br></pre></td></tr></table></figure>
+<p><strong>Rainbow 混合了Enumerable模块，则自动赋予了整套基于 each 方法构建的方法。</strong> <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rainbow</span></span></span><br><span class="line">    <span class="keyword">include</span> Enumerable</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">each</span></span></span><br><span class="line">        <span class="keyword">yield</span> <span class="string">&quot;Red&quot;</span></span><br><span class="line">        <span class="keyword">yield</span> <span class="string">&quot;Orange&quot;</span></span><br><span class="line">        <span class="keyword">yield</span> <span class="string">&quot;Green&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">a = Rainbow.new</span><br><span class="line">p a.map(&amp;<span class="symbol">:upcase</span>)</span><br><span class="line"><span class="comment"># [&quot;RED&quot;, &quot;ORANGE&quot;, &quot;GREEN&quot;]</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="符号参数">符号参数</h2>
+<p>可以在方法参数的位置使用如<strong>:upcase</strong>这样的符号并在前面加上&amp;，它的效果与在代码块中调用每个元素同符号名称相等的方法的作用相同。 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">p [<span class="string">&quot;A&quot;</span>,<span class="string">&quot;B&quot;</span>,<span class="string">&quot;C&quot;</span>].map(&amp;<span class="symbol">:downcase</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="enumerator枚举器">Enumerator(枚举器)</h2>
+<ol type="1">
+<li>迭代器本质上是一个方法，它将一个或多个元素传递到代码块中。</li>
+<li>枚举器本质上一枚举器是一个简单的可枚举对象。它有 each 方法，并使用Enumerable模块定义其所有常用的方法。</li>
+<li>枚举器只需要有一个“迭代每一个”的逻辑，它已经知道后面的事情可以一一展开。
+<ul>
+<li>Enumerator.new 伴随一个包含稍后会用到的 each 逻辑的代码块</li>
+<li>创建一个基于可存在枚举对象的枚举器，这样枚举器的 each 方法就会从那个枚举对象的特定方法中抽取它的元素用于迭代</li>
+</ul></li>
+</ol>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">e = Enumerator.new <span class="keyword">do</span> <span class="params">|y|</span></span><br><span class="line">    y &lt;&lt; <span class="number">1</span></span><br><span class="line">    y &lt;&lt; <span class="number">2</span></span><br><span class="line">    y &lt;&lt; <span class="number">3</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">p e.to_a</span><br><span class="line">p e.map &#123;<span class="params">|x|</span> x * <span class="number">2</span>&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Topological-Sorting/2019/11/20/" rel="prev" title="Topological Sorting">
+      <i class="fa fa-chevron-left"></i> Topological Sorting
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Longest-common-subsequence-subarray-substring/2019/11/26/" rel="next" title="Longest common subsequence & subarray & substring">
+      Longest common subsequence & subarray & substring <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E8%AF%86%E7%AC%A6"><span class="nav-number">1.</span> <span class="nav-text">标识符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%8F%98%E9%87%8F"><span class="nav-number">1.1.</span> <span class="nav-text">类变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%88%B6%E7%B1%BB%E5%92%8C%E5%AD%90%E7%B1%BB%E5%85%B1%E4%BA%AB%E7%B1%BB%E5%8F%98%E9%87%8F"><span class="nav-number">1.2.</span> <span class="nav-text">父类和子类共享类变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E9%87%8F"><span class="nav-number">1.3.</span> <span class="nav-text">常量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%81%E6%9C%89%E6%96%B9%E6%B3%95"><span class="nav-number">1.4.</span> <span class="nav-text">私有方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%9D%E6%8A%A4%E6%96%B9%E6%B3%95"><span class="nav-number">1.5.</span> <span class="nav-text">保护方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#class-and-object"><span class="nav-number">2.</span> <span class="nav-text">Class and object</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%8E%9F%E7%94%9F%E6%96%B9%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">查看对象的原生方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%BC%80%E7%B1%BB"><span class="nav-number">2.2.</span> <span class="nav-text">重开类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B%E6%96%B9%E6%B3%95"><span class="nav-number">2.3.</span> <span class="nav-text">单例方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E6%96%B9%E6%B3%95%E6%9F%A5%E6%89%BE%E8%A7%84%E5%88%99"><span class="nav-number">2.4.</span> <span class="nav-text">对象方法查找规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%AF%B9%E8%B1%A1%E6%80%8E%E6%A0%B7%E6%9F%A5%E6%89%BE%E6%96%B9%E6%B3%95"><span class="nav-number">2.5.</span> <span class="nav-text">类对象怎样查找方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B6%E5%B1%82%E6%96%B9%E6%B3%95"><span class="nav-number">2.6.</span> <span class="nav-text">顶层方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#self"><span class="nav-number">3.</span> <span class="nav-text">Self</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scope"><span class="nav-number">4.</span> <span class="nav-text">Scope</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E6%B5%81"><span class="nav-number">5.</span> <span class="nav-text">控制流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#case-%E5%AD%90%E5%8F%A5"><span class="nav-number">5.1.</span> <span class="nav-text">case 子句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%94%E8%BE%83%E5%92%8C-comparable-%E6%A8%A1%E5%9D%97"><span class="nav-number">5.2.</span> <span class="nav-text">比较和 Comparable 模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%9D%97block-%E5%92%8C-%E5%85%B3%E9%94%AE%E5%AD%97-yield"><span class="nav-number">5.3.</span> <span class="nav-text">代码块（block) 和 关键字 (yield)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#string"><span class="nav-number">6.</span> <span class="nav-text">String</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#enumerable"><span class="nav-number">7.</span> <span class="nav-text">Enumerable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#each"><span class="nav-number">8.</span> <span class="nav-text">Each</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%A6%E5%8F%B7%E5%8F%82%E6%95%B0"><span class="nav-number">9.</span> <span class="nav-text">符号参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#enumerator%E6%9E%9A%E4%B8%BE%E5%99%A8"><span class="nav-number">10.</span> <span class="nav-text">Enumerator(枚举器)</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

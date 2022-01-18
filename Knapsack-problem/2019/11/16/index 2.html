@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Different methods to solve Knapsack problem">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Knapsack problem">
+<meta property="og:url" content="https://zhangruochi.com/Knapsack-problem/2019/11/16/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Different methods to solve Knapsack problem">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Knapsack-problem/2019/11/16/bag.jpg">
+<meta property="og:image" content="https://zhangruochi.com/Knapsack-problem/2019/11/16/dp.jpg">
+<meta property="og:image" content="https://zhangruochi.com/Knapsack-problem/2019/11/16/dp2.jpg">
+<meta property="article:published_time" content="2019-11-16T09:38:52.000Z">
+<meta property="article:modified_time" content="2019-11-16T22:43:15.540Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Knapsack-problem/2019/11/16/bag.jpg">
+
+<link rel="canonical" href="https://zhangruochi.com/Knapsack-problem/2019/11/16/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Knapsack problem | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Knapsack-problem/2019/11/16/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Knapsack problem
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-11-16 17:38:52" itemprop="dateCreated datePublished" datetime="2019-11-16T17:38:52+08:00">2019-11-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-17 06:43:15" itemprop="dateModified" datetime="2019-11-17T06:43:15+08:00">2019-11-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure-and-Algorithm/" itemprop="url" rel="index"><span itemprop="name">Data Structure and Algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Knapsack-problem/2019/11/16/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Knapsack-problem/2019/11/16/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Different methods to solve Knapsack problem</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="backtracking">Backtracking</h2>
+<p>我们把物体依次排列，整个问题就分为n个阶段，每个阶段对应一个物品 i 怎样选择。</p>
+<p><img src="bag.jpg" alt="bag.jpg" /> 观察解空间树，每个结点我们用(i,cw)来表示。i表示将要觉得i个物品是否装入背包，只有装和不装两种情况。cw 表示当前背包中的重量。比如(2,2)表示我们将要觉得第2个物品是否装入背包，在决策前，背包中物品的总重量是2。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">weights = [<span class="number">2</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">3</span>]</span><br><span class="line">W = <span class="number">9</span></span><br><span class="line">n = <span class="number">5</span> </span><br><span class="line"></span><br><span class="line">max_weight = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">backtracking_bag</span>(<span class="params">i, cw, items</span>):</span></span><br><span class="line">    <span class="keyword">global</span> max_weight,methods</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    i: test the item i</span></span><br><span class="line"><span class="string">    cw: current total weight</span></span><br><span class="line"><span class="string">    weights: the weight of items</span></span><br><span class="line"><span class="string">    W: total weight the bag can load</span></span><br><span class="line"><span class="string">    n: the number of items</span></span><br><span class="line"><span class="string">    max_weight: the max weight the bag can load</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> i == n:</span><br><span class="line">        <span class="keyword">if</span> cw &lt;= W <span class="keyword">and</span> cw &gt;= max_weight:</span><br><span class="line">            <span class="keyword">if</span> cw &gt; max_weight:</span><br><span class="line">                max_weight = cw</span><br><span class="line">                methods = []</span><br><span class="line">                methods.append(items[:])</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                methods.append(items[:])</span><br><span class="line">        <span class="keyword">return</span> </span><br><span class="line"></span><br><span class="line">    backtracking_bag(i+<span class="number">1</span>,cw,items)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> cw + weights[i] &lt;= W:</span><br><span class="line">        items[i] = <span class="number">1</span></span><br><span class="line">        backtracking_bag(i+<span class="number">1</span>,cw+weights[i],items)</span><br><span class="line">        items[i] = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    items = [<span class="number">0</span>] * n</span><br><span class="line">    methods = []</span><br><span class="line">    backtracking_bag(<span class="number">0</span>,<span class="number">0</span>,items)</span><br><span class="line">    <span class="built_in">print</span>(max_weight)</span><br><span class="line">    <span class="built_in">print</span>(methods)</span><br></pre></td></tr></table></figure>
+<h2 id="backtracking-with-memory">Backtracking with memory</h2>
+<p>我们发现，很多子问题是重复的。比如f(2,2) 和 f(3,6)都被重复计算很多次。因此，我们可以用<strong>备忘录</strong>的方法来解决重复计算的问题。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">weights = [<span class="number">2</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">3</span>]</span><br><span class="line">W = <span class="number">9</span></span><br><span class="line">n = <span class="number">5</span> </span><br><span class="line"></span><br><span class="line">max_weight = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">backtracking_memory_bag</span>(<span class="params">i, cw, items</span>):</span></span><br><span class="line">    <span class="keyword">global</span> max_weight,methods,memory</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    i: test the item i</span></span><br><span class="line"><span class="string">    cw: current total weight</span></span><br><span class="line"><span class="string">    weights: the weight of items</span></span><br><span class="line"><span class="string">    W: total weight the bag can load</span></span><br><span class="line"><span class="string">    n: the number of items</span></span><br><span class="line"><span class="string">    max_weight: the max weight the bag can load</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> i == n:</span><br><span class="line">        <span class="keyword">if</span> cw &lt;= W <span class="keyword">and</span> cw &gt;= max_weight:</span><br><span class="line">            <span class="keyword">if</span> cw &gt; max_weight:</span><br><span class="line">                max_weight = cw</span><br><span class="line">                methods = []</span><br><span class="line">                methods.append(items[:])</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                methods.append(items[:])</span><br><span class="line">        <span class="keyword">return</span> </span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> memory[i][cw]:</span><br><span class="line">        <span class="keyword">return</span> </span><br><span class="line">    memory[i][cw] = <span class="literal">True</span>  <span class="comment"># remember the state of i </span></span><br><span class="line"></span><br><span class="line">    backtracking_bag(i+<span class="number">1</span>,cw,items)</span><br><span class="line">    <span class="keyword">if</span> cw + weights[i] &lt;= W:</span><br><span class="line">        items[i] = <span class="number">1</span></span><br><span class="line">        backtracking_bag(i+<span class="number">1</span>,cw+weights[i],items)</span><br><span class="line">        items[i] = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line"></span><br><span class="line">    items = [<span class="number">0</span>] * n</span><br><span class="line">    methods = []</span><br><span class="line">    memory = [[<span class="literal">False</span>]*W <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n)]</span><br><span class="line">    backtracking_bag(<span class="number">0</span>,<span class="number">0</span>,items)</span><br><span class="line">    <span class="built_in">print</span>(max_weight)</span><br><span class="line">    <span class="built_in">print</span>(methods)</span><br></pre></td></tr></table></figure>
+<h2 id="dynamic-programming">Dynamic Programming</h2>
+<p>我们把整个求解的过程分为n个阶段，每个阶段会决策一个物品是否放入背包中。每个物品决策完成后，背包中的重量会有多种情况。 动态规划问题的解决步骤一般可以总结为 3 步： 1. 定义数组元素的含义 我们用 dp[n][cw] 来表示在第n个阶段重量为cw的状态。 2. 找出状态转移方程。 - 把第 i 个物品装入背包中 <span class="math display">\[dp[i][cw + weights[i]] = true\]</span> - 不把第 i 个物品装入背包中 <span class="math display">\[dp[i][cw] = true\]</span> 比如第 0 个物品的重量是2，要么装入背包，要么不装入背包。决策完之后会对应背包的两种状态，背包中物品的总重量为 0 或者 2。 我们用dp[0][0] = true 和 dp[0][2] = true表示。 <img src="dp.jpg" /> <img src="dp2.jpg" /> 3. 初始值。 - 第 0 个物品不装: dp[0][0] = true - 第 0 个物品装: dp[0][weights[i]] = true</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pprint</span><br><span class="line"></span><br><span class="line">weights = [<span class="number">2</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">3</span>]</span><br><span class="line">W = <span class="number">9</span></span><br><span class="line">n = <span class="number">5</span> </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dp_bag</span>(<span class="params">weights,W,n</span>):</span></span><br><span class="line">    dp = [[<span class="number">0</span>] * (W+<span class="number">1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n)] </span><br><span class="line">    </span><br><span class="line">    <span class="comment">## 第 0 个物品不装</span></span><br><span class="line">    dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">##  第 0 个物品装</span></span><br><span class="line">    <span class="keyword">if</span> weights[<span class="number">0</span>] &lt; W:</span><br><span class="line">        dp[<span class="number">0</span>][weights[<span class="number">0</span>]] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,n):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(W):</span><br><span class="line">            <span class="comment">## 不把 i 放入背包中，当前背包重量不变</span></span><br><span class="line">            <span class="keyword">if</span> dp[i-<span class="number">1</span>][j]:</span><br><span class="line">                dp[i][j] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(W):</span><br><span class="line">            <span class="comment">## 把 i 放入背包中</span></span><br><span class="line">            <span class="keyword">if</span> j + weights[i] &lt;= W <span class="keyword">and</span> dp[i-<span class="number">1</span>][j]:</span><br><span class="line">                dp[i][j+weights[i]] = <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    pprint.pprint(dp)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(W,-<span class="number">1</span>,-<span class="number">1</span>):</span><br><span class="line">        <span class="keyword">if</span> dp[-<span class="number">1</span>][i]:</span><br><span class="line">            <span class="keyword">return</span> i</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line"></span><br><span class="line">    max_weight = dp_bag(weights,W,n)</span><br><span class="line">    <span class="built_in">print</span>(max_weight)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>reference from 数据结构与算法之美 王争</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Dynamic-Programming/2019/11/16/" rel="prev" title="Dynamic Programming">
+      <i class="fa fa-chevron-left"></i> Dynamic Programming
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Flee-from-famine/2019/11/19/" rel="next" title="Flee from famine">
+      Flee from famine <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#backtracking"><span class="nav-number">1.</span> <span class="nav-text">Backtracking</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#backtracking-with-memory"><span class="nav-number">2.</span> <span class="nav-text">Backtracking with memory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dynamic-programming"><span class="nav-number">3.</span> <span class="nav-text">Dynamic Programming</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="损失函数，优化算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ML-Interview-Optimization">
+<meta property="og:url" content="https://zhangruochi.com/ML-Interview-Optimization/2020/05/27/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="损失函数，优化算法">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/ML-Interview-Optimization/2020/05/27/1.png">
+<meta property="og:image" content="https://zhangruochi.com/ML-Interview-Optimization/2020/05/27/2.png">
+<meta property="article:published_time" content="2020-05-26T23:19:28.000Z">
+<meta property="article:modified_time" content="2020-05-28T23:04:38.526Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/ML-Interview-Optimization/2020/05/27/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/ML-Interview-Optimization/2020/05/27/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>ML-Interview-Optimization | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/ML-Interview-Optimization/2020/05/27/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ML-Interview-Optimization
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-27 07:19:28" itemprop="dateCreated datePublished" datetime="2020-05-27T07:19:28+08:00">2020-05-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-05-29 07:04:38" itemprop="dateModified" datetime="2020-05-29T07:04:38+08:00">2020-05-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Interview/" itemprop="url" rel="index"><span itemprop="name">Interview</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Interview/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/ML-Interview-Optimization/2020/05/27/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/ML-Interview-Optimization/2020/05/27/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">损失函数，优化算法</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="监督学习的损失函数">监督学习的损失函数</h2>
+<ol type="1">
+<li>有监督学习涉及的损失函数有哪些？请列举并简述它们的特点。 &gt; 1. MSE &gt; <span class="math display">\[L = \sum( Y - f(x))^2\]</span> &gt; 2. MAE &gt; <span class="math display">\[L = \sum|Y - f(x)|\]</span> &gt; 3. Hinge：Hinge损失不仅会惩罚错误的预测，还会惩罚不自信的正确预测。用于支持向量机(SVM)中。 &gt; <span class="math display">\[L_{hinghe}(f,y) = max\{0, 1-f_y\}\]</span> &gt; 4. Binary Cross Entropy &gt; <span class="math display">\[L = -y * log(p) - (1-y) * log(1-p)\]</span> &gt; 5. Cross Entropy &gt; <span class="math display">\[L(x_i,y_i) = -\sum_{j=1}^{e} y_{ij} * log(p_{ij})\]</span> &gt; where <span class="math inline">\(Y_i\)</span> is one-hot encoded target vector <span class="math inline">\((y_{i1},\cdots, y_{i2})\)</span>. &gt; <span class="math display">\[y_{ij} = \left\{
+\begin{aligned}
+&amp; 1 \quad \text{if i element is in class j} \\ 
+&amp; 0 \quad \text{otherwise}
+\end{aligned}
+\right.
+\]</span> &gt; 6. Kullback-Leibler Divergence：表示两个概率分布的差异。Variational Auto-Encoder中使用。 &gt; <span class="math display">\[D_{KL}(p||q) = \sum_{i=1}^{N}p(x_i)\dot(log p(x_i) - log q(x_i))\]</span> &gt; 7. Huber：结合 MSE 和 MAE 的优点 &gt; <span class="math display">\[L = \left\{ 
+\begin{aligned}
+&amp; \frac{1}{2}(y - f(x))^2, \quad if \ | y - f(x)| \leq \delta, \\ 
+&amp; \delta|y - f(x)| - \frac{1}{2}\delta^2, otherwise
+\end{aligned}
+\right.
+\]</span> &gt; 8. Dice loss： 两个轮廓的相似度，应用在图像分割领域 <span class="math display">\[DL(A,B) = 2 \frac{A \cap B }{ |A| + |B|}\]</span></li>
+</ol>
+<h2 id="机器学习中的优化问题">机器学习中的优化问题</h2>
+<ol type="1">
+<li><p>机器学习中，哪些是凸优化问题？ &gt; 凸函数曲面上任意两点连接而成的线段，其上的任意一点都不会处于改函数曲面的下方。一个常用的机器学习模型，逻辑回归，对应的优化问题就是凸优化问题。因为我们可以求得优化函数的 Hessian矩阵是半正定的。 &gt; <span class="math display">\[L(\lambda x + (1-\lambda) y) \leq \lambda L(x) + (1 - \lambda)L(y)\]</span></p>
+<center>
+<p><img style="border-radius: 0.3125em;
+ box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+ src="1.png" width = "50%" height="50%"></p>
+</center></li>
+<li><p>当数据量特别大时，经典的梯度下降算法有什么问题？ &gt; 经典的梯度下降算法在每次模型参数进行更新时，需要遍历所有的训练数据。当 M 很大时，这需要进行很大的计算。为了计算这个问题，随机梯度下降法用单个样本损失来近似所有样本的平均损失。为了降低随机梯度的方差，使得迭代更加稳定，一般使用小批量梯度下降算法。对于小批量下降法的使用，需要注意以下几点： &gt; 1. 不同应用中，每个 batch 的大小通常会不一样。一般选择 2 的幂次可以充分利用矩阵运算。 &gt; 2. 为了避免数据的特定顺序给算法收敛带来的影响，一般会在每次遍历数据之前，先对所有数据进行shuffle。 &gt; 3. 为了加快收敛速度，同时提高求解精度，通常采用衰减学习速率的方案：一开始算法采用较大的学习速率，当误差曲线进入平台期后，减小学习速率做更精细的调整。</p></li>
+<li><p>请给出随机梯度下降算法失效的原因。 &gt; 随机梯度下降算法放弃了对梯度准确性的追求，每步仅仅采用一个（或少量）样本来估计当前梯度。但是由于每步接受的信息量有限，随机梯度下降法对梯度的估计常常出现偏差，造成目标函数收敛很不稳定，伴有剧烈的波动，有时甚至出现不收敛的情况。对于随机梯度下降法来说，最可怕的不是局部最优点，而是山谷和鞍点。鞍点就是一片平摊的区域，在梯度几乎为零的区域，随机梯度下降法无法计算出梯度的微小变化，导致在来回震荡。</p></li>
+<li><p>如何改进随机梯度下降法？（动量和环境感知） &gt; 1. Momentum（动量）：当来到鞍点处，在惯性作用下继续前行，则有机会冲出平坦的陷阱。动量法的收敛速度更快，收敛曲线也更稳定。实际上是对 gradient 做 moving average. &gt; <span class="math display">\[ \begin{aligned}
+&amp; v_t = \eta v_{t-1} + \gamma g_t \\
+&amp; \theta_{t+1} = \theta_t - v_t 
+\end{aligned}\]</span></p></li>
+<li><p>AdaGrad 方法 &gt; 随机梯度下降法对环境的感知是指在参数空间中，根据不同参数的一些经验性判断，自适应地确定参数的学习速率。例如在文本处理中训练 word embedding，有写词频繁出现，有些词极少出现，我们希望极少出现的词更新的步幅大一些。AdaGrad 采用<code>历史梯度平方和</code>来衡量不同参数的稀疏性，取值越小说明越稀疏。 具体的更新公式为: &gt; <span class="math display">\[\theta_{t+1,i} = \theta_{t,i} - \frac{\gamma}{\sqrt{\sum_{k=0}^{t} g_{k,i}^2 + \epsilon}}\]</span></p></li>
+<li><p>Adam 方法 &gt; Adam方法集惯性保持和环境感知两个优点于一身。一方面，Adam 记录梯度的 first moment，即过往梯度与当前梯度的平均，这体现了惯性保持；另一方面，Adam 还记录了梯度的 second moment，即过往梯度平方与当前梯度平方的平均，这类似 AdaGrad方法，体现环境感知能力,为不同参数产生自适应的学习速率。first and second monent 采用exponential decay average，使得时间久远的梯度对当前平均值的贡献呈指数衰减。 &gt; <span class="math display">\[ \begin{aligned}
+&amp; m_t = \beta_1 m_{t-1} + (1-\beta_1)g_t \\
+&amp; v_t = \beta_2 v_{t-1} + (1 - \beta_2)g_t^2 \\ 
+&amp; \hat{m_t} = \frac{m_t}{1 - \beta^t_1}   \\
+&amp; \hat{v_t} = \frac{v_t}{1 - \beta^t_2} \\
+&amp; \theta_{t+1} = \theta_t - \frac{ \gamma \cdot \hat{m_t} }{ \sqrt{\hat{v_t} + \epsilon} }
+\end{aligned}\]</span> &gt; 其中<span class="math inline">\(\beta_1\)</span>, <span class="math inline">\(\beta_2\)</span> 为衰减系数，<span class="math inline">\(m_t\)</span>是 first moment, <span class="math inline">\(v_t\)</span> 是second moment.</p></li>
+</ol>
+<p>https://zhangruochi.com/An-overview-of-gradient-descent-optimization-algorithms/2019/02/23/</p>
+<ol start="7" type="1">
+<li>L1 正则化与稀疏性原理是什么？ &gt; 带正则项和带约束条件是等价的，为了约束w的可能取值空间从而防止过拟合，我们为该最优化问题加上一个约束，就是w的 L2 范数不能大于m &gt; <span class="math display">\[\begin{aligned} 
+&amp; \min sum_{i=1}^N(y_i - w^T x_i)^2 \\ 
+&amp; s.t. ||w||^2_2 \leq m
+\end{aligned}\]</span> &gt; 为了求解带约束条件的凸优化问题，写出拉格朗日函数 &gt; <span class="math display">\[sum_{i=1}^N(y_i - w^T x_i)^2 + \lambda(||w||^2_2 - m)\]</span> &gt; L2正则化相当于为参数定义了一个圆形的解空间(因为必须保证L2范数不能大于m), 而 L1 正则化想当于定义了一个菱形的解空间。L1 的解空间显然更容易与目标函数的等高线在角点碰撞，从而产生稀疏解。
+<center>
+<img style="border-radius: 0.3125em;
+ box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+ src="2.png" width = "50%" height="50%">
+</center></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/ML-Interview-Unsupervised-Learning/2020/05/26/" rel="prev" title="ML-Interview-Unsupervised-Learning">
+      <i class="fa fa-chevron-left"></i> ML-Interview-Unsupervised-Learning
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/ML-Interview-Deep-Learning/2020/05/27/" rel="next" title="ML-Interview-Deep-Learning">
+      ML-Interview-Deep-Learning <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">监督学习的损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">机器学习中的优化问题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

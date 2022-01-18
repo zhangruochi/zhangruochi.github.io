@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Important concepts about Matrix Algebra. This part contains the contents of Vector spaces and Eigenvalues and eigenvectors.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Matrix Algebra for Engineers (part two)">
+<meta property="og:url" content="https://zhangruochi.com/Matrix-Algebra-for-Engineers-part-two/2019/03/17/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Important concepts about Matrix Algebra. This part contains the contents of Vector spaces and Eigenvalues and eigenvectors.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Matrix-Algebra-for-Engineers-part-two/2019/03/17/linear.png">
+<meta property="article:published_time" content="2019-03-17T05:24:15.000Z">
+<meta property="article:modified_time" content="2019-07-05T10:16:38.730Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Matrix-Algebra-for-Engineers-part-two/2019/03/17/linear.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Matrix-Algebra-for-Engineers-part-two/2019/03/17/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Matrix Algebra for Engineers (part two) | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Matrix-Algebra-for-Engineers-part-two/2019/03/17/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Matrix Algebra for Engineers (part two)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-03-17 13:24:15" itemprop="dateCreated datePublished" datetime="2019-03-17T13:24:15+08:00">2019-03-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-07-05 18:16:38" itemprop="dateModified" datetime="2019-07-05T18:16:38+08:00">2019-07-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/Linear-Algebra/" itemprop="url" rel="index"><span itemprop="name">Linear Algebra</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Matrix-Algebra-for-Engineers-part-two/2019/03/17/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Matrix-Algebra-for-Engineers-part-two/2019/03/17/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Important concepts about Matrix Algebra. This part contains the contents of Vector spaces and Eigenvalues and eigenvectors.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>reference from <em>Matrix Algebra for Engineers</em> by Jeffrey R. Chasnov</strong></p>
+<h2 id="vector-spaces">Vector spaces</h2>
+<ul>
+<li>A vector space consists of a set of vectors and a set of scalars.</li>
+<li>For the set of vectors and scalars to form a vector space, the set of vectors must be <strong>closed</strong> under vector addition and scalar multiplication. That is, when you multiply any two vectors in the set by real numbers and add them, the resulting vector must still be in the set.</li>
+</ul>
+<p>As an example: <span class="math display">\[
+\begin{pmatrix}
+\mu_{1} \\
+\mu_{2} \\
+\mu_{3} \\
+\end{pmatrix},
+\begin{pmatrix}
+\nu_{1} \\
+\nu_{2} \\
+\nu_{3} \\
+\end{pmatrix}
+\]</span></p>
+<p>then</p>
+<p><span class="math display">\[
+w = a\mu + b\nu = 
+\begin{pmatrix}
+a\mu_{1} + b\nu_{1} \\ 
+a\mu_{2} + b\nu_{2} \\ 
+a\mu_{3} + b\nu_{3} \\ 
+\end{pmatrix}
+\]</span></p>
+<p>so that the set of all three-by-one matrices (together with the set of real numbers) is a vector space. This space is usually called .</p>
+<h2 id="linear-independence">Linear independence</h2>
+<p>The set of vectors, <span class="math inline">\({u_{1}, u_{2}, . . . , u_{n}}\)</span>, are linearly independent if for any scalars <span class="math inline">\(c_{1}, c_{2}, . . . , c_{n}\)</span>, the equation</p>
+<p><span class="math display">\[c_{1}u_{1}+c_{2}u_{2}+···+c_{n}u_{n} = 0\]</span></p>
+<p>has only the solution <span class="math inline">\(c_{1} = c_{2} = ··· = c_{n} = 0\)</span></p>
+<h2 id="span-basis-and-dimension">Span, basis and dimension</h2>
+<h3 id="span">Span</h3>
+<p>Given a set of vectors, one can generate a vector space by forming all linear combinations of that set of vectors. The span of the set of vectors <span class="math inline">\({v_{1}, v_{2}, . . . , v_{n}}\)</span> is the vector space consisting of all linear combinations of <span class="math inline">\(v_{1}, v_{2}, . . . , v_{n}\)</span>. We say that a set of vectors spans a vector space.</p>
+<h3 id="basis">basis</h3>
+<p>The <strong>smallest</strong> set of vectors needed to span a vector space forms a <strong>basis</strong> for that vector space</p>
+<h3 id="dimension">dimension</h3>
+<p><strong>The number</strong> of vectors in a basis gives the dimension of the vector space</p>
+<h2 id="gram-schmidt-process">Gram-Schmidt process</h2>
+<p>Given any basis for a vector space, we can use an algorithm called the Gram-Schmidt process to construct an <strong>orthonormal basis</strong> for that space</p>
+<p>Let the vectors <span class="math inline">\(v_{1}, v_{2}, . . . , v_{n}\)</span> be a basis for some n- dimensional vector space. We will assume here that these vectors are column matrices, but this process also applies more generally. We will construct an orthogonal basis <span class="math inline">\(u_{1}, u_{2}, . . . , u_{n}\)</span>, and then normalize each vector to obtain an orthonormal basis.</p>
+<p>First, define <span class="math inline">\(u_{1} = v_{1}\)</span>, To find the next orthogonal basis vector, define</p>
+<p><span class="math display">\[
+u_{2} = v_{2} - \frac{(u_{1}^{T}v_{2})u_{1}}{u_{1}^{T}u_{1}}
+\]</span></p>
+<p>The next orthogonal vector in the new basis can be found from <span class="math display">\[
+u_{3} = v_{3} - \frac{(u_{1}^{T}v_{3})u_{1}}{u_{1}^{T}u_{1}} - \frac{(u_{2}^{T}v_{3})u_{2}}{u_{2}^{T}u_{2}}
+\]</span></p>
+<p>We can continue in this fashion to construct n orthogonal basis vectors. These vectors can then be normalized via <span class="math display">\[
+\hat{u_{1}} = \frac{u_{1}}{(u_{1}^{T}u_{1})^{\frac{1}{2}}}
+\]</span></p>
+<h2 id="null-space">Null space</h2>
+<p>The null space of a matrix A, which we denote as Null(A), is the vector space spanned by all column vectors x that satisfy the matrix equation</p>
+<p><span class="math display">\[Ax = 0\]</span></p>
+<p>To find a basis for the null space of a noninvertible matrix, we bring A to reduced row echelon form. <span class="math display">\[
+A = \begin{pmatrix}
+-3 &amp; 6 &amp; -1 &amp; 1 &amp; -1 \\
+1 &amp; -2 &amp; 2 &amp; 3 &amp; -1 \\
+2 &amp; -4 &amp; 5 &amp; 8 &amp; -4 \\
+\end{pmatrix} \rightarrow
+A = \begin{pmatrix}
+1 &amp; -2 &amp; 0 &amp; -1 &amp; 3 \\
+0 &amp; 0 &amp; 1 &amp; 2 &amp; -2 \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+\end{pmatrix}
+\]</span></p>
+<p>We call the variables associated with the pivot columns, x1 and x3, <strong>basic variables</strong>, and the variables associated with the non-pivot columns, x2, x4 and x5, <strong>free variables</strong>. Writing the basic variables on the left-hand side of the <span class="math inline">\(Ax = 0\)</span> equations, we have from the first and second rows</p>
+<p><span class="math display">\[
+\begin{align*}
+x_{1} = 2x_{2} + x_{4} - 3x_{5}, \\
+x_{3} = -2x_{4} + 2x_{5}, \\
+\end{align*}
+\]</span></p>
+<p>Eliminating x1 and x3, we can write the general solution for vectors in Null(A) as</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+2x_{2} + x_{4} - 3x_{5} \\
+x_{2} \\
+-2x_{4} + 2x_{5} \\
+x_{4} \\ 
+x_{5} \\
+\end{pmatrix} = x_{2}
+\begin{pmatrix}
+2 \\
+1 \\
+0 \\
+0 \\
+0 \\
+\end{pmatrix} + x_{4}
+\begin{pmatrix}
+1 \\
+0 \\
+-2 \\
+1 \\
+0 \\
+\end{pmatrix} + x_{5}
+\begin{pmatrix}
+-3 \\
+0 \\
+2 \\
+0 \\
+1 \\
+\end{pmatrix}
+\]</span></p>
+<p>where the free variables <span class="math inline">\(x_{2}\)</span>, <span class="math inline">\(x_{4}\)</span>, and <span class="math inline">\(x_{5}\)</span> can take any values. By writing the null space in this form, a basis for Null(A) is made evident, and is given by</p>
+<p><span class="math display">\[
+\left\{
+\begin{pmatrix}
+2 \\
+1 \\
+0 \\
+0 \\
+0 \\
+\end{pmatrix},
+\begin{pmatrix}
+1 \\
+0 \\
+-2 \\
+1 \\
+0 \\
+\end{pmatrix},
+\begin{pmatrix}
+-3 \\
+0 \\
+2 \\
+0 \\
+1 \\
+\end{pmatrix}
+\right\}
+\]</span></p>
+<h2 id="application-of-the-null-space">Application of the null space</h2>
+<p>An underdetermined system of linear equations <span class="math inline">\(Ax = b\)</span> with more unknowns than equations may not have a unique solution</p>
+<p>If u is the general form of a vector in the null space of A, and v is any vector that satisfies <span class="math inline">\(Av = b\)</span>, then <span class="math inline">\(x = u+v\)</span> satisfies <span class="math inline">\(Ax = A(u+v) = Au+Av = 0+b = b\)</span>. The general solution of <span class="math inline">\(Ax = b\)</span> can therefore be written as the sum of a general vector in Null(A) and a particular vector that satisfies the underdetermined system.</p>
+<p>As an example,</p>
+<p><span class="math display">\[
+\begin{align*}
+2x_{1} + 2x_{2} + x_{3} = 0, \\
+2x_{1} − 2x_{2} − x_{3} = 1, \\
+\end{align*}
+\]</span></p>
+<p>We first bring the augmented matrix to reduced row echelon form:</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+2 &amp; 2 &amp; 1 &amp; 0 \\
+2 &amp; -2 &amp; -1 &amp; 1 \\
+\end{pmatrix} \rightarrow
+\begin{pmatrix}
+1 &amp; 0 &amp; 0 &amp; \frac{1}{4} \\
+0 &amp; 1 &amp; \frac{1}{2} &amp; -\frac{1}{4} \\
+\end{pmatrix}
+\]</span></p>
+<p>The null space is determined from <span class="math inline">\(x_{1} = 0\)</span> and <span class="math inline">\(x_{2} = −\frac{x_{3}}{2}\)</span>, and we can write</p>
+<p><span class="math display">\[
+Null(A) = span \left\{ \begin{pmatrix} 0 \\ -1 \\ 2 \end{pmatrix}\right\}
+\]</span></p>
+<p>The general solution to the original underdetermined linear system is <strong>the sum of the null space and the particular solution</strong> and is given by</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+x_{1} \\
+x_{2} \\
+x_{3} \\
+\end{pmatrix} = a 
+\begin{pmatrix}
+0 \\
+-1 \\
+2 \\
+\end{pmatrix} + \frac{1}{4} 
+\begin{pmatrix}
+1 \\
+-1 \\
+0 \\
+\end{pmatrix}
+\]</span></p>
+<h2 id="column-space">Column space</h2>
+<p>The column space of a matrix is the vector space spanned by the columns of the matrix. <strong>When a matrix is multiplied by a column vector, the resulting vector is in the column space of the matrix</strong>, as can be seen from</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+a &amp; b \\
+c &amp; d \\
+\end{pmatrix} 
+\begin{pmatrix}
+x \\
+y \\
+\end{pmatrix} = 
+\begin{pmatrix}
+ax + by \\
+cx + dy \\
+\end{pmatrix} = x
+\begin{pmatrix}
+a \\
+c \\
+\end{pmatrix} + y
+\begin{pmatrix}
+b \\
+d \\
+\end{pmatrix}
+\]</span></p>
+<p>Recall that the dimension of the null space is the number of non-pivot columns—equal to the number of free variables—so that the sum of the dimensions of the null space and the column space is equal to the total number of columns—equal</p>
+<p><span class="math display">\[dim(Col(A)) + dim(Null(A)) = n.\]</span></p>
+<h2 id="row-space-left-null-space-and-rank">Row space, left null space and rank</h2>
+<p>In addition to the column space and the null space, a matrix A has two more vector spaces associated with it, namely the <strong>column space</strong> and <strong>null space</strong> of <span class="math inline">\(A^{T}\)</span>, which are called the <strong>row space</strong> and the <strong>left null space</strong>.</p>
+<p>Furthermore, the dimension of the column space of A is also equal to the number of pivot columns, so that the dimensions of the column space and the row space of a matrix are equal. We have <span class="math display">\[dim(Col(A)) = dim(Row(A)).\]</span></p>
+<p><strong>We call this dimension the rank of the matrix A</strong></p>
+<h2 id="orthogonal-projections">Orthogonal projections</h2>
+<p>Suppose that V is an n-dimensional vector space and W is a p-dimensional subspace of V. In general, the orthogonal projection of v onto W is given by <span class="math display">\[
+v_{proj_{W}} = (v^{T}s_{1})s_{1} + (v^{T}s_{2})s_{2} + · · · + (v^{T}s_{p})s_{p};
+\]</span></p>
+<p>and we can write <span class="math display">\[v=v_{proj_{W}} +(v−v_{proj_{W}})\]</span></p>
+<p><span class="math inline">\(v_{proj_{W}}\)</span> is closer to v than any other vector in W</p>
+<h2 id="the-least-squares-problem">The least-squares problem</h2>
+<figure>
+<img src="linear.png" alt="linear.png" /><figcaption aria-hidden="true">linear.png</figcaption>
+</figure>
+<p>These equations constitute a system of n equations in the two unknowns <span class="math inline">\(\beta_{0}\)</span> and <span class="math inline">\(\beta_{1}\)</span>. The corresponding matrix equation is given by: <span class="math display">\[
+\begin{pmatrix}
+1 &amp; x_{1} \\
+1 &amp; x_{2} \\
+\vdots \\
+1 &amp; x_{n} \\
+\end{pmatrix}
+\begin{pmatrix}
+\beta{0} \\
+\beta{1} \\
+\end{pmatrix} = 
+\begin{pmatrix}
+y_{1} \\
+y_{2} \\
+\vdots \\
+y_{n}
+\end{pmatrix}
+\]</span></p>
+<p>This is an overdetermined system of equations with no solution. The problem of least squares is to find the best solution.</p>
+<p>We can generalize this problem as follows. Suppose we are given a matrix equation, <span class="math inline">\(Ax = b\)</span>, that has no solution because b is not in the column space of A. So instead we solve <span class="math inline">\(Ax = b_{projCol(A)}\)</span> , where <span class="math inline">\(b_{projCol(A)}\)</span> is the projection of b onto the column space of A. The solution is then called the least-squares solution for x.</p>
+<p><span class="math display">\[b_{projCol(A)} = A(A^{T}A)^{−1}A^{T}b.\]</span></p>
+<h2 id="laplace-expansion">Laplace expansion</h2>
+<p><span class="math display">\[
+\begin{vmatrix}
+a &amp; b &amp; c \\
+d &amp; e &amp; f \\
+g &amp; h &amp; i \\
+\end{vmatrix} = aei+bfg+cdh−ceg−bdi−afh = a(ei− fh)−b(di− fg)+c(dh−eg) \\
+\]</span></p>
+<p>which can be written suggestively as</p>
+<p><span class="math display">\[
+\begin{vmatrix}
+a &amp; b &amp; c \\
+d &amp; e &amp; f \\
+g &amp; h &amp; i \\
+\end{vmatrix} = 
+a \begin{vmatrix}
+e &amp; f \\
+h &amp; i \\
+\end{vmatrix} - b \begin{vmatrix}
+d &amp; f \\
+g &amp; i \\
+\end{vmatrix} + c \begin{vmatrix}
+d &amp; e \\
+g &amp; h \\
+\end{vmatrix}
+\]</span></p>
+<h2 id="properties-of-a-determinant">Properties of a determinant</h2>
+<ul>
+<li>Property 1: The determinant of the identity matrix is one;</li>
+<li>Property 2: The determinant changes sign under row interchange;</li>
+<li>Property 3: The determinant is a linear function of the first row, holding all other rows fixed.</li>
+</ul>
+<h2 id="the-eigenvalue-problem">The eigenvalue problem</h2>
+<p>Let A be a square matrix, x a column vector, and λ a scalar. The eigenvalue problem for A solves</p>
+<p><span class="math display">\[Ax = \lambda x\]</span></p>
+<p>for eigenvalues <span class="math inline">\(\lambda_{i}\)</span> with corresponding eigenvectors <span class="math inline">\(x_{i}\)</span>. Making use of the identity matrix I, the eigenvalue problem can be rewritten as</p>
+<p><span class="math display">\[(A−\lambda I)x = 0\]</span></p>
+<p>For there to be nonzero eigenvectors, the matrix <span class="math inline">\((A − \lambda I)\)</span> must be singular, that is,</p>
+<p><span class="math display">\[det(A−\lambda I) = 0.\]</span></p>
+<h2 id="matrix-diagonalization">Matrix diagonalization</h2>
+<p>For concreteness, consider a two-by-two matrix A with eigenvalues and eigenvectors given by</p>
+<p><span class="math display">\[
+\lambda_{1}, x_{1} = \begin{pmatrix}
+x_{11}\\
+x_{21}\\
+\end{pmatrix} ;
+\lambda_{2}, x_{2} = \begin{pmatrix}
+x_{12}\\
+x_{22}\\
+\end{pmatrix} 
+\]</span></p>
+<p>And consider the matrix product and factorization given by</p>
+<p><span class="math display">\[
+A \begin{pmatrix}
+x_{11} &amp; x_{12} \\
+x_{21} &amp; x_{22} \\
+\end{pmatrix} = \begin{pmatrix}
+\lambda_{1}x_{11} &amp; \lambda_{2}x_{12} \\
+\lambda_{1}x_{21} &amp; \lambda_{2}x_{22} \\
+\end{pmatrix} = \begin{pmatrix}
+x_{11} &amp; x_{12} \\
+x_{21} &amp; x_{22} \\
+\end{pmatrix} \begin{pmatrix}
+\lambda_{1} &amp; 0 \\
+0 &amp; \lambda_{2} \\
+\end{pmatrix}
+\]</span></p>
+<p>Generalizing, we define S to be the matrix whose columns are the eigenvectors of A, and Λ to be the diagonal matrix with eigenvalues down the diagonal. Then for any n-by-n matrix with n linearly independent eigenvectors, we have</p>
+<p><span class="math display">\[AS = SΛ\]</span></p>
+<p>where S is an invertible matrix. Multiplying both sides on the right or the left by <span class="math inline">\(S^{−1}\)</span>, we derive the relations</p>
+<p><span class="math display">\[A = SΛS^{−1} \quad or \quad Λ = S^{−1}AS.\]</span></p>
+<h2 id="powers-of-a-matrix">Powers of a matrix</h2>
+<p>Suppose that A is diagonalizable, and consider <span class="math display">\[A^{p} = (SΛS^{−1})(SΛS^{−1}) = SΛ^{p}S^{−1}\]</span></p>
+<p><span class="math display">\[
+\begin{pmatrix}
+\lambda_{1} &amp; 0 \\
+0 &amp; \lambda_{2} \\
+\end{pmatrix}
+\begin{pmatrix}
+\lambda_{1} &amp; 0 \\
+0 &amp; \lambda_{2} \\
+\end{pmatrix} = 
+\begin{pmatrix}
+\lambda_{1}^{2} &amp; 0 \\
+0 &amp; \lambda_{2}^{2} \\
+\end{pmatrix}
+\]</span></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Matrix-Algebra-for-Engineers-part-one/2019/03/17/" rel="prev" title="Matrix Algebra for Engineers (part one)">
+      <i class="fa fa-chevron-left"></i> Matrix Algebra for Engineers (part one)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Machine-Learning-Yarning-part-one/2019/03/20/" rel="next" title="Machine Learning Yarning(part one)">
+      Machine Learning Yarning(part one) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#vector-spaces"><span class="nav-number">1.</span> <span class="nav-text">Vector spaces</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linear-independence"><span class="nav-number">2.</span> <span class="nav-text">Linear independence</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#span-basis-and-dimension"><span class="nav-number">3.</span> <span class="nav-text">Span, basis and dimension</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#span"><span class="nav-number">3.1.</span> <span class="nav-text">Span</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#basis"><span class="nav-number">3.2.</span> <span class="nav-text">basis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dimension"><span class="nav-number">3.3.</span> <span class="nav-text">dimension</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gram-schmidt-process"><span class="nav-number">4.</span> <span class="nav-text">Gram-Schmidt process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null-space"><span class="nav-number">5.</span> <span class="nav-text">Null space</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#application-of-the-null-space"><span class="nav-number">6.</span> <span class="nav-text">Application of the null space</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#column-space"><span class="nav-number">7.</span> <span class="nav-text">Column space</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#row-space-left-null-space-and-rank"><span class="nav-number">8.</span> <span class="nav-text">Row space, left null space and rank</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#orthogonal-projections"><span class="nav-number">9.</span> <span class="nav-text">Orthogonal projections</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#the-least-squares-problem"><span class="nav-number">10.</span> <span class="nav-text">The least-squares problem</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#laplace-expansion"><span class="nav-number">11.</span> <span class="nav-text">Laplace expansion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#properties-of-a-determinant"><span class="nav-number">12.</span> <span class="nav-text">Properties of a determinant</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#the-eigenvalue-problem"><span class="nav-number">13.</span> <span class="nav-text">The eigenvalue problem</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#matrix-diagonalization"><span class="nav-number">14.</span> <span class="nav-text">Matrix diagonalization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#powers-of-a-matrix"><span class="nav-number">15.</span> <span class="nav-text">Powers of a matrix</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

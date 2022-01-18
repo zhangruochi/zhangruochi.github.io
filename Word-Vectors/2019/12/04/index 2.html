@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Word Vectors Summary">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Word Vectors">
+<meta property="og:url" content="https://zhangruochi.com/Word-Vectors/2019/12/04/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Word Vectors Summary">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Word-Vectors/2019/12/04/diagonalizable.png">
+<meta property="og:image" content="https://zhangruochi.com/Word-Vectors/2019/12/04/usv.png">
+<meta property="og:image" content="https://zhangruochi.com/Word-Vectors/2019/12/04/svd.png">
+<meta property="og:image" content="https://zhangruochi.com/Word-Vectors/2019/12/04/Skip.png">
+<meta property="og:image" content="https://zhangruochi.com/Word-Vectors/2019/12/04/Skip_2.png">
+<meta property="og:image" content="https://zhangruochi.com/Word-Vectors/2019/12/04/objective.png">
+<meta property="og:image" content="https://zhangruochi.com/Word-Vectors/2019/12/04/CBOW.png">
+<meta property="og:image" content="https://zhangruochi.com/Word-Vectors/2019/12/04/negative_sampling.png">
+<meta property="og:image" content="https://zhangruochi.com/Word-Vectors/2019/12/04/hafftree.png">
+<meta property="article:published_time" content="2019-12-04T08:14:11.000Z">
+<meta property="article:modified_time" content="2019-12-19T18:10:37.008Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="cs224n">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Word-Vectors/2019/12/04/diagonalizable.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Word-Vectors/2019/12/04/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Word Vectors | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Word-Vectors/2019/12/04/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Word Vectors
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-04 16:14:11" itemprop="dateCreated datePublished" datetime="2019-12-04T16:14:11+08:00">2019-12-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-20 02:10:37" itemprop="dateModified" datetime="2019-12-20T02:10:37+08:00">2019-12-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Word-Vectors/2019/12/04/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Word-Vectors/2019/12/04/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Word Vectors Summary</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="why-we-need-word-vectors">Why we need Word Vectors ?</h2>
+<p>We want to encode word tokens each into some vector that represents a point in some sort of "word" space. This is paramount for a number of reasons but the most intuitive reason is that perhaps there actually exists some N-dimensional space (such that N &lt;&lt; 13 million) that is sufficient to encode all semantics of our language. Each dimension would encode some meaning that we transfer using speech. For instance, semantic dimensions might indicate tense (past vs. present vs. future), count (singular vs. plural), and gender (masculine vs. feminine).</p>
+<h2 id="one-hot-vector">One-hot vector</h2>
+<p>Represent every word as an <span class="math inline">\(\mathbb{R}^{|v|\cdot 1}\)</span> vector with all 0s and one 1 at the index of that word in the sorted english language. <span class="math inline">\(|V|\)</span> is the size of our vocabulary. Word vectors in this type of encoding would appear as the following:</p>
+<p><span class="math display">\[
+W^{abandon} = \begin{bmatrix} 
+1 \\
+0 \\
+0 \\
+0 \\
+\vdots \\
+0 \\
+\end{bmatrix}
+\]</span></p>
+<p>We represent each word as a completely independent entity. This word representation <strong>does not</strong> give us directly any notion of similarity. For instance,</p>
+<p><span class="math display">\[(W^{hotel})^{T}W^{motel} =(W^{hotel})^{T}W^{cat} = 0 \]</span></p>
+<h2 id="svd-based-methods">SVD Based Methods</h2>
+<p>For this class of methods to find word embeddings (otherwise known as word vectors), we first loop over a massive dataset and accumulate word co-occurrence counts in some form of a matrix X, and then perform Singular Value Decomposition on X to get a <span class="math inline">\(USV^{T}\)</span> decomposition. We then use the rows of U as the word embeddings for all words in our dictionary. Let us discuss a few choices of X.</p>
+<h3 id="word-document-matrix">Word-Document Matrix</h3>
+<p>As our first attempt, we make the bold conjecture that words thatare related will often appear in the <strong>same documents</strong>. We use this fact to build a word-document matrix, <span class="math inline">\(X\)</span> in the following manner: Loop over billions of documents and for each time word <span class="math inline">\(i\)</span> appears in document <span class="math inline">\(j\)</span>, we add one to entry <span class="math inline">\(X_{ij}\)</span>. This is obviously a very large matrix <span class="math inline">\(\mathbb{R}^{|v|\cdot M}\)</span> and it scales with the number of documents (M). So perhaps we can try something better.</p>
+<h3 id="window-based-co-occurrence-matrix">Window based Co-occurrence Matrix</h3>
+<p>A co-occurrence matrix counts how often things co-occur in some environment. Given some word <span class="math inline">\(w_i\)</span> occurring in the document, we consider the <em>context window</em> surrounding <span class="math inline">\(w_i\)</span>. Supposing our fixed window size is <span class="math inline">\(n\)</span>, then this is the <span class="math inline">\(n\)</span> preceding and <span class="math inline">\(n\)</span> subsequent words in that document, i.e. words <span class="math inline">\(w_{i-n} \dots w_{i-1}\)</span> and <span class="math inline">\(w_{i+1} \dots w_{i+n}\)</span>. We build a <em>co-occurrence matrix</em> <span class="math inline">\(M\)</span>, which is a symmetric word-by-word matrix in which <span class="math inline">\(M_{ij}\)</span> is the number of times <span class="math inline">\(w_j\)</span> appears inside <span class="math inline">\(w_i\)</span>'s window.</p>
+<p><strong>Example: Co-Occurrence with Fixed Window of n=1</strong>:</p>
+<ul>
+<li>Document 1: "all that glitters is not gold"</li>
+<li>Document 2: "all is well that ends well"</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>*</th>
+<th>START</th>
+<th>all</th>
+<th>that</th>
+<th>glitters</th>
+<th>is</th>
+<th>not</th>
+<th>gold</th>
+<th>well</th>
+<th>ends</th>
+<th>END</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>START</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>all</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>that</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>glitters</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>is</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>not</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>gold</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>well</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>ends</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>END</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> In NLP, we often add START and END tokens to represent the beginning and end of sentences, paragraphs or documents. In thise case we imagine START and END tokens encapsulating each document, e.g., "START All that glitters is not gold END", and include these tokens in our co-occurrence counts.</p>
+<p>The rows (or columns) of this matrix provide one type of word vectors (those based on word-word co-occurrence), but the vectors will be large in general (linear in the number of distinct words in a corpus). Thus, our next step is to run <em>dimensionality reduction</em>. In particular, we will run <em>SVD (Singular Value Decomposition)</em>, which is a kind of generalized <em>PCA (Principal Components Analysis)</em> to select the top <span class="math inline">\(k\)</span> principal components. Here's a visualization of dimensionality reduction with SVD. In this picture our co-occurrence matrix is <span class="math inline">\(A\)</span> with <span class="math inline">\(n\)</span> rows corresponding to <span class="math inline">\(n\)</span> words. We obtain a full matrix decomposition, with the singular values ordered in the diagonal <span class="math inline">\(S\)</span> matrix, and our new, shorter length-<span class="math inline">\(k\)</span> word vectors in <span class="math inline">\(U_k\)</span>.</p>
+<h3 id="svd">SVD</h3>
+<p><strong>Eigenvalues</strong> quantify the importance of information along the line of <strong>eigenvectors</strong>. Equipped with this information, we know what part of the information can be ignored and how to compress information (SVD, Dimension reduction &amp; PCA). It also helps us to extract features in developing machine learning models. Sometimes, it makes the model easier to train because of the reduction of tangled information. It also serves the purpose to visualize tangled raw data.</p>
+<p>for Eigenvalues <span class="math inline">\(\lambda\)</span> and Eigenvector <span class="math inline">\(V\)</span>, we have: <span class="math display">\[AV = \lambda V \]</span></p>
+<p>the dimension of A is <span class="math inline">\(\mathbb{R}^{n\cdot n}\)</span> and <span class="math inline">\(V\)</span> is a <span class="math inline">\(\mathbb{R}^{n\cdot 1}\)</span> vector.</p>
+<h4 id="diagonalizable">Diagonalizable</h4>
+<p>Let’s assume a matrix A has two eigenvalues and eigenvectors.</p>
+<p><span class="math display">\[Av_1 = \lambda_1 v_1\]</span> <span class="math display">\[Av_2 = \lambda_2 v_2\]</span></p>
+<p>We can concatenate them together and rewrite the equations in the matrix form.</p>
+<p><span class="math display">\[
+A \begin{bmatrix} v1 &amp; v2 \end{bmatrix} = \begin{bmatrix} \lambda_1 v_1 &amp; \lambda_2 v_2 \end{bmatrix} = \begin{bmatrix} v1 &amp; v2 \end{bmatrix} \begin{bmatrix} \lambda_1 &amp; 0 \\ 0 &amp; \lambda_2 \end{bmatrix}
+\]</span></p>
+<p>We can generalize it into any number of eigenvectors as <span class="math display">\[AV = V\land\]</span></p>
+<p>A square matrix A is diagonalizable if we can convert it into a diagonal matrix, like</p>
+<p><span class="math display">\[V^{-1} A V = \land\]</span></p>
+<p>An n × n square matrix is diagonalizable if it has n linearly independent eigenvectors. If a matrix is symmetric, it is diagonalizable. If a matrix does not have repeated eigenvalue, it always generates enough linearly independent eigenvectors to diagonalize a vector. If it has repeated eigenvalues, there is no guarantee we have enough eigenvectors. Some will not be diagonalizable.</p>
+<p>If <span class="math inline">\(A\)</span> is a square matrix with <span class="math inline">\(N\)</span> linearly independent eigenvectors (<span class="math inline">\(v_1\)</span>, <span class="math inline">\(v_2\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(v_n\)</span>) and corresponding eigenvalues (<span class="math inline">\(\lambda_1\)</span>, <span class="math inline">\(\lambda_2\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(\lambda_n\)</span>), we can rearrange</p>
+<p><span class="math display">\[V^{-1} A V = \land\]</span></p>
+<p>into</p>
+<p><span class="math display">\[A = V \land V^{-1}\]</span></p>
+<p>For example,</p>
+<p><img src="diagonalizable.png" /></p>
+<h4 id="singular-vectors-singular-values">Singular vectors &amp; singular values</h4>
+<p>However, the above method is possible only if <span class="math inline">\(A\)</span> is a square matrix and <span class="math inline">\(A\)</span> has n linearly independent eigenvectors. Now, it is time to develop a solution for all matrices using SVD.</p>
+<p>The matrix <span class="math inline">\(AA^{T}\)</span> and <span class="math inline">\(A^{T}A\)</span> are very special in linear algebra. Consider any m × n matrix A, we can multiply it with <span class="math inline">\(A^{T}\)</span> to form <span class="math inline">\(AA^{T}\)</span> and <span class="math inline">\(A^{T}A\)</span> separately. These matrices are</p>
+<ul>
+<li>symmetrical,</li>
+<li>square,</li>
+<li>at least positive semidefinite (eigenvalues are zero or positive),</li>
+<li>both matrices have the same positive eigenvalues, and</li>
+<li>both have the same rank r as A.</li>
+</ul>
+<p>We name the eigenvectors for <span class="math inline">\(AA^{T}\)</span> as <span class="math inline">\(u_i\)</span> and <span class="math inline">\(A^{T}A\)</span> as <span class="math inline">\(v_i\)</span> here and call these sets of eigenvectors <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> the <strong>singular vectors</strong> of A. Both matrices have the same positive eigenvalues. The square roots of these eigenvalues are called <strong>singular values</strong>. We concatenate vectors <span class="math inline">\(u_i\)</span> into <span class="math inline">\(U\)</span> and <span class="math inline">\(v_i\)</span> into <span class="math inline">\(V\)</span> to form orthogonal matrices.</p>
+<p><strong>SVD states that any matrix A can be factorized as</strong>:</p>
+<p><span class="math display">\[A_{m\cdot n} = U_{m\cdot m} S_{m\cdot n} V_{n\cdot n}^{T}\]</span></p>
+<p>S is a diagonal matrix with r elements equal to the root of the positive eigenvalues of <span class="math inline">\(AA^{T}\)</span> or <span class="math inline">\(A^{T}A\)</span> (both matrics have the same positive eigenvalues anyway).</p>
+<p><img src="usv.png" /></p>
+<h4 id="applying-svd-to-the-cooccurrence-matrix">Applying SVD to the cooccurrence matrix</h4>
+<figure>
+<img src="svd.png" alt="Picture of an SVD" /><figcaption aria-hidden="true">Picture of an SVD</figcaption>
+</figure>
+<p>This reduced-dimensionality co-occurrence representation preserves semantic relationships between words, e.g. <em>doctor</em> and <em>hospital</em> will be closer than <em>doctor</em> and <em>dog</em>.</p>
+<p>Although these methods give us word vectors that are more than sufficient to encode semantic and syntactic (part of speech) information but are associated with many other problems:</p>
+<ul>
+<li>The dimensions of the matrix change very often (new words are added very frequently and corpus changes in size).</li>
+<li>The matrix is extremely sparse since most words do not co-occur.</li>
+<li>The matrix is very high dimensional in general (≈ 10e6 × 10e6)</li>
+<li>Quadratic cost to train (i.e. to perform SVD)</li>
+<li>Requires the incorporation of some hacks on X to account for the drastic imbalance in word frequency</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute_co_occurrence_matrix</span>(<span class="params">corpus, window_size=<span class="number">4</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Compute co-occurrence matrix for the given corpus and window_size (default of 4).</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">        Note: Each word in a document should be at the center of a window. Words near edges will have a smaller</span></span><br><span class="line"><span class="string">              number of co-occurring words.</span></span><br><span class="line"><span class="string">              </span></span><br><span class="line"><span class="string">              For example, if we take the document &quot;START All that glitters is not gold END&quot; with window size of 4,</span></span><br><span class="line"><span class="string">              &quot;All&quot; will co-occur with &quot;START&quot;, &quot;that&quot;, &quot;glitters&quot;, &quot;is&quot;, and &quot;not&quot;.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">        Params:</span></span><br><span class="line"><span class="string">            corpus (list of list of strings): corpus of documents</span></span><br><span class="line"><span class="string">            window_size (int): size of context window</span></span><br><span class="line"><span class="string">        Return:</span></span><br><span class="line"><span class="string">            M (numpy matrix of shape (number of corpus words, number of corpus words)): </span></span><br><span class="line"><span class="string">                Co-occurence matrix of word counts. </span></span><br><span class="line"><span class="string">                The ordering of the words in the rows/columns should be the same as the ordering of the words given by the distinct_words function.</span></span><br><span class="line"><span class="string">            word2Ind (dict): dictionary that maps word to index (i.e. row/column number) for matrix M.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    words, num_words = distinct_words(corpus)</span><br><span class="line">    M = <span class="literal">None</span></span><br><span class="line">    word2Ind = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    word2Ind = &#123;word:idx <span class="keyword">for</span> word,idx <span class="keyword">in</span> <span class="built_in">zip</span>(words, <span class="built_in">range</span>(num_words))&#125;</span><br><span class="line">    M = np.zeros((num_words,num_words))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> doc <span class="keyword">in</span> corpus:</span><br><span class="line">        <span class="keyword">for</span> index, central_word <span class="keyword">in</span> <span class="built_in">enumerate</span>(doc):</span><br><span class="line">            left = <span class="built_in">max</span>(<span class="number">0</span>,index - window_size)</span><br><span class="line">            right = <span class="built_in">min</span>(num_words, index + window_size+<span class="number">1</span>)</span><br><span class="line">            <span class="keyword">for</span> context_word <span class="keyword">in</span> doc[left:right]:</span><br><span class="line">                <span class="keyword">if</span> context_word == central_word:</span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">                M[word2Ind[central_word]][word2Ind[context_word]] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> M, word2Ind</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reduce_to_k_dim</span>(<span class="params">M, k=<span class="number">2</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Reduce a co-occurence count matrix of dimensionality (num_corpus_words, num_corpus_words)</span></span><br><span class="line"><span class="string">        to a matrix of dimensionality (num_corpus_words, k) using the following SVD function from Scikit-Learn:</span></span><br><span class="line"><span class="string">            - http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.TruncatedSVD.html</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">        Params:</span></span><br><span class="line"><span class="string">            M (numpy matrix of shape (number of corpus words, number of corpus words)): co-occurence matrix of word counts</span></span><br><span class="line"><span class="string">            k (int): embedding size of each word after dimension reduction</span></span><br><span class="line"><span class="string">        Return:</span></span><br><span class="line"><span class="string">            M_reduced (numpy matrix of shape (number of corpus words, k)): matrix of k-dimensioal word embeddings.</span></span><br><span class="line"><span class="string">                    In terms of the SVD from math class, this actually returns U * S</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span>    </span><br><span class="line">    n_iters = <span class="number">10</span>     <span class="comment"># Use this parameter in your call to `TruncatedSVD`</span></span><br><span class="line">    M_reduced = <span class="literal">None</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Running Truncated SVD over %i words...&quot;</span> % (M.shape[<span class="number">0</span>]))</span><br><span class="line">    </span><br><span class="line">    t_svd = TruncatedSVD(n_components=k, n_iter = n_iters)</span><br><span class="line">    M_reduced = t_svd.fit_transform(M)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># ------------------</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Done.&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> M_reduced</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_embeddings</span>(<span class="params">M_reduced, word2Ind, words</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Plot in a scatterplot the embeddings of the words specified in the list &quot;words&quot;.</span></span><br><span class="line"><span class="string">        NOTE: do not plot all the words listed in M_reduced / word2Ind.</span></span><br><span class="line"><span class="string">        Include a label next to each point.</span></span><br><span class="line"><span class="string">        </span></span><br><span class="line"><span class="string">        Params:</span></span><br><span class="line"><span class="string">            M_reduced (numpy matrix of shape (number of unique words in the corpus , k)): matrix of k-dimensioal word embeddings</span></span><br><span class="line"><span class="string">            word2Ind (dict): dictionary that maps word to indices for matrix M</span></span><br><span class="line"><span class="string">            words (list of strings): words whose embeddings we want to visualize</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(M_reduced.shape)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i,word <span class="keyword">in</span> <span class="built_in">enumerate</span>(words):</span><br><span class="line">        x = M_reduced[i][<span class="number">0</span>]</span><br><span class="line">        y = M_reduced[i][<span class="number">1</span>]</span><br><span class="line">        plt.scatter(x, y, marker=<span class="string">&#x27;x&#x27;</span>, color=<span class="string">&#x27;red&#x27;</span>)</span><br><span class="line">        plt.text(x, y, word, fontsize=<span class="number">9</span>)</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+<h2 id="iteration-based-methods---word2vec">Iteration Based Methods - Word2vec</h2>
+<p>Instead of computing and storing global information about some huge dataset (which might be billions of sentences), we can try to create a model that will be able to learn one iteration at a time and eventually be able to encode the probability of a word given its context. The idea is to design a model whose parameters are the word vec- tors. Then, train the model on a certain objective. At every iteration we run our model, evaluate the errors, and follow an update rule that has some notion of penalizing the model parameters that caused the error. Thus, we learn our word vectors.</p>
+<p>Word2vec is a software package that actually includes : - <strong>2 algorithms</strong>: continuous bag-of-words (CBOW) and skip-gram. CBOW aims to predict a center word from the surrounding context in terms of word vectors. Skip-gram does the opposite, and predicts the distribution (probability) of context words from a center word. - <strong>2 training methods</strong>: negative sampling and hierarchical softmax. Negative sampling defines an objective by sampling negative exam- ples, while hierarchical softmax defines an objective using an efficient tree structure to compute probabilities for all the vocabulary.</p>
+<h3 id="language-models">Language Models</h3>
+<p>First, we need to create such a model that will assign a probability to a sequence of tokens. Let us start with an example:</p>
+<blockquote>
+<p>"The cat jumped over the puddle."</p>
+</blockquote>
+<p>A good language model will give this sentence a high probability because this is a completely valid sentence, syntactically and semantically. Mathematically, we can call this probability on any given sequence of n words:</p>
+<p><span class="math display">\[P(w_1,w_2,\cdots,w_n)\]</span></p>
+<p>We can take the unary language model approach and break apart this probability by assuming the word occurrences are completely independent: <span class="math display">\[P(w_1,w_2,\cdots,w_n) = \prod_{i=1}^{n} P(w_i)\]</span></p>
+<p>However, we know this is a bit ludicrous because we know the next word is highly contingent upon the previous sequence of words. And the silly sentence example might actually score highly. So perhaps we let the probability of the sequence depend on the pairwise probability of a word in the sequence and the word next to it. We call this the bigram model and represent it as:</p>
+<p><span class="math display">\[P(w_1,w_2,\cdots,w_n) = \prod_{i=1}^{n} P(w_i|w_{i-1})\]</span></p>
+<p>Again this is certainly a bit naive since we are only concerning ourselves with pairs of neighboring words rather than evaluating a whole sentence, but as we will see, this representation gets us pretty far along.</p>
+<h3 id="skip-gram">Skip-gram</h3>
+<p>One approach is to create a model such that given the center word "jumped", the model will be able to predict or generate the surrounding words "The", "cat", "over", "the", "puddle". Here we call the word "jumped" the context. We call this type of model a Skip-Gram model. <img src="Skip.png" /> <img src="Skip_2.png" /></p>
+<p>We breakdown the way this model works in these 6 steps: 1. We generate our one hot input vector <span class="math inline">\(x \in \mathbb{R}^{|v|}\)</span> of the center word. 2. We get our embedded word vector for the center word <span class="math display">\[v_c = Vx  \qquad \in \mathbb{R}^{|v|}\]</span> 3. Generate a score vector <span class="math display">\[z = Uv_c  \qquad \in \mathbb{R}^{|v|} \]</span> 4. Turn the score vector into probabilities,<span class="math inline">\(\hat{y} = softmax(z)\)</span> <span class="math display">\[\hat y_{c-m}, \cdots, \hat y_{c-1}, \cdots, \hat y_{c+m} \]</span> 5. We desire our probability vector generated to match the true prob- abilities which is the one hot vectors of the actual output. <span class="math display">\[y_{c-m}, \cdots, y_{c-1}, \cdots, y_{c+m} \]</span></p>
+<h4 id="objective-function">Objective function</h4>
+<p><img src="objective.png" /></p>
+<p>** How to calculate <span class="math inline">\(P(o|c)\)</span>? We will use two vectors per word w**: - <span class="math inline">\(V_w\)</span> when w is a center word - <span class="math inline">\(U_w\)</span> when w is a context word</p>
+<p>Then for a center word c and a context word o:</p>
+<p><span class="math display">\[P(o|c) = \frac{exp^{u_o^{T}v_c}}{\sum_{w\in v}exp^{u_w^{T}v_c}}\]</span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SkipGram</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;x --&gt; batch_size x word_index</span></span><br><span class="line"><span class="string">       output --&gt; batch_size x context_predicted x vocabulary&quot;&quot;&quot;</span>    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vocabulary_size, embedding_features, context_len, padding_idx=<span class="number">0</span> </span>):</span></span><br><span class="line">        <span class="built_in">super</span>(SkipGram, self).__init__()</span><br><span class="line">        self.context_len = context_len</span><br><span class="line">        self.embedding = nn.Embedding(num_embeddings = vocabulary_size, embedding_dim=embedding_features, padding_idx=padding_idx)</span><br><span class="line">        self.fc = nn.Linear(in_features = embedding_features, out_features = vocabulary_size)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        context_out = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(self.context_len):</span><br><span class="line">            wordvec_x = self.embedding(x)</span><br><span class="line">            context_word_i = self.fc(wordvec_x)</span><br><span class="line">            context_out.append(context_word_i)</span><br><span class="line">        log_prob = F.log_softmax(torch.stack(context_out, dim=<span class="number">1</span>).squeeze(), dim=<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> log_prob</span><br><span class="line"></span><br><span class="line">loss_function = nn.NLLLoss()</span><br><span class="line">model = SkipGram()</span><br><span class="line">log_prob = model(centre_word)</span><br><span class="line">loss=<span class="number">1</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(log_prob.shape[<span class="number">1</span>]):</span><br><span class="line">    loss_i = loss_function(log_prob[:,i,], context_word_i[:,i])</span><br><span class="line">    loss *= loss_i</span><br><span class="line">loss = loss/(i+<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="continuous-bag-of-words-model-cbow">Continuous Bag of Words Model (CBOW)</h3>
+<p>Another approach is to treat {"The", "cat", ’over", "the’, "puddle"} as a <strong>context</strong> and from these words, be able to predict or generate the <strong>center word</strong> "jumped". This type of model we call a Continuous Bag of Words (CBOW) Model.</p>
+<p><img src="CBOW.png" /></p>
+<p>We breakdown the way this model works in these steps: 1. We generate our one hot word vectors for the input context of size m: <span class="math display">\[x^{(c−m)},\cdots,x^{(c−1)},x^{(c+1)},\cdots,x^{(c+m)}\in\mathbb{R}^{|v|}\]</span> 2. We get our embedded word vectors for the context: <span class="math display">\[V_{c-m} = Vx^{(c−m)},V_{c-m+1} = Vx^{(c−m+1)},\cdots,V_{c+m} = Vx^{(c+m)}\]</span> 3. Average these vectors to get <span class="math display">\[\hat{v} = \frac{v_{c-m} + v_{c-m+1} + \cdots + v_{c+m}}{2m}\]</span> 4. Generate a score vector <span class="math display">\[z = U\hat{v}  \qquad \in \mathbb{R}^{|v|} \]</span> As dot product of similar vectors is higher, it will push similar words close to each other in order to achieve a high score. 5. Turnthescoresintoprobabilities <span class="math display">\[\hat{y} = softmax(z)  \qquad \in \mathbb{R}^{|v|}\]</span> 6. We desire our probabilities generated, <span class="math inline">\(\hat{y} \in \mathbb{R}^{|v|}\)</span>, to match the true probabilities, <span class="math inline">\(y \in \mathbb{R}^{|v|}\)</span> which also happens to be the one hot vector of the actual word.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CBOW</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;input  -- &gt; batch_size x context_size</span></span><br><span class="line"><span class="string">       output --&gt; batch_size x vocabulary&quot;&quot;&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vocabulary_size, embedding_features, padding_idx=<span class="number">0</span></span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;nn.Embedding holds a tensor of dimmension (vocabulary_size, feature_size)--&gt;N(0,1)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">super</span>(CBOW, self).__init__()</span><br><span class="line">        self.embedding = nn.Embedding(num_embeddings = vocabulary_size, embedding_dim = embedding_features, padding_idx=padding_idx)</span><br><span class="line">        self.fc = nn.Linear(in_features = embedding_features, out_features = vocabulary_size)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, context_words</span>):</span></span><br><span class="line">        wordvecs = self.embedding(context_words)</span><br><span class="line">        mean_wordvecs = wordvecs.<span class="built_in">sum</span>(dim=<span class="number">1</span>)/x.shape[<span class="number">1</span>] </span><br><span class="line">        log_prob = F.log_softmax(self.fc(mean_wordvecs), dim=<span class="number">1</span>).unsqueeze(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> log_prob</span><br><span class="line"></span><br><span class="line">loss_function = nn.NLLLoss()</span><br><span class="line">model  = CBOW()</span><br><span class="line">log_prob = model(context_words)</span><br><span class="line">loss = loss_function(log_prob.squeeze(), centre_word.squeeze())</span><br></pre></td></tr></table></figure>
+<h3 id="negative-sampling">Negative Sampling</h3>
+<p>Lets take a second to look at the objective function. Note that the summation over |V| is computationally huge! Any update we do or evaluation of the objective function would take O(|V|) time which if we recall is in the millions. A simple idea is we could instead just approximate it.</p>
+<p><strong>For every training step, instead of looping over the entire vocabulary, we can just sample several negative examples!</strong> We "sample" from a noise distribution <span class="math inline">\(P_n(w)\)</span> whose probabilities match the ordering of the frequency of the vocabulary. Unlike the probabilistic model of Word2Vec where for each input word probability is computed from all the target words in the vocabulary, here for each input word has only few target words (few true and rest randomly selected false targets). <strong>The key difference compared to the probabilistic model is the use of sigmoid activation as final discriminator replacing softmax function in the probabilistic model.</strong></p>
+<p>Given this example(We get positive example by using the same skip-grams technique, a fixed window that goes around):</p>
+<blockquote>
+<p>“I want a glass of orange juice to go along with my cereal”</p>
+</blockquote>
+<p>The sampling will look like this:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Context</th>
+<th style="text-align: left;">Word</th>
+<th style="text-align: left;">target</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">orange</td>
+<td style="text-align: left;">juice</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">orange</td>
+<td style="text-align: left;">king</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">orange</td>
+<td style="text-align: left;">book</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">orange</td>
+<td style="text-align: left;">the</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">orange</td>
+<td style="text-align: left;">of</td>
+<td style="text-align: left;">0</td>
+</tr>
+</tbody>
+</table>
+<p>So the steps to generate the samples are: 1. Pick a positive context 2. Pick a k negative contexts from the dictionary. We will have a k negative examples to 1 positive ones in the data we are collecting.</p>
+<p><img src="negative_sampling.png" /></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Merge</span><br><span class="line"><span class="keyword">from</span> keras.layers.core <span class="keyword">import</span> Dense, Reshape</span><br><span class="line"><span class="keyword">from</span> keras.layers.embeddings <span class="keyword">import</span> Embedding</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</span><br><span class="line"></span><br><span class="line"><span class="comment"># build skip-gram architecture</span></span><br><span class="line">word_model = Sequential()</span><br><span class="line">word_model.add(Embedding(vocab_size, embed_size,</span><br><span class="line">                         embeddings_initializer=<span class="string">&quot;glorot_uniform&quot;</span>,</span><br><span class="line">                         input_length=<span class="number">1</span>))</span><br><span class="line">word_model.add(Reshape((embed_size, )))</span><br><span class="line"></span><br><span class="line">context_model = Sequential()</span><br><span class="line">context_model.add(Embedding(vocab_size, embed_size,</span><br><span class="line">                  embeddings_initializer=<span class="string">&quot;glorot_uniform&quot;</span>,</span><br><span class="line">                  input_length=<span class="number">1</span>))</span><br><span class="line">context_model.add(Reshape((embed_size,)))</span><br><span class="line"></span><br><span class="line">model = Sequential()</span><br><span class="line">model.add(Merge([word_model, context_model], mode=<span class="string">&quot;dot&quot;</span>))</span><br><span class="line">model.add(Dense(<span class="number">1</span>, kernel_initializer=<span class="string">&quot;glorot_uniform&quot;</span>, activation=<span class="string">&quot;sigmoid&quot;</span>))</span><br><span class="line">model.<span class="built_in">compile</span>(loss=<span class="string">&quot;mean_squared_error&quot;</span>, optimizer=<span class="string">&quot;rmsprop&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## training</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">6</span>):</span><br><span class="line">    loss = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i, elem <span class="keyword">in</span> <span class="built_in">enumerate</span>(skip_grams):</span><br><span class="line">        pair_first_elem = np.array(<span class="built_in">list</span>(<span class="built_in">zip</span>(*elem[<span class="number">0</span>]))[<span class="number">0</span>], dtype=<span class="string">&#x27;int32&#x27;</span>)</span><br><span class="line">        pair_second_elem = np.array(<span class="built_in">list</span>(<span class="built_in">zip</span>(*elem[<span class="number">0</span>]))[<span class="number">1</span>], dtype=<span class="string">&#x27;int32&#x27;</span>)</span><br><span class="line">        labels = np.array(elem[<span class="number">1</span>], dtype=<span class="string">&#x27;int32&#x27;</span>)</span><br><span class="line">        X = [pair_first_elem, pair_second_elem]</span><br><span class="line">        Y = labels</span><br><span class="line">        <span class="keyword">if</span> i % <span class="number">10000</span> == <span class="number">0</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;Processed &#123;&#125; (skip_first, skip_second, relevance) pairs&#x27;</span>.<span class="built_in">format</span>(i))</span><br><span class="line">        loss += model.train_on_batch(X,Y)  </span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Epoch:&#x27;</span>, epoch, <span class="string">&#x27;Loss:&#x27;</span>, loss)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## get word embedding</span></span><br><span class="line">merge_layer = model.layers[<span class="number">0</span>]</span><br><span class="line">word_model = merge_layer.layers[<span class="number">0</span>]</span><br><span class="line">word_embed_layer = word_model.layers[<span class="number">0</span>]</span><br><span class="line">weights = word_embed_layer.get_weights()[<span class="number">0</span>][<span class="number">1</span>:]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(weights.shape)</span><br><span class="line">pd.DataFrame(weights, index=id2word.values()).head()</span><br></pre></td></tr></table></figure>
+<h3 id="hierarchical-softmax">hierarchical softmax</h3>
+<p>hierarchical softmax is a much more efficient alternative to the normal softmax. In practice, hierarchical softmax tends to be better for infrequent words, while negative sampling works better for frequent words and lower dimensional vectors.</p>
+<p>Hierarchical softmax uses a binary tree to represent all words in the vocabulary. Each leaf of the tree is a word, and there is a unique path from root to leaf. In this model, there is no output representation for words. Instead, each node of the graph (except the root and the leaves) is associated to a vector that the model is going to learn.</p>
+<p>In this model, the probability of a word w given a vector <span class="math inline">\(w_i\)</span>, p(w|w_i),is equal to the probability of a random walk starting in the root and ending in the leaf node corresponding to w. The main advantage in computing the probability this way is that the cost is only O(log(|V|)), corresponding to the length of the path. <img src="hafftree.png" /></p>
+<p>Taking <span class="math inline">\(w_2\)</span> in above figure, we must take two left edges and then a right edge to reach w2 from the root, so</p>
+<p><span class="math display">\[p(w_2) = p(n(w_2,1),left) \cdot p(n(w_2,2),left) \cdot p(n(w_2,3),right) \\ 
+= \sigma({\theta_{n(w_2,1)}}^T \cdot h) \cdot \sigma({\theta_{n(w_2,2)}}^T \cdot h) \cdot 
+\sigma({-\theta_{n(w_2,3)}}^T \cdot h)\]</span></p>
+<p>Therefore, <span class="math display">\[p(w)=\prod_{j=1}^{L(w)-1}\sigma( sign(w,j)\cdot {\theta_{n(w,j)}}^Th )\]</span></p>
+<p><span class="math display">\[sign(w,j)= 
+\begin{cases} 
+1, &amp; \text{if n(w,j+1) is the left child of n(w,j)} \\ 
+-1,&amp; \text{if n(w,j+1) is the right child of n(w,j)}
+\end{cases}\]</span></p>
+<ul>
+<li><span class="math inline">\(\theta_{n(w,j)}\)</span> is the vector representation of <span class="math inline">\(n(w,j)\)</span></li>
+<li><span class="math inline">\(h\)</span> is the output of hidden layer</li>
+</ul>
+<h3 id="global-vectors-for-word-representation-glove">Global Vectors for Word Representation (GloVe)</h3>
+<p>So far, we have looked at two main classes of methods to find word embeddings. - The first set are count-based and rely on matrix factor- ization (e.g. LSA, HAL). While these methods effectively leverage global statistical information, they are primarily used to capture word similarities and do poorly on tasks such as word analogy, indi- cating a sub-optimal vector space structure. - The other set of methods are shallow window-based (e.g. the skip-gram and the CBOW mod- els), which learn word embeddings by making predictions in local context windows. These models demonstrate the capacity to capture complex linguistic patterns beyond word similarity, but fail to make use of the global co-occurrence statistics.</p>
+<p>In comparison, GloVe consists of a weighted least squares model that trains on global word-word co-occurrence counts and thus makes efficient use of statistics. The model produces a word vector space with meaningful sub-structure. It shows state-of-the-art per- formance on the word analogy task, and outperforms other current methods on several word similarity tasks.</p>
+<ol type="1">
+<li>Construct co-occurrence Matrix</li>
+<li>Construct relationships between word vectors and co-occurrence Matrix
+<ul>
+<li>Let X denote the word-word co-occurrence matrix, where <span class="math inline">\(X_{ij}\)</span> indicates the number of times word j occur in the context of word i</li>
+<li><span class="math inline">\(w_{i}\)</span>,<span class="math inline">\(\tilde{w_{j}}\)</span> is the word vector</li>
+<li><span class="math inline">\(b_i,b_j\)</span> is the bias term <span class="math display">\[w_{i}^{T}\tilde{w_{j}} + b_i + \tilde{b_j} = \log(X_{ij}) \tag{1}\]</span></li>
+</ul></li>
+<li>Construct loss function: Mean Square Loss <span class="math display">\[J = \sum_{i,j=1}^{V} f(X_{ij})(w_{i}^{T}\tilde{w_{j}} + b_i + \tilde{b_j} – \log(X_{ij}) )^2\]</span> <span class="math display">\[f(x)=\begin{equation} 
+\begin{cases} 
+(x/x_{max})^{\alpha}  &amp; \text{if} \ x &lt; x_{max} \\ 
+1 &amp; \text{otherwise} 
+\end{cases} 
+\end{equation}\]</span></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">weight_func</span>(<span class="params">x, x_max, alpha</span>):</span></span><br><span class="line">    wx = (x/x_max)**alpha</span><br><span class="line">    wx = torch.<span class="built_in">min</span>(wx, torch.ones_like(wx))</span><br><span class="line">    <span class="keyword">return</span> wx</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">wmse_loss</span>(<span class="params">weights, inputs, targets</span>):</span></span><br><span class="line">    loss = weights * F.mse_loss(inputs, targets, reduction=<span class="string">&#x27;none&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> torch.mean(loss)</span><br><span class="line"></span><br><span class="line">EMBED_DIM = <span class="number">300</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GloveModel</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, num_embeddings, embedding_dim</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(GloveModel, self).__init__()</span><br><span class="line">        self.wi = nn.Embedding(num_embeddings, embedding_dim)</span><br><span class="line">        self.wj = nn.Embedding(num_embeddings, embedding_dim)</span><br><span class="line">        self.bi = nn.Embedding(num_embeddings, <span class="number">1</span>)</span><br><span class="line">        self.bj = nn.Embedding(num_embeddings, <span class="number">1</span>)</span><br><span class="line">        </span><br><span class="line">        self.wi.weight.data.uniform_(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        self.wj.weight.data.uniform_(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        self.bi.weight.data.zero_()</span><br><span class="line">        self.bj.weight.data.zero_()</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, i_indices, j_indices</span>):</span></span><br><span class="line">        w_i = self.wi(i_indices)</span><br><span class="line">        w_j = self.wj(j_indices)</span><br><span class="line">        b_i = self.bi(i_indices).squeeze()</span><br><span class="line">        b_j = self.bj(j_indices).squeeze()</span><br><span class="line">        </span><br><span class="line">        x = torch.<span class="built_in">sum</span>(w_i * w_j, dim=<span class="number">1</span>) + b_i + b_j</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line">glove = GloveModel(dataset._vocab_len, EMBED_DIM)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line">outputs = glove(i_idx, j_idx)</span><br><span class="line">weights_x = weight_func(x_ij, X_MAX, ALPHA)</span><br><span class="line">loss = wmse_loss(weights_x, outputs, torch.log(x_ij))</span><br><span class="line"></span><br><span class="line"><span class="comment"># ... </span></span><br></pre></td></tr></table></figure>
+<p>In conclusion, the GloVe model efficiently leverages global statistical information by training only on the nonzero elements in a word- word co-occurrence matrix, and produces a vector space with mean- ingful sub-structure. It consistently outperforms word2vec on the word analogy task, given the same corpus, vocabulary, window size, and training time. It achieves better results faster, and also obtains the best results irrespective of speed.</p>
+<h2 id="reference">Reference</h2>
+<ul>
+<li>Course note and slides of <a target="_blank" rel="noopener" href="http://web.stanford.edu/class/cs224n/">cs224n</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@jonathan_hui/machine-learning-singular-value-decomposition-svd-principal-component-analysis-pca-1d45e885e491">Machine Learning — Singular Value Decomposition (SVD) &amp; Principal Component Analysis (PCA)</a></li>
+<li>https://lilianweng.github.io/lil-log/2017/10/15/learning-word-embedding.html</li>
+<li>https://zhuanlan.zhihu.com/p/42651829</li>
+<li>https://nlpython.com/implementing-glove-model-with-pytorch/</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/cs224n/" rel="tag"># cs224n</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Role/2019/12/01/" rel="prev" title="Role">
+      <i class="fa fa-chevron-left"></i> Role
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Computational-Graph/2019/12/06/" rel="next" title="Computational Graph">
+      Computational Graph <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#why-we-need-word-vectors"><span class="nav-number">1.</span> <span class="nav-text">Why we need Word Vectors ?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#one-hot-vector"><span class="nav-number">2.</span> <span class="nav-text">One-hot vector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#svd-based-methods"><span class="nav-number">3.</span> <span class="nav-text">SVD Based Methods</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#word-document-matrix"><span class="nav-number">3.1.</span> <span class="nav-text">Word-Document Matrix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#window-based-co-occurrence-matrix"><span class="nav-number">3.2.</span> <span class="nav-text">Window based Co-occurrence Matrix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#svd"><span class="nav-number">3.3.</span> <span class="nav-text">SVD</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#diagonalizable"><span class="nav-number">3.3.1.</span> <span class="nav-text">Diagonalizable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#singular-vectors-singular-values"><span class="nav-number">3.3.2.</span> <span class="nav-text">Singular vectors &amp; singular values</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#applying-svd-to-the-cooccurrence-matrix"><span class="nav-number">3.3.3.</span> <span class="nav-text">Applying SVD to the cooccurrence matrix</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iteration-based-methods---word2vec"><span class="nav-number">4.</span> <span class="nav-text">Iteration Based Methods - Word2vec</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#language-models"><span class="nav-number">4.1.</span> <span class="nav-text">Language Models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#skip-gram"><span class="nav-number">4.2.</span> <span class="nav-text">Skip-gram</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#objective-function"><span class="nav-number">4.2.1.</span> <span class="nav-text">Objective function</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#continuous-bag-of-words-model-cbow"><span class="nav-number">4.3.</span> <span class="nav-text">Continuous Bag of Words Model (CBOW)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#negative-sampling"><span class="nav-number">4.4.</span> <span class="nav-text">Negative Sampling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hierarchical-softmax"><span class="nav-number">4.5.</span> <span class="nav-text">hierarchical softmax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#global-vectors-for-word-representation-glove"><span class="nav-number">4.6.</span> <span class="nav-text">Global Vectors for Word Representation (GloVe)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

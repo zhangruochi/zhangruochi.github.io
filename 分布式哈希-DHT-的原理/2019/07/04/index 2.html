@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="分布式哈希(DHT)的原理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式哈希(DHT)的原理">
+<meta property="og:url" content="https://zhangruochi.com/%E5%88%86%E5%B8%83%E5%BC%8F%E5%93%88%E5%B8%8C-DHT-%E7%9A%84%E5%8E%9F%E7%90%86/2019/07/04/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="分布式哈希(DHT)的原理">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/%E5%88%86%E5%B8%83%E5%BC%8F%E5%93%88%E5%B8%8C-DHT-%E7%9A%84%E5%8E%9F%E7%90%86/2019/07/04/1.png">
+<meta property="og:image" content="https://zhangruochi.com/%E5%88%86%E5%B8%83%E5%BC%8F%E5%93%88%E5%B8%8C-DHT-%E7%9A%84%E5%8E%9F%E7%90%86/2019/07/04/2.png">
+<meta property="og:image" content="https://zhangruochi.com/%E5%88%86%E5%B8%83%E5%BC%8F%E5%93%88%E5%B8%8C-DHT-%E7%9A%84%E5%8E%9F%E7%90%86/2019/07/04/3.png">
+<meta property="og:image" content="https://zhangruochi.com/%E5%88%86%E5%B8%83%E5%BC%8F%E5%93%88%E5%B8%8C-DHT-%E7%9A%84%E5%8E%9F%E7%90%86/2019/07/04/4.png">
+<meta property="article:published_time" content="2019-07-04T03:01:04.000Z">
+<meta property="article:modified_time" content="2021-12-31T10:11:34.520Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/%E5%88%86%E5%B8%83%E5%BC%8F%E5%93%88%E5%B8%8C-DHT-%E7%9A%84%E5%8E%9F%E7%90%86/2019/07/04/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/%E5%88%86%E5%B8%83%E5%BC%8F%E5%93%88%E5%B8%8C-DHT-%E7%9A%84%E5%8E%9F%E7%90%86/2019/07/04/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>分布式哈希(DHT)的原理 | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/%E5%88%86%E5%B8%83%E5%BC%8F%E5%93%88%E5%B8%8C-DHT-%E7%9A%84%E5%8E%9F%E7%90%86/2019/07/04/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          分布式哈希(DHT)的原理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-07-04 11:01:04" itemprop="dateCreated datePublished" datetime="2019-07-04T11:01:04+08:00">2019-07-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 18:11:34" itemprop="dateModified" datetime="2021-12-31T18:11:34+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/" itemprop="url" rel="index"><span itemprop="name">Big Data Architecture</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/Distributed-Cloud-Computing/" itemprop="url" rel="index"><span itemprop="name">Distributed & Cloud Computing</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/%E5%88%86%E5%B8%83%E5%BC%8F%E5%93%88%E5%B8%8C-DHT-%E7%9A%84%E5%8E%9F%E7%90%86/2019/07/04/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/%E5%88%86%E5%B8%83%E5%BC%8F%E5%93%88%E5%B8%8C-DHT-%E7%9A%84%E5%8E%9F%E7%90%86/2019/07/04/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">分布式哈希(DHT)的原理</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="预备知识">预备知识</h2>
+<h3 id="什么是散列表哈希表hash-table">什么是“散列表/哈希表（hash table）”？</h3>
+<p><strong>散列表/哈希表</strong>是用来存储“键值对”的一种容器。即key/value pairs，简称“K/V”。有了“散列表”，你可以很方便快速地通过 key 来获得 value。</p>
+<h3 id="如何实现散列表">如何实现散列表？</h3>
+<p>在散列表这种数据结构中，会包含 N 个 bucket（桶）。对于某个具体的散列表，N（桶的数量）通常是【固定不变】的。于是可以对每个桶进行编号，从 0 到 N-1。“桶”是用来存储“键值对”的，你可以把它通俗理解成一个动态数组，里面可以存放【多个】“键值对”。</p>
+<p>下面展示了散列表的【查找】原理。当使用某个 key 进行查找，会先用某个散列函数计算这个key 的散列值。得到散列值通常是一个整数，然后用散列值对N（桶数）进行“取模”运算（除法求余数），就可以算出对应的桶编号。（注：取模运算是最常用的做法，但不是唯一的做法）</p>
+<p><img src="1.png" /></p>
+<h3 id="什么是散列表的碰撞冲突collision">什么是“散列表”的【碰撞/冲突】（Collision）？</h3>
+<p>当两个不同的 key 进行哈希计算却得到【相同的散列值】，就是所谓的【散列函数碰撞】。一旦出现这种情况，这两个 key 对应的两个键值对就会被存储在【同一个】桶（bucket）里面。另一种情况是：虽然计算出来的散列值【不同】，但经过“取模运算”之后却得到【相同】的桶编号。这时候也会出现：两个键值对存储在一个桶里面。</p>
+<p>如果某个哈希表在存储数据时【完全没有碰撞】，那么每个桶里面都只有 0个 或 1个 键值对。查找起来就非常快。反之，如果某个哈希表在存储数据时出现【严重碰撞】，就会导致某些桶里面存储了一大堆的键值对。将来查找 key 的时候，如果定位到的是这种“大桶”，就需要在这个桶里面逐一比对 key 是否相同——查找效率就会变得很差。</p>
+<p><img src="2.png" /></p>
+<h2 id="分布式散列表dht概述">分布式散列表（DHT）概述</h2>
+<p><strong>分布式散列表</strong>也称为“分布式哈希表”，英文是“distributed hash table”，简称 DHT。</p>
+<p>“分布式散列表”在概念上类似与传统的“散列表”，差异在于——“传统的散列表”主要是用于单机上的某个软件中；“分布式散列表”主要是用于分布式系统（此时，分布式系统的节点可以通俗理解为散列表中的 bucket）。“分布式散列表”主要是用来存储大量的（甚至是海量的）数据。在实际使用场景中，直接对所存储的“每一个业务数据”计算散列值，然后用散列值作为 key，业务数据本身是 value。 <img src="3.png" /></p>
+<h3 id="为什么会出现-dht">为什么会出现 DHT？</h3>
+<p>在 P2P 文件共享的发展史上，出现过3种不同的技术路线（三代）。</p>
+<ol type="1">
+<li>第1代采用【中央服务器】的模式——每个节点都需要先连接到中央服务器，然后才能查找到自己想要的文件在哪里。这种技术的最大缺点是——中央服务器成为整个 P2P 网络的【单点故障】。<strong>这类 p2p 的典型代表是 Napster</strong>。</li>
+<li>第2代采用【广播】的模式——要找文件的时候，每个节点都向自己相连的【所有节点】进行询问；被询问的节点如果不知道这个文件在哪里，就再次进行“广播”......如此往复，直至找到所需文件。这种技术的最大缺点是——会引发“广播风暴”并严重占用网络带宽，也会严重消耗节点的系统资源。即使在协议层面通过设置 TTL（time to live），限制查询过程只递归 N 轮，依然【无法】彻底解决此弊端。这类 p2p 的典型代表是 Gnutella 的早期版本。</li>
+<li>第3代采用的技术就是DHT。通过DHT, 不但避免了第一代技术的【单点故障】，也避免了第二代技术的【广播风暴】。</li>
+</ol>
+<h3 id="分布式散列表dht的难点">分布式散列表（DHT）的难点</h3>
+<h4 id="无中心导致的难点">“无中心”导致的难点</h4>
+<p>前面提到了 DHT 的诞生，是为了解决前面两代P2P技术的缺陷。其中一个缺陷是“中央服务器”导致的【单点故障】。因此 DHT 就【不能】再依靠中央服务器。而没有了中央服务器，就需要提供一系列机制来实现节点之间的通讯。</p>
+<h4 id="海量数据导致的难点">“海量数据”导致的难点</h4>
+<p>DHT 的很多使用场景是为了承载海量数据（PB或更高级别）。由于数据是海量的，每个节点只能存储（整个系统的）一小部分数据。需要把数据【均匀分摊】到每个节点。</p>
+<h4 id="节点动态变化导致的难点">“节点动态变化”导致的难点</h4>
+<p>很多 DHT 的使用场景是在公网（互联网）上，参与 DHT 的节点（主机）会出现【频繁变化】——每时每刻都有新的节点上线，也会有旧的节点下线。在这种情况下，需要确保数据依然是【均匀分摊】到所有节点。</p>
+<p>（特别强调一下：传统的散列表在这种情况下的困难）前面提到：传统散列表所含的【桶数】是固定不变滴。因为传统散列表在针对 key 计算出散列值之后，需要用“散列值”和“桶数”进行某种运算（比如：取模运算），从而得到桶的编号。如果桶的数量出现变化，就会影响到上述“取模运算”的结果，然后导致数据错乱。</p>
+<h4 id="高效查询导致的难点">“高效查询”导致的难点</h4>
+<p>对于节点数很多的分布式系统，如何快速定位节点，同时又不消耗太多网络资源，这也是一个挑战。比如前面提到第二代 P2P 技术，在查找所需文件时会导致【广播风暴】。这就成为其致命弱点。DHT必须有更高效的查找机制。而且这种查找机制要能适应“节点动态变化”这个特点。</p>
+<h3 id="分布式散列表dht如何解决上述难点">分布式散列表（DHT）如何解决上述难点？</h3>
+<p>DHT 采用如下一些机制来解决上述问题，并满足分布式系统比较苛刻的需求。</p>
+<h4 id="散列算法的选择">“散列算法”的选择</h4>
+<p>前面提到：DHT 通常是直接拿业务数据的散列值作为 key，业务数据本身作为 value。考虑到 DHT需要承载的数据量通常比较大，散列函数产生的“散列值范围”（keyspace）要足够大，以防止太多的碰撞。更进一步，如果keyspace【大到一定程度】，使得“随机碰撞”的概率小到忽略不计，就有助于简化 DHT 的系统设计。通常的 DHT 都会采用大于等于 128 比特的散列值（2128 比 “地球上所有电子文档总数” 还要大【很多数量级】）。</p>
+<h4 id="同构的node-id与data-key">同构的“node ID”与“data key”</h4>
+<p>DHT 属于分布式系统的一种。既然是分布式系统，意味着存在【多个】节点（电脑主机）。在设计分布式系统的时候，一种常见的做法是：给每一个节点（node）分配【唯一的】ID。有了这个节点ID（nodeID），在系统设计上的好处是——对分布式系统所依赖的物理网络的【解耦】。很多 DHT 的设计会让“nodeID”采用跟“datakey”【同构】的散列值。这么搞的好处是：</p>
+<ol type="1">
+<li>当散列值空间足够大的时候，随机碰撞忽略不计，因此也就确保了 node ID 的唯一性</li>
+<li>可以简化系统设计——比如简化路由算法（下面会提及）</li>
+</ol>
+<h4 id="拓扑结构的设计">“拓扑结构”的设计</h4>
+<p>作为分布式系统，DHT 必然要定义某种拓扑结构；有了拓扑结构，自然就要设计某种“路由算法”。如果某个 DHT 采用前面所说的——“node ID”与“data key”【同构】——那么很自然的就会引入“Key-based routing”。请注意，这【不是】某个具体的路由算法，而只是某种【风格】。采用这种风格来设计路由机制，好处是：key 本身已经提供了足够多的路由信息。当某个分布式系统具有自己的拓扑结构，它本身成为一个“覆盖网络”（洋文叫“Overlay Network”）。所谓的“覆盖网络”，通俗地说就是“网络之上的网络”。对于大部分 DHT而言，它们是基于互联网之上的“覆盖网络”，它们的数据通讯是依赖下层的互联网来实现的。前面提到的“nodeID”，其【解耦】的作用就体现在——分布式系统在设计拓扑结构和路由算法时，只需要考虑 node ID，而不用考虑其下层网络的属性（比如：协议类型、IP 地址、端口号）。</p>
+<h4 id="路由算法的权衡">“路由算法”的权衡</h4>
+<p>由于 DHT 中的节点数可能非常多（比如：几十万、几百万），而且这些节点是动态变化的。因此就【不可能】让每一个节点都记录所有其它节点的信息。实际情况是：<strong>每个节点通常只知道少数一些节点的信息</strong>。这时候就需要设计某种路由算法，尽可能利用已知的节点来转发数据。“路由算法”这玩意儿很重要，直接决定了DHT的速度和资源消耗。在确定了路由算法之后，还需要做一个两难的权衡——“路由表的大小”。路由表越大，可以实现越短（跳数越少）的路由；缺点是：（由于节点动态变化）路由表的维护成本也就越高。路由表数越小，其维护成本越小；缺点是：路由就会变长（跳数变多）。</p>
+<h4 id="距离算法">距离算法</h4>
+<p>某些 DHT 系统还会定义一种“距离算法”，用来计算：“节点之间的距离”、“数据之间的距离”、“节点与数据的距离”。请注意：此处所说的“距离”属于【逻辑层面】，对应的是 DHT 自己的拓扑结构；它与地理位置【无关】，也与互联网的拓扑结构【无关】。写到这里，某些聪明的读者就会明白：为啥前面要强调——“node ID”与“data key”【同构】。当这两者【同构】，就可以使用【同一种“距离算法”】；反之，如果这两者不同构，多半要引入几种不同的“距离算法”。</p>
+<h4 id="数据定位">数据定位</h4>
+<p>DHT 与传统的散列表在【功能】上是类似的。说白了，他们最关键的功能只有两个——“保存数据”和“获取数据”。如果用 C 语言来表示的话，函数原型大致如下： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">put</span><span class="params">(KEY k, VALUE v)</span></span>;  <span class="comment">// 保存“键值对”</span></span><br><span class="line"><span class="function">VALUE <span class="title">get</span><span class="params">(KEY k)</span></span>;  <span class="comment">// 根据“键”获取“值”</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="保存数据">保存数据</h4>
+<p>当某个节点得到了新加入的数据（K/V），它会先计算自己与新数据的key 之间的“距离”；然后再计算它所知道的其它节点与这个 key 的距离。如果计算下来，自己与key的距离最小，那么这个数据就保持在自己这里。否则的话，把这个数据转发给距离最小的节点。收到数据的另一个节点，也采用上述过程进行处理（递归处理）。</p>
+<h4 id="获取数据">获取数据</h4>
+<p>当某个节点接收到查询数据的请求（key），它会先计算自己与 key 之间的“距离”；然后再计算它所知道的其它节点与这个key的距离。如果计算下来，自己与key的距离最小，那么就在自己这里找有没有 key 对应的 value。有的话就返回 value，没有的话就报错。否则的话，把这个数据转发给距离最小的节点。收到数据的另一个节点，也采用上述过程进行处理（递归处理）。</p>
+<h2 id="chord-协议简介">Chord 协议简介</h2>
+<h3 id="拓扑结构环形">拓扑结构——环形</h3>
+<p>要聊Chord的拓扑，必然要提到“ConsistentHashing”（译作：“一致散列”或“稳定散列”）。搞明白“一致散列”也就知道 Chord 的拓扑设计了。提出“一致散列”这个概念主要是为了解决“节点动态变化”的难点（前面有提及）。为了解决这个难点，“一致散列”把散列值空间（keyspace）构成一个【环】。对于 m 比特的散列值，其范围是[0,2m-1]。你把这个区间头尾相接就变成一个环，其周长是 2m。然后对这个环规定了一个移动方向（比如顺时针）。如果 node ID 和 data key 是同构的，那么这两者都可以映射到这个环上（对应于环上的某点）。</p>
+<p>假设有某个“节点A”，距离它最近的是“节点B”（以顺时针方向衡量距离）。那么称B是A的【继任】（successor），A 是 B的【前任】（predecessor）。数据隶属于【距离最小】的节点。以 m = 6 的环形空间为例：</p>
+<ul>
+<li>数据区间 [5,8] 隶属于“节点8”</li>
+<li>数据区间 [9,15] 隶属于“节点15”</li>
+<li>......</li>
+<li>数据区间 [59,4] 隶属于“节点4”（注：“6比特”的环形空间，63之后是0）</li>
+</ul>
+<p><img src="4.png" /></p>
+<h3 id="路由机制">路由机制</h3>
+<h4 id="基本路由简单遍历">基本路由（简单遍历）</h4>
+<p>当收到请求（key），先看 key 是否在自己这里。如果在自己这里，就直接返回信息；否则就把 key 转发给自己的继任者。以此类推。这种玩法的时间复杂度是：O(N)。对于一个节点数很多的 DHT 网络，这种做法显然【非常低效】。</p>
+<h4 id="高级路由finger-table">高级路由（Finger Table）</h4>
+<p>由于“基本路由”非常低效，自然就引入更高级的玩法——基于“Finger Table”的路由。“Finger Table”是一个列表，最多包含 m 项（m 就是散列值的比特数），每一项都是节点 ID。假设当前节点的 ID 是 n，那么表中第 i 项的值是：successor( (n + 2i) mod 2m ) 当收到请求（key），就到“Finger Table”中找到【最大的且不超过 key】的那一项，然后把 key 转发给这一项对应的节点。有了“Finger Table”之后，时间复杂度可以优化为：O(log N)。</p>
+<h4 id="节点的加入">节点的加入</h4>
+<ol type="1">
+<li>任何一个新来的节点（假设叫 A），需要先跟 DHT 中已有的任一节点（假设叫 B）建立连接。</li>
+<li>A随机生成一个散列值作为自己的 ID（对于足够大的散列值空间，ID 相同的概率忽略不计）</li>
+<li>A通过跟 B 进行查询，找到自己这个 ID 在环上的接头人。也就是——找到自己这个 ID 对应的“继任”（假设叫 C）与“前任”（假设叫 D）</li>
+<li>接下来，A 需要跟 C 和 D 进行一系列互动，使得自己成为 C 的前任，以及 D 的继任。</li>
+</ol>
+<p>这个互动过程，大致类似于在双向链表当中插入元素</p>
+<h4 id="节点的正常退出">节点的【正常】退出</h4>
+<p>如果某个节点想要主动离开这个DHT网络，按照约定需要作一些善后的处理工作。比如说，通知自己的前任去更新其继任者......这些善后处理，大致类似于：在双向链表中删除元素。</p>
+<h4 id="节点的异常退出">节点的【异常】退出</h4>
+<p>作为一个分布式系统，任何节点都有可能意外下线（也就是说，来不及进行善后就挂掉了）假设节点A的继任者【异常】下线了，那么 节点A就抓瞎了。为了保险起见，Chord引入了一个“继任者候选列表”的概念。每个节点都用这个列表来包含：距离自己最近的 N 个节点的信息，顺序是【由近到远】。一旦自己的继任者下线了，就在列表中找到一个【距离最近且在线】的节点，作为新的继任者。然后节点A 更新该列表，确保依然有N个候选。更新完“继任者候选列表”后，节点A也会通知自己的前任，那么A的前任也就能更新自己的“继任者候选列表”。</p>
+<blockquote>
+<p>reference from https://program-think.blogspot.com/2017/09/Introduction-DHT-Kademlia-Chord.html#head-6</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Key-Value-Stores-Time-and-Ordering/2019/07/04/" rel="prev" title="Key-Value Stores, Time, and Ordering">
+      <i class="fa fa-chevron-left"></i> Key-Value Stores, Time, and Ordering
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Consistent-Hashing-Algorithm/2019/07/04/" rel="next" title="Consistent Hashing Algorithm">
+      Consistent Hashing Algorithm <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">预备知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%95%A3%E5%88%97%E8%A1%A8%E5%93%88%E5%B8%8C%E8%A1%A8hash-table"><span class="nav-number">1.1.</span> <span class="nav-text">什么是“散列表&#x2F;哈希表（hash table）”？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%95%A3%E5%88%97%E8%A1%A8"><span class="nav-number">1.2.</span> <span class="nav-text">如何实现散列表？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%95%A3%E5%88%97%E8%A1%A8%E7%9A%84%E7%A2%B0%E6%92%9E%E5%86%B2%E7%AA%81collision"><span class="nav-number">1.3.</span> <span class="nav-text">什么是“散列表”的【碰撞&#x2F;冲突】（Collision）？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E6%95%A3%E5%88%97%E8%A1%A8dht%E6%A6%82%E8%BF%B0"><span class="nav-number">2.</span> <span class="nav-text">分布式散列表（DHT）概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E5%87%BA%E7%8E%B0-dht"><span class="nav-number">2.1.</span> <span class="nav-text">为什么会出现 DHT？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E6%95%A3%E5%88%97%E8%A1%A8dht%E7%9A%84%E9%9A%BE%E7%82%B9"><span class="nav-number">2.2.</span> <span class="nav-text">分布式散列表（DHT）的难点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E4%B8%AD%E5%BF%83%E5%AF%BC%E8%87%B4%E7%9A%84%E9%9A%BE%E7%82%B9"><span class="nav-number">2.2.1.</span> <span class="nav-text">“无中心”导致的难点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E5%AF%BC%E8%87%B4%E7%9A%84%E9%9A%BE%E7%82%B9"><span class="nav-number">2.2.2.</span> <span class="nav-text">“海量数据”导致的难点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E5%8A%A8%E6%80%81%E5%8F%98%E5%8C%96%E5%AF%BC%E8%87%B4%E7%9A%84%E9%9A%BE%E7%82%B9"><span class="nav-number">2.2.3.</span> <span class="nav-text">“节点动态变化”导致的难点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AB%98%E6%95%88%E6%9F%A5%E8%AF%A2%E5%AF%BC%E8%87%B4%E7%9A%84%E9%9A%BE%E7%82%B9"><span class="nav-number">2.2.4.</span> <span class="nav-text">“高效查询”导致的难点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E6%95%A3%E5%88%97%E8%A1%A8dht%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E4%B8%8A%E8%BF%B0%E9%9A%BE%E7%82%B9"><span class="nav-number">2.3.</span> <span class="nav-text">分布式散列表（DHT）如何解决上述难点？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%A3%E5%88%97%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%89%E6%8B%A9"><span class="nav-number">2.3.1.</span> <span class="nav-text">“散列算法”的选择</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%8C%E6%9E%84%E7%9A%84node-id%E4%B8%8Edata-key"><span class="nav-number">2.3.2.</span> <span class="nav-text">同构的“node ID”与“data key”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.3.3.</span> <span class="nav-text">“拓扑结构”的设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E7%AE%97%E6%B3%95%E7%9A%84%E6%9D%83%E8%A1%A1"><span class="nav-number">2.3.4.</span> <span class="nav-text">“路由算法”的权衡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95"><span class="nav-number">2.3.5.</span> <span class="nav-text">距离算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AE%9A%E4%BD%8D"><span class="nav-number">2.3.6.</span> <span class="nav-text">数据定位</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98%E6%95%B0%E6%8D%AE"><span class="nav-number">2.3.7.</span> <span class="nav-text">保存数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="nav-number">2.3.8.</span> <span class="nav-text">获取数据</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chord-%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B"><span class="nav-number">3.</span> <span class="nav-text">Chord 协议简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84%E7%8E%AF%E5%BD%A2"><span class="nav-number">3.1.</span> <span class="nav-text">拓扑结构——环形</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E6%9C%BA%E5%88%B6"><span class="nav-number">3.2.</span> <span class="nav-text">路由机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%B7%AF%E7%94%B1%E7%AE%80%E5%8D%95%E9%81%8D%E5%8E%86"><span class="nav-number">3.2.1.</span> <span class="nav-text">基本路由（简单遍历）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E8%B7%AF%E7%94%B1finger-table"><span class="nav-number">3.2.2.</span> <span class="nav-text">高级路由（Finger Table）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E7%9A%84%E5%8A%A0%E5%85%A5"><span class="nav-number">3.2.3.</span> <span class="nav-text">节点的加入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E7%9A%84%E6%AD%A3%E5%B8%B8%E9%80%80%E5%87%BA"><span class="nav-number">3.2.4.</span> <span class="nav-text">节点的【正常】退出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E7%9A%84%E5%BC%82%E5%B8%B8%E9%80%80%E5%87%BA"><span class="nav-number">3.2.5.</span> <span class="nav-text">节点的【异常】退出</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="In this module we assume that the Hack computer and machine language have been built, and write some low-level programs using the Hack machine language. We will then use a supplied CPU Emulator to tes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Machine Language">
+<meta property="og:url" content="https://zhangruochi.com/Machine-Language/2019/09/22/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="In this module we assume that the Hack computer and machine language have been built, and write some low-level programs using the Hack machine language. We will then use a supplied CPU Emulator to tes">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/1.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/3.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/2.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/4.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/5.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/6.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/7.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/8.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/9.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/10.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/11.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/12.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/16.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/14.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/15.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/17.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/18.png">
+<meta property="og:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/19.png">
+<meta property="article:published_time" content="2019-09-22T07:36:43.000Z">
+<meta property="article:modified_time" content="2019-09-22T19:38:04.098Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Nand2Tetris">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Machine-Language/2019/09/22/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Machine-Language/2019/09/22/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Machine Language | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Machine-Language/2019/09/22/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Machine Language
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-09-22 15:36:43" itemprop="dateCreated datePublished" datetime="2019-09-22T15:36:43+08:00">2019-09-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-09-23 03:38:04" itemprop="dateModified" datetime="2019-09-23T03:38:04+08:00">2019-09-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hardware-Architecture/" itemprop="url" rel="index"><span itemprop="name">Hardware Architecture</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Machine-Language/2019/09/22/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Machine-Language/2019/09/22/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">In this module we assume that the Hack computer and machine language have been built, and write some low-level programs using the Hack machine language. We will then use a supplied CPU Emulator to test and execute our programs. This experience will give you a taste of low-level programming, as well as a solid hands-on overview of the Hack computer platform.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="table-of-contents">Table of Contents</h1>
+<ul>
+<li><a href="#table-of-contents">Table of Contents</a>
+<ul>
+<li><a href="#background">Background</a></li>
+<li><a href="#machine-languages">Machine languages</a>
+<ul>
+<li><a href="#mnemonics">Mnemonics</a></li>
+<li><a href="#commands">Commands</a></li>
+<li><a href="#arithmetic-and-logic-operations">Arithmetic and Logic Operations</a></li>
+<li><a href="#memory-access">Memory Access</a></li>
+<li><a href="#compilation">Compilation</a></li>
+</ul></li>
+<li><a href="#the-hack-language-specification">The Hack language specification</a>
+<ul>
+<li><a href="#the-a-instruction">The A-Instruction</a></li>
+<li><a href="#the-c-instruction">The C-Instruction</a>
+<ul>
+<li><a href="#the-computation-specificationcomp">The Computation Specification(comp)</a></li>
+</ul></li>
+<li><a href="#the-destination-specification">The Destination Specification</a></li>
+<li><a href="#the-jump-specification">The Jump Specification</a></li>
+<li><a href="#symbols">Symbols</a></li>
+</ul></li>
+<li><a href="#hack-programs-symbolic-and-binary">Hack programs: symbolic and binary</a></li>
+<li><a href="#input--output">Input / Output</a>
+<ul>
+<li><a href="#screen">Screen</a></li>
+<li><a href="#keyboard">Keyboard</a></li>
+</ul></li>
+<li><a href="#syntax-conventions-and-file-format">Syntax Conventions and File Format</a></li>
+<li><a href="#hack-programming">Hack programming</a>
+<ul>
+<li><a href="#hack-assembly-language-overview">Hack assembly language (overview)</a>
+<ul>
+<li><a href="#registers-and-memory">Registers and memory</a></li>
+<li><a href="#branching-and-labels">Branching and Labels</a></li>
+<li><a href="#variables">Variables</a></li>
+<li><a href="#iterative-processing">Iterative processing</a></li>
+<li><a href="#pointers">Pointers</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="background">Background</h2>
+<p><strong>Memory</strong> The term memory refers loosely to the collection of hardware devices that store data and instructions in a computer. From the programmer’s standpoint, all memories have the same structure: A continuous array of cells of some fixed width, also called words or locations, each having a <strong>unique address</strong>.</p>
+<p><strong>Processor</strong> The processor, normally called Central Processing Unit or CPU, is a device capable of performing a fixed set of elementary operations</p>
+<p><strong>Registers</strong> Memory access is a relatively slow operation, requiring long instruction formats (an address may require 32 bits). For this reason, most processors are equipped with several registers, each capable of holding a single value. Located in the processor’s immediate proximity, the registers serve as a high-speed local memory, allowing the processor to manipulate data and instructions quickly. <strong>This setting enables the programmer to minimize the use of memory access commands, thus speeding up the program’s execution.</strong></p>
+<p><img src="1.png" /></p>
+<h2 id="machine-languages">Machine languages</h2>
+<blockquote>
+<p>A machine language can be viewed as an agreed-upon formalism, designed to manipulate a memory using a processor and a set of registers.</p>
+</blockquote>
+<h3 id="mnemonics">Mnemonics</h3>
+<p>For example, the language designer can decide that the operation code 1010 will be represented by the mnemonic add and that the registers of the machine will be symbolically referred to using the symbols R0, R1, R2, and so forth. Using these conventions, one can specify machine language instructions either directly, as 1010001100011001, or symbolically, as, say, ADD R3,R1,R9.</p>
+<p><img src="3.png" /></p>
+<h3 id="commands">Commands</h3>
+<p>Yet irrespective of this variety, all machine lan- guages support similar sets of generic commands, which we now describe.</p>
+<h3 id="arithmetic-and-logic-operations">Arithmetic and Logic Operations</h3>
+<figure class="highlight arm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ADD</span> <span class="built_in">R2</span>,<span class="built_in">R1</span>,<span class="built_in">R3</span>    <span class="comment">// R2-&lt;--R1+R3 where R1,R2,R3 are registers</span></span><br><span class="line"><span class="keyword">ADD</span> <span class="built_in">R2</span>,<span class="built_in">R1</span>,foo   <span class="comment">// R2-&lt;--R1+foo where foo stands for the </span></span><br><span class="line">                <span class="comment">// value of the memory location pointed </span></span><br><span class="line">                <span class="comment">// at by the user-defined label foo.</span></span><br><span class="line"><span class="keyword">AND</span> <span class="built_in">R1</span>,<span class="built_in">R1</span>,<span class="built_in">R2</span>    <span class="comment">// R1-&lt;--bit wise And of R1 and R2</span></span><br></pre></td></tr></table></figure>
+<h3 id="memory-access">Memory Access</h3>
+<p>Memory access commands fall into <strong>two categories</strong>. - First, as we have just seen, arithmetic and logical commands are allowed to operate not only on registers, but also on selected memory locations. - Second, all computers feature explicit load and store commands, designed to move data between registers and memory.</p>
+<p>These memory access commands may use several types of <strong>addressing modes</strong> -- ways of specifying the address of the required memory word.</p>
+<ol type="1">
+<li><strong>Direct addressing</strong> The most common way to address the memory is to express a specific address or use a symbol that refers to a specific address, as follows</li>
+</ol>
+<figure class="highlight arm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">LOAD</span> <span class="built_in">R1</span>,<span class="number">67</span>  <span class="comment">// R1-&lt;--Memory[67]</span></span><br><span class="line">            <span class="comment">// Or, assuming that bar refers to memory address 67:</span></span><br><span class="line"><span class="symbol">LOAD</span> <span class="built_in">R1</span>,bar <span class="comment">// R1&lt;--Memory[67]</span></span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li><p><strong>Immediate addressing</strong> This form of addressing is used to load constants— namely, load values that appear in the instruction code <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LOADI R1,67 // R1&lt;--67</span><br></pre></td></tr></table></figure></p></li>
+<li><p><strong>Indirect addressing</strong> In this addressing mode the address of the required memory location is not hard-coded into the instruction; instead, the instruction specifies a memory location that holds the required address.</p></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// Translation of x=foo[j] or x=*(foo+j):</span><br><span class="line">ADD R1, foo, j // R1&lt;--foo+j</span><br><span class="line">LOAD* R2,R1    // R2-&lt;--Memory[R1] </span><br><span class="line">STR R2,x       // x-&lt;--R2</span><br></pre></td></tr></table></figure>
+<ol start="4" type="1">
+<li><strong>Flow of Control</strong> While programs normally execute in a linear fashion, one com- mand after the other, they also include occasional branches to locations other than the next command. Branching serves several purposes including <strong>repetition</strong> (jump backward to the beginning of a loop), <strong>conditional execution</strong> (if a Boolean condition is false, jump forward to the location after the ‘‘if-then’’ clause), and <strong>subroutine</strong> calling ( jump to the first command of some other code segment).</li>
+</ol>
+<p><strong>Unconditional jump</strong> commands like JMP beginWhile specify only the address of the target location <strong>Conditional jump</strong> commands like JNG R1,endWhile must also specify a Boolean condition, expressed in some way.</p>
+<figure class="highlight arm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">load</span> <span class="built_in">R1</span>,<span class="number">0</span></span><br><span class="line"><span class="keyword">add</span> <span class="number">1</span>, <span class="built_in">R1</span></span><br><span class="line"><span class="symbol">...</span></span><br><span class="line"><span class="comment">// do something with R1 value ...</span></span><br><span class="line"><span class="symbol">jmp</span> <span class="number">102</span> <span class="comment">// goto 102</span></span><br></pre></td></tr></table></figure>
+<h3 id="compilation">Compilation</h3>
+<p><img src="2.png" /></p>
+<h2 id="the-hack-language-specification">The Hack language specification</h2>
+<p><img src="4.png" /></p>
+<p><strong>Memory Address Spaces</strong> The Hack computer is a von Neumann platform. It is a 16-bit machine, consisting of a CPU, two separate memory modules serving as <strong>instruction memory</strong> and <strong>data memory</strong>, and two memory-mapped I/O devices: a screen and a keyboard.The CPU can only execute programs that reside in the instruction memory.</p>
+<p><strong>Register</strong> 1. The Hack programmer is aware of two 16-bit registers called <strong>D</strong> and <strong>A</strong>. D is used solely to store data values, While A can be interpreted either as a data value, or as an address in the data memory. 2. Since Hack instructions are 16-bit wide, and since addresses are specified using 15 bits, it is impossible to pack both an operation code and an address in one instruction. Thus, the syntax of the Hack language mandates that memory access instructions operate on an implicit memory location labeled <strong>M</strong>. 3. the A register can be used to facilitate direct access to the data memory: the convention is that <strong>M</strong> always refers to the memory word whose address is the current value of the A register</p>
+<pre><code>&gt; eg: D = Memory[516] 􏰁- 1, we have to use one instruction to set the A register to 516, and a subsequent instruction to specify D=M-1.</code></pre>
+<ol start="4" type="1">
+<li>facilitate direct access to the instruction memory: Hack jump instructions do not specify a particular address. Instead, the convention is that any jump operation always effects a jump to the instruction located in the memory word addressed by A.</li>
+<li><strong><span class="citation" data-cites="value">@value</span></strong>, where value is either a number or a symbol representing a number. This command simply stores the specified value in the A register.</li>
+</ol>
+<h3 id="the-a-instruction">The A-Instruction</h3>
+<p>The A-instruction is used to set the A register to a 15-bit values <strong><span class="citation" data-cites="valu">@valu</span></strong> <img src="5.png" /></p>
+<p>The A-instruction is used for three different purposes. - it provides the only way to <strong>enter a constant</strong> into the computer under program control. - it sets the stage for a subsequent C-instruction designed to manipulate a certain <strong>data memory location</strong>, by first setting A to the address of that location. - it sets the stage for a subsequent C-instruction that <strong>specifies a jump</strong>, by first loading the address of the jump destination to the A register</p>
+<h3 id="the-c-instruction">The C-Instruction</h3>
+<p>The instruction code is a specification that answers three questions: - what to computer - where to store the computed value - what to do next</p>
+<p>The overall semantics of the symbolic instruction dest=comp;jump is as follows. The <strong>comp</strong> field instructs the ALU what to compute. The <strong>dest</strong> field instructs where to store the computed value (ALU output).</p>
+<p><img src="6.png" /></p>
+<h4 id="the-computation-specificationcomp">The Computation Specification(comp)</h4>
+<p>The Hack ALU is designed to compute a fixed set of functions on the D, A, and M registers (where M stands for Memory[A]).</p>
+<p>Recall that the format of the C-instruction is 111accccccdd djjj. Suppose we want to have the ALU compute D-1, the current value of the D register minus 1. According to figure blow, this can be done by issuing the instruction 1110001110000000 (the 7-bit operation code is in bold). To compute the value of D|M, we issue the instruction 1111 010101000000. To compute the constant 􏰁1, we issue the instruction 1110111010000000, and so on.</p>
+<p><img src="7.png" /></p>
+<h3 id="the-destination-specification">The Destination Specification</h3>
+<p>The value computed by the comp part of the C- instruction can be stored in several destinations, as specified by the instruction’s 3-bit dest part.</p>
+<p>Recall that the format of the C-instruction is 111a cccc ccdd djjj. Suppose we want the computer to increment the value of Memory[7] by 1 and to also store the result in the D register. According to figures 4.3 and 4.4, this can be accomplished by the following instructions:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0000 0000 0000 0111    // @7</span><br><span class="line">1111 1101 1101 1000    // MD=M+1</span><br></pre></td></tr></table></figure>
+<p><img src="8.png" /> ### The Jump Specification</p>
+<p>The jump field of the C-instruction tells the computer what to do next.</p>
+<figure class="highlight arm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//  if Memory[3]=5 then goto 100 else goto 200</span></span><br><span class="line"></span><br><span class="line"><span class="comment">@3</span></span><br><span class="line">D<span class="symbol">=M</span>    <span class="comment">// D=Memory[3]</span></span><br><span class="line"><span class="comment">@5</span></span><br><span class="line">D<span class="symbol">=D</span>-A  <span class="comment">// D=D-5</span></span><br><span class="line"><span class="comment">@100</span></span><br><span class="line">D<span class="comment">;JEQ  // If D=0 goto 100</span></span><br><span class="line"><span class="comment">@200</span></span><br><span class="line"><span class="number">0</span><span class="comment">;JMP  // Goto 200</span></span><br></pre></td></tr></table></figure>
+<p><img src="9.png" /></p>
+<h3 id="symbols">Symbols</h3>
+<p>Assembly commands can refer to memory locations (addresses) using either constants or symbols. Symbols are introduced into assembly programs in the following three ways:</p>
+<p><strong>Predefined symbols</strong>: A special subset of RAM addresses can be referred to by any assembly program using the following predefined symbols. - <em>Virtual registers</em>: To simplify assembly programming, the symbols R0 to R15 are predefined to refer to RAM addresses 0 to 15, respectively. - <em>Predefined pointers</em>: The symbols SP, LCL, ARG, THIS, and THAT are predefined to refer to RAM addresses 0 to 4, respectively. Note that each of these memory locations has two labels. For example, address 2 can be referred to using either R2 or ARG. This syntactic convention will come to play in the implementation of the virtual machine, discussed in chapters 7 and 8. - <em>I/O pointers</em>: The symbols SCREEN and KBD are predefined to refer to RAM addresses 16384 (0x4000) and 24576 (0x6000), respectively, which are the base addresses of the screen and keyboard memory maps. The use of these I/O devices is explained later.</p>
+<p><strong>Label symbols</strong>: These user-defined symbols, which serve to label destinations of goto commands, are declared by the pseudo-command ‘‘(Xxx)’’. This directive defines the symbol Xxx to refer to the instruction memory location holding the next command in the program. A label can be defined only once and can be used any- where in the assembly program, even before the line in which it is defined.</p>
+<p><strong>Variable symbols</strong>: Any user-defined symbol Xxx appearing in an assembly program that is not predefined and is not defined elsewhere using the ‘‘(Xxx)’’ command is treated as a variable, and is assigned a unique memory address by the assembler, starting at RAM address 16 (0x0010).</p>
+<h2 id="hack-programs-symbolic-and-binary">Hack programs: symbolic and binary</h2>
+<p><a href="13.png"></a></p>
+<h2 id="input-output">Input / Output</h2>
+<p>The Hack platform can be connected to two peripheral devices: a screen and a keyboard. Both devices interact with the computer platform through memory maps. <strong>This means that drawing pixels on the screen is achieved by writing binary values into a memory segment associated with the screen</strong>. Likewise, listening to the key- board is done by reading a memory location associated with the keyboard. The physical I/O devices and their memory maps are synchronized via continuous refresh loops.</p>
+<ul>
+<li>A designated memory area, dedicated to manage a display unit</li>
+<li>The physical display is continuously refreshed from the memory map, many times per second</li>
+<li>Output is effected by writing code that manipulates the screen memory map.</li>
+</ul>
+<p><img src="10.png" /></p>
+<h3 id="screen">Screen</h3>
+<p>The Hack computer includes a black-and-white screen organized as 256 rows of 512 pixels per row. The screen’s contents are represented by an 8K memory map that starts at RAM address 16384 (0x4000). Each row in the physical screen, starting at the screen’s top left corner, is represented in the RAM by 32 consecutive 16-bit words. Thus the pixel at row r from the top and column c from the left is mapped on the c%16 bit (counting from LSB to MSB) of the word located at RAM[16384 + r *􏰀 32 + c/16]. To write or read a pixel of the physical screen, one reads or writes the corresponding bit in the RAM-resident memory map (1 1⁄4 black, 0 1⁄4 white). Example:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// Draw a single black dot at the screen&#x27;s top left corner:</span><br><span class="line">@SCREEN  // Set the A register to point to the memory</span><br><span class="line">         // word that is mapped to the 16 left-most</span><br><span class="line">         // pixels of the top row of the screen.</span><br><span class="line">M=1      // Blacken the left-most pixel.</span><br></pre></td></tr></table></figure>
+<p><img src="11.png" /></p>
+<p><strong>Task</strong>: draw a filled rectangle at the upper left corner of the screen, 16 pixels wide and RAM[0] pixels long</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// Pseudo code</span><br><span class="line">// for (i=0; i&lt;n; i++) &#123;</span><br><span class="line">//     draw 16 black pixels at the</span><br><span class="line">//     beginning of row i</span><br><span class="line">// &#125;</span><br><span class="line"></span><br><span class="line">addr = SCREEN n = RAM[0] i=0</span><br><span class="line">LOOP:</span><br><span class="line">if i &gt; n goto END</span><br><span class="line">RAM[addr] = -1 // 1111111111111111 // advances to the next row</span><br><span class="line">addr = addr + 32</span><br><span class="line">i=i+1</span><br><span class="line">goto LOOP</span><br><span class="line">END:</span><br><span class="line">goto END</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">@SCREEN</span><br><span class="line">D=A</span><br><span class="line">@addr</span><br><span class="line">M=D  // addr = 16384</span><br><span class="line">    // (screen’s base address)</span><br><span class="line">@0</span><br><span class="line">D=M</span><br><span class="line">@n</span><br><span class="line">M=D  // n = RAM[0]</span><br><span class="line"></span><br><span class="line">@i</span><br><span class="line">M=0 //i=0</span><br><span class="line"></span><br><span class="line">(LOOP) </span><br><span class="line">    @i</span><br><span class="line">    D=M</span><br><span class="line">    @n</span><br><span class="line">    D=D-M</span><br><span class="line">    @END</span><br><span class="line">    D;JGT  // if i&gt;n goto END</span><br><span class="line"></span><br><span class="line">    @addr</span><br><span class="line">    A=M</span><br><span class="line">    M=-1   // RAM[addr]=1111111111111111</span><br><span class="line"></span><br><span class="line">    @i</span><br><span class="line">    M=M+1 //i=i+1</span><br><span class="line">    @32</span><br><span class="line">    D=A</span><br><span class="line">    @addr</span><br><span class="line">    M=D+M // addr = addr + 32 @LOOP</span><br><span class="line">    0;JMP // goto LOOP</span><br><span class="line"></span><br><span class="line">(END)</span><br><span class="line">    @END   // program’s end</span><br><span class="line">    0;JMP</span><br></pre></td></tr></table></figure>
+<h3 id="keyboard">Keyboard</h3>
+<p>The Hack computer interfaces with the physical keyboard via a single-word memory map located in RAM address 24576 (0x6000). Whenever a key is pressed on the physical keyboard, its 16-bit ASCII code appears in RAM[24576]. When no key is pressed, the code 0 appears in this location. In addition to the usual ASCII codes, the Hack keyboard recognizes the keys shown in figure 4.6.</p>
+<p><img src="12.png" /></p>
+<h2 id="syntax-conventions-and-file-format">Syntax Conventions and File Format</h2>
+<p><strong>Binary Code Files</strong> A binary code file is composed of text lines. Each line is a sequence of sixteen "0" and "1" ASCII characters, coding a single machine language instruction. Taken together, all the lines in the file represent a machine language program. The contract is such that when a machine language program is loaded into the computer’s instruction memory, the binary code represented by the file’s nth line is stored in address n of the instruction memory (the count of both program lines and memory addresses starts at 0). By convention, machine language programs are stored in text files with a "hack" extension, for example, Prog.hack.</p>
+<p><strong>Assembly Language Files</strong> By convention, assembly language programs are stored in text files with an "asm" extension, for example, Prog.asm. An assembly languages file is composed of text lines, each representing either an instruction or a symbol declaration: - Instruction: an A-instruction or a C-instruction. - (Symbol): This pseudo-command causes the assembler to assign the label Symbol to the memory location in which the next command of the program will be stored. It is called "pseudo-command" since it generates no machine code.</p>
+<p><strong>Constants and Symbols</strong> Constants must be non-negative and are always written in decimal notation. A user-defined symbol can be any sequence of letters, digits, underscore (_), dot (.), dollar sign ($), and colon (:) that does not begin with a digit.</p>
+<p><strong>Comments Text</strong> beginning with two slashes (//) and ending at the end of the line is considered a comment and is ignored.</p>
+<p><strong>White Space</strong> Space characters are ignored. Empty lines are ignored.</p>
+<p><strong>Case Conventions</strong> All the assembly mnemonics must be written in uppercase. The rest (user-defined labels and variable names) is case sensitive. The convention is to use uppercase for labels and lowercase for variable names.</p>
+<h2 id="hack-programming">Hack programming</h2>
+<h3 id="hack-assembly-language-overview">Hack assembly language (overview)</h3>
+<p><img src="16.png" /> <img src="14.png" /></p>
+<h4 id="registers-and-memory">Registers and memory</h4>
+<ul>
+<li>D: data register</li>
+<li>A: address / data register</li>
+<li>M: the currently selected memory register: M = RAM[A]</li>
+</ul>
+<p><img src="15.png" /></p>
+<p>Typical operations:</p>
+<figure class="highlight arm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// D = 10</span></span><br><span class="line"><span class="comment">@10</span></span><br><span class="line">D<span class="symbol">=A</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// D++</span></span><br><span class="line">D<span class="symbol">=D</span>+<span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// D=RAM[17]</span></span><br><span class="line"><span class="comment">@17</span></span><br><span class="line">D<span class="symbol">=M</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//RAM[17]=D</span></span><br><span class="line"><span class="comment">@17</span></span><br><span class="line">M<span class="symbol">=D</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// RAM[17]=10</span></span><br><span class="line"><span class="comment">@10</span></span><br><span class="line">D<span class="symbol">=A</span></span><br><span class="line"><span class="comment">@17</span></span><br><span class="line">M<span class="symbol">=D</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// RAM[5] = RAM[3]</span></span><br><span class="line"><span class="comment">@3 </span></span><br><span class="line">D<span class="symbol">=M</span> </span><br><span class="line"><span class="comment">@5</span></span><br><span class="line">M<span class="symbol">=D</span></span><br></pre></td></tr></table></figure>
+<p><strong>Program example</strong>: add two numbers <figure class="highlight arm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Program: Add2.asm</span></span><br><span class="line"><span class="comment">// Computes: RAM[2] = RAM[0] + RAM[1]</span></span><br><span class="line"><span class="comment">// Usage: put values in RAM[0], RAM[1]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">@0</span></span><br><span class="line">D<span class="symbol">=A</span></span><br><span class="line"></span><br><span class="line"><span class="comment">@1</span></span><br><span class="line">D<span class="symbol">=D</span>+M</span><br><span class="line"></span><br><span class="line"><span class="comment">@2</span></span><br><span class="line">M<span class="symbol">=D</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="branching-and-labels">Branching and Labels</h4>
+<p><img src="17.png" /></p>
+<h4 id="variables">Variables</h4>
+<p><img src="18.png" /></p>
+<h4 id="iterative-processing">Iterative processing</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// pseudo code</span><br><span class="line">// Computes RAM[1] = 1+2+ ... +RAM[0]</span><br><span class="line">n = R0 </span><br><span class="line">i=1 </span><br><span class="line">sum = 0</span><br><span class="line"></span><br><span class="line">LOOP:</span><br><span class="line">    if i &gt; n goto STOP </span><br><span class="line">    sum = sum + i </span><br><span class="line">    i=i+1</span><br><span class="line">    goto LOOP</span><br><span class="line">STOP:</span><br><span class="line">    R1 = sum</span><br></pre></td></tr></table></figure>
+<figure class="highlight arm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Computes RAM[1] = 1+2+ ... +n</span></span><br><span class="line"><span class="comment">// Usage: put a number (n) in RAM[0]</span></span><br><span class="line">      <span class="comment">@R0</span></span><br><span class="line">      D<span class="symbol">=M</span></span><br><span class="line">      <span class="comment">@n</span></span><br><span class="line">      M<span class="symbol">=D</span>   <span class="comment">// n = R0</span></span><br><span class="line">      <span class="comment">@i</span></span><br><span class="line">      M<span class="number">=1</span>   <span class="comment">// i = 1</span></span><br><span class="line">      <span class="comment">@sum</span></span><br><span class="line">      M<span class="number">=0</span>   <span class="comment">// sum = 0</span></span><br><span class="line">(LOOP) <span class="comment">@i</span></span><br><span class="line">      D<span class="symbol">=M</span></span><br><span class="line">      <span class="comment">@n</span></span><br><span class="line">      D<span class="symbol">=D</span>-M</span><br><span class="line">      <span class="comment">@STOP</span></span><br><span class="line">      D<span class="comment">;JGT  // if i &gt; n goto STOP</span></span><br><span class="line">      <span class="comment">@sum</span></span><br><span class="line">      D<span class="symbol">=M</span></span><br><span class="line">      <span class="comment">@i</span></span><br><span class="line">      D<span class="symbol">=D</span>+M</span><br><span class="line">      <span class="comment">@sum</span></span><br><span class="line">      M<span class="symbol">=D</span>    <span class="comment">// sum = sum + i</span></span><br><span class="line">      <span class="comment">@i</span></span><br><span class="line">      M<span class="symbol">=M</span>+<span class="number">1</span>  <span class="comment">// i = i + 1</span></span><br><span class="line">      <span class="comment">@LOOP</span></span><br><span class="line">      <span class="number">0</span><span class="comment">;JMP</span></span><br><span class="line">(STOP) </span><br><span class="line">      <span class="comment">@sum</span></span><br><span class="line">      D<span class="symbol">=M</span></span><br><span class="line">      <span class="comment">@R1</span></span><br><span class="line">      M<span class="symbol">=D</span>    <span class="comment">// RAM[1] = sum</span></span><br><span class="line">(<span class="meta">END</span>) </span><br><span class="line">      <span class="comment">@END</span></span><br><span class="line">      <span class="number">0</span><span class="comment">;JMP</span></span><br></pre></td></tr></table></figure>
+<h4 id="pointers">Pointers</h4>
+<p><img src="19.png" /></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Nand2Tetris/" rel="tag"># Nand2Tetris</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Principal-Component-Analysis/2019/09/20/" rel="prev" title="Principal Component Analysis">
+      <i class="fa fa-chevron-left"></i> Principal Component Analysis
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/cs231n-assignment1/2019/10/01/" rel="next" title="cs231n assignment1">
+      cs231n assignment1 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#table-of-contents"><span class="nav-number">1.</span> <span class="nav-text">Table of Contents</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#background"><span class="nav-number">1.1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#machine-languages"><span class="nav-number">1.2.</span> <span class="nav-text">Machine languages</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mnemonics"><span class="nav-number">1.2.1.</span> <span class="nav-text">Mnemonics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#commands"><span class="nav-number">1.2.2.</span> <span class="nav-text">Commands</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#arithmetic-and-logic-operations"><span class="nav-number">1.2.3.</span> <span class="nav-text">Arithmetic and Logic Operations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#memory-access"><span class="nav-number">1.2.4.</span> <span class="nav-text">Memory Access</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#compilation"><span class="nav-number">1.2.5.</span> <span class="nav-text">Compilation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#the-hack-language-specification"><span class="nav-number">1.3.</span> <span class="nav-text">The Hack language specification</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#the-a-instruction"><span class="nav-number">1.3.1.</span> <span class="nav-text">The A-Instruction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#the-c-instruction"><span class="nav-number">1.3.2.</span> <span class="nav-text">The C-Instruction</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#the-computation-specificationcomp"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">The Computation Specification(comp)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#the-destination-specification"><span class="nav-number">1.3.3.</span> <span class="nav-text">The Destination Specification</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#symbols"><span class="nav-number">1.3.4.</span> <span class="nav-text">Symbols</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hack-programs-symbolic-and-binary"><span class="nav-number">1.4.</span> <span class="nav-text">Hack programs: symbolic and binary</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#input-output"><span class="nav-number">1.5.</span> <span class="nav-text">Input &#x2F; Output</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#screen"><span class="nav-number">1.5.1.</span> <span class="nav-text">Screen</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#keyboard"><span class="nav-number">1.5.2.</span> <span class="nav-text">Keyboard</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#syntax-conventions-and-file-format"><span class="nav-number">1.6.</span> <span class="nav-text">Syntax Conventions and File Format</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hack-programming"><span class="nav-number">1.7.</span> <span class="nav-text">Hack programming</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hack-assembly-language-overview"><span class="nav-number">1.7.1.</span> <span class="nav-text">Hack assembly language (overview)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#registers-and-memory"><span class="nav-number">1.7.1.1.</span> <span class="nav-text">Registers and memory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#branching-and-labels"><span class="nav-number">1.7.1.2.</span> <span class="nav-text">Branching and Labels</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#variables"><span class="nav-number">1.7.1.3.</span> <span class="nav-text">Variables</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iterative-processing"><span class="nav-number">1.7.1.4.</span> <span class="nav-text">Iterative processing</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pointers"><span class="nav-number">1.7.1.5.</span> <span class="nav-text">Pointers</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

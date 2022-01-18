@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="the course note of deependency parsing and the details of assignment 3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dependency Parsing and Assignment3 of CS224n">
+<meta property="og:url" content="https://zhangruochi.com/Dependency-Parsing-and-Assignment3-of-CS224n/2019/12/10/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="the course note of deependency parsing and the details of assignment 3">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Dependency-Parsing-and-Assignment3-of-CS224n/2019/12/10/1.png">
+<meta property="og:image" content="https://zhangruochi.com/Dependency-Parsing-and-Assignment3-of-CS224n/2019/12/10/2.png">
+<meta property="og:image" content="https://zhangruochi.com/Dependency-Parsing-and-Assignment3-of-CS224n/2019/12/10/3.png">
+<meta property="article:published_time" content="2019-12-09T20:13:41.000Z">
+<meta property="article:modified_time" content="2019-12-19T18:09:55.553Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="cs224n">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Dependency-Parsing-and-Assignment3-of-CS224n/2019/12/10/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Dependency-Parsing-and-Assignment3-of-CS224n/2019/12/10/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Dependency Parsing and Assignment3 of CS224n | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Dependency-Parsing-and-Assignment3-of-CS224n/2019/12/10/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dependency Parsing and Assignment3 of CS224n
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-10 04:13:41" itemprop="dateCreated datePublished" datetime="2019-12-10T04:13:41+08:00">2019-12-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-20 02:09:55" itemprop="dateModified" datetime="2019-12-20T02:09:55+08:00">2019-12-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Dependency-Parsing-and-Assignment3-of-CS224n/2019/12/10/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Dependency-Parsing-and-Assignment3-of-CS224n/2019/12/10/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">the course note of deependency parsing and the details of assignment 3</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="dependency-grammar-and-dependency-structure">Dependency Grammar and Dependency Structure</h2>
+<p>Parse trees in NLP, analogous to those in compilers, are used to analyze the syntactic structure of sentences. There are two main types of structures used: 1. constituency structures 2. dependency structures</p>
+<p>Dependency structure of sentences shows which words depend on (modify or are arguments of) which other words. These binary asymmetric relations between the words are called dependencies and are depicted as arrows going from the <strong>head</strong> (or governor, superior, regent) to the <strong>dependent</strong> (or modifier, inferior, subordinate). Usually these dependencies form a tree structure. They are often typed with the name of grammatical relations (subject, prepositional object, apposition, etc.). An example of such a dependency tree is shown in below</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="1.png" width = "80%" height="80%"> <br>
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Figure from cs224n
+</div>
+</center>
+<p>Usually some constraints: 1. Only one word is adependent of ROOT 2. Don’twantcyclesA-&gt;B,B-&gt;A (tree structure) 3. Final issue is whether arrows can cross (non-projective) or not - Defn: There are no crossing dependency arcs when the words are laid out in their linear order, with all arcs above the words - Dependencies parallel to a CFG tree must be <strong>projective</strong>: Forming dependencies by taking 1 child of each category as head - But dependency theory normally does allow non-projective structures to account for displaced constituents: You can’t easily get the semantics of certain constructions right without these <strong>non-projective</strong> dependencies</p>
+<h2 id="parsing">Parsing</h2>
+<p>Given a parsing model M and a sentence S, derive the optimal dependency graph D for S according to M.</p>
+<ol type="1">
+<li><strong>Dynamic programming</strong> Eisner (1996) gives a clever algorithm with complexity O(n3), by producing parse items with heads at the ends rather than in the middle</li>
+<li><strong>Graph algorithms</strong> You create a Minimum Spanning Tree for a sentence McDonald et al.’s (2005) MSTParser scores dependencies independently using an ML classifier (he uses MIRA, for online learning, but it can be something else)</li>
+<li><strong>Constraint Satisfaction</strong> Edges are eliminated that don’t satisfy hard constraints. Karlsson (1990), etc.</li>
+<li><strong>Transition-based parsing</strong> or <strong>deterministic dependency parsing</strong> Greedy choice of attachments guided by good machine learning classifiers MaltParser (Nivre et al. 2008). Has proven highly effective.</li>
+</ol>
+<h2 id="neural-transition-based-dependency-parsing">Neural Transition-Based Dependency Parsing</h2>
+<p>A dependency parser analyzes the grammatical structure of a sentence, establishing relationships between head words, and words which modify those heads. Your implementation will be a transition-based parser, which incrementally builds up a parse one step at a time. At every step it maintains a partial parse, which is represented as follows: - A <strong>stack</strong> of words that are currently being processed. - A <strong>buffer</strong> of words yet to be processed. - A <strong>list</strong> of dependencies predicted by the parser.</p>
+<p>Initially, the stack only contains ROOT, the dependencies list is empty, and the buffer contains all words of the sentence in order. At each step, the parser applies a transition to the partial parse until its buffer is empty and the stack size is 1. The following transitions can be applied:</p>
+<ul>
+<li><strong>SHIFT</strong>: removes the first word from the buffer and pushes it onto the stack.</li>
+<li><strong>LEFT-ARC</strong>: marks the second (second most recently added) item on the stack as a dependent of the first item and removes the second item from the stack.</li>
+<li><strong>RIGHT-ARC</strong>: marks the first (most recently added) item on the stack as a dependent of the second item and removes the first item from the stack.</li>
+</ul>
+<p>On each step, your parser will decide among the three transitions using a neural network classifier.Go through the sequence of transitions needed for parsing the sentence “I parsed this sentence correctly”. The dependency tree for the sentence is shown below. At each step, give the configuration of the stack and buffer, as well as what transition was applied this step and what new dependency was added (if any). The first three steps are provided below as an example.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="2.png" width = "100%" height="100%"> <br>
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Figure from cs224n
+</div>
+</center>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">CS224N 2018-19: Homework 3</span></span><br><span class="line"><span class="string">parser_transitions.py: Algorithms for completing partial parsess.</span></span><br><span class="line"><span class="string">Sahil Chopra &lt;schopra8@stanford.edu&gt;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PartialParse</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, sentence</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;Initializes this partial parse.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @param sentence (list of str): The sentence to be parsed as a list of words.</span></span><br><span class="line"><span class="string">                                        Your code should not modify the sentence.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># The sentence being parsed is kept for bookkeeping purposes. Do not alter it in your code.</span></span><br><span class="line">        self.sentence = sentence</span><br><span class="line"></span><br><span class="line">        <span class="comment">### YOUR CODE HERE (3 Lines)</span></span><br><span class="line">        <span class="comment">### Your code should initialize the following fields:</span></span><br><span class="line">        <span class="comment">###     self.stack: The current stack represented as a list with the top of the stack as the</span></span><br><span class="line">        <span class="comment">###                 last element of the list.</span></span><br><span class="line">        <span class="comment">###     self.buffer: The current buffer represented as a list with the first item on the</span></span><br><span class="line">        <span class="comment">###                  buffer as the first item of the list</span></span><br><span class="line">        <span class="comment">###     self.dependencies: The list of dependencies produced so far. Represented as a list of</span></span><br><span class="line">        <span class="comment">###             tuples where each tuple is of the form (head, dependent).</span></span><br><span class="line">        <span class="comment">###             Order for this list doesn&#x27;t matter.</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">### Note: The root token should be represented with the string &quot;ROOT&quot;</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line"></span><br><span class="line">        self.stack = [<span class="string">&quot;ROOT&quot;</span>]</span><br><span class="line">        self.buffer = sentence[:]</span><br><span class="line">        self.dependencies = []</span><br><span class="line"></span><br><span class="line">        <span class="comment">### END YOUR CODE</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse_step</span>(<span class="params">self, transition</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;Performs a single parse step by applying the given transition to this partial parse</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @param transition (str): A string that equals &quot;S&quot;, &quot;LA&quot;, or &quot;RA&quot; representing the shift,</span></span><br><span class="line"><span class="string">                                left-arc, and right-arc transitions. You can assume the provided</span></span><br><span class="line"><span class="string">                                transition is a legal transition.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment">### YOUR CODE HERE (~7-10 Lines)</span></span><br><span class="line">        <span class="comment">### <span class="doctag">TODO:</span></span></span><br><span class="line">        <span class="comment">###     Implement a single parsing step, i.e. the logic for the following as</span></span><br><span class="line">        <span class="comment">###     described in the pdf handout:</span></span><br><span class="line">        <span class="comment">###         1. Shift</span></span><br><span class="line">        <span class="comment">###         2. Left Arc</span></span><br><span class="line">        <span class="comment">###         3. Right Arc</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># if self.buffer and transition == &quot;S&quot;:</span></span><br><span class="line">        <span class="comment">#     self.stack.append(self.buffer.pop(0))</span></span><br><span class="line">        <span class="comment"># elif len(self.stack) &gt;=2 and self.stack[-2] != &quot;ROOT&quot; and transition == &quot;LA&quot;:</span></span><br><span class="line">        <span class="comment">#     self.dependencies.append(( self.stack[-1],self.stack[-2]))</span></span><br><span class="line">        <span class="comment">#     self.stack.pop(-2)</span></span><br><span class="line">        <span class="comment"># elif len(self.stack) &gt;= 2 and transition == &quot;RA&quot;:</span></span><br><span class="line">        <span class="comment">#     self.dependencies.append((self.stack[-2], self.stack[-1]))</span></span><br><span class="line">        <span class="comment">#     self.stack.pop()</span></span><br><span class="line">        <span class="keyword">if</span> self.buffer <span class="keyword">and</span> transition == <span class="string">&quot;S&quot;</span>:</span><br><span class="line">            self.stack.append(self.buffer.pop(<span class="number">0</span>))</span><br><span class="line">        <span class="keyword">elif</span> <span class="built_in">len</span>(self.stack) &gt;= <span class="number">2</span> <span class="keyword">and</span> transition == <span class="string">&quot;LA&quot;</span>:</span><br><span class="line">            self.dependencies.append((self.stack[-<span class="number">1</span>], self.stack[-<span class="number">2</span>]))</span><br><span class="line">            self.stack.pop(-<span class="number">2</span>)</span><br><span class="line">        <span class="keyword">elif</span> <span class="built_in">len</span>(self.stack) &gt;= <span class="number">2</span> <span class="keyword">and</span> transition == <span class="string">&quot;RA&quot;</span>:</span><br><span class="line">            self.dependencies.append((self.stack[-<span class="number">2</span>], self.stack[-<span class="number">1</span>]))</span><br><span class="line">            self.stack.pop(-<span class="number">1</span>)</span><br><span class="line">        <span class="comment">### END YOUR CODE</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse</span>(<span class="params">self, transitions</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;Applies the provided transitions to this PartialParse</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @param transitions (list of str): The list of transitions in the order they should be applied</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @return dsependencies (list of string tuples): The list of dependencies produced when</span></span><br><span class="line"><span class="string">                                                        parsing the sentence. Represented as a list of</span></span><br><span class="line"><span class="string">                                                        tuples where each tuple is of the form (head, dependent).</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> transition <span class="keyword">in</span> transitions:</span><br><span class="line">            self.parse_step(transition)</span><br><span class="line">        <span class="keyword">return</span> self.dependencies</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minibatch_parse</span>(<span class="params">sentences, model, batch_size</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Parses a list of sentences in minibatches using a model.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    @param sentences (list of list of str): A list of sentences to be parsed</span></span><br><span class="line"><span class="string">                                            (each sentence is a list of words and each word is of type string)</span></span><br><span class="line"><span class="string">    @param model (ParserModel): The model that makes parsing decisions. It is assumed to have a function</span></span><br><span class="line"><span class="string">                                model.predict(partial_parses) that takes in a list of PartialParses as input and</span></span><br><span class="line"><span class="string">                                returns a list of transitions predicted for each parse. That is, after calling</span></span><br><span class="line"><span class="string">                                    transitions = model.predict(partial_parses)</span></span><br><span class="line"><span class="string">                                transitions[i] will be the next transition to apply to partial_parses[i].</span></span><br><span class="line"><span class="string">    @param batch_size (int): The number of PartialParses to include in each minibatch</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    @return dependencies (list of dependency lists): A list where each element is the dependencies</span></span><br><span class="line"><span class="string">                                                    list for a parsed sentence. Ordering should be the</span></span><br><span class="line"><span class="string">                                                    same as in sentences (i.e., dependencies[i] should</span></span><br><span class="line"><span class="string">                                                    contain the parse for sentences[i]).</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    dependencies = []</span><br><span class="line"></span><br><span class="line">    <span class="comment">### YOUR CODE HERE (~8-10 Lines)</span></span><br><span class="line">    <span class="comment">### <span class="doctag">TODO:</span></span></span><br><span class="line">    <span class="comment">###     Implement the minibatch parse algorithm as described in the pdf handout</span></span><br><span class="line">    <span class="comment">###</span></span><br><span class="line">    <span class="comment">###     Note: A shallow copy (as denoted in the PDF) can be made with the &quot;=&quot; sign in python, e.g.</span></span><br><span class="line">    <span class="comment">###                 unfinished_parses = partial_parses[:].</span></span><br><span class="line">    <span class="comment">###             Here `unfinished_parses` is a shallow copy of `partial_parses`.</span></span><br><span class="line">    <span class="comment">###             In Python, a shallow copied list like `unfinished_parses` does not contain new instances</span></span><br><span class="line">    <span class="comment">###             of the object stored in `partial_parses`. Rather both lists refer to the same objects.</span></span><br><span class="line">    <span class="comment">###             In our case, `partial_parses` contains a list of partial parses. `unfinished_parses`</span></span><br><span class="line">    <span class="comment">###             contains references to the same objects. Thus, you should NOT use the `del` operator</span></span><br><span class="line">    <span class="comment">###             to remove objects from the `unfinished_parses` list. This will free the underlying memory that</span></span><br><span class="line">    <span class="comment">###             is being accessed by `partial_parses` and may cause your code to crash.</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">assert</span> batch_size != <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    partial_parses = [PartialParse(s) <span class="keyword">for</span> s <span class="keyword">in</span> sentences]</span><br><span class="line">    unfinished_parses = partial_parses</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> unfinished_parses:</span><br><span class="line">        batch_parser = unfinished_parses[:batch_size]</span><br><span class="line">        <span class="keyword">while</span> batch_parser:</span><br><span class="line">            transitions = model.predict(batch_parser)</span><br><span class="line">            <span class="comment"># print(transitions)</span></span><br><span class="line">            <span class="keyword">for</span> parser,transition <span class="keyword">in</span> <span class="built_in">zip</span>(batch_parser,transitions):</span><br><span class="line">                parser.parse_step(transition)</span><br><span class="line">            batch_parser = [parser <span class="keyword">for</span> parser <span class="keyword">in</span> batch_parser <span class="keyword">if</span> <span class="built_in">len</span>(parser.stack) &gt; <span class="number">1</span> <span class="keyword">or</span> parser.buffer]</span><br><span class="line">            <span class="comment"># print(len(batch_parser))</span></span><br><span class="line">        unfinished_parses = unfinished_parses[batch_size:]</span><br><span class="line">    </span><br><span class="line">    dependencies = [parser.dependencies <span class="keyword">for</span> parser <span class="keyword">in</span> partial_parses]</span><br><span class="line">    <span class="comment">### END YOUR CODE</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dependencies</span><br></pre></td></tr></table></figure>
+<p>We are now going to train a neural network to predict, given the state of the stack, buffer, and dependencies, which transition should be applied next. First, the model extracts a feature vector representing the current state. They can be represented as a list of integers <span class="math inline">\([w_1,w_2,\cdots,w_m]\)</span> where m is the number of features and each <span class="math inline">\(0 \leq w_i &lt; |V|\)</span> is the index of a token in the vocabulary (|V| is the vocabulary size). First our network looks up an embedding for each word and concatenates them into a single input vector:</p>
+<p><span class="math display">\[x = [E_{w_1},\cdots,E_{w_m} ] \in \mathbb{R}^{dm}\]</span></p>
+<p>We then compute our prediction as:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp; h = ReLU(xW + b_1) \\
+&amp; l = hU + b_2 \\ 
+&amp; \hat{y} = softmax(l)
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(h\)</span> is referred to as the hidden layer,<span class="math inline">\(l\)</span> is referred to as the logits, <span class="math inline">\(\hat{y}\)</span> is referred to as the predictions. We will train the model to minimize cross-entropy loss:</p>
+<p><span class="math display">\[J(\theta) = CE(y,\hat{y}) = -\sum_{i=1}^{3}y_i log{\hat{y_i}}\]</span></p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="3.png" width = "100%" height="100%"> <br>
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Figure from cs224n
+</div>
+</center>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">CS224N 2018-19: Homework 3</span></span><br><span class="line"><span class="string">parser_model.py: Feed-Forward Neural Network for Dependency Parsing</span></span><br><span class="line"><span class="string">Sahil Chopra &lt;schopra8@stanford.edu&gt;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ParserModel</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Feedforward neural network with an embedding layer and single hidden layer.</span></span><br><span class="line"><span class="string">    The ParserModel will predict which transition should be applied to a</span></span><br><span class="line"><span class="string">    given partial parse configuration.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    PyTorch Notes:</span></span><br><span class="line"><span class="string">        - Note that &quot;ParserModel&quot; is a subclass of the &quot;nn.Module&quot; class. In PyTorch all neural networks</span></span><br><span class="line"><span class="string">            are a subclass of this &quot;nn.Module&quot;.</span></span><br><span class="line"><span class="string">        - The &quot;__init__&quot; method is where you define all the layers and their respective parameters</span></span><br><span class="line"><span class="string">            (embedding layers, linear layers, dropout layers, etc.).</span></span><br><span class="line"><span class="string">        - &quot;__init__&quot; gets automatically called when you create a new instance of your class, e.g.</span></span><br><span class="line"><span class="string">            when you write &quot;m = ParserModel()&quot;.</span></span><br><span class="line"><span class="string">        - Other methods of ParserModel can access variables that have &quot;self.&quot; prefix. Thus,</span></span><br><span class="line"><span class="string">            you should add the &quot;self.&quot; prefix layers, values, etc. that you want to utilize</span></span><br><span class="line"><span class="string">            in other ParserModel methods.</span></span><br><span class="line"><span class="string">        - For further documentation on &quot;nn.Module&quot; please see https://pytorch.org/docs/stable/nn.html.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, embeddings, n_features=<span class="number">36</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">        hidden_size=<span class="number">200</span>, n_classes=<span class="number">3</span>, dropout_prob=<span class="number">0.5</span></span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot; Initialize the parser model.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @param embeddings (Tensor): word embeddings (num_words, embedding_size)</span></span><br><span class="line"><span class="string">        @param n_features (int): number of input features</span></span><br><span class="line"><span class="string">        @param hidden_size (int): number of hidden units</span></span><br><span class="line"><span class="string">        @param n_classes (int): number of output classes</span></span><br><span class="line"><span class="string">        @param dropout_prob (float): dropout probability</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">super</span>(ParserModel, self).__init__()</span><br><span class="line">        self.n_features = n_features</span><br><span class="line">        self.n_classes = n_classes</span><br><span class="line">        self.dropout_prob = dropout_prob</span><br><span class="line">        self.embed_size = embeddings.shape[<span class="number">1</span>]</span><br><span class="line">        self.hidden_size = hidden_size</span><br><span class="line">        self.pretrained_embeddings = nn.Embedding(embeddings.shape[<span class="number">0</span>], self.embed_size)</span><br><span class="line">        self.pretrained_embeddings.weight = nn.Parameter(torch.tensor(embeddings))</span><br><span class="line"></span><br><span class="line">        <span class="comment">### YOUR CODE HERE (~5 Lines)</span></span><br><span class="line">        <span class="comment">### <span class="doctag">TODO:</span></span></span><br><span class="line">        <span class="comment">###     1) Construct `self.embed_to_hidden` linear layer, initializing the weight matrix</span></span><br><span class="line">        <span class="comment">###         with the `nn.init.xavier_uniform_` function with `gain = 1` (default)</span></span><br><span class="line">        <span class="comment">###     2) Construct `self.dropout` layer.</span></span><br><span class="line">        <span class="comment">###     3) Construct `self.hidden_to_logits` linear layer, initializing the weight matrix</span></span><br><span class="line">        <span class="comment">###         with the `nn.init.xavier_uniform_` function with `gain = 1` (default)</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">### Note: Here, we use Xavier Uniform Initialization for our Weight initialization.</span></span><br><span class="line">        <span class="comment">###         It has been shown empirically, that this provides better initial weights</span></span><br><span class="line">        <span class="comment">###         for training networks than random uniform initialization.</span></span><br><span class="line">        <span class="comment">###         For more details checkout this great blogpost:</span></span><br><span class="line">        <span class="comment">###             http://andyljones.tumblr.com/post/110998971763/an-explanation-of-xavier-initialization </span></span><br><span class="line">        <span class="comment">### Hints:</span></span><br><span class="line">        <span class="comment">###     - After you create a linear layer you can access the weight</span></span><br><span class="line">        <span class="comment">###       matrix via:</span></span><br><span class="line">        <span class="comment">###         linear_layer.weight</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">### Please see the following docs for support:</span></span><br><span class="line">        <span class="comment">###     Linear Layer: https://pytorch.org/docs/stable/nn.html#torch.nn.Linear</span></span><br><span class="line">        <span class="comment">###     Xavier Init: https://pytorch.org/docs/stable/nn.html#torch.nn.init.xavier_uniform_</span></span><br><span class="line">        <span class="comment">###     Dropout: https://pytorch.org/docs/stable/nn.html#torch.nn.Dropout</span></span><br><span class="line">        </span><br><span class="line">        self.embed_to_hidden = nn.Linear(self.embed_size * self.n_features, hidden_size)</span><br><span class="line">        self.dropout = nn.Dropout(p = self.dropout_prob)</span><br><span class="line">        self.hidden_to_logits = nn.Linear(hidden_size,self.n_classes)</span><br><span class="line">        nn.init.xavier_uniform_(self.embed_to_hidden.weight,gain=<span class="number">1</span>)</span><br><span class="line">        nn.init.xavier_uniform_(self.hidden_to_logits.weight,gain=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">### END YOUR CODE</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">embedding_lookup</span>(<span class="params">self, t</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot; Utilize `self.pretrained_embeddings` to map input `t` from input tokens (integers)</span></span><br><span class="line"><span class="string">            to embedding vectors.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">            PyTorch Notes:</span></span><br><span class="line"><span class="string">                - `self.pretrained_embeddings` is a torch.nn.Embedding object that we defined in __init__</span></span><br><span class="line"><span class="string">                - Here `t` is a tensor where each row represents a list of features. Each feature is represented by an integer (input token).</span></span><br><span class="line"><span class="string">                - In PyTorch the Embedding object, e.g. `self.pretrained_embeddings`, allows you to</span></span><br><span class="line"><span class="string">                    go from an index to embedding. Please see the documentation (https://pytorch.org/docs/stable/nn.html#torch.nn.Embedding)</span></span><br><span class="line"><span class="string">                    to learn how to use `self.pretrained_embeddings` to extract the embeddings for your tensor `t`.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">            @param t (Tensor): input tensor of tokens (batch_size, n_features)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">            @return x (Tensor): tensor of embeddings for words represented in t</span></span><br><span class="line"><span class="string">                                (batch_size, n_features * embed_size)</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment">### YOUR CODE HERE (~1-3 Lines)</span></span><br><span class="line">        <span class="comment">### <span class="doctag">TODO:</span></span></span><br><span class="line">        <span class="comment">###     1) Use `self.pretrained_embeddings` to lookup the embeddings for the input tokens in `t`.</span></span><br><span class="line">        <span class="comment">###     2) After you apply the embedding lookup, you will have a tensor shape (batch_size, n_features, embedding_size).</span></span><br><span class="line">        <span class="comment">###         Use the tensor `view` method to reshape the embeddings tensor to (batch_size, n_features * embedding_size)</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">### Note: In order to get batch_size, you may need use the tensor .size() function:</span></span><br><span class="line">        <span class="comment">###         https://pytorch.org/docs/stable/tensors.html#torch.Tensor.size</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">###  Please see the following docs for support:</span></span><br><span class="line">        <span class="comment">###     Embedding Layer: https://pytorch.org/docs/stable/nn.html#torch.nn.Embedding</span></span><br><span class="line">        <span class="comment">###     View: https://pytorch.org/docs/stable/tensors.html#torch.Tensor.view</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">### END YOUR CODE</span></span><br><span class="line">        tmp_features = self.pretrained_embeddings(t)</span><br><span class="line">        shape = tmp_features.size()</span><br><span class="line">        x = tmp_features.view(shape[<span class="number">0</span>],shape[<span class="number">1</span>]*shape[<span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, t</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot; Run the model forward.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">            Note that we will not apply the softmax function here because it is included in the loss function nn.CrossEntropyLoss</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">            PyTorch Notes:</span></span><br><span class="line"><span class="string">                - Every nn.Module object (PyTorch model) has a `forward` function.</span></span><br><span class="line"><span class="string">                - When you apply your nn.Module to an input tensor `t` this function is applied to the tensor.</span></span><br><span class="line"><span class="string">                    For example, if you created an instance of your ParserModel and applied it to some `t` as follows,</span></span><br><span class="line"><span class="string">                    the `forward` function would called on `t` and the result would be stored in the `output` variable:</span></span><br><span class="line"><span class="string">                        model = ParserModel()</span></span><br><span class="line"><span class="string">                        output = model(t) # this calls the forward function</span></span><br><span class="line"><span class="string">                - For more details checkout: https://pytorch.org/docs/stable/nn.html#torch.nn.Module.forward</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @param t (Tensor): input tensor of tokens (batch_size, n_features)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        @return logits (Tensor): tensor of predictions (output after applying the layers of the network)</span></span><br><span class="line"><span class="string">                                 without applying softmax (batch_size, n_classes)</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment">###  YOUR CODE HERE (~3-5 lines)</span></span><br><span class="line">        <span class="comment">### <span class="doctag">TODO:</span></span></span><br><span class="line">        <span class="comment">###     1) Apply `self.embedding_lookup` to `t` to get the embeddings</span></span><br><span class="line">        <span class="comment">###     2) Apply `embed_to_hidden` linear layer to the embeddings</span></span><br><span class="line">        <span class="comment">###     3) Apply relu non-linearity to the output of step 2 to get the hidden units.</span></span><br><span class="line">        <span class="comment">###     4) Apply dropout layer to the output of step 3.</span></span><br><span class="line">        <span class="comment">###     5) Apply `hidden_to_logits` layer to the output of step 4 to get the logits.</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">### Note: We do not apply the softmax to the logits here, because</span></span><br><span class="line">        <span class="comment">### the loss function (torch.nn.CrossEntropyLoss) applies it more efficiently.</span></span><br><span class="line">        <span class="comment">###</span></span><br><span class="line">        <span class="comment">### Please see the following docs for support:</span></span><br><span class="line">        <span class="comment">###     ReLU: https://pytorch.org/docs/stable/nn.html?highlight=relu#torch.nn.functional.relu</span></span><br><span class="line">        x = self.embedding_lookup(t)</span><br><span class="line">        x = self.embed_to_hidden(x)</span><br><span class="line">        x = nn.functional.relu(x)</span><br><span class="line">        x = self.dropout(x)</span><br><span class="line">        logits = self.hidden_to_logits(x)</span><br><span class="line"></span><br><span class="line">        <span class="comment">### END YOUR CODE</span></span><br><span class="line">        <span class="keyword">return</span> logits</span><br></pre></td></tr></table></figure>
+<h2 id="runing-the-model">Runing the model</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">CS224N 2018-19: Homework 3</span></span><br><span class="line"><span class="string">run.py: Run the dependency parser.</span></span><br><span class="line"><span class="string">Sahil Chopra &lt;schopra8@stanford.edu&gt;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn, optim</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> parser_model <span class="keyword">import</span> ParserModel</span><br><span class="line"><span class="keyword">from</span> utils.parser_utils <span class="keyword">import</span> minibatches, load_and_preprocess_data, AverageMeter</span><br><span class="line"></span><br><span class="line"><span class="comment"># -----------------</span></span><br><span class="line"><span class="comment"># Primary Functions</span></span><br><span class="line"><span class="comment"># -----------------</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">parser, train_data, dev_data, output_path, batch_size=<span class="number">1024</span>, n_epochs=<span class="number">10</span>, lr=<span class="number">0.0005</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Train the neural dependency parser.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    @param parser (Parser): Neural Dependency Parser</span></span><br><span class="line"><span class="string">    @param train_data ():</span></span><br><span class="line"><span class="string">    @param dev_data ():</span></span><br><span class="line"><span class="string">    @param output_path (str): Path to which model weights and results are written.</span></span><br><span class="line"><span class="string">    @param batch_size (int): Number of examples in a single batch</span></span><br><span class="line"><span class="string">    @param n_epochs (int): Number of training epochs</span></span><br><span class="line"><span class="string">    @param lr (float): Learning rate</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    best_dev_UAS = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">### YOUR CODE HERE (~2-7 lines)</span></span><br><span class="line">    <span class="comment">### <span class="doctag">TODO:</span></span></span><br><span class="line">    <span class="comment">###      1) Construct Adam Optimizer in variable `optimizer`</span></span><br><span class="line">    <span class="comment">###      2) Construct the Cross Entropy Loss Function in variable `loss_func`</span></span><br><span class="line">    <span class="comment">###</span></span><br><span class="line">    <span class="comment">### Hint: Use `parser.model.parameters()` to pass optimizer</span></span><br><span class="line">    <span class="comment">###       necessary parameters to tune.</span></span><br><span class="line">    <span class="comment">### Please see the following docs for support:</span></span><br><span class="line">    <span class="comment">###     Adam Optimizer: https://pytorch.org/docs/stable/optim.html</span></span><br><span class="line">    <span class="comment">###     Cross Entropy Loss: https://pytorch.org/docs/stable/nn.html#crossentropyloss</span></span><br><span class="line">    optimizer = optim.Adam(parser.model.parameters(),lr=lr)</span><br><span class="line">    loss_func = nn.CrossEntropyLoss()</span><br><span class="line">    <span class="comment">### END YOUR CODE</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(n_epochs):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Epoch &#123;:&#125; out of &#123;:&#125;&quot;</span>.<span class="built_in">format</span>(epoch + <span class="number">1</span>, n_epochs))</span><br><span class="line">        dev_UAS = train_for_epoch(parser, train_data, dev_data, optimizer, loss_func, batch_size)</span><br><span class="line">        <span class="keyword">if</span> dev_UAS &gt; best_dev_UAS:</span><br><span class="line">            best_dev_UAS = dev_UAS</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;New best dev UAS! Saving model.&quot;</span>)</span><br><span class="line">            torch.save(parser.model.state_dict(), output_path)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train_for_epoch</span>(<span class="params">parser, train_data, dev_data, optimizer, loss_func, batch_size</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Train the neural dependency parser for single epoch.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Note: In PyTorch we can signify train versus test and automatically have</span></span><br><span class="line"><span class="string">    the Dropout Layer applied and removed, accordingly, by specifying</span></span><br><span class="line"><span class="string">    whether we are training, `model.train()`, or evaluating, `model.eval()`</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    @param parser (Parser): Neural Dependency Parser</span></span><br><span class="line"><span class="string">    @param train_data ():</span></span><br><span class="line"><span class="string">    @param dev_data ():</span></span><br><span class="line"><span class="string">    @param optimizer (nn.Optimizer): Adam Optimizer</span></span><br><span class="line"><span class="string">    @param loss_func (nn.CrossEntropyLoss): Cross Entropy Loss Function</span></span><br><span class="line"><span class="string">    @param batch_size (int): batch size</span></span><br><span class="line"><span class="string">    @param lr (float): learning rate</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    @return dev_UAS (float): Unlabeled Attachment Score (UAS) for dev data</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    parser.model.train() <span class="comment"># Places model in &quot;train&quot; mode, i.e. apply dropout layer</span></span><br><span class="line">    n_minibatches = math.ceil(<span class="built_in">len</span>(train_data) / batch_size)</span><br><span class="line">    loss_meter = AverageMeter()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> tqdm(total=(n_minibatches)) <span class="keyword">as</span> prog:</span><br><span class="line">        <span class="keyword">for</span> i, (train_x, train_y) <span class="keyword">in</span> <span class="built_in">enumerate</span>(minibatches(train_data, batch_size)):</span><br><span class="line">            optimizer.zero_grad()   <span class="comment"># remove any baggage in the optimizer</span></span><br><span class="line">            loss = <span class="number">0.</span> <span class="comment"># store loss for this batch here</span></span><br><span class="line">            train_x = torch.from_numpy(train_x).long()</span><br><span class="line">            train_y = torch.from_numpy(train_y.nonzero()[<span class="number">1</span>]).long()</span><br><span class="line"></span><br><span class="line">            <span class="comment">### YOUR CODE HERE (~5-10 lines)</span></span><br><span class="line">            <span class="comment">### <span class="doctag">TODO:</span></span></span><br><span class="line">            <span class="comment">###      1) Run train_x forward through model to produce `logits`</span></span><br><span class="line">            <span class="comment">###      2) Use the `loss_func` parameter to apply the PyTorch CrossEntropyLoss function.</span></span><br><span class="line">            <span class="comment">###         This will take `logits` and `train_y` as inputs. It will output the CrossEntropyLoss</span></span><br><span class="line">            <span class="comment">###         between softmax(`logits`) and `train_y`. Remember that softmax(`logits`)</span></span><br><span class="line">            <span class="comment">###         are the predictions (y^ from the PDF).</span></span><br><span class="line">            <span class="comment">###      3) Backprop losses</span></span><br><span class="line">            <span class="comment">###      4) Take step with the optimizer</span></span><br><span class="line">            <span class="comment">### Please see the following docs for support:</span></span><br><span class="line">            <span class="comment">###     Optimizer Step: https://pytorch.org/docs/stable/optim.html#optimizer-step</span></span><br><span class="line">            logits = parser.model.forward(train_x)</span><br><span class="line">            loss = loss_func(logits,train_y)</span><br><span class="line">            loss.backward()</span><br><span class="line">            optimizer.step()</span><br><span class="line"></span><br><span class="line">            <span class="comment">### END YOUR CODE</span></span><br><span class="line">            prog.update(<span class="number">1</span>)</span><br><span class="line">            loss_meter.update(loss.item())</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span> (<span class="string">&quot;Average Train Loss: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(loss_meter.avg))</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Evaluating on dev set&quot;</span>,)</span><br><span class="line">    parser.model.<span class="built_in">eval</span>() <span class="comment"># Places model in &quot;eval&quot; mode, i.e. don&#x27;t apply dropout layer</span></span><br><span class="line">    dev_UAS, _ = parser.parse(dev_data)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;- dev UAS: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(dev_UAS * <span class="number">100.0</span>))</span><br><span class="line">    <span class="keyword">return</span> dev_UAS</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="comment"># Note: Set debug to False, when training on entire corpus</span></span><br><span class="line">    debug = <span class="literal">True</span></span><br><span class="line">    <span class="comment"># debug = False</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">assert</span>(torch.__version__ == <span class="string">&quot;1.0.0&quot;</span>),  <span class="string">&quot;Please install torch version 1.0.0&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="number">80</span> * <span class="string">&quot;=&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;INITIALIZING&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="number">80</span> * <span class="string">&quot;=&quot;</span>)</span><br><span class="line">    parser, embeddings, train_data, dev_data, test_data = load_and_preprocess_data(debug)</span><br><span class="line"></span><br><span class="line">    start = time.time()</span><br><span class="line">    model = ParserModel(embeddings)</span><br><span class="line">    parser.model = model</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;took &#123;:.2f&#125; seconds\n&quot;</span>.<span class="built_in">format</span>(time.time() - start))</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="number">80</span> * <span class="string">&quot;=&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;TRAINING&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="number">80</span> * <span class="string">&quot;=&quot;</span>)</span><br><span class="line">    output_dir = <span class="string">&quot;results/&#123;:%Y%m%d_%H%M%S&#125;/&quot;</span>.<span class="built_in">format</span>(datetime.now())</span><br><span class="line">    output_path = output_dir + <span class="string">&quot;model.weights&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(output_dir):</span><br><span class="line">        os.makedirs(output_dir)</span><br><span class="line"></span><br><span class="line">    train(parser, train_data, dev_data, output_path, batch_size=<span class="number">1024</span>, n_epochs=<span class="number">10</span>, lr=<span class="number">0.0005</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> debug:</span><br><span class="line">        <span class="built_in">print</span>(<span class="number">80</span> * <span class="string">&quot;=&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;TESTING&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="number">80</span> * <span class="string">&quot;=&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Restoring the best model weights found on the dev set&quot;</span>)</span><br><span class="line">        parser.model.load_state_dict(torch.load(output_path))</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Final evaluation on test set&quot;</span>,)</span><br><span class="line">        parser.model.<span class="built_in">eval</span>()</span><br><span class="line">        UAS, dependencies = parser.parse(test_data)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;- test UAS: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(UAS * <span class="number">100.0</span>))</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Done!&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="reference">Reference</h2>
+<ol type="1">
+<li>slides and course notes of <a target="_blank" rel="noopener" href="http://web.stanford.edu/class/cs224n/">cs224n</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/cs224n/" rel="tag"># cs224n</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/CS224n-Assignment-2/2019/12/07/" rel="prev" title="CS224n Assignment 2">
+      <i class="fa fa-chevron-left"></i> CS224n Assignment 2
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Human-Factor/2019/12/12/" rel="next" title="Human Factor">
+      Human Factor <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#dependency-grammar-and-dependency-structure"><span class="nav-number">1.</span> <span class="nav-text">Dependency Grammar and Dependency Structure</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#parsing"><span class="nav-number">2.</span> <span class="nav-text">Parsing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#neural-transition-based-dependency-parsing"><span class="nav-number">3.</span> <span class="nav-text">Neural Transition-Based Dependency Parsing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#runing-the-model"><span class="nav-number">4.</span> <span class="nav-text">Runing the model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

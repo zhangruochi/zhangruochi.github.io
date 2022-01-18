@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="PCA from scratch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PCA from scratch">
+<meta property="og:url" content="https://zhangruochi.com/PCA-from-scratch/2020/04/14/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="PCA from scratch">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/PCA-from-scratch/2020/04/14/output_2_1.png">
+<meta property="og:image" content="https://zhangruochi.com/PCA-from-scratch/2020/04/14/output_4_2.png">
+<meta property="og:image" content="https://zhangruochi.com/PCA-from-scratch/2020/04/14/output_5_2.png">
+<meta property="og:image" content="https://zhangruochi.com/PCA-from-scratch/2020/04/14/output_6_2.png">
+<meta property="og:image" content="https://zhangruochi.com/PCA-from-scratch/2020/04/14/output_7_2.png">
+<meta property="og:image" content="https://zhangruochi.com/PCA-from-scratch/2020/04/14/output_13_1.png">
+<meta property="article:published_time" content="2020-04-14T05:32:41.000Z">
+<meta property="article:modified_time" content="2021-12-31T10:07:49.518Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Unsupervised Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/PCA-from-scratch/2020/04/14/output_2_1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/PCA-from-scratch/2020/04/14/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>PCA from scratch | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/PCA-from-scratch/2020/04/14/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PCA from scratch
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-14 13:32:41" itemprop="dateCreated datePublished" datetime="2020-04-14T13:32:41+08:00">2020-04-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 18:07:49" itemprop="dateModified" datetime="2021-12-31T18:07:49+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/PCA-from-scratch/2020/04/14/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/PCA-from-scratch/2020/04/14/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">PCA from scratch</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> decomposition</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_arrow</span>(<span class="params">ax, start, stop</span>):</span></span><br><span class="line">    ax.annotate(<span class="string">&#x27;&#x27;</span>, xytext=start, xy=stop,                 </span><br><span class="line">                arrowprops=<span class="built_in">dict</span>(facecolor=<span class="string">&#x27;red&#x27;</span>, width=<span class="number">2.0</span>))</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr_vars</span>(<span class="params"> start=-<span class="number">10</span>, stop=<span class="number">10</span>, step=<span class="number">0.5</span>, mu=<span class="number">0</span>, sigma=<span class="number">3</span>, func=<span class="keyword">lambda</span> x: x </span>):</span></span><br><span class="line">    x = np.arange(start, stop, step)    </span><br><span class="line">    e = np.random.normal(mu, sigma, x.size)</span><br><span class="line">    y = np.zeros(x.size)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> ind <span class="keyword">in</span> <span class="built_in">range</span>(x.size):</span><br><span class="line">        y[ind] = func(x[ind]) + e[ind]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> (x,y)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">np.random.seed(<span class="number">100</span>)</span><br><span class="line"></span><br><span class="line">(x1,x2) = corr_vars(start=<span class="number">2</span>, stop=<span class="number">4</span>, step=<span class="number">0.2</span>, sigma=<span class="number">2</span>, func=<span class="keyword">lambda</span> x: <span class="number">2</span>*math.sin(x))</span><br><span class="line"></span><br><span class="line">A = np.column_stack((x1,x2))</span><br><span class="line"></span><br><span class="line">Aorig = A</span><br><span class="line"></span><br><span class="line">A</span><br></pre></td></tr></table></figure>
+<pre><code>array([[ 2.        , -1.68093609],
+       [ 2.2       ,  2.30235361],
+       [ 2.4       ,  3.65699797],
+       [ 2.6       ,  0.52613067],
+       [ 2.8       ,  2.63261787],
+       [ 3.        ,  1.3106777 ],
+       [ 3.2       ,  0.32561105],
+       [ 3.4       , -2.65116887],
+       [ 3.6       , -1.26403255],
+       [ 3.8       , -0.71371289]])</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">A = (A-np.mean(A,axis=<span class="number">0</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Plot the original matrix</span></span><br><span class="line">f, (ax1, ax2) = plt.subplots(<span class="number">1</span>, <span class="number">2</span>, sharey=<span class="literal">True</span>, figsize=(<span class="number">7</span>,<span class="number">4</span>))</span><br><span class="line">ax1.scatter(Aorig[:,<span class="number">0</span>], Aorig[:,<span class="number">1</span>])</span><br><span class="line">ax1.set_title(<span class="string">&quot;Original data&quot;</span>)</span><br><span class="line">ax1.grid(<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Plot the centered data</span></span><br><span class="line">ax2.scatter(A[:,<span class="number">0</span>],A[:,<span class="number">1</span>])</span><br><span class="line">ax2.set_title(<span class="string">&quot;Centered data&quot;</span>)</span><br><span class="line">ax2.grid(<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">ax1.axhline(<span class="number">0</span>, color=<span class="string">&quot;blue&quot;</span>)</span><br><span class="line">ax1.axvline(<span class="number">0</span>, color=<span class="string">&quot;blue&quot;</span>)</span><br><span class="line">ax2.axhline(<span class="number">0</span>, color=<span class="string">&quot;blue&quot;</span>)</span><br><span class="line">ax2.axvline(<span class="number">0</span>, color=<span class="string">&quot;blue&quot;</span>)</span><br><span class="line"></span><br><span class="line">plt.xlim([-<span class="number">2</span>,<span class="number">5</span>])</span><br><span class="line">plt.ylim([-<span class="number">4</span>,<span class="number">5</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>(-4, 5)</code></pre>
+<figure>
+<img src="output_2_1.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">S = np.dot(A.T,A)/(A.shape[<span class="number">0</span>]-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;The covariance matrix is:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(S,<span class="string">&quot;\n&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>The covariance matrix is:
+[[ 0.36666667 -0.55248919]
+ [-0.55248919  4.18798554]] </code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">f, ax1 = plt.subplots(<span class="number">1</span>, <span class="number">1</span>, sharey=<span class="literal">True</span>, figsize=(<span class="number">12</span>,<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">V = np.array([[-<span class="number">1</span>],[<span class="number">0</span>]])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Vector slope: &quot;</span>,V[<span class="number">1</span>]/V[<span class="number">0</span>])</span><br><span class="line">ax1.scatter(A[:,<span class="number">0</span>],A[:,<span class="number">1</span>])</span><br><span class="line">ax1.set_title(<span class="string">&quot;Vector [-1,1]&quot;</span>)</span><br><span class="line">ax1.grid(<span class="literal">True</span>)</span><br><span class="line">ax1.plot([<span class="number">0</span>,V[<span class="number">0</span>]],[<span class="number">0</span>,V[<span class="number">1</span>]],c=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">plot_arrow(ax1, (<span class="number">0</span>,<span class="number">0</span>),(V[<span class="number">0</span>],V[<span class="number">1</span>]))</span><br><span class="line">plt.xlim([-<span class="number">5</span>,<span class="number">5</span>])</span><br><span class="line">plt.ylim([-<span class="number">5</span>,<span class="number">5</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>Vector slope:  [-0.]
+
+
+
+
+
+(-5, 5)</code></pre>
+<figure>
+<img src="output_4_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">f, ax1 = plt.subplots(<span class="number">1</span>, <span class="number">1</span>, sharey=<span class="literal">True</span>, figsize=(<span class="number">12</span>,<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">V = np.dot(S,V)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Vector slope: &quot;</span>,V[<span class="number">1</span>]/V[<span class="number">0</span>])</span><br><span class="line">ax1.scatter(A[:,<span class="number">0</span>],A[:,<span class="number">1</span>])</span><br><span class="line">ax1.set_title(<span class="string">&quot;Vector [-1,1]&quot;</span>)</span><br><span class="line">ax1.grid(<span class="literal">True</span>)</span><br><span class="line">ax1.plot([<span class="number">0</span>,V[<span class="number">0</span>]],[<span class="number">0</span>,V[<span class="number">1</span>]],c=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">plot_arrow(ax1, (<span class="number">0</span>,<span class="number">0</span>),(V[<span class="number">0</span>],V[<span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line">plt.xlim([-<span class="number">5</span>,<span class="number">5</span>])</span><br><span class="line">plt.ylim([-<span class="number">5</span>,<span class="number">5</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>Vector slope:  [-1.50678871]
+
+
+
+
+
+(-5, 5)</code></pre>
+<figure>
+<img src="output_5_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">f, ax1 = plt.subplots(<span class="number">1</span>, <span class="number">1</span>, sharey=<span class="literal">True</span>, figsize=(<span class="number">12</span>,<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">V = np.dot(S,V)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Vector slope: &quot;</span>,V[<span class="number">1</span>]/V[<span class="number">0</span>])</span><br><span class="line">ax1.scatter(A[:,<span class="number">0</span>],A[:,<span class="number">1</span>])</span><br><span class="line">ax1.set_title(<span class="string">&quot;Vector [-1,1]&quot;</span>)</span><br><span class="line">ax1.grid(<span class="literal">True</span>)</span><br><span class="line">ax1.plot([<span class="number">0</span>,V[<span class="number">0</span>]],[<span class="number">0</span>,V[<span class="number">1</span>]],c=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">plot_arrow(ax1, (<span class="number">0</span>,<span class="number">0</span>),(V[<span class="number">0</span>],V[<span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line">plt.xlim([-<span class="number">5</span>,<span class="number">5</span>])</span><br><span class="line">plt.ylim([-<span class="number">5</span>,<span class="number">5</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>Vector slope:  [-5.72313052]
+
+
+
+
+
+(-5, 5)</code></pre>
+<figure>
+<img src="output_6_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">f, ax1 = plt.subplots(<span class="number">1</span>, <span class="number">1</span>, sharey=<span class="literal">True</span>, figsize=(<span class="number">12</span>,<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">V = np.dot(S,V)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Vector slope: &quot;</span>,V[<span class="number">1</span>]/V[<span class="number">0</span>])</span><br><span class="line">ax1.scatter(A[:,<span class="number">0</span>],A[:,<span class="number">1</span>])</span><br><span class="line">ax1.set_title(<span class="string">&quot;Vector [-1,1]&quot;</span>)</span><br><span class="line">ax1.grid(<span class="literal">True</span>)</span><br><span class="line">ax1.plot([<span class="number">0</span>,V[<span class="number">0</span>]],[<span class="number">0</span>,V[<span class="number">1</span>]],c=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">plot_arrow(ax1, (<span class="number">0</span>,<span class="number">0</span>),(V[<span class="number">0</span>],V[<span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line">plt.xlim([-<span class="number">5</span>,<span class="number">5</span>])</span><br><span class="line">plt.ylim([-<span class="number">5</span>,<span class="number">5</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>Vector slope:  [-6.94911232]
+
+
+
+
+
+(-5, 5)</code></pre>
+<figure>
+<img src="output_7_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;The slope of the vector converges to the direction of greatest variance:\n&quot;</span>)</span><br><span class="line"></span><br><span class="line">V = np.dot(S,V)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Vector slope: &quot;</span>,V[<span class="number">1</span>]/V[<span class="number">0</span>])</span><br><span class="line">V = np.dot(S,V)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Vector slope: &quot;</span>,V[<span class="number">1</span>]/V[<span class="number">0</span>])</span><br><span class="line">V = np.dot(S,V)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Vector slope: &quot;</span>,V[<span class="number">1</span>]/V[<span class="number">0</span>])</span><br><span class="line">V = np.dot(S,V)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Vector slope: &quot;</span>,V[<span class="number">1</span>]/V[<span class="number">0</span>])</span><br><span class="line">V = np.dot(S,V)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Vector slope: &quot;</span>,V[<span class="number">1</span>]/V[<span class="number">0</span>])</span><br><span class="line">V = np.dot(S,V)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Vector slope: &quot;</span>,V[<span class="number">1</span>]/V[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>The slope of the vector converges to the direction of greatest variance:
+
+Vector slope:  [-7.0507464]
+Vector slope:  [-7.0577219]
+Vector slope:  [-7.05819391]
+Vector slope:  [-7.05822582]
+Vector slope:  [-7.05822798]
+Vector slope:  [-7.05822813]</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># https://en.wikipedia.org/wiki/Eigenvalue_algorithm</span></span><br><span class="line"></span><br><span class="line">l_1 = (S.trace() + np.sqrt(<span class="built_in">pow</span>(S.trace(),<span class="number">2</span>) - <span class="number">4</span>*np.linalg.det(S))) / <span class="number">2</span></span><br><span class="line">l_2 = (S.trace() - np.sqrt(<span class="built_in">pow</span>(S.trace(),<span class="number">2</span>) - <span class="number">4</span>*np.linalg.det(S))) / <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;The eigenvalues are:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;L1:&quot;</span>,l_1)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;L2:&quot;</span>,l_2)</span><br></pre></td></tr></table></figure>
+<pre><code>The eigenvalues are:
+L1: 4.266261447240239
+L2: 0.28839076171131417</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Cayley-Hamilton theorem</span></span><br><span class="line"><span class="comment"># (A - λ1I )(A - λ2I ) = (A - λ2I )(A - λ1I ) = 0</span></span><br><span class="line"></span><br><span class="line">A1 = S - l_1 * np.identity(<span class="number">2</span>)</span><br><span class="line">A2 = S - l_2 * np.identity(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">E1 = A2[:,<span class="number">1</span>]</span><br><span class="line">E2 = A1[:,<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">E1 = E1 / np.linalg.norm(E1)</span><br><span class="line">E2 = E2 / np.linalg.norm(E2)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;The eigenvectors are:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;E1:&quot;</span>, E1)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;E2:&quot;</span>, E2)</span><br></pre></td></tr></table></figure>
+<pre><code>The eigenvectors are:
+E1: [-0.14027773  0.9901122 ]
+E2: [-0.9901122  -0.14027773]</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">E = np.column_stack((E1,E2))</span><br><span class="line"></span><br><span class="line">E</span><br></pre></td></tr></table></figure>
+<pre><code>array([[-0.14027773, -0.9901122 ],
+       [ 0.9901122 , -0.14027773]])</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">evals, evecs = np.linalg.eigh(S)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(evals)</span><br><span class="line"><span class="built_in">print</span>(evecs)</span><br></pre></td></tr></table></figure>
+<pre><code>[0.28839076 4.26626145]
+[[-0.9901122  -0.14027773]
+ [-0.14027773  0.9901122 ]]</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">f, (ax1, ax2, ax3) = plt.subplots(<span class="number">1</span>, <span class="number">3</span>, sharey=<span class="literal">True</span>, figsize=(<span class="number">12</span>,<span class="number">8</span>))</span><br><span class="line">ax1.scatter(Aorig[:,<span class="number">0</span>],Aorig[:,<span class="number">1</span>])</span><br><span class="line">ax1.set_title(<span class="string">&quot;Original Data&quot;</span>)</span><br><span class="line">ax1.grid(<span class="literal">True</span>)</span><br><span class="line">ax1.set_aspect(<span class="string">&#x27;equal&#x27;</span>)</span><br><span class="line"></span><br><span class="line">ax2.scatter(Aorig[:,<span class="number">0</span>],Aorig[:,<span class="number">1</span>])</span><br><span class="line">ax2.set_title(<span class="string">&quot;E1&quot;</span>)</span><br><span class="line">ax2.grid(<span class="literal">True</span>)</span><br><span class="line">plot_arrow(ax2, np.mean(Aorig,axis=<span class="number">0</span>), np.mean(Aorig,axis=<span class="number">0</span>) + np.dot(Aorig, E).std(axis=<span class="number">0</span>).mean() * E1)</span><br><span class="line">ax2.set_aspect(<span class="string">&#x27;equal&#x27;</span>)               </span><br><span class="line"></span><br><span class="line">ax3.scatter(Aorig[:,<span class="number">0</span>],Aorig[:,<span class="number">1</span>])</span><br><span class="line">ax3.set_title(<span class="string">&quot;E1 and E2&quot;</span>)</span><br><span class="line">ax3.grid(<span class="literal">True</span>)</span><br><span class="line">plot_arrow(ax3, np.mean(Aorig,axis=<span class="number">0</span>), np.mean(Aorig,axis=<span class="number">0</span>) + np.dot(Aorig, E).std(axis=<span class="number">0</span>).mean() * E1)</span><br><span class="line">plot_arrow(ax3, np.mean(Aorig,axis=<span class="number">0</span>), np.mean(Aorig,axis=<span class="number">0</span>) + np.dot(Aorig, E).std(axis=<span class="number">0</span>).mean() * E2)</span><br><span class="line">ax3.set_aspect(<span class="string">&#x27;equal&#x27;</span>)               </span><br><span class="line"></span><br><span class="line">plt.xlim([<span class="number">0</span>,<span class="number">5</span>])</span><br><span class="line">plt.ylim([-<span class="number">4</span>,<span class="number">5</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>(-4, 5)</code></pre>
+<figure>
+<img src="output_13_1.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">F1 = np.dot(A, E1)</span><br><span class="line">F2 = np.dot(A, E2)</span><br><span class="line"></span><br><span class="line">F = np.column_stack((F1, F2))</span><br><span class="line">F</span><br></pre></td></tr></table></figure>
+<pre><code>array([[-1.97812455,  1.18924584],
+       [ 1.93772363,  0.43245658],
+       [ 3.25091797,  0.04440771],
+       [ 0.12295254,  0.28557622],
+       [ 2.18055566, -0.20793946],
+       [ 0.84363103, -0.22052313],
+       [-0.15975102, -0.28036266],
+       [-3.13515266, -0.06080918],
+       [-1.78978762, -0.45341595],
+       [-1.27296497, -0.72863598]])</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pca = decomposition.PCA(n_components=<span class="number">2</span>)</span><br><span class="line"><span class="built_in">print</span>(pca.fit_transform(A))</span><br></pre></td></tr></table></figure>
+<pre><code>[[-1.97812455  1.18924584]
+ [ 1.93772363  0.43245658]
+ [ 3.25091797  0.04440771]
+ [ 0.12295254  0.28557622]
+ [ 2.18055566 -0.20793946]
+ [ 0.84363103 -0.22052313]
+ [-0.15975102 -0.28036266]
+ [-3.13515266 -0.06080918]
+ [-1.78978762 -0.45341595]
+ [-1.27296497 -0.72863598]]</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Unsupervised-Learning/" rel="tag"># Unsupervised Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/DBSCAN-Clustering/2020/04/14/" rel="prev" title="DBSCAN Clustering">
+      <i class="fa fa-chevron-left"></i> DBSCAN Clustering
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Fourier-Transform/2020/04/14/" rel="next" title="Fourier Transform">
+      Fourier Transform <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

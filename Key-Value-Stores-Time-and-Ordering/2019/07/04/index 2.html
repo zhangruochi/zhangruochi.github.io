@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Key-Value Stores, Time, and Ordering">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Key-Value Stores, Time, and Ordering">
+<meta property="og:url" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Key-Value Stores, Time, and Ordering">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/1.png">
+<meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/2.png">
+<meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/7.png">
+<meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/3.png">
+<meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/4.png">
+<meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/5.png">
+<meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/6.png">
+<meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/8.png">
+<meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/9.png">
+<meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/10.png">
+<meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/11.png">
+<meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/13.png">
+<meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/14.png">
+<meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/12.png">
+<meta property="article:published_time" content="2019-07-03T20:15:42.000Z">
+<meta property="article:modified_time" content="2021-12-31T07:44:24.014Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Key-Value Stores, Time, and Ordering | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Key-Value Stores, Time, and Ordering
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-07-04 04:15:42" itemprop="dateCreated datePublished" datetime="2019-07-04T04:15:42+08:00">2019-07-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 15:44:24" itemprop="dateModified" datetime="2021-12-31T15:44:24+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/" itemprop="url" rel="index"><span itemprop="name">Big Data Architecture</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/Distributed-Cloud-Computing/" itemprop="url" rel="index"><span itemprop="name">Distributed & Cloud Computing</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Key-Value-Stores-Time-and-Ordering/2019/07/04/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Key-Value-Stores-Time-and-Ordering/2019/07/04/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Key-Value Stores, Time, and Ordering</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="overview">Overview</h2>
+<p>This week we first explore the design of key-value/NoSQL storage systems. This topic is important because it shows how industry-popular systems leverage some of the concepts we’ve learned so far in the course. For instance, you will see concepts from some topics, like P2P systems and Membership, reused in our discussion of key-value/NoSQL storage systems. Also in Week 4 we begin to dive into the core distributed algorithms and theoretical concepts that underlie distributed systems. Week 4 features an introduction to time, synchronization, and logical timestamps (like Lamport timestamps).</p>
+<h3 id="goals-and-objectives">Goals and Objectives</h3>
+<p>After you actively engage in the learning experiences in this module, you should be able to:</p>
+<ul>
+<li>Know why key-value/NoSQL are gaining popularity</li>
+<li>Know the design of Apache Cassandra</li>
+<li>Know the design of Apache HBase</li>
+<li>Use various time synchronization algorithms</li>
+<li>Apply Lamport and vector timestamps to order events in a distributed system</li>
+</ul>
+<h3 id="key-phrasesconcepts">Key Phrases/Concepts</h3>
+<p>Keep your eyes open for the following key terms or phrases as you complete the readings and interact with the lectures. These topics will help you better understand the content in this module.</p>
+<ul>
+<li>Key-value and NoSQL stores</li>
+<li>Cassandra system</li>
+<li>CAP theorem</li>
+<li>Consistency-availability tradeoff and spectrum</li>
+<li>Eventual consistency</li>
+<li>HBase system</li>
+<li>ACID vs. BASE</li>
+<li>Time synchronization algorithms in asynchronous systems: Cristian's, NTP, and Berkeley algorithms</li>
+<li>Lamport causality and timestamps</li>
+<li>Vector timestamps</li>
+</ul>
+<h3 id="guiding-questions">Guiding Questions</h3>
+<p>Develop your answers to the following guiding questions while completing the assignments throughout the week.</p>
+<ul>
+<li>Why are key-value/NoSQL systems popular today?</li>
+<li>How does Cassandra make writes fast?</li>
+<li>How does Cassandra handle failures?</li>
+<li>What is the CAP theorem?</li>
+<li>What is eventual consistency?</li>
+<li>What is a quorum?</li>
+<li>What are the different consistency levels in Cassandra?</li>
+<li>How do snitches work in Cassandra?</li>
+<li>Why is time synchronization hard in asynchronous systems?</li>
+<li>How can you reduce the error while synchronizing time across two machines over a network?</li>
+<li>How does HBase ensure consistency?</li>
+<li>What is Lamport causality?</li>
+<li>Can you assign Lamport timestamps to a run?</li>
+<li>Can you assign vector timestamps to a run?</li>
+</ul>
+<h2 id="why-key-value-nosql">Why key-value/ NoSQL</h2>
+<h3 id="the-key-value-abstraction">The key-value abstraction</h3>
+<ul>
+<li>Example:
+<ul>
+<li>(Business) Key -&gt; Value</li>
+<li>(amazon.com) Item number -&gt; information about it</li>
+</ul></li>
+<li>It’s a dictionary datastructure.
+<ul>
+<li>Insert, lookup, and delete by key</li>
+<li>E.g., hash table, binary tree</li>
+</ul></li>
+<li>But <strong>distributed</strong>, like distributed hash tables (DHT) in P2P systems</li>
+<li>It’s not surprising that key-value stores reuse many techniques from DHTs.</li>
+</ul>
+<h3 id="rdbmss">RDBMSs</h3>
+<ul>
+<li>Data stored in tables</li>
+<li>Schema-based, i.e., structured tables</li>
+<li>Each row (data item) in a table has a primary key that is unique within that table</li>
+<li>Queried using SQL (Structured Query Language)</li>
+<li>Supports joins</li>
+</ul>
+<h3 id="rdbmsss-mismatch-for-todays-workload">RDBMSs's mismatch for today's workload</h3>
+<ul>
+<li>Data: Large and unstructured</li>
+<li>Lots of random reads and writes</li>
+<li>Sometimes write-heavy</li>
+<li>Foreign keys rarely needed</li>
+<li>Joins infrequent</li>
+</ul>
+<h3 id="needs-of-todays-workload">Needs of today's workload</h3>
+<ul>
+<li>Speed</li>
+<li>Avoid Single Point of Failure (SPOF)</li>
+<li>Low TCO (Total cost of operation)</li>
+<li>Fewer system administrators</li>
+<li>Incremental scalability</li>
+<li>Scale out, not up
+<ul>
+<li>Scale up = grow your cluster capacity by replacing with more powerful machines</li>
+<li>Scale out = incrementally grow your cluster capacity by adding more COTS machines (Components Off the Shelf)</li>
+</ul></li>
+</ul>
+<h3 id="key-value-data-model">Key-value data model</h3>
+<ul>
+<li>NoSQL = “Not Only SQL”</li>
+<li>Necessary API operations: get(key) and put(key, value)
+<ul>
+<li>And some extended operations, e.g., “CQL” in Cassandra key-value store</li>
+</ul></li>
+<li>Tables
+<ul>
+<li>“Column families” in Cassandra, “Table” in HBase, “Collection” in MongoDB</li>
+<li>May be unstructured: May not have schemas</li>
+<li>Some columns may be missing from some rows</li>
+<li>Don’t always support joins or have foreign keys</li>
+<li>Can have index tables, just like RDBMSs</li>
+</ul></li>
+</ul>
+<p><img src="1.png" /></p>
+<h3 id="column-oriented-storage">Column-oriented storage</h3>
+<ul>
+<li>RDBMSs store an entire row together (on disk or at a server)</li>
+<li>NoSQL systems typically store a <strong>column</strong> together (or a group of columns).
+<ul>
+<li>Entries within a column are indexed and easy to locate, given a key (and vice-versa)</li>
+</ul></li>
+<li>Why useful?
+<ul>
+<li>Range searches within a column are fast since you don’t need to fetch the entire database</li>
+<li>Don’t need to fetch the other columns</li>
+</ul></li>
+</ul>
+<h2 id="cap-theorem">CAP Theorem</h2>
+<ol type="1">
+<li>Consistency: all nodes see same data at any time, or reads return latest written value by any client</li>
+<li>Availability: the system allows operations all the time, and operations return quickly</li>
+<li>Partition-tolerance: the system continues to work in spite of network partitions(分区容错性)</li>
+</ol>
+<p>Since partition-tolerance is essential in today’s cloud computing systems, CAP theorem implies that a system has to choose between <strong>consistency</strong> and <strong>availability</strong></p>
+<h3 id="eventual-consistency">Eventual Consistency</h3>
+<ul>
+<li>If all writes stop (to a key), then all its values (replicas) will converge eventually.</li>
+<li>If writes continue, then system always tries to keep converging.</li>
+<li>May still return <strong>stale</strong> values to clients (e.g., if many back-to-back writes).</li>
+<li>But works well when there a few periods of low writes – system converges quickly.</li>
+</ul>
+<h3 id="rdbmss-vs.-key-value-store">RDBMSs Vs. Key-value Store</h3>
+<ul>
+<li>Cassandra: Eventual (weak) consistency, availability, partition-tolerance
+<ul>
+<li>Basically Available Soft-state Eventual consistency</li>
+<li>Prefers availability over consistency</li>
+</ul></li>
+<li>Traditional RDBMSs: Strong consistency over availability under a partition
+<ul>
+<li>Atomicity</li>
+<li>Consistency</li>
+<li>Isolation</li>
+<li>Durability</li>
+</ul></li>
+</ul>
+<h2 id="cassandra">Cassandra</h2>
+<p><img src="2.png" /></p>
+<h3 id="sstable">SSTable</h3>
+<p><img src="7.png" /></p>
+<p>所以SSTable是一个简单，但是非常有用的用来交换大量的、排好序的数据片段的数据结构。它的使用场景是：</p>
+<ul>
+<li>需要高效地存储大量的键-值对数据</li>
+<li>数据是顺序写入</li>
+<li>要求高效地顺序读写</li>
+<li>没有随机读取或者对随机读取性能要求不高</li>
+</ul>
+<blockquote>
+<p>SSTable提供一个可持久化[persistent]，有序的、不可变的从键到值的映射关系，其中键和值都是任意字节长度的字符串。SSTable提供了以下操作：按照某个键来查询关联值，可以指定键的范围，来遍历其中所有的键值对。每个SSTable内部由一系列块(block)组成(通常每块大小为64KB，是可配置的)。使用存储在SSTable结尾的块索引(block index)来定位块；当SSTable打开时，索引会被加载到内存里。一次磁盘寻道(disk seek)就可以完成查询(lookup)操作：首先通过二分查找在存储在内存的索引中找到对应的块，然后从磁盘上读取这块内容。SSTable也可以完整地映射到内存里，这样在执行查询和扫描(scan)的时候就不用操作磁盘了.</p>
+</blockquote>
+<h3 id="partitioner">Partitioner</h3>
+<p>Mapping from key to server is called the "Partitioner" and that is what is used by the coordinator here to find out which are the replica servers to forward</p>
+<h3 id="data-placement-strategies">Data Placement Strategies</h3>
+<p>Replication Strategy, two options: 1. SimpleStrategy - RandomPartitioner: Chord-like hash partitioning - ByteOrderedPartitioner: Assigns ranges of keys to servers. Easier for range queries (e.g., get me all twitter users starting with [a-b])</p>
+<p>当使用Cassandra CLI 命令行工具创建keyspace时的默认副本放置策略。假定根据partitioner得到第一个节点设为N1，它的顺时针的节点为N2，N3...则这种策略会把keyspace的第一个副本放置在N1上，然后其他副本依次放置在N2，N3..上</p>
+<p><img src="3.png" /></p>
+<ol start="2" type="1">
+<li>NetworkTopologyStrategy: for multi-DC deployments (data center)
+<ul>
+<li>Two replicas per DC</li>
+<li>Three replicas per DC</li>
+<li>Per DC
+<ul>
+<li>First replica placed according to Partitioner</li>
+<li>Then go clockwise around ring until you hit a different rack</li>
+</ul></li>
+</ul></li>
+</ol>
+<p>这种策略用于当你知道节点如何在数据中心(Data Center)分组的情况或者你希望部署集群横跨多个数据中心，此时你必须指定每个数据中心要多少个副本，(一般推荐设为2或者3）。在这种情况下，副本放置策略由数据中心自己决定。具体为，先由partitioner决定第一个node设为N1，在架子(rack1)上，属于数据中心DC1，则第一个副本放在N1，其他副本也必须分别放在DC1中，优先选择<strong>不是rack1的架子</strong>，如果没有其他rack，则只能放在rack1上。</p>
+<p>比如如图所示，现在有两个数据中心，蓝色表示DC1，绿色表示DC2，DC1上有2个架子，分别是Rack1和Rack2。则如果partitioner选择的第一个节点是DC1的节点N3的话，那么副本R1就放在DC1的节点N3 上，而这个副本的下一个副本R2就放在同一个DC，也就是DC1的下一个rack上（如果有），它刚好发现，顺时针的下一个节点N4刚好也是DC1，但是是另外一个架子(Rack2),所以副本R2放在N4上。对于属于DC2的2个副本也遵循同样的策略。</p>
+<p><img src="4.png" /></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CREATE KEYSPACE Excelsior WITH REPLICATION = &#123; <span class="string">&#x27;class&#x27;</span> : <span class="string">&#x27;SimpleStrategy&#x27;</span>,<span class="string">&#x27;replication_factor&#x27;</span> : 3 &#125;;  </span><br><span class="line">CREATE KEYSPACE Excalibur WITH REPLICATION = &#123;<span class="string">&#x27;class&#x27;</span> :<span class="string">&#x27;NetworkTopologyStrategy&#x27;</span>, <span class="string">&#x27;dc1&#x27;</span> : 3, <span class="string">&#x27;dc2&#x27;</span> : 2&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="snitches">Snitches</h3>
+<p>Snitch决定了节点属于哪个数据中心和机架。Snitch通知Cassandra网络拓扑以便请求被有效的路由，并且允许Cassandra在服务器增加到数据中心或机架的时候能够分发副本。特别的，复制策略如何放置副本是基于新snitch提供的信息。Cassandra不会把副本放到一个机架里面（如果机架断电，那就over了）。</p>
+<ul>
+<li>Maps: IPs to racks and DCs. Configured in cassandra.yaml config file</li>
+<li>Some options:
+<ul>
+<li>SimpleSnitch: Unaware of Topology (Rack-unaware)</li>
+<li>RackInferring(通过本机IP地址判断节点属于哪个DC和哪个rack): Assumes topology of network by octet of server’s IP address
+<ul>
+<li>101.201.301.401 = x.{DC octet}.{rack octet}.{node octet}</li>
+</ul></li>
+<li>PropertyFileSnitch: uses a config file（通过配置文件指定对应的数据中心和机架名称。具体的数据中心和机架的配置位于cassandra-topology.properties文件。）</li>
+<li>EC2Snitch: uses EC2
+<ul>
+<li>EC2 Region = DC</li>
+<li>Availability zone = rack</li>
+</ul></li>
+<li>Other snitch options available</li>
+</ul></li>
+</ul>
+<h3 id="writes">Writes</h3>
+<ul>
+<li>Need to be lock-free and fast (no reads or disk seeks)</li>
+<li>Client sends write to one coordinator node in Cassandra cluster
+<ul>
+<li>Coordinator may be per-key, per-client, or per-query</li>
+<li>Per-key Coordinator ensures writes for the key are serialized</li>
+</ul></li>
+<li>Coordinator uses Partitioner to send query to all replica nodes responsible for key</li>
+<li>When X replicas respond, coordinator returns an acknowledgement to the client</li>
+<li>Always writable: Hinted Handoff mechanism
+<ul>
+<li>If any replica is down, the coordinator writes to all other replicas, and keeps the write locally until down replica comes back up.</li>
+<li>When all replicas are down, the Coordinator (front end) buffers writes (for up to a few hours).</li>
+</ul></li>
+<li>One ring per datacenter
+<ul>
+<li>Per-DC coordinator elected to coordinate with other DCs</li>
+<li>Election done via Zookeeper, which runs a Paxos (consensus) variant
+<ul>
+<li>Paxos: elsewhere in this course</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="writes-at-a-replica-node">Writes at a replica node</h3>
+<p><img src="5.png" /></p>
+<p>先将数据写进内存中的数据结构memtable，同时追加到磁盘中的commitlog中。memtable内容超出指定容量后会被放进将被刷入磁盘的队列(memtable_flush_queue_size配置队列长度)。若将被刷入磁盘的数据超出了队列长度，C会锁定写,并将内存数据刷进磁盘中的SSTable,之后commit log被清空。</p>
+<ol type="1">
+<li>Log it in disk commit log (for failure recovery)</li>
+<li>Make changes to appropriate memtables
+<ul>
+<li>Memtable = In-memory representation of multiple key- value pairs</li>
+<li>Cache that can be searched by key</li>
+<li>Write-back cache as opposed to write-through</li>
+</ul></li>
+<li>Later, when memtable is full or old, flush to disk
+<ul>
+<li>Data file: An SSTable (Sorted String Table) – list of key-value pairs, sorted by key</li>
+<li>Index file: An SSTable of (key, offset) pairs</li>
+<li>And a Bloom filter (for efficient search)</li>
+</ul></li>
+</ol>
+<h3 id="reads">Reads</h3>
+<p>Read: Similar to writes, except</p>
+<ul>
+<li>Coordinator can contact X replicas (e.g., in same rack)
+<ul>
+<li>Coordinator sends read to replicas that have responded quickest in past</li>
+<li>When X replicas respond, coordinator returns the latest-timestamped value from among those X</li>
+</ul></li>
+<li>Coordinator also fetches value from other replicas
+<ul>
+<li>Checks consistency in the background, initiating a <strong>read repair</strong> if any two values are different</li>
+<li>This mechanism seeks to eventually bring all replicas up to date</li>
+</ul></li>
+<li>A row may be split across multiple SSTables =&gt; reads need to touch multiple SSTables =&gt; reads slower than writes (but still fast)</li>
+</ul>
+<p><img src="6.png" /></p>
+<p>首先检查BloomFilter,每个SSTable都有一个Bloomfilter,用以在任何磁盘IO前检查请求PK对应的数据在SSTable中是否存在。BF可能误判但是不会漏判:判断存在,但实际上可能不存在,判断不存在,则一定不存在,则流程不会访问这个SSTable(红色)。若数据很可能存在，则检查PartitionKey cache(索引的缓存)，之后根据索引条目是否在cache中找到而执行不同步骤：</p>
+<ol type="1">
+<li>在索引缓存中找到
+<ul>
+<li>从compression offset map中查找拥有对应数据的压缩快。</li>
+<li>从磁盘取出压缩的数据，返回结果集。</li>
+</ul></li>
+<li>没有在索引缓存中
+<ul>
+<li>搜索Partition summary（partition index的样本集）确定index条目在磁盘中的近似位置。</li>
+<li>从磁盘中SSTable内取出index条目。</li>
+<li>从compression offset map中查找拥有对应数据的压缩快。</li>
+<li>从磁盘取出压缩的数据，返回结果集。</li>
+</ul></li>
+</ol>
+<h3 id="membership">Membership</h3>
+<ol type="1">
+<li>Any server in cluster could be the coordinator</li>
+<li>So every server needs to maintain a list of all the other servers that are currently in the server</li>
+<li>List needs to be updated automatically as servers join, leave, and fail</li>
+</ol>
+<h4 id="gossip-style-membership">Gossip Style membership</h4>
+<p><img src="8.png" /></p>
+<ul>
+<li>Suspicion mechanisms to adaptively set the timeout based on underlying network and failure behavior</li>
+<li>Accrual detector: Failure detector outputs a value (PHI) representing suspicion</li>
+<li>Apps set an appropriate threshold</li>
+<li>PHI calculation for a member
+<ul>
+<li>Inter-arrival times for gossip messages</li>
+<li>HI(t) = – log(CDF or Probability(t_now – t_last))/log 10</li>
+<li>PHI basically determines the detection timeout, but takes into account historical inter-arrival time variations for gossiped heartbeats</li>
+</ul></li>
+<li>In practice, PHI = 5 =&gt; 10-15 sec detection time</li>
+</ul>
+<h3 id="consistency-levels">Consistency levels</h3>
+<p>Consistency level指定了读/写操作在通知客户端请求成功之前，必须确保已经成功完成读/写操作的replica的数量. Client is allowed to choose a consistency level for each operation (read/write)</p>
+<ul>
+<li>ANY: any server (may not be replica)
+<ul>
+<li>Fastest: coordinator caches write and replies quickly to client</li>
+</ul></li>
+<li>ALL: all replicas
+<ul>
+<li>Ensures strong consistency, but slowest</li>
+</ul></li>
+<li>ONE: at least one replica
+<ul>
+<li>Faster than ALL, but cannot tolerate a failure</li>
+</ul></li>
+<li>QUORUM: quorum across all replicas in all datacenters (DCs)
+<ul>
+<li>LOCAL_QUORUM: quorum in coordinator’s DC
+<ul>
+<li>Faster: only waits for quorum in first DC client contacts</li>
+</ul></li>
+<li>EACH_QUORUM: quorum in every DC
+<ul>
+<li>Lets each DC do its own quorum: supports hierarchical replies <img src="9.png" /></li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="quorum-in-detail">QUORUM in Detail</h4>
+<p>Several key-value/NoSQL stores (e.g., Riak and Cassandra) use quorums.</p>
+<ol type="1">
+<li>Reads</li>
+</ol>
+<ul>
+<li>Client specifies value of R (≤ N = total number of replicas of that key).</li>
+<li>R = read consistency level.</li>
+<li>Coordinator waits for R replicas to respond before sending result to client.</li>
+<li>In background, coordinator checks for consistency of remaining (N-R) replicas, and initiates read repair if needed.</li>
+</ul>
+<ol start="2" type="1">
+<li>Writes</li>
+</ol>
+<ul>
+<li>Client specifies W (≤ N)</li>
+<li>W = write consistency level.</li>
+<li>Client writes new value to W replicas and returns. Two flavors:
+<ul>
+<li>Coordinator blocks until quorumis reached.</li>
+<li>Asynchronous:Justwriteandreturn.</li>
+</ul></li>
+</ul>
+<ol start="3" type="1">
+<li>Two necessary conditions:
+<ul>
+<li>W+R &gt; N</li>
+<li>W &gt; N/2</li>
+</ul></li>
+<li>Select values based on application
+<ul>
+<li>(W=1, R=1): very few writes and reads</li>
+<li>(W=N, R=1): great for read-heavy workloads</li>
+<li>(W=N/2+1, R=N/2+1): great for write-heavy workloads</li>
+<li>(W=1, R=N): great for write-heavy workloads with mostly one client writing per key</li>
+</ul></li>
+</ol>
+<h3 id="cassandra-vs.-rdbmss">Cassandra Vs. RDBMSs</h3>
+<ul>
+<li><p>MySQL is one of the most popular (and has been for a while)</p></li>
+<li><p>On &gt; 50GB data</p></li>
+<li><p>MySQL</p>
+<ul>
+<li>Writes 300 ms avg</li>
+<li>Reads 350 ms avg</li>
+</ul></li>
+<li><p>Cassandra</p>
+<ul>
+<li>Writes 0.12 ms avg</li>
+<li>Reads 15 ms avg</li>
+</ul></li>
+<li><p>Orders of magnitude faster</p></li>
+<li><p>RDBMS provide ACID</p>
+<ul>
+<li>Atomicity</li>
+<li>Consistency</li>
+<li>Isolation</li>
+<li>Durability</li>
+</ul></li>
+<li><p>Key-value stores like Cassandra provide BASE</p>
+<ul>
+<li>Basically Available Soft-state Eventual consistency</li>
+<li>Prefers availability over consistency</li>
+</ul></li>
+</ul>
+<h2 id="hbase">HBase</h2>
+<blockquote>
+<p>src https://seawaylee.github.io/2017/11/21/大数据/HBase/HBase学习笔记（一）-%20快速入门/</p>
+</blockquote>
+<p>Unlike Cassandra, HBase prefers consistency (over availability)</p>
+<ul>
+<li>Single “Master” cluster</li>
+<li>Other “Slave” clusters replicate the same tables</li>
+<li>Master cluster synchronously sends HLogs over to slave clusters</li>
+<li>Coordination among clusters is via Zookeeper</li>
+<li>Zookeeper can be used like a file system to store control information</li>
+</ul>
+<h3 id="api-functions">API functions</h3>
+<ul>
+<li>Get/Put(row)</li>
+<li>Scan(row range, filter) – range queries MultiPut</li>
+</ul>
+<h3 id="hbase-数据模型">HBase 数据模型</h3>
+<p><img src="10.png" /> - 与nosql数据库一样,rowkey 是用来检索记录的主键。 - Hbase表中的每个列,都归属于某个列族。列表都以列族为前缀,例如 course:histroy, course:math 都属于course这个列族。 - 由 rowKey + columnFamily + version 唯一确定的单元 - 每个cell都保存着同一份数据的多个版本,版本通过时间戳来索引。时间戳的类型是64位整型。间戳可以由HBASE(在数据写入时自动)赋值,此时时间戳是精确到毫秒的当前系统时间。时间戳也可以由客户显式赋值。如果应用程序要避免数据版本冲突,就必须自己生成具有唯一性的时间戳。每个cell中,不同版本的数据按照时间倒序排序,即最新的数据排在最前面。为了避免数据存在过多版本造成的的管理(包括存贮和索引)负担,HBASE提供了两种数据版本回收方式。一是保存数据的最后n个版本,二是保存最近一段时间内的版本（比如最近七天）。用户可以针对每个列族进行设置</p>
+<h3 id="hbase-体系图">HBase 体系图</h3>
+<p><img src="11.png" /></p>
+<h3 id="design-of-hfile">Design of HFile</h3>
+<p><img src="13.png" /></p>
+<h4 id="writes-1">Writes</h4>
+<ul>
+<li>Client向HRegionServer发送写请求</li>
+<li>HRegionServer将数据写到Hlog(write ahead log)。为了数据的持久化和恢复</li>
+<li>HRegionServer将数据写到内存(memstore)</li>
+<li>反馈Client写成功</li>
+</ul>
+<p><img src="14.png" /></p>
+<p><strong>write ahead log guarantee the consistency</strong></p>
+<h4 id="write">Write</h4>
+<ul>
+<li>通过ZK和 -ROOT- .META. 表定位HRegionServer</li>
+<li>数据从内存和硬盘合并后返回给Client</li>
+<li>数据块会缓存</li>
+</ul>
+<h4 id="flush">Flush</h4>
+<ul>
+<li>当memstore数据达到阀值（默认64M），将数据刷到硬盘，将内存中的数据删除，同事删除HLog中的历史数据。</li>
+<li>将数据存储到HDFS中</li>
+<li>在Hlog中做标记点</li>
+</ul>
+<h4 id="数据合并过程">数据合并过程</h4>
+<ul>
+<li>当数据块达到4块，HMaster将数据加载到本地，进行合并</li>
+<li>当合并的数据超过256M，进行拆分，将拆分后的region分配给不同的HRegionServer管理</li>
+<li>当HRegionServer宕机后，将HRegionServer上的Hlog拆分，然后分配给不同的HRegionServer加载，修改 .META.</li>
+<li>注意：Hlog会同步到HDFS</li>
+</ul>
+<h3 id="hbase读写原理图">HBase读写原理图</h3>
+<p><img src="12.png" /></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Introduction-to-Big-Data/2019/07/02/" rel="prev" title="Introduction to Big Data">
+      <i class="fa fa-chevron-left"></i> Introduction to Big Data
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E5%88%86%E5%B8%83%E5%BC%8F%E5%93%88%E5%B8%8C-DHT-%E7%9A%84%E5%8E%9F%E7%90%86/2019/07/04/" rel="next" title="分布式哈希(DHT)的原理">
+      分布式哈希(DHT)的原理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#goals-and-objectives"><span class="nav-number">1.1.</span> <span class="nav-text">Goals and Objectives</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#key-phrasesconcepts"><span class="nav-number">1.2.</span> <span class="nav-text">Key Phrases&#x2F;Concepts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#guiding-questions"><span class="nav-number">1.3.</span> <span class="nav-text">Guiding Questions</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#why-key-value-nosql"><span class="nav-number">2.</span> <span class="nav-text">Why key-value&#x2F; NoSQL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#the-key-value-abstraction"><span class="nav-number">2.1.</span> <span class="nav-text">The key-value abstraction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rdbmss"><span class="nav-number">2.2.</span> <span class="nav-text">RDBMSs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rdbmsss-mismatch-for-todays-workload"><span class="nav-number">2.3.</span> <span class="nav-text">RDBMSs&#39;s mismatch for today&#39;s workload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#needs-of-todays-workload"><span class="nav-number">2.4.</span> <span class="nav-text">Needs of today&#39;s workload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#key-value-data-model"><span class="nav-number">2.5.</span> <span class="nav-text">Key-value data model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#column-oriented-storage"><span class="nav-number">2.6.</span> <span class="nav-text">Column-oriented storage</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cap-theorem"><span class="nav-number">3.</span> <span class="nav-text">CAP Theorem</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#eventual-consistency"><span class="nav-number">3.1.</span> <span class="nav-text">Eventual Consistency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rdbmss-vs.-key-value-store"><span class="nav-number">3.2.</span> <span class="nav-text">RDBMSs Vs. Key-value Store</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra"><span class="nav-number">4.</span> <span class="nav-text">Cassandra</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sstable"><span class="nav-number">4.1.</span> <span class="nav-text">SSTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#partitioner"><span class="nav-number">4.2.</span> <span class="nav-text">Partitioner</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-placement-strategies"><span class="nav-number">4.3.</span> <span class="nav-text">Data Placement Strategies</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#snitches"><span class="nav-number">4.4.</span> <span class="nav-text">Snitches</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#writes"><span class="nav-number">4.5.</span> <span class="nav-text">Writes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#writes-at-a-replica-node"><span class="nav-number">4.6.</span> <span class="nav-text">Writes at a replica node</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reads"><span class="nav-number">4.7.</span> <span class="nav-text">Reads</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#membership"><span class="nav-number">4.8.</span> <span class="nav-text">Membership</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#gossip-style-membership"><span class="nav-number">4.8.1.</span> <span class="nav-text">Gossip Style membership</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#consistency-levels"><span class="nav-number">4.9.</span> <span class="nav-text">Consistency levels</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#quorum-in-detail"><span class="nav-number">4.9.1.</span> <span class="nav-text">QUORUM in Detail</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cassandra-vs.-rdbmss"><span class="nav-number">4.10.</span> <span class="nav-text">Cassandra Vs. RDBMSs</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hbase"><span class="nav-number">5.</span> <span class="nav-text">HBase</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#api-functions"><span class="nav-number">5.1.</span> <span class="nav-text">API functions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hbase-%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="nav-number">5.2.</span> <span class="nav-text">HBase 数据模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hbase-%E4%BD%93%E7%B3%BB%E5%9B%BE"><span class="nav-number">5.3.</span> <span class="nav-text">HBase 体系图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#design-of-hfile"><span class="nav-number">5.4.</span> <span class="nav-text">Design of HFile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#writes-1"><span class="nav-number">5.4.1.</span> <span class="nav-text">Writes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#write"><span class="nav-number">5.4.2.</span> <span class="nav-text">Write</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#flush"><span class="nav-number">5.4.3.</span> <span class="nav-text">Flush</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6%E8%BF%87%E7%A8%8B"><span class="nav-number">5.4.4.</span> <span class="nav-text">数据合并过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hbase%E8%AF%BB%E5%86%99%E5%8E%9F%E7%90%86%E5%9B%BE"><span class="nav-number">5.5.</span> <span class="nav-text">HBase读写原理图</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

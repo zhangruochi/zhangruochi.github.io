@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="In this module, we will learn about approaches to parallelism that have been inspired by functional programming.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Functional Parallelism">
+<meta property="og:url" content="https://zhangruochi.com/Functional-Parallelism/2019/06/12/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="In this module, we will learn about approaches to parallelism that have been inspired by functional programming.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Functional-Parallelism/2019/06/12/1.png">
+<meta property="og:image" content="https://zhangruochi.com/Functional-Parallelism/2019/06/12/2.png">
+<meta property="article:published_time" content="2019-06-12T11:50:25.000Z">
+<meta property="article:modified_time" content="2019-07-05T10:14:10.592Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Functional-Parallelism/2019/06/12/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Functional-Parallelism/2019/06/12/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Functional Parallelism | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Functional-Parallelism/2019/06/12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Functional Parallelism
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-06-12 19:50:25" itemprop="dateCreated datePublished" datetime="2019-06-12T19:50:25+08:00">2019-06-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-07-05 18:14:10" itemprop="dateModified" datetime="2019-07-05T18:14:10+08:00">2019-07-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/" itemprop="url" rel="index"><span itemprop="name">Big Data Architecture</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/Parallel-Computation/" itemprop="url" rel="index"><span itemprop="name">Parallel Computation</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Functional-Parallelism/2019/06/12/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Functional-Parallelism/2019/06/12/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">In this module, we will learn about approaches to parallelism that have been inspired by functional programming.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="table-of-contents">Table of Contents</h1>
+<ul>
+<li><a href="#functional-parallelism">Functional Parallelism</a>
+<ul>
+<li><a href="#creating-future-tasks-in-javas-forkjoin-framework">Creating Future Tasks in Java’s Fork/Join Framework</a></li>
+<li><a href="#memoization">Memoization</a></li>
+<li><a href="#java-streams">Java Streams</a></li>
+<li><a href="#determinism-and-data-races">Determinism and Data Races</a>
+<ul>
+<li><a href="#determinism">Determinism</a></li>
+<li><a href="#data-races">Data Races</a></li>
+</ul></li>
+<li><a href="#forkjoin-框架与-java-stream-api">Fork/Join 框架与 Java Stream API</a>
+<ul>
+<li><a href="#stream的并发实现细节">Stream的并发实现细节</a></li>
+<li><a href="#example">Example</a></li>
+</ul></li>
+</ul></li>
+</ul>
+<h1 id="functional-parallelism">Functional Parallelism</h1>
+<p><strong>Future tasks</strong> are tasks with return values <strong>Future object</strong> is a “handle” for accessing a task’s return value</p>
+<p>There are two key operations that can be performed on a future object, A</p>
+<ol type="1">
+<li><p>Assignment — A can be assigned a reference to a future object returned by a task of the form, future { ⟨ task-with-return-value ⟩ } (using pseudocode notation). The content of the future object is constrained to be <em>single assignment</em> (similar to a final variable in Java), and cannot be modified after the future task has returned.</p></li>
+<li><p>Blocking read — the operation, A.get(), waits until the task associated with future object A has completed, and then propagates the task’s return value as the value returned by A.get(). Any statement, S, executed after A.get() can be assured that the task associated with future object A must have completed before S starts execution.</p></li>
+</ol>
+<h2 id="creating-future-tasks-in-javas-forkjoin-framework">Creating Future Tasks in Java’s Fork/Join Framework</h2>
+<ol type="1">
+<li><p>A future task extends the <strong>RecursiveTask</strong> class in the FJ framework, instead of RecursiveAction as in regular tasks. (RecursiveTask can have return value)</p></li>
+<li><p>The 𝚌𝚘𝚖𝚙𝚞𝚝𝚎() method of a future task must have a non-void return type, whereas it has a void return type for regular tasks.</p></li>
+<li><p>A method call like 𝚕𝚎𝚏𝚝.𝚓𝚘𝚒𝚗() waits for the task referred to by object 𝚕𝚎𝚏𝚝 in both cases, but also provides the task’s return value in the case of future tasks.</p></li>
+</ol>
+<h2 id="memoization">Memoization</h2>
+<ol type="1">
+<li>Create a data structure that stores the set {(<span class="math inline">\(x_1\)</span>,<span class="math inline">\(y_1 = f(x_1)\)</span>),(<span class="math inline">\(x_2\)</span>,<span class="math inline">\(y_2 = f(x_2)\)</span>),...} for each call <span class="math inline">\(f(x_i)\)</span> that returns <span class="math inline">\(y_i\)</span>.</li>
+<li>Perform look ups in that data structure when processing calls of the form <span class="math inline">\(f(x\prime)\)</span> when <span class="math inline">\(x\prime\)</span> equals one of the <span class="math inline">\(x_i\)</span> inputs for which <span class="math inline">\(f(x_i)\)</span> has already been computed.</li>
+</ol>
+<p>Memoization can be especially helpful for algorithms based on dynamic programming. In the lecture, we used Pascal’s triangle as an illustrative example to motivate memoization.</p>
+<p>The memoization pattern lends itself easily to parallelization using futures by modifying the memoized data structure to store {(<span class="math inline">\(x_1\)</span>,<span class="math inline">\(y_1 = f(x_1)\)</span>),(<span class="math inline">\(x_2\)</span>,<span class="math inline">\(y_2 = f(x_2)\)</span>),...}. The lookup operation can then be replaced by a get() operation on the future value, if a future has already been created for the result of a given input.</p>
+<h2 id="java-streams">Java Streams</h2>
+<p>the following pipeline can be used to compute the average age of all active students using Java streams:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">students.stream()</span><br><span class="line">    .filter(s -&gt; s.getStatus() == Student.ACTIVE)</span><br><span class="line">    .mapToInt(a -&gt; a.getAge())</span><br><span class="line">    .average();</span><br></pre></td></tr></table></figure>
+<p>An important benefit of using Java streams when possible is that the pipeline can be made to execute in parallel by designating the source to be a parallel stream, i.e., by simply replacing students.stream() in the above code by students.parallelStream() or Stream.of(students).parallel(). This form of functional parallelism is a major convenience for the programmer, since they <strong>do not</strong> need to worry about explicitly allocating intermediate collections (e.g., a collection of all active students), or about ensuring that parallel accesses to data collections are properly synchronized.</p>
+<h2 id="determinism-and-data-races">Determinism and Data Races</h2>
+<h3 id="determinism">Determinism</h3>
+<p>A parallel program is said to be:</p>
+<ol type="1">
+<li><strong>functionally deterministic</strong> if it always computes the same answer when given the same input.</li>
+<li><strong>structurally deterministic</strong> if it always computes the same computation graph, when given the same input.</li>
+</ol>
+<h3 id="data-races">Data Races</h3>
+<p><img src="1.png" /></p>
+<p>There may be cases of “benign” nondeterminism for programs with data races in which different executions with the same input may generate different outputs, but all the outputs may be acceptable in the context of the application, e.g., different locations for a search pattern in a target string.</p>
+<p><img src="2.png" /></p>
+<blockquote>
+<p>转载于 <a target="_blank" rel="noopener" href="https://www.jianshu.com/u/86c421886c32">一字马胡</a></p>
+</blockquote>
+<h2 id="forkjoin-框架与-java-stream-api">Fork/Join 框架与 Java Stream API</h2>
+<p>Fork/Join框架可以将大的任务切分为足够小的任务，然后将小任务分配给不同的线程来执行，而线程之间通过工作窃取算法来协调资源，提前做完任务的线程可以去“窃取”其他还没有做完任务的线程的任务，而每一个线程都会持有一个双端队列，里面存储着分配给自己的任务，Fork/Join框架在实现上，为了防止线程之间的竞争，线程在消费分配给自己的任务时，是从队列头取任务的，而“窃取”线程则从队列尾部取任务。Fork/Join框架通过fork方法来分割大任务，通过使用join来获取小任务的结果，然后组合成大任务的结果。</p>
+<h3 id="stream的并发实现细节">Stream的并发实现细节</h3>
+<p>Java Stream的操作分为两类，也可以分为三类，具体的细节可以参考该文章：Java Streams API。一个简单的判断一个操作是否是Terminal操作还是Intermediate操作的方法是，如果操作返回的是一个新的Stream，那么就是一个Intermediate操作，否则就是一个Terminal操作。</p>
+<ul>
+<li><strong>Intermediate</strong>：一个流可以后面跟随零个或多个 intermediate 操作。其目的主要是打开流，做出某种程度的数据操作，然后返回一个新的流，交给下一个操作使用。这类操作都是惰性化的（lazy），就是说，仅仅调用到这类方法，并没有真正开始流的遍历。</li>
+<li><strong>Terminal</strong>：一个流只能有一个 terminal 操作，当这个操作执行后，流就被使用“光”了，无法再被操作。所以这必定是流的最后一个操作。Terminal 操作的执行，才会真正开始流的遍历，并且会生成一个结果，或者一个 side effect。</li>
+</ul>
+<p>Java Stream对四种类型的Terminal操作使用了Fork/Join实现了并发操作，下面的图片展示了这四种操作类型：</p>
+<ul>
+<li>Find</li>
+<li>ForEach</li>
+<li>Match</li>
+<li>Reduce</li>
+</ul>
+<h3 id="example">Example</h3>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Stream.of(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>)</span><br><span class="line">                .parallel()</span><br><span class="line">                .map(n -&gt; n*<span class="number">2</span>)</span><br><span class="line">                .collect(Collectors.toCollection(ArrayList::<span class="keyword">new</span>));</span><br></pre></td></tr></table></figure>
+<p>解释一下，上面的代码想要实现的功能是将（1，2，3，4）这四个数字每一个都变为其自身的两倍，然后收集这些元素到一个ArrayList中返回。这是一个非常简单的功能，下面是上面的操作流的执行路径：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//step 1:</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span>&lt;T&gt; Stream&lt;T&gt; <span class="title">of</span><span class="params">(T... values)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Arrays.stream(values);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//step 2:</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> &lt;R&gt; <span class="function">Stream&lt;R&gt; <span class="title">map</span><span class="params">(Function&lt;? <span class="keyword">super</span> P_OUT, ? extends R&gt; mapper)</span> </span>&#123;</span><br><span class="line">    Objects.requireNonNull(mapper);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StatelessOp&lt;P_OUT, R&gt;(<span class="keyword">this</span>, StreamShape.REFERENCE,</span><br><span class="line">                                 StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function">Sink&lt;P_OUT&gt; <span class="title">opWrapSink</span><span class="params">(<span class="keyword">int</span> flags, Sink&lt;R&gt; sink)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Sink.ChainedReference&lt;P_OUT, R&gt;(sink) &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(P_OUT u)</span> </span>&#123;</span><br><span class="line">                    downstream.accept(mapper.apply(u));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//step 3:</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> &lt;R, A&gt; <span class="function">R <span class="title">collect</span><span class="params">(Collector&lt;? <span class="keyword">super</span> P_OUT, A, R&gt; collector)</span> </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">        container = evaluate(ReduceOps.makeRef(collector));</span><br><span class="line">        ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//step 4:</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> &lt;R&gt; <span class="function">R <span class="title">evaluate</span><span class="params">(TerminalOp&lt;E_OUT, R&gt; terminalOp)</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">assert</span> <span class="title">getOutputShape</span><span class="params">()</span> </span>== terminalOp.inputShape();</span><br><span class="line">    <span class="keyword">if</span> (linkedOrConsumed)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(MSG_STREAM_LINKED);</span><br><span class="line">    linkedOrConsumed = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> isParallel()</span><br><span class="line">           ? terminalOp.evaluateParallel(<span class="keyword">this</span>, sourceSpliterator(terminalOp.getOpFlags()))</span><br><span class="line">           : terminalOp.evaluateSequential(<span class="keyword">this</span>, sourceSpliterator(terminalOp.getOpFlags()));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//step 5:</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//使用Fork/Join框架执行操作。</span></span><br></pre></td></tr></table></figure>
+<p>上面的五个步骤是经过一些省略的，需要注意的一点是，intermediate类型的操作仅仅将操作加到一个upstream里面，具体的原文描述如下：</p>
+<blockquote>
+<p>Construct a new Stream by appending a stateless intermediate operation to an existing stream.</p>
+</blockquote>
+<p>比如上面我们的操作中的map操作，实际上只是将操作加到一个intermediate链条上面，不会立刻执行。重点是第五步，Stream是如何使用Fork/Join来实现并发的。evaluate这个方法至关重要，在方法里面会分开处理，对于设置了并发标志的操作流，会使用Fork/Join来并发执行操作任务，而对于没有打开并发标志的操作流，则串行执行操作。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Java-Review/2019/06/07/" rel="prev" title="Java Review">
+      <i class="fa fa-chevron-left"></i> Java Review
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Critical-Sections-and-Isolation/2019/06/21/" rel="next" title="Critical Sections and Isolation">
+      Critical Sections and Isolation <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#table-of-contents"><span class="nav-number">1.</span> <span class="nav-text">Table of Contents</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#functional-parallelism"><span class="nav-number">2.</span> <span class="nav-text">Functional Parallelism</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#creating-future-tasks-in-javas-forkjoin-framework"><span class="nav-number">2.1.</span> <span class="nav-text">Creating Future Tasks in Java’s Fork&#x2F;Join Framework</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#memoization"><span class="nav-number">2.2.</span> <span class="nav-text">Memoization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java-streams"><span class="nav-number">2.3.</span> <span class="nav-text">Java Streams</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#determinism-and-data-races"><span class="nav-number">2.4.</span> <span class="nav-text">Determinism and Data Races</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#determinism"><span class="nav-number">2.4.1.</span> <span class="nav-text">Determinism</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-races"><span class="nav-number">2.4.2.</span> <span class="nav-text">Data Races</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#forkjoin-%E6%A1%86%E6%9E%B6%E4%B8%8E-java-stream-api"><span class="nav-number">2.5.</span> <span class="nav-text">Fork&#x2F;Join 框架与 Java Stream API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stream%E7%9A%84%E5%B9%B6%E5%8F%91%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="nav-number">2.5.1.</span> <span class="nav-text">Stream的并发实现细节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#example"><span class="nav-number">2.5.2.</span> <span class="nav-text">Example</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

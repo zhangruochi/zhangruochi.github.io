@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Practice of attention model, You will build a Neural Machine Translation (NMT) model to translate human readable dates (&quot;25th of June, 2009&quot;) into machine readable dates (&quot;2009-06-25&quot;). You will do th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Neural Machine Translation with Attention">
+<meta property="og:url" content="https://zhangruochi.com/Neural-Machine-Translation-with-Attention/2019/03/29/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Practice of attention model, You will build a Neural Machine Translation (NMT) model to translate human readable dates (&quot;25th of June, 2009&quot;) into machine readable dates (&quot;2009-06-25&quot;). You will do th">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Neural-Machine-Translation-with-Attention/2019/03/29/images/attn_model.png">
+<meta property="og:image" content="https://zhangruochi.com/Neural-Machine-Translation-with-Attention/2019/03/29/images/attn_mechanism.png">
+<meta property="og:image" content="https://zhangruochi.com/Neural-Machine-Translation-with-Attention/2019/03/29/images/table.png">
+<meta property="og:image" content="https://zhangruochi.com/Neural-Machine-Translation-with-Attention/2019/03/29/images/date_attention.png">
+<meta property="article:published_time" content="2019-03-29T09:28:54.000Z">
+<meta property="article:modified_time" content="2020-01-20T13:02:57.457Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="Sequence Models">
+<meta property="article:tag" content="Project">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Neural-Machine-Translation-with-Attention/2019/03/29/images/attn_model.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Neural-Machine-Translation-with-Attention/2019/03/29/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Neural Machine Translation with Attention | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Neural-Machine-Translation-with-Attention/2019/03/29/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Neural Machine Translation with Attention
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-03-29 17:28:54" itemprop="dateCreated datePublished" datetime="2019-03-29T17:28:54+08:00">2019-03-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-20 21:02:57" itemprop="dateModified" datetime="2020-01-20T21:02:57+08:00">2020-01-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Neural-Machine-Translation-with-Attention/2019/03/29/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Neural-Machine-Translation-with-Attention/2019/03/29/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Practice of attention model, You will build a Neural Machine Translation (NMT) model to translate human readable dates ("25th of June, 2009") into machine readable dates ("2009-06-25"). You will do this using an attention model, one of the most sophisticated sequence to sequence models.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="neural-machine-translation">Neural Machine Translation</h1>
+<p>Welcome to your first programming assignment for this week!</p>
+<p>You will build a Neural Machine Translation (NMT) model to translate human readable dates ("25th of June, 2009") into machine readable dates ("2009-06-25"). You will do this using an attention model, one of the most sophisticated sequence to sequence models.</p>
+<p>This notebook was produced together with NVIDIA's Deep Learning Institute.</p>
+<p>Let's load all the packages you will need for this assignment.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Bidirectional, Concatenate, Permute, Dot, Input, LSTM, Multiply</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> RepeatVector, Dense, Activation, Lambda</span><br><span class="line"><span class="keyword">from</span> keras.optimizers <span class="keyword">import</span> Adam</span><br><span class="line"><span class="keyword">from</span> keras.utils <span class="keyword">import</span> to_categorical</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> load_model, Model</span><br><span class="line"><span class="keyword">import</span> keras.backend <span class="keyword">as</span> K</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> faker <span class="keyword">import</span> Faker</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"><span class="keyword">from</span> babel.dates <span class="keyword">import</span> format_date</span><br><span class="line"><span class="keyword">from</span> nmt_utils <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
+<h2 id="translating-human-readable-dates-into-machine-readable-dates">1 - Translating human readable dates into machine readable dates</h2>
+<p>The model you will build here could be used to translate from one language to another, such as translating from English to Hindi. However, language translation requires massive datasets and usually takes days of training on GPUs. To give you a place to experiment with these models even without using massive datasets, we will instead use a simpler "date translation" task.</p>
+<p>The network will input a date written in a variety of possible formats (<em>e.g. "the 29th of August 1958", "03/30/1968", "24 JUNE 1987"</em>) and translate them into standardized, machine readable dates (<em>e.g. "1958-08-29", "1968-03-30", "1987-06-24"</em>). We will have the network learn to output dates in the common machine-readable format YYYY-MM-DD.</p>
+<!-- 
+Take a look at [nmt_utils.py](./nmt_utils.py) to see all the formatting. Count and figure out how the formats work, you will need this knowledge later. !-->
+<h3 id="dataset">1.1 - Dataset</h3>
+<p>We will train the model on a dataset of 10000 human readable dates and their equivalent, standardized, machine readable dates. Let's run the following cells to load the dataset and print some examples.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">m = <span class="number">10000</span></span><br><span class="line">dataset, human_vocab, machine_vocab, inv_machine_vocab = load_dataset(m)</span><br></pre></td></tr></table></figure>
+<p>You've loaded: - <code>dataset</code>: a list of tuples of (human readable date, machine readable date) - <code>human_vocab</code>: a python dictionary mapping all characters used in the human readable dates to an integer-valued index - <code>machine_vocab</code>: a python dictionary mapping all characters used in machine readable dates to an integer-valued index. These indices are not necessarily consistent with <code>human_vocab</code>. - <code>inv_machine_vocab</code>: the inverse dictionary of <code>machine_vocab</code>, mapping from indices back to characters.</p>
+<p>Let's preprocess the data and map the raw text data into the index values. We will also use Tx=30 (which we assume is the maximum length of the human readable date; if we get a longer input, we would have to truncate it) and Ty=10 (since "YYYY-MM-DD" is 10 characters long).</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Tx = <span class="number">30</span></span><br><span class="line">Ty = <span class="number">10</span></span><br><span class="line">X, Y, Xoh, Yoh = preprocess_data(dataset, human_vocab, machine_vocab, Tx, Ty)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;X.shape:&quot;</span>, X.shape)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Y.shape:&quot;</span>, Y.shape)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Xoh.shape:&quot;</span>, Xoh.shape)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Yoh.shape:&quot;</span>, Yoh.shape)</span><br></pre></td></tr></table></figure>
+<pre><code>X.shape: (10000, 30)
+Y.shape: (10000, 10)
+Xoh.shape: (10000, 30, 37)
+Yoh.shape: (10000, 10, 11)</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(X[<span class="number">1</span>])</span><br><span class="line"><span class="built_in">print</span>(Y[<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>[33 17 16 25 17 29 16 13 34  0 22 31 23 34  0  4  4  0  5  3  4 11 36 36 36
+ 36 36 36 36 36]
+[3 1 2 9 0 1 8 0 2 2]</code></pre>
+<p>You now have: - <code>X</code>: a processed version of the human readable dates in the training set, where each character is replaced by an index mapped to the character via <code>human_vocab</code>. Each date is further padded to <span class="math inline">\(T_x\)</span> values with a special character (&lt; pad &gt;). <code>X.shape = (m, Tx)</code> - <code>Y</code>: a processed version of the machine readable dates in the training set, where each character is replaced by the index it is mapped to in <code>machine_vocab</code>. You should have <code>Y.shape = (m, Ty)</code>. - <code>Xoh</code>: one-hot version of <code>X</code>, the "1" entry's index is mapped to the character thanks to <code>human_vocab</code>. <code>Xoh.shape = (m, Tx, len(human_vocab))</code> - <code>Yoh</code>: one-hot version of <code>Y</code>, the "1" entry's index is mapped to the character thanks to <code>machine_vocab</code>. <code>Yoh.shape = (m, Tx, len(machine_vocab))</code>. Here, <code>len(machine_vocab) = 11</code> since there are 11 characters ('-' as well as 0-9).</p>
+<p>Lets also look at some examples of preprocessed training examples. Feel free to play with <code>index</code> in the cell below to navigate the dataset and see how source/target dates are preprocessed.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">index = <span class="number">0</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Source date:&quot;</span>, dataset[index][<span class="number">0</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Target date:&quot;</span>, dataset[index][<span class="number">1</span>])</span><br><span class="line"><span class="built_in">print</span>()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Source after preprocessing (indices):&quot;</span>, X[index])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Target after preprocessing (indices):&quot;</span>, Y[index])</span><br><span class="line"><span class="built_in">print</span>()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Source after preprocessing (one-hot):&quot;</span>, Xoh[index])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Target after preprocessing (one-hot):&quot;</span>, Yoh[index])</span><br></pre></td></tr></table></figure>
+<pre><code>Source date: 29 december 1988
+Target date: 1988-12-29
+
+Source after preprocessing (indices): [ 5 12  0 16 17 15 17 24 14 17 28  0  4 12 11 11 36 36 36 36 36 36 36 36 36
+ 36 36 36 36 36]
+Target after preprocessing (indices): [ 2 10  9  9  0  2  3  0  3 10]
+
+Source after preprocessing (one-hot): [[ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  0.]
+ [ 1.  0.  0. ...,  0.  0.  0.]
+ ..., 
+ [ 0.  0.  0. ...,  0.  0.  1.]
+ [ 0.  0.  0. ...,  0.  0.  1.]
+ [ 0.  0.  0. ...,  0.  0.  1.]]
+Target after preprocessing (one-hot): [[ 0.  0.  1.  0.  0.  0.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  1.]
+ [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  1.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  1.  0.]
+ [ 1.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
+ [ 0.  0.  1.  0.  0.  0.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  1.  0.  0.  0.  0.  0.  0.  0.]
+ [ 1.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  1.  0.  0.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  1.]]</code></pre>
+<h2 id="neural-machine-translation-with-attention">2 - Neural machine translation with attention</h2>
+<p>If you had to translate a book's paragraph from French to English, you would not read the whole paragraph, then close the book and translate. Even during the translation process, you would read/re-read and focus on the parts of the French paragraph corresponding to the parts of the English you are writing down.</p>
+<p>The attention mechanism tells a Neural Machine Translation model where it should pay attention to at any step.</p>
+<h3 id="attention-mechanism">2.1 - Attention mechanism</h3>
+<p>In this part, you will implement the attention mechanism presented in the lecture videos. Here is a figure to remind you how the model works. The diagram on the left shows the attention model. The diagram on the right shows what one "Attention" step does to calculate the attention variables <span class="math inline">\(\alpha^{\langle t, t&#39; \rangle}\)</span>, which are used to compute the context variable <span class="math inline">\(context^{\langle t \rangle}\)</span> for each timestep in the output (<span class="math inline">\(t=1, \ldots, T_y\)</span>).</p>
+<table>
+<td>
+<img src="images/attn_model.png" style="width:500;height:500px;"> <br>
+</td>
+<td>
+<img src="images/attn_mechanism.png" style="width:500;height:500px;"> <br>
+</td>
+</table>
+<caption>
+<center>
+<strong>Figure 1</strong>: Neural machine translation with attention
+</center>
+</caption>
+<p>Here are some properties of the model that you may notice:</p>
+<ul>
+<li><p>There are two separate LSTMs in this model (see diagram on the left). Because the one at the bottom of the picture is a Bi-directional LSTM and comes <em>before</em> the attention mechanism, we will call it <em>pre-attention</em> Bi-LSTM. The LSTM at the top of the diagram comes <em>after</em> the attention mechanism, so we will call it the <em>post-attention</em> LSTM. The pre-attention Bi-LSTM goes through <span class="math inline">\(T_x\)</span> time steps; the post-attention LSTM goes through <span class="math inline">\(T_y\)</span> time steps.</p></li>
+<li><p>The post-attention LSTM passes <span class="math inline">\(s^{\langle t \rangle}, c^{\langle t \rangle}\)</span> from one time step to the next. In the lecture videos, we were using only a basic RNN for the post-activation sequence model, so the state captured by the RNN output activations <span class="math inline">\(s^{\langle t\rangle}\)</span>. But since we are using an LSTM here, the LSTM has both the output activation <span class="math inline">\(s^{\langle t\rangle}\)</span> and the hidden cell state <span class="math inline">\(c^{\langle t\rangle}\)</span>. However, unlike previous text generation examples (such as Dinosaurus in week 1), in this model the post-activation LSTM at time <span class="math inline">\(t\)</span> does will not take the specific generated <span class="math inline">\(y^{\langle t-1 \rangle}\)</span> as input; it only takes <span class="math inline">\(s^{\langle t\rangle}\)</span> and <span class="math inline">\(c^{\langle t\rangle}\)</span> as input. We have designed the model this way, because (unlike language generation where adjacent characters are highly correlated) there isn't as strong a dependency between the previous character and the next character in a YYYY-MM-DD date.</p></li>
+<li><p>We use <span class="math inline">\(a^{\langle t \rangle} = [\overrightarrow{a}^{\langle t \rangle}; \overleftarrow{a}^{\langle t \rangle}]\)</span> to represent the concatenation of the activations of both the forward-direction and backward-directions of the pre-attention Bi-LSTM.</p></li>
+<li><p>The diagram on the right uses a <code>RepeatVector</code> node to copy <span class="math inline">\(s^{\langle t-1 \rangle}\)</span>'s value <span class="math inline">\(T_x\)</span> times, and then <code>Concatenation</code> to concatenate <span class="math inline">\(s^{\langle t-1 \rangle}\)</span> and <span class="math inline">\(a^{\langle t \rangle}\)</span> to compute <span class="math inline">\(e^{\langle t, t&#39;}\)</span>, which is then passed through a softmax to compute <span class="math inline">\(\alpha^{\langle t, t&#39; \rangle}\)</span>. We'll explain how to use <code>RepeatVector</code> and <code>Concatenation</code> in Keras below.</p></li>
+</ul>
+<p>Lets implement this model. You will start by implementing two functions: <code>one_step_attention()</code> and <code>model()</code>.</p>
+<p><strong>1) <code>one_step_attention()</code></strong>: At step <span class="math inline">\(t\)</span>, given all the hidden states of the Bi-LSTM (<span class="math inline">\([a^{&lt;1&gt;},a^{&lt;2&gt;}, ..., a^{&lt;T_x&gt;}]\)</span>) and the previous hidden state of the second LSTM (<span class="math inline">\(s^{&lt;t-1&gt;}\)</span>), <code>one_step_attention()</code> will compute the attention weights (<span class="math inline">\([\alpha^{&lt;t,1&gt;},\alpha^{&lt;t,2&gt;}, ..., \alpha^{&lt;t,T_x&gt;}]\)</span>) and output the context vector (see Figure 1 (right) for details): <span class="math display">\[context^{&lt;t&gt;} = \sum_{t&#39; = 0}^{T_x} \alpha^{&lt;t,t&#39;&gt;}a^{&lt;t&#39;&gt;}\tag{1}\]</span></p>
+<p>Note that we are denoting the attention in this notebook <span class="math inline">\(context^{\langle t \rangle}\)</span>. In the lecture videos, the context was denoted <span class="math inline">\(c^{\langle t \rangle}\)</span>, but here we are calling it <span class="math inline">\(context^{\langle t \rangle}\)</span> to avoid confusion with the (post-attention) LSTM's internal memory cell variable, which is sometimes also denoted <span class="math inline">\(c^{\langle t \rangle}\)</span>.</p>
+<p><strong>2) <code>model()</code></strong>: Implements the entire model. It first runs the input through a Bi-LSTM to get back <span class="math inline">\([a^{&lt;1&gt;},a^{&lt;2&gt;}, ..., a^{&lt;T_x&gt;}]\)</span>. Then, it calls <code>one_step_attention()</code> <span class="math inline">\(T_y\)</span> times (<code>for</code> loop). At each iteration of this loop, it gives the computed context vector <span class="math inline">\(c^{&lt;t&gt;}\)</span> to the second LSTM, and runs the output of the LSTM through a dense layer with softmax activation to generate a prediction <span class="math inline">\(\hat{y}^{&lt;t&gt;}\)</span>.</p>
+<p><strong>Exercise</strong>: Implement <code>one_step_attention()</code>. The function <code>model()</code> will call the layers in <code>one_step_attention()</code> <span class="math inline">\(T_y\)</span> using a for-loop, and it is important that all <span class="math inline">\(T_y\)</span> copies have the same weights. I.e., it should not re-initiaiize the weights every time. In other words, all <span class="math inline">\(T_y\)</span> steps should have shared weights. Here's how you can implement layers with shareable weights in Keras: 1. Define the layer objects (as global variables for examples). 2. Call these objects when propagating the input.</p>
+<p>We have defined the layers you need as global variables. Please run the following cells to create them. Please check the Keras documentation to make sure you understand what these layers are: <a target="_blank" rel="noopener" href="https://keras.io/layers/core/#repeatvector">RepeatVector()</a>, <a target="_blank" rel="noopener" href="https://keras.io/layers/merge/#concatenate">Concatenate()</a>, <a target="_blank" rel="noopener" href="https://keras.io/layers/core/#dense">Dense()</a>, <a target="_blank" rel="noopener" href="https://keras.io/layers/core/#activation">Activation()</a>, <a target="_blank" rel="noopener" href="https://keras.io/layers/merge/#dot">Dot()</a>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Defined shared layers as global variables</span></span><br><span class="line">repeator = RepeatVector(Tx)</span><br><span class="line">concatenator = Concatenate(axis=-<span class="number">1</span>)</span><br><span class="line">densor1 = Dense(<span class="number">10</span>, activation = <span class="string">&quot;tanh&quot;</span>)</span><br><span class="line">densor2 = Dense(<span class="number">1</span>, activation = <span class="string">&quot;relu&quot;</span>)</span><br><span class="line">activator = Activation(softmax, name=<span class="string">&#x27;attention_weights&#x27;</span>) <span class="comment"># We are using a custom softmax(axis = 1) loaded in this notebook</span></span><br><span class="line">dotor = Dot(axes = <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>Now you can use these layers to implement <code>one_step_attention()</code>. In order to propagate a Keras tensor object X through one of these layers, use <code>layer(X)</code> (or <code>layer([X,Y])</code> if it requires multiple inputs.), e.g. <code>densor(X)</code> will propagate X through the <code>Dense(1)</code> layer defined above.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GRADED FUNCTION: one_step_attention</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">one_step_attention</span>(<span class="params">a, s_prev</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Performs one step of attention: Outputs a context vector computed as a dot product of the attention weights</span></span><br><span class="line"><span class="string">    &quot;alphas&quot; and the hidden states &quot;a&quot; of the Bi-LSTM.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    a -- hidden state output of the Bi-LSTM, numpy-array of shape (m, Tx, 2*n_a)</span></span><br><span class="line"><span class="string">    s_prev -- previous hidden state of the (post-attention) LSTM, numpy-array of shape (m, n_s)</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    context -- context vector, input of the next (post-attetion) LSTM cell</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE ###</span></span><br><span class="line">    <span class="comment"># Use repeator to repeat s_prev to be of shape (m, Tx, n_s) so that you can concatenate it with all hidden states &quot;a&quot; (≈ 1 line)</span></span><br><span class="line">    s_prev = repeator(s_prev)</span><br><span class="line">    <span class="comment"># Use concatenator to concatenate a and s_prev on the last axis (≈ 1 line)</span></span><br><span class="line">    concat = concatenator([a,s_prev])</span><br><span class="line">    <span class="comment"># Use densor1 to propagate concat through a small fully-connected neural network to compute the &quot;intermediate energies&quot; variable e. (≈1 lines)</span></span><br><span class="line">    e = densor1(concat)</span><br><span class="line">    <span class="comment"># Use densor2 to propagate e through a small fully-connected neural network to compute the &quot;energies&quot; variable energies. (≈1 lines)</span></span><br><span class="line">    energies = densor2(e)</span><br><span class="line">    <span class="comment"># Use &quot;activator&quot; on &quot;energies&quot; to compute the attention weights &quot;alphas&quot; (≈ 1 line)</span></span><br><span class="line">    alphas = activator(energies)</span><br><span class="line">    <span class="comment"># Use dotor together with &quot;alphas&quot; and &quot;a&quot; to compute the context vector to be given to the next (post-attention) LSTM-cell (≈ 1 line)</span></span><br><span class="line">    context = dotor([alphas,a])</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> context</span><br></pre></td></tr></table></figure>
+<p>You will be able to check the expected output of <code>one_step_attention()</code> after you've coded the <code>model()</code> function.</p>
+<p><strong>Exercise</strong>: Implement <code>model()</code> as explained in figure 2 and the text above. Again, we have defined global layers that will share weights to be used in <code>model()</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">n_a = <span class="number">32</span></span><br><span class="line">n_s = <span class="number">64</span></span><br><span class="line">post_activation_LSTM_cell = LSTM(n_s, return_state = <span class="literal">True</span>)</span><br><span class="line">output_layer = Dense(<span class="built_in">len</span>(machine_vocab), activation=softmax)</span><br></pre></td></tr></table></figure>
+<p>Now you can use these layers <span class="math inline">\(T_y\)</span> times in a <code>for</code> loop to generate the outputs, and their parameters will not be reinitialized. You will have to carry out the following steps:</p>
+<ol type="1">
+<li>Propagate the input into a <a target="_blank" rel="noopener" href="https://keras.io/layers/wrappers/#bidirectional">Bidirectional</a> <a target="_blank" rel="noopener" href="https://keras.io/layers/recurrent/#lstm">LSTM</a></li>
+<li>Iterate for <span class="math inline">\(t = 0, \dots, T_y-1\)</span>:
+<ol type="1">
+<li>Call <code>one_step_attention()</code> on <span class="math inline">\([\alpha^{&lt;t,1&gt;},\alpha^{&lt;t,2&gt;}, ..., \alpha^{&lt;t,T_x&gt;}]\)</span> and <span class="math inline">\(s^{&lt;t-1&gt;}\)</span> to get the context vector <span class="math inline">\(context^{&lt;t&gt;}\)</span>.</li>
+<li>Give <span class="math inline">\(context^{&lt;t&gt;}\)</span> to the post-attention LSTM cell. Remember pass in the previous hidden-state <span class="math inline">\(s^{\langle t-1\rangle}\)</span> and cell-states <span class="math inline">\(c^{\langle t-1\rangle}\)</span> of this LSTM using <code>initial_state= [previous hidden state, previous cell state]</code>. Get back the new hidden state <span class="math inline">\(s^{&lt;t&gt;}\)</span> and the new cell state <span class="math inline">\(c^{&lt;t&gt;}\)</span>.</li>
+<li>Apply a softmax layer to <span class="math inline">\(s^{&lt;t&gt;}\)</span>, get the output.</li>
+<li>Save the output by adding it to the list of outputs.</li>
+</ol></li>
+<li>Create your Keras model instance, it should have three inputs ("inputs", <span class="math inline">\(s^{&lt;0&gt;}\)</span> and <span class="math inline">\(c^{&lt;0&gt;}\)</span>) and output the list of "outputs".</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GRADED FUNCTION: model</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">model</span>(<span class="params">Tx, Ty, n_a, n_s, human_vocab_size, machine_vocab_size</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    Tx -- length of the input sequence</span></span><br><span class="line"><span class="string">    Ty -- length of the output sequence</span></span><br><span class="line"><span class="string">    n_a -- hidden state size of the Bi-LSTM</span></span><br><span class="line"><span class="string">    n_s -- hidden state size of the post-attention LSTM</span></span><br><span class="line"><span class="string">    human_vocab_size -- size of the python dictionary &quot;human_vocab&quot;</span></span><br><span class="line"><span class="string">    machine_vocab_size -- size of the python dictionary &quot;machine_vocab&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    model -- Keras model instance</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Define the inputs of your model with a shape (Tx,)</span></span><br><span class="line">    <span class="comment"># Define s0 and c0, initial hidden state for the decoder LSTM of shape (n_s,)</span></span><br><span class="line">    X = Input(shape=(Tx, human_vocab_size))</span><br><span class="line">    s0 = Input(shape=(n_s,), name=<span class="string">&#x27;s0&#x27;</span>)</span><br><span class="line">    c0 = Input(shape=(n_s,), name=<span class="string">&#x27;c0&#x27;</span>)</span><br><span class="line">    s = s0</span><br><span class="line">    c = c0</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Initialize empty list of outputs</span></span><br><span class="line">    outputs = []</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 1: Define your pre-attention Bi-LSTM. Remember to use return_sequences=True. (≈ 1 line)</span></span><br><span class="line">    a = Bidirectional(LSTM(n_a, return_sequences=<span class="literal">True</span>))(X)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 2: Iterate for Ty steps</span></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(Ty):</span><br><span class="line">    </span><br><span class="line">        <span class="comment"># Step 2.A: Perform one step of the attention mechanism to get back the context vector at step t (≈ 1 line)</span></span><br><span class="line">        context = one_step_attention(a, s)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Step 2.B: Apply the post-attention LSTM cell to the &quot;context&quot; vector.</span></span><br><span class="line">        <span class="comment"># Don&#x27;t forget to pass: initial_state = [hidden state, cell state] (≈ 1 line)</span></span><br><span class="line">        s, _, c = post_activation_LSTM_cell(context, initial_state=[s, c])</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Step 2.C: Apply Dense layer to the hidden state output of the post-attention LSTM (≈ 1 line)</span></span><br><span class="line">        out = output_layer(s)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Step 2.D: Append &quot;out&quot; to the &quot;outputs&quot; list (≈ 1 line)</span></span><br><span class="line">        outputs.append(out)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 3: Create model instance taking three inputs and returning the list of outputs. (≈ 1 line)</span></span><br><span class="line">    model = Model([X, s0, c0], outputs)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> model</span><br></pre></td></tr></table></figure>
+<p>Run the following cell to create your model.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model = model(Tx, Ty, n_a, n_s, <span class="built_in">len</span>(human_vocab), <span class="built_in">len</span>(machine_vocab))</span><br></pre></td></tr></table></figure>
+<p>Let's get a summary of the model to check if it matches the expected output.</p>
+<p>As usual, after creating your model in Keras, you need to compile it and define what loss, optimizer and metrics your are want to use. Compile your model using <code>categorical_crossentropy</code> loss, a custom <a target="_blank" rel="noopener" href="https://keras.io/optimizers/#adam">Adam</a> <a target="_blank" rel="noopener" href="https://keras.io/optimizers/#usage-of-optimizers">optimizer</a> (<code>learning rate = 0.005</code>, <span class="math inline">\(\beta_1 = 0.9\)</span>, <span class="math inline">\(\beta_2 = 0.999\)</span>, <code>decay = 0.01</code>) and <code>['accuracy']</code> metrics:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">### START CODE HERE ### (≈2 lines)</span></span><br><span class="line">opt = Adam(lr = <span class="number">0.005</span>, beta_1=<span class="number">0.9</span>, beta_2=<span class="number">0.999</span>, decay = <span class="number">0.01</span>)</span><br><span class="line">model.<span class="built_in">compile</span>(loss=<span class="string">&#x27;categorical_crossentropy&#x27;</span>, optimizer=opt, metrics=[<span class="string">&#x27;accuracy&#x27;</span>])</span><br><span class="line"><span class="comment">### END CODE HERE ###</span></span><br></pre></td></tr></table></figure>
+<p>The last step is to define all your inputs and outputs to fit the model: - You already have X of shape <span class="math inline">\((m = 10000, T_x = 30)\)</span> containing the training examples. - You need to create <code>s0</code> and <code>c0</code> to initialize your <code>post_activation_LSTM_cell</code> with 0s. - Given the <code>model()</code> you coded, you need the "outputs" to be a list of 11 elements of shape (m, T_y). So that: <code>outputs[i][0], ..., outputs[i][Ty]</code> represent the true labels (characters) corresponding to the <span class="math inline">\(i^{th}\)</span> training example (<code>X[i]</code>). More generally, <code>outputs[i][j]</code> is the true label of the <span class="math inline">\(j^{th}\)</span> character in the <span class="math inline">\(i^{th}\)</span> training example.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">s0 = np.zeros((m, n_s))</span><br><span class="line">c0 = np.zeros((m, n_s))</span><br><span class="line">outputs = <span class="built_in">list</span>(Yoh.swapaxes(<span class="number">0</span>,<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+<p>Let's now fit the model and run it for one epoch.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model.fit([Xoh, s0, c0], outputs, epochs=<span class="number">1</span>, batch_size=<span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Epoch 1/1
+10000/10000 [==============================] - 158s - loss: 16.3670 - dense_6_loss_1: 1.1703 - dense_6_loss_2: 0.9289 - dense_6_loss_3: 1.6998 - dense_6_loss_4: 2.6540 - dense_6_loss_5: 0.7749 - dense_6_loss_6: 1.2792 - dense_6_loss_7: 2.7100 - dense_6_loss_8: 0.9065 - dense_6_loss_9: 1.6950 - dense_6_loss_10: 2.5484 - dense_6_acc_1: 0.5611 - dense_6_acc_2: 0.7058 - dense_6_acc_3: 0.3274 - dense_6_acc_4: 0.0815 - dense_6_acc_5: 0.8946 - dense_6_acc_6: 0.3322 - dense_6_acc_7: 0.0551 - dense_6_acc_8: 0.9287 - dense_6_acc_9: 0.2578 - dense_6_acc_10: 0.1051   
+
+
+
+
+
+&lt;keras.callbacks.History at 0x7f39010f7320&gt;</code></pre>
+<p>While training you can see the loss as well as the accuracy on each of the 10 positions of the output. The table below gives you an example of what the accuracies could be if the batch had 2 examples:</p>
+<img src="images/table.png" style="width:700;height:200px;"> <br>
+<caption>
+<center>
+Thus, <code>dense_2_acc_8: 0.89</code> means that you are predicting the 7th character of the output correctly 89% of the time in the current batch of data.
+</center>
+</caption>
+<p>We have run this model for longer, and saved the weights. Run the next cell to load our weights. (By training a model for several minutes, you should be able to obtain a model of similar accuracy, but loading our model will save you time.)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model.load_weights(<span class="string">&#x27;models/model.h5&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>You can now see the results on new examples.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">EXAMPLES = [<span class="string">&#x27;3 May 1979&#x27;</span>, <span class="string">&#x27;5 April 09&#x27;</span>, <span class="string">&#x27;21th of August 2016&#x27;</span>, <span class="string">&#x27;Tue 10 Jul 2007&#x27;</span>, <span class="string">&#x27;Saturday May 9 2018&#x27;</span>, <span class="string">&#x27;March 3 2001&#x27;</span>, <span class="string">&#x27;March 3rd 2001&#x27;</span>, <span class="string">&#x27;1 March 2001&#x27;</span>]</span><br><span class="line"><span class="keyword">for</span> example <span class="keyword">in</span> EXAMPLES:</span><br><span class="line">    </span><br><span class="line">    source = string_to_int(example, Tx, human_vocab)</span><br><span class="line">    source = np.array(<span class="built_in">list</span>(<span class="built_in">map</span>(<span class="keyword">lambda</span> x: to_categorical(x, num_classes=<span class="built_in">len</span>(human_vocab)), source))).swapaxes(<span class="number">0</span>,<span class="number">1</span>)</span><br><span class="line">    prediction = model.predict([source, s0, c0])</span><br><span class="line">    prediction = np.argmax(prediction, axis = -<span class="number">1</span>)</span><br><span class="line">    output = [inv_machine_vocab[<span class="built_in">int</span>(i)] <span class="keyword">for</span> i <span class="keyword">in</span> prediction]</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;source:&quot;</span>, example)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;output:&quot;</span>, <span class="string">&#x27;&#x27;</span>.join(output))</span><br></pre></td></tr></table></figure>
+<pre><code>source: 3 May 1979
+output: 1979-05-03
+source: 5 April 09
+output: 2009-05-05
+source: 21th of August 2016
+output: 2016-08-21
+source: Tue 10 Jul 2007
+output: 2007-07-10
+source: Saturday May 9 2018
+output: 2018-05-09
+source: March 3 2001
+output: 2001-03-03
+source: March 3rd 2001
+output: 2001-03-03
+source: 1 March 2001
+output: 2001-03-01</code></pre>
+<p>You can also change these examples to test with your own examples. The next part will give you a better sense on what the attention mechanism is doing--i.e., what part of the input the network is paying attention to when generating a particular output character.</p>
+<h2 id="visualizing-attention-optional-ungraded">3 - Visualizing Attention (Optional / Ungraded)</h2>
+<p>Since the problem has a fixed output length of 10, it is also possible to carry out this task using 10 different softmax units to generate the 10 characters of the output. But one advantage of the attention model is that each part of the output (say the month) knows it needs to depend only on a small part of the input (the characters in the input giving the month). We can visualize what part of the output is looking at what part of the input.</p>
+<p>Consider the task of translating "Saturday 9 May 2018" to "2018-05-09". If we visualize the computed <span class="math inline">\(\alpha^{\langle t, t&#39; \rangle}\)</span> we get this:</p>
+<img src="images/date_attention.png" style="width:600;height:300px;"> <br>
+<caption>
+<center>
+<strong>Figure 8</strong>: Full Attention Map
+</center>
+</caption>
+<p>Notice how the output ignores the "Saturday" portion of the input. None of the output timesteps are paying much attention to that portion of the input. We see also that 9 has been translated as 09 and May has been correctly translated into 05, with the output paying attention to the parts of the input it needs to to make the translation. The year mostly requires it to pay attention to the input's "18" in order to generate "2018."</p>
+<h3 id="getting-the-activations-from-the-network">3.1 - Getting the activations from the network</h3>
+<p>Lets now visualize the attention values in your network. We'll propagate an example through the network, then visualize the values of <span class="math inline">\(\alpha^{\langle t, t&#39; \rangle}\)</span>.</p>
+<p>To figure out where the attention values are located, let's start by printing a summary of the model .</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model.summary()</span><br></pre></td></tr></table></figure>
+<p>Navigate through the output of <code>model.summary()</code> above. You can see that the layer named <code>attention_weights</code> outputs the <code>alphas</code> of shape (m, 30, 1) before <code>dot_2</code> computes the context vector for every time step <span class="math inline">\(t = 0, \ldots, T_y-1\)</span>. Lets get the activations from this layer.</p>
+<p>The function <code>attention_map()</code> pulls out the attention values from your model and plots them.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">attention_map = plot_attention_map(model, human_vocab, inv_machine_vocab, <span class="string">&quot;Tuesday 09 Oct 1993&quot;</span>, num = <span class="number">7</span>, n_s = <span class="number">64</span>)</span><br></pre></td></tr></table></figure>
+<p>On the generated plot you can observe the values of the attention weights for each character of the predicted output. Examine this plot and check that where the network is paying attention makes sense to you.</p>
+<p>In the date translation application, you will observe that most of the time attention helps predict the year, and hasn't much impact on predicting the day/month.</p>
+<h3 id="congratulations">Congratulations!</h3>
+<p>You have come to the end of this assignment</p>
+<p><font color='blue'> <strong>Here's what you should remember from this notebook</strong>:</p>
+<ul>
+<li>Machine translation models can be used to map from one sequence to another. They are useful not just for translating human languages (like French-&gt;English) but also for tasks like date format translation.</li>
+<li>An attention mechanism allows a network to focus on the most relevant parts of the input when producing a specific part of the output.</li>
+<li>A network using an attention mechanism can translate from inputs of length <span class="math inline">\(T_x\)</span> to outputs of length <span class="math inline">\(T_y\)</span>, where <span class="math inline">\(T_x\)</span> and <span class="math inline">\(T_y\)</span> can be different.</li>
+<li>You can visualize attention weights <span class="math inline">\(\alpha^{\langle t,t&#39; \rangle}\)</span> to see what the network is paying attention to while generating each output.</li>
+</ul>
+<p>Congratulations on finishing this assignment! You are now able to implement an attention model and use it to learn complex mappings from one sequence to another.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+              <a href="/tags/Sequence-Models/" rel="tag"># Sequence Models</a>
+              <a href="/tags/Project/" rel="tag"># Project</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Operations-on-word-vectors-Debiasing/2019/03/28/" rel="prev" title="Operations on word vectors - Debiasing">
+      <i class="fa fa-chevron-left"></i> Operations on word vectors - Debiasing
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Neural-Networks-and-Deep-Learning/2019/03/29/" rel="next" title="Neural Networks and Deep Learning">
+      Neural Networks and Deep Learning <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#neural-machine-translation"><span class="nav-number">1.</span> <span class="nav-text">Neural Machine Translation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#translating-human-readable-dates-into-machine-readable-dates"><span class="nav-number">1.1.</span> <span class="nav-text">1 - Translating human readable dates into machine readable dates</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dataset"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 - Dataset</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#neural-machine-translation-with-attention"><span class="nav-number">1.2.</span> <span class="nav-text">2 - Neural machine translation with attention</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#attention-mechanism"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 - Attention mechanism</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#visualizing-attention-optional-ungraded"><span class="nav-number">1.3.</span> <span class="nav-text">3 - Visualizing Attention (Optional &#x2F; Ungraded)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#getting-the-activations-from-the-network"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 - Getting the activations from the network</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#congratulations"><span class="nav-number">1.3.2.</span> <span class="nav-text">Congratulations!</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
