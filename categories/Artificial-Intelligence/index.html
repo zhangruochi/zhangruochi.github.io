@@ -99,6 +99,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -133,11 +134,35 @@
     <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
     </header>
@@ -301,6 +326,46 @@
 
       <div class="post-meta">
         <time itemprop="dateCreated"
+              datetime="2020-07-19T16:27:04+08:00"
+              content="2020-07-19">
+          07-19
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/Auto-Correct/2020/07/19/" itemprop="url">
+            <span itemprop="name">Auto Correct</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2020-04-18T23:53:23+08:00"
+              content="2020-04-18">
+          04-18
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/Risk-Models-Using-Tree-based-Models/2020/04/18/" itemprop="url">
+            <span itemprop="name">Risk Models Using Tree-based Models</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
               datetime="2020-04-17T18:54:09+08:00"
               content="2020-04-17">
           04-17
@@ -336,46 +401,6 @@
     </header>
   </article>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-04-14T13:32:41+08:00"
-              content="2020-04-14">
-          04-14
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/PCA-from-scratch/2020/04/14/" itemprop="url">
-            <span itemprop="name">PCA from scratch</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-04-14T01:42:51+08:00"
-              content="2020-04-14">
-          04-14
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/DBSCAN-Clustering/2020/04/14/" itemprop="url">
-            <span itemprop="name">DBSCAN Clustering</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
     </div>
   </div>
   
@@ -384,7 +409,7 @@
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/categories/Artificial-Intelligence/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/categories/Artificial-Intelligence/page/7/">7</a><a class="extend next" rel="next" href="/categories/Artificial-Intelligence/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/categories/Artificial-Intelligence/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/categories/Artificial-Intelligence/page/8/">8</a><a class="extend next" rel="next" href="/categories/Artificial-Intelligence/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -450,7 +475,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-count">166</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -576,6 +601,13 @@
 
   
 
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 

@@ -99,6 +99,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -133,11 +134,35 @@
     <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
     </header>
@@ -164,7 +189,7 @@
     <div class="posts-collapse">
       <div class="collection-title">
         
-        <span class="collection-header">Great! 163 posts in total. Keep on posting.</span>
+        <span class="collection-header">Great! 166 posts in total. Keep on posting.</span>
       </div>
 
       
@@ -206,6 +231,26 @@
       <div class="post-title">
           <a class="post-title-link" href="/Model-Training-Tricks-1/2020/04/27/" itemprop="url">
             <span itemprop="name">Model Training Tricks (1)</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2020-04-18T23:53:23+08:00"
+              content="2020-04-18">
+          04-18
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/Risk-Models-Using-Tree-based-Models/2020/04/18/" itemprop="url">
+            <span itemprop="name">Risk Models Using Tree-based Models</span>
           </a>
       </div>
 
@@ -404,7 +449,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-count">166</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -530,6 +575,13 @@
 
   
 
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 

@@ -99,6 +99,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -133,11 +134,35 @@
     <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
     </header>
@@ -156,6 +181,1718 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Risk-Models-Using-Tree-based-Models/2020/04/18/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/Risk-Models-Using-Tree-based-Models/2020/04/18/" class="post-title-link" itemprop="url">Risk Models Using Tree-based Models</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-18 23:53:23" itemprop="dateCreated datePublished" datetime="2020-04-18T23:53:23+08:00">2020-04-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 13:48:37" itemprop="dateModified" datetime="2021-12-31T13:48:37+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Risk-Models-Using-Tree-based-Models/2020/04/18/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Risk-Models-Using-Tree-based-Models/2020/04/18/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="risk-models-using-tree-based-models">Risk Models Using Tree-based Models</h1>
+<p>Welcome to the second assignment of Course 2!</p>
+<h2 id="outline">Outline</h2>
+<ul>
+<li><a href="#risk-models-using-tree-based-models">Risk Models Using Tree-based Models</a>
+<ul>
+<li><a href="#outline">Outline</a></li>
+<li><a href="#1-import-packages">1. Import Packages</a></li>
+<li><a href="#2-load-the-dataset">2. Load the Dataset</a></li>
+<li><a href="#3-explore-the-dataset">3. Explore the Dataset</a></li>
+<li><a href="#4-dealing-with-missing-data">4. Dealing with Missing Data</a>
+<ul>
+<li><a href="#exercise-1">Exercise 1</a></li>
+</ul></li>
+<li><a href="#5-decision-trees">5. Decision Trees</a>
+<ul>
+<li><a href="#exercise-2">Exercise 2</a></li>
+</ul></li>
+<li><a href="#6-random-forests">6. Random Forests</a>
+<ul>
+<li><a href="#exercise-3">Exercise 3</a></li>
+</ul></li>
+<li><a href="#7-imputation">7. Imputation</a></li>
+<li><a href="#8-error-analysis">8. Error Analysis</a>
+<ul>
+<li><a href="#exercise-4">Exercise 4</a>
+<ul>
+<li><a href="#test-your-work">Test Your Work</a></li>
+<li><a href="#expected-output">Expected Output</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#9-imputation-approaches">9. Imputation Approaches</a>
+<ul>
+<li><a href="#exercise-5">Exercise 5</a>
+<ul>
+<li><a href="#target-performance">Target performance</a></li>
+<li><a href="#expected-output-1">Expected output</a></li>
+</ul></li>
+<li><a href="#exercise-6">Exercise 6</a>
+<ul>
+<li><a href="#target-performance-1">Target performance</a></li>
+<li><a href="#expected-output-2">Expected Output</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#10-comparison">10. Comparison</a></li>
+<li><a href="#11-explanations-shap">11. Explanations: SHAP</a></li>
+</ul></li>
+<li><a href="#congratulations">Congratulations!</a></li>
+</ul>
+<p>In this assignment, you'll gain experience with tree based models by predicting the 10-year risk of death of individuals from the NHANES I epidemiology dataset (for a detailed description of this dataset you can check the <a target="_blank" rel="noopener" href="https://wwwn.cdc.gov/nchs/nhanes/nhefs/default.aspx/">CDC Website</a>). This is a challenging task and a great test bed for the machine learning methods we learned this week.</p>
+<p>As you go through the assignment, you'll learn about:</p>
+<ul>
+<li>Dealing with Missing Data
+<ul>
+<li>Complete Case Analysis.</li>
+<li>Imputation</li>
+</ul></li>
+<li>Decision Trees
+<ul>
+<li>Evaluation.</li>
+<li>Regularization.</li>
+</ul></li>
+<li>Random Forests
+<ul>
+<li>Hyperparameter Tuning.</li>
+</ul></li>
+</ul>
+<p><a name='1'></a> ## 1. Import Packages</p>
+<p>We'll first import all the common packages that we need for this assignment.</p>
+<ul>
+<li><code>shap</code> is a library that explains predictions made by machine learning models.</li>
+<li><code>sklearn</code> is one of the most popular machine learning libraries.</li>
+<li><code>itertools</code> allows us to conveniently manipulate iterable objects such as lists.</li>
+<li><code>pydotplus</code> is used together with <code>IPython.display.Image</code> to visualize graph structures such as decision trees.</li>
+<li><code>numpy</code> is a fundamental package for scientific computing in Python.</li>
+<li><code>pandas</code> is what we'll use to manipulate our data.</li>
+<li><code>seaborn</code> is a plotting library which has some convenient functions for visualizing missing data.</li>
+<li><code>matplotlib</code> is a plotting library.</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> shap</span><br><span class="line"><span class="keyword">import</span> sklearn</span><br><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"><span class="keyword">import</span> pydotplus</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> IPython.display <span class="keyword">import</span> Image </span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.tree <span class="keyword">import</span> export_graphviz</span><br><span class="line"><span class="keyword">from</span> sklearn.externals.six <span class="keyword">import</span> StringIO</span><br><span class="line"><span class="keyword">from</span> sklearn.tree <span class="keyword">import</span> DecisionTreeClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.experimental <span class="keyword">import</span> enable_iterative_imputer</span><br><span class="line"><span class="keyword">from</span> sklearn.impute <span class="keyword">import</span> IterativeImputer, SimpleImputer</span><br><span class="line"></span><br><span class="line"><span class="comment"># We&#x27;ll also import some helper functions that will be useful later on.</span></span><br><span class="line"><span class="keyword">from</span> util <span class="keyword">import</span> load_data, cindex</span><br></pre></td></tr></table></figure>
+<p><a name='2'></a> ## 2. Load the Dataset</p>
+<p>Run the next cell to load in the NHANES I epidemiology dataset. This dataset contains various features of hospital patients as well as their outcomes, i.e. whether or not they died within 10 years.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_dev, X_test, y_dev, y_test = load_data(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<p>The dataset has been split into a development set (or dev set), which we will use to develop our risk models, and a test set, which we will use to test our models.</p>
+<p>We further split the dev set into a training and validation set, respectively to train and tune our models, using a 75/25 split (note that we set a random state to make this split repeatable).</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_train, X_val, y_train, y_val = train_test_split(X_dev, y_dev, test_size=<span class="number">0.25</span>, random_state=<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<p><a name='3'></a> ## 3. Explore the Dataset</p>
+<p>The first step is to familiarize yourself with the data. Run the next cell to get the size of your training set and look at a small sample.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;X_train shape: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(X_train.shape))</span><br><span class="line">X_train.head()</span><br></pre></td></tr></table></figure>
+<pre><code>X_train shape: (5147, 18)</code></pre>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+Age
+</th>
+<th>
+Diastolic BP
+</th>
+<th>
+Poverty index
+</th>
+<th>
+Race
+</th>
+<th>
+Red blood cells
+</th>
+<th>
+Sedimentation rate
+</th>
+<th>
+Serum Albumin
+</th>
+<th>
+Serum Cholesterol
+</th>
+<th>
+Serum Iron
+</th>
+<th>
+Serum Magnesium
+</th>
+<th>
+Serum Protein
+</th>
+<th>
+Sex
+</th>
+<th>
+Systolic BP
+</th>
+<th>
+TIBC
+</th>
+<th>
+TS
+</th>
+<th>
+White blood cells
+</th>
+<th>
+BMI
+</th>
+<th>
+Pulse pressure
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+1599
+</th>
+<td>
+43.0
+</td>
+<td>
+84.0
+</td>
+<td>
+637.0
+</td>
+<td>
+1.0
+</td>
+<td>
+49.3
+</td>
+<td>
+10.0
+</td>
+<td>
+5.0
+</td>
+<td>
+253.0
+</td>
+<td>
+134.0
+</td>
+<td>
+1.59
+</td>
+<td>
+7.7
+</td>
+<td>
+1.0
+</td>
+<td>
+NaN
+</td>
+<td>
+490.0
+</td>
+<td>
+27.3
+</td>
+<td>
+9.1
+</td>
+<td>
+25.803007
+</td>
+<td>
+34.0
+</td>
+</tr>
+<tr>
+<th>
+2794
+</th>
+<td>
+72.0
+</td>
+<td>
+96.0
+</td>
+<td>
+154.0
+</td>
+<td>
+2.0
+</td>
+<td>
+43.4
+</td>
+<td>
+23.0
+</td>
+<td>
+4.3
+</td>
+<td>
+265.0
+</td>
+<td>
+106.0
+</td>
+<td>
+1.66
+</td>
+<td>
+6.8
+</td>
+<td>
+2.0
+</td>
+<td>
+208.0
+</td>
+<td>
+301.0
+</td>
+<td>
+35.2
+</td>
+<td>
+6.0
+</td>
+<td>
+33.394319
+</td>
+<td>
+112.0
+</td>
+</tr>
+<tr>
+<th>
+1182
+</th>
+<td>
+54.0
+</td>
+<td>
+78.0
+</td>
+<td>
+205.0
+</td>
+<td>
+1.0
+</td>
+<td>
+43.8
+</td>
+<td>
+12.0
+</td>
+<td>
+4.2
+</td>
+<td>
+206.0
+</td>
+<td>
+180.0
+</td>
+<td>
+1.67
+</td>
+<td>
+6.6
+</td>
+<td>
+2.0
+</td>
+<td>
+NaN
+</td>
+<td>
+363.0
+</td>
+<td>
+49.6
+</td>
+<td>
+5.9
+</td>
+<td>
+20.278410
+</td>
+<td>
+34.0
+</td>
+</tr>
+<tr>
+<th>
+6915
+</th>
+<td>
+59.0
+</td>
+<td>
+90.0
+</td>
+<td>
+417.0
+</td>
+<td>
+1.0
+</td>
+<td>
+43.4
+</td>
+<td>
+9.0
+</td>
+<td>
+4.5
+</td>
+<td>
+327.0
+</td>
+<td>
+114.0
+</td>
+<td>
+1.65
+</td>
+<td>
+7.6
+</td>
+<td>
+2.0
+</td>
+<td>
+NaN
+</td>
+<td>
+347.0
+</td>
+<td>
+32.9
+</td>
+<td>
+6.1
+</td>
+<td>
+32.917744
+</td>
+<td>
+78.0
+</td>
+</tr>
+<tr>
+<th>
+500
+</th>
+<td>
+34.0
+</td>
+<td>
+80.0
+</td>
+<td>
+385.0
+</td>
+<td>
+1.0
+</td>
+<td>
+77.7
+</td>
+<td>
+9.0
+</td>
+<td>
+4.1
+</td>
+<td>
+197.0
+</td>
+<td>
+64.0
+</td>
+<td>
+1.74
+</td>
+<td>
+7.3
+</td>
+<td>
+2.0
+</td>
+<td>
+NaN
+</td>
+<td>
+376.0
+</td>
+<td>
+17.0
+</td>
+<td>
+8.2
+</td>
+<td>
+30.743489
+</td>
+<td>
+30.0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Our targets <code>y</code> will be whether or not the target died within 10 years. Run the next cell to see the target data series.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">y_train.head(<span class="number">20</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>1599    False
+2794     True
+1182    False
+6915    False
+500     False
+1188     True
+9739    False
+3266    False
+6681    False
+8822    False
+5856     True
+3415    False
+9366    False
+7975    False
+1397    False
+6809    False
+9461    False
+9374    False
+1170     True
+158     False
+Name: time, dtype: bool</code></pre>
+<p>Use the next cell to examine individual cases and familiarize yourself with the features.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">i = <span class="number">10</span></span><br><span class="line"><span class="built_in">print</span>(X_train.iloc[i,:])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\nDied within 10 years? &#123;&#125;&quot;</span>.<span class="built_in">format</span>(y_train.loc[y_train.index[i]]))</span><br></pre></td></tr></table></figure>
+<pre><code>Age                    67.000000
+Diastolic BP           94.000000
+Poverty index         114.000000
+Race                    1.000000
+Red blood cells        43.800000
+Sedimentation rate     12.000000
+Serum Albumin           3.700000
+Serum Cholesterol     178.000000
+Serum Iron             73.000000
+Serum Magnesium         1.850000
+Serum Protein           7.000000
+Sex                     1.000000
+Systolic BP           140.000000
+TIBC                  311.000000
+TS                     23.500000
+White blood cells       4.300000
+BMI                    17.481227
+Pulse pressure         46.000000
+Name: 5856, dtype: float64
+
+Died within 10 years? True</code></pre>
+<p><a name='4'></a> ## 4. Dealing with Missing Data</p>
+<p>Looking at our data in <code>X_train</code>, we see that some of the data is missing: some values in the output of the previous cell are marked as <code>NaN</code> ("not a number").</p>
+<p>Missing data is a common occurrence in data analysis, that can be due to a variety of reasons, such as measuring instrument malfunction, respondents not willing or not able to supply information, and errors in the data collection process.</p>
+<p>Let's examine the missing data pattern. <code>seaborn</code> is an alternative to <code>matplotlib</code> that has some convenient plotting functions for data analysis. We can use its <code>heatmap</code> function to easily visualize the missing data pattern.</p>
+<p>Run the cell below to plot the missing data:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sns.heatmap(X_train.isnull(), cbar=<span class="literal">False</span>)</span><br><span class="line">plt.title(<span class="string">&quot;Training&quot;</span>)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line">sns.heatmap(X_val.isnull(), cbar=<span class="literal">False</span>)</span><br><span class="line">plt.title(<span class="string">&quot;Validation&quot;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_17_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_17_1.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p>For each feature, represented as a column, values that are present are shown in black, and missing values are set in a light color.</p>
+<p>From this plot, we can see that many values are missing for systolic blood pressure (<code>Systolic BP</code>).</p>
+<p><a name='Ex-1'></a> ### Exercise 1</p>
+<p>In the cell below, write a function to compute the fraction of cases with missing data. This will help us decide how we handle this missing data in the future.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+The <code>pandas.DataFrame.isnull()</code> method is helpful in this case.
+</li>
+<li>
+Use the <code>pandas.DataFrame.any()</code> method and set the <code>axis</code> parameter.
+</li>
+<li>
+Divide the total number of rows with missing data by the total number of rows. Remember that in Python, <code>True</code> values are equal to 1.
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C1 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fraction_rows_missing</span>(<span class="params">df</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Return percent of rows with any missing</span></span><br><span class="line"><span class="string">    data in the dataframe. </span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Input:</span></span><br><span class="line"><span class="string">        df (dataframe): a pandas dataframe with potentially missing data</span></span><br><span class="line"><span class="string">    Output:</span></span><br><span class="line"><span class="string">        frac_missing (float): fraction of rows with missing data</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE &#x27;Pass&#x27; with your &#x27;return&#x27; code) ###</span></span><br><span class="line">    <span class="keyword">return</span> df.isnull().<span class="built_in">any</span>(axis = <span class="number">1</span>).<span class="built_in">sum</span>() / df.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br></pre></td></tr></table></figure>
+<p>Test your function by running the cell below.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">df_test = pd.DataFrame(&#123;<span class="string">&#x27;a&#x27;</span>:[<span class="literal">None</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="literal">None</span>], <span class="string">&#x27;b&#x27;</span>:[<span class="number">1</span>, <span class="literal">None</span>, <span class="number">0</span>, <span class="number">1</span>]&#125;)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Example dataframe:\n&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(df_test)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\nComputed fraction missing: &#123;&#125;, expected: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(fraction_rows_missing(df_test), <span class="number">0.75</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Fraction of rows missing from X_train: <span class="subst">&#123;fraction_rows_missing(X_train):<span class="number">.3</span>f&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Fraction of rows missing from X_val: <span class="subst">&#123;fraction_rows_missing(X_val):<span class="number">.3</span>f&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Fraction of rows missing from X_test: <span class="subst">&#123;fraction_rows_missing(X_test):<span class="number">.3</span>f&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Example dataframe:
+
+     a    b
+0  NaN  1.0
+1  1.0  NaN
+2  1.0  0.0
+3  NaN  1.0
+
+Computed fraction missing: 0.75, expected: 0.75
+Fraction of rows missing from X_train: 0.699
+Fraction of rows missing from X_val: 0.704
+Fraction of rows missing from X_test: 0.000</code></pre>
+<p>We see that our train and validation sets have missing values, but luckily our test set has complete cases.</p>
+<p>As a first pass, we will begin with a <strong>complete case analysis</strong>, dropping all of the rows with any missing data. Run the following cell to drop these rows from our train and validation sets.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X_train_dropped = X_train.dropna(axis=<span class="string">&#x27;rows&#x27;</span>)</span><br><span class="line">y_train_dropped = y_train.loc[X_train_dropped.index]</span><br><span class="line">X_val_dropped = X_val.dropna(axis=<span class="string">&#x27;rows&#x27;</span>)</span><br><span class="line">y_val_dropped = y_val.loc[X_val_dropped.index]</span><br></pre></td></tr></table></figure>
+<p><a name='5'></a> ## 5. Decision Trees</p>
+<p>Having just learned about decision trees, you choose to use a decision tree classifier. Use scikit-learn to build a decision tree for the hospital dataset using the train set.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dt = DecisionTreeClassifier(max_depth=<span class="literal">None</span>, random_state=<span class="number">10</span>)</span><br><span class="line">dt.fit(X_train_dropped, y_train_dropped)</span><br></pre></td></tr></table></figure>
+<p>DecisionTreeClassifier(ccp_alpha=0.0, class_weight=None, criterion='gini', max_depth=None, max_features=None, max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None, min_samples_leaf=1, min_samples_split=2, min_weight_fraction_leaf=0.0, presort='deprecated', random_state=10, splitter='best')</p>
+<p>Next we will evaluate our model. We'll use C-Index for evaluation.</p>
+<blockquote>
+<p>Remember from lesson 4 of week 1 that the C-Index evaluates the ability of a model to differentiate between different classes, by quantifying how often, when considering all pairs of patients (A, B), the model says that patient A has a higher risk score than patient B when, in the observed data, patient A actually died and patient B actually lived. In our case, our model is a binary classifier, where each risk score is either 1 (the model predicts that the patient will die) or 0 (the patient will live).</p>
+<p>More formally, defining <em>permissible pairs</em> of patients as pairs where the outcomes are different, <em>concordant pairs</em> as permissible pairs where the patient that died had a higher risk score (i.e. our model predicted 1 for the patient that died and 0 for the one that lived), and <em>ties</em> as permissible pairs where the risk scores were equal (i.e. our model predicted 1 for both patients or 0 for both patients), the C-Index is equal to:</p>
+</blockquote>
+<p>Run the next cell to compute the C-Index on the train and validation set (we've given you an implementation this time). <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">y_train_preds = dt.predict_proba(X_train_dropped)[:, <span class="number">1</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Train C-Index: <span class="subst">&#123;cindex(y_train_dropped.values, y_train_preds)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">y_val_preds = dt.predict_proba(X_val_dropped)[:, <span class="number">1</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Val C-Index: <span class="subst">&#123;cindex(y_val_dropped.values, y_val_preds)&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<pre><code>Train C-Index: 1.0
+Val C-Index: 0.5629321808510638</code></pre>
+<p>Unfortunately your tree seems to be overfitting: it fits the training data so closely that it doesn't generalize well to other samples such as those from the validation set.</p>
+<blockquote>
+<p>The training C-index comes out to 1.0 because, when initializing <code>DecisionTreeClasifier</code>, we have left <code>max_depth</code> and <code>min_samples_split</code> unspecified. The resulting decision tree will therefore keep splitting as far as it can, which pretty much guarantees a pure fit to the training data.</p>
+</blockquote>
+<p>To handle this, you can change some of the hyperparameters of our tree.</p>
+<p><a name='Ex-2'></a> ### Exercise 2</p>
+<p>Try and find a set of hyperparameters that improves the generalization to the validation set and recompute the C-index. If you do it right, you should get C-index above 0.6 for the validation set.</p>
+<p>You can refer to the documentation for the sklearn <a target="_blank" rel="noopener" href="https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html">DecisionTreeClassifier</a>.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+Try limiting the depth of the tree (<code>'max_depth'</code>).
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Experiment with different hyperparameters for the DecisionTreeClassifier</span></span><br><span class="line"><span class="comment"># until you get a c-index above 0.6 for the validation set</span></span><br><span class="line">dt_hyperparams = &#123;</span><br><span class="line">    <span class="comment"># set your own hyperparameters below, such as &#x27;min_samples_split&#x27;: 1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">### START CODE HERE ###</span></span><br><span class="line">    <span class="string">&quot;max_depth&quot;</span>: <span class="number">3</span></span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Run the next cell to fit and evaluate the regularized tree.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C2 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line">dt_reg = DecisionTreeClassifier(**dt_hyperparams, random_state=<span class="number">10</span>)</span><br><span class="line">dt_reg.fit(X_train_dropped, y_train_dropped)</span><br><span class="line"></span><br><span class="line">y_train_preds = dt_reg.predict_proba(X_train_dropped)[:, <span class="number">1</span>]</span><br><span class="line">y_val_preds = dt_reg.predict_proba(X_val_dropped)[:, <span class="number">1</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Train C-Index: <span class="subst">&#123;cindex(y_train_dropped.values, y_train_preds)&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Val C-Index (expected &gt; 0.6): <span class="subst">&#123;cindex(y_val_dropped.values, y_val_preds)&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Train C-Index: 0.688738755448391
+Val C-Index (expected &gt; 0.6): 0.6302692819148936</code></pre>
+<p>If you used a low <code>max_depth</code> you can print the entire tree. This allows for easy interpretability. Run the next cell to print the tree splits.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dot_data = StringIO()</span><br><span class="line">export_graphviz(dt_reg, feature_names=X_train_dropped.columns, out_file=dot_data,  </span><br><span class="line">                filled=<span class="literal">True</span>, rounded=<span class="literal">True</span>, proportion=<span class="literal">True</span>, special_characters=<span class="literal">True</span>,</span><br><span class="line">                impurity=<span class="literal">False</span>, class_names=[<span class="string">&#x27;neg&#x27;</span>, <span class="string">&#x27;pos&#x27;</span>], precision=<span class="number">2</span>)</span><br><span class="line">graph = pydotplus.graph_from_dot_data(dot_data.getvalue())  </span><br><span class="line">Image(graph.create_png())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_38_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<blockquote>
+<p><strong>Overfitting, underfitting, and the bias-variance tradeoff</strong></p>
+<p>If you tested several values of <code>max_depth</code>, you may have seen that a value of <code>3</code> gives training and validation C-Indices of about <code>0.689</code> and <code>0.630</code>, and that a <code>max_depth</code> of <code>2</code> gives better agreement with values of about <code>0.653</code> and <code>0.607</code>. In the latter case, we have further reduced overfitting, at the cost of a minor loss in predictive performance.</p>
+<p>Contrast this with a <code>max_depth</code> value of <code>1</code>, which results in C-Indices of about <code>0.597</code> for the training set and <code>0.598</code> for the validation set: we have eliminated overfitting but with a much stronger degradation of predictive performance.</p>
+<p>Lower predictive performance on the training and validation sets is indicative of the model <em>underfitting</em> the data: it neither learns enough from the training data nor is able to generalize to unseen data (the validation data in our case).</p>
+<p>Finding a model that minimizes and acceptably balances underfitting and overfitting (e.g. selecting the model with a <code>max_depth</code> of <code>2</code> over the other values) is a common problem in machine learning that is known as the <em>bias-variance tradeoff</em>.</p>
+</blockquote>
+<p><a name='6'></a> ## 6. Random Forests</p>
+<p>No matter how you choose hyperparameters, a single decision tree is prone to overfitting. To solve this problem, you can try <strong>random forests</strong>, which combine predictions from many different trees to create a robust classifier.</p>
+<p>As before, we will use scikit-learn to build a random forest for the data. We will use the default hyperparameters.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rf = RandomForestClassifier(n_estimators=<span class="number">100</span>, random_state=<span class="number">10</span>)</span><br><span class="line">rf.fit(X_train_dropped, y_train_dropped)</span><br></pre></td></tr></table></figure>
+<pre><code>RandomForestClassifier(bootstrap=True, ccp_alpha=0.0, class_weight=None,
+                       criterion=&#39;gini&#39;, max_depth=None, max_features=&#39;auto&#39;,
+                       max_leaf_nodes=None, max_samples=None,
+                       min_impurity_decrease=0.0, min_impurity_split=None,
+                       min_samples_leaf=1, min_samples_split=2,
+                       min_weight_fraction_leaf=0.0, n_estimators=100,
+                       n_jobs=None, oob_score=False, random_state=10, verbose=0,
+                       warm_start=False)</code></pre>
+<p>Now compute and report the C-Index for the random forest on the training and validation set.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">y_train_rf_preds = rf.predict_proba(X_train_dropped)[:, <span class="number">1</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Train C-Index: <span class="subst">&#123;cindex(y_train_dropped.values, y_train_rf_preds)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">y_val_rf_preds = rf.predict_proba(X_val_dropped)[:, <span class="number">1</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Val C-Index: <span class="subst">&#123;cindex(y_val_dropped.values, y_val_rf_preds)&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Train C-Index: 1.0
+Val C-Index: 0.6660488696808511</code></pre>
+<p>Training a random forest with the default hyperparameters results in a model that has better predictive performance than individual decision trees as in the previous section, but this model is overfitting.</p>
+<p>We therefore need to tune (or optimize) the hyperparameters, to find a model that both has good predictive performance and minimizes overfitting.</p>
+<p>The hyperparameters we choose to adjust will be:</p>
+<ul>
+<li><code>n_estimators</code>: the number of trees used in the forest.</li>
+<li><code>max_depth</code>: the maximum depth of each tree.</li>
+<li><code>min_samples_leaf</code>: the minimum number (if <code>int</code>) or proportion (if <code>float</code>) of samples in a leaf.</li>
+</ul>
+<p>The approach we implement to tune the hyperparameters is known as a grid search:</p>
+<ul>
+<li><p>We define a set of possible values for each of the target hyperparameters.</p></li>
+<li><p>A model is trained and evaluated for every possible combination of hyperparameters.</p></li>
+<li><p>The best performing set of hyperparameters is returned.</p></li>
+</ul>
+<p>The cell below implements a hyperparameter grid search, using the C-Index to evaluate each tested model.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">holdout_grid_search</span>(<span class="params">clf, X_train_hp, y_train_hp, X_val_hp, y_val_hp, hyperparams, fixed_hyperparams=&#123;&#125;</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Conduct hyperparameter grid search on hold out validation set. Use holdout validation.</span></span><br><span class="line"><span class="string">    Hyperparameters are input as a dictionary mapping each hyperparameter name to the</span></span><br><span class="line"><span class="string">    range of values they should iterate over. Use the cindex function as your evaluation</span></span><br><span class="line"><span class="string">    function.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Input:</span></span><br><span class="line"><span class="string">        clf: sklearn classifier</span></span><br><span class="line"><span class="string">        X_train_hp (dataframe): dataframe for training set input variables</span></span><br><span class="line"><span class="string">        y_train_hp (dataframe): dataframe for training set targets</span></span><br><span class="line"><span class="string">        X_val_hp (dataframe): dataframe for validation set input variables</span></span><br><span class="line"><span class="string">        y_val_hp (dataframe): dataframe for validation set targets</span></span><br><span class="line"><span class="string">        hyperparams (dict): hyperparameter dictionary mapping hyperparameter</span></span><br><span class="line"><span class="string">                            names to range of values for grid search</span></span><br><span class="line"><span class="string">        fixed_hyperparams (dict): dictionary of fixed hyperparameters that</span></span><br><span class="line"><span class="string">                                  are not included in the grid search</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Output:</span></span><br><span class="line"><span class="string">        best_estimator (sklearn classifier): fitted sklearn classifier with best performance on</span></span><br><span class="line"><span class="string">                                             validation set</span></span><br><span class="line"><span class="string">        best_hyperparams (dict): hyperparameter dictionary mapping hyperparameter</span></span><br><span class="line"><span class="string">                                 names to values in best_estimator</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    best_estimator = <span class="literal">None</span></span><br><span class="line">    best_hyperparams = &#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># hold best running score</span></span><br><span class="line">    best_score = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># get list of param values</span></span><br><span class="line">    lists = hyperparams.values()</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># get all param combinations</span></span><br><span class="line">    param_combinations = <span class="built_in">list</span>(itertools.product(*lists))</span><br><span class="line">    total_param_combinations = <span class="built_in">len</span>(param_combinations)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># iterate through param combinations</span></span><br><span class="line">    <span class="keyword">for</span> i, params <span class="keyword">in</span> <span class="built_in">enumerate</span>(param_combinations, <span class="number">1</span>):</span><br><span class="line">        <span class="comment"># fill param dict with params</span></span><br><span class="line">        param_dict = &#123;&#125;</span><br><span class="line">        <span class="keyword">for</span> param_index, param_name <span class="keyword">in</span> <span class="built_in">enumerate</span>(hyperparams):</span><br><span class="line">            param_dict[param_name] = params[param_index]</span><br><span class="line">            </span><br><span class="line">        <span class="comment"># create estimator with specified params</span></span><br><span class="line">        estimator = clf(**param_dict, **fixed_hyperparams)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># fit estimator</span></span><br><span class="line">        estimator.fit(X_train_hp, y_train_hp)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># get predictions on validation set</span></span><br><span class="line">        preds = estimator.predict_proba(X_val_hp)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># compute cindex for predictions</span></span><br><span class="line">        estimator_score = cindex(y_val_hp, preds[:,<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;i&#125;</span>/<span class="subst">&#123;total_param_combinations&#125;</span>] <span class="subst">&#123;param_dict&#125;</span>&#x27;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;Val C-Index: <span class="subst">&#123;estimator_score&#125;</span>\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># if new high score, update high score, best estimator</span></span><br><span class="line">        <span class="comment"># and best params </span></span><br><span class="line">        <span class="keyword">if</span> estimator_score &gt;= best_score:</span><br><span class="line">                best_score = estimator_score</span><br><span class="line">                best_estimator = estimator</span><br><span class="line">                best_hyperparams = param_dict</span><br><span class="line"></span><br><span class="line">    <span class="comment"># add fixed hyperparamters to best combination of variable hyperparameters</span></span><br><span class="line">    best_hyperparams.update(fixed_hyperparams)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> best_estimator, best_hyperparams</span><br></pre></td></tr></table></figure>
+<p><a name='Ex-3'></a> ### Exercise 3</p>
+<p>In the cell below, define the values you want to run the hyperparameter grid search on, and run the cell to find the best-performing set of hyperparameters.</p>
+<p>Your objective is to get a C-Index above <code>0.6</code> on both the train and validation set.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+n_estimators: try values greater than 100
+</li>
+<li>
+max_depth: try values in the range 1 to 100
+</li>
+<li>
+min_samples_leaf: try float values below .5 and/or int values greater than 2
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">random_forest_grid_search</span>(<span class="params">X_train_dropped, y_train_dropped, X_val_dropped, y_val_dropped</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Define ranges for the chosen random forest hyperparameters </span></span><br><span class="line">    hyperparams = &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">### START CODE HERE (REPLACE array values with your code) ###</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># how many trees should be in the forest (int)</span></span><br><span class="line">        <span class="string">&#x27;n_estimators&#x27;</span>: [<span class="number">50</span>, <span class="number">200</span>, <span class="number">200</span>],</span><br><span class="line"></span><br><span class="line">        <span class="comment"># the maximum depth of trees in the forest (int)</span></span><br><span class="line">        </span><br><span class="line">        <span class="string">&#x27;max_depth&#x27;</span>: [<span class="number">3</span>, <span class="number">5</span>, <span class="number">10</span>],</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># the minimum number of samples in a leaf as a fraction</span></span><br><span class="line">        <span class="comment"># of the total number of samples in the training set</span></span><br><span class="line">        <span class="comment"># Can be int (in which case that is the minimum number)</span></span><br><span class="line">        <span class="comment"># or float (in which case the minimum is that fraction of the</span></span><br><span class="line">        <span class="comment"># number of training set samples)</span></span><br><span class="line">        <span class="string">&#x27;min_samples_leaf&#x27;</span>: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],</span><br><span class="line"></span><br><span class="line">        <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    fixed_hyperparams = &#123;</span><br><span class="line">        <span class="string">&#x27;random_state&#x27;</span>: <span class="number">10</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    rf = RandomForestClassifier</span><br><span class="line"></span><br><span class="line">    best_rf, best_hyperparams = holdout_grid_search(rf, X_train_dropped, y_train_dropped,</span><br><span class="line">                                                    X_val_dropped, y_val_dropped, hyperparams,</span><br><span class="line">                                                    fixed_hyperparams)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Best hyperparameters:\n<span class="subst">&#123;best_hyperparams&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    y_train_best = best_rf.predict_proba(X_train_dropped)[:, <span class="number">1</span>]</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Train C-Index: <span class="subst">&#123;cindex(y_train_dropped, y_train_best)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">    y_val_best = best_rf.predict_proba(X_val_dropped)[:, <span class="number">1</span>]</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Val C-Index: <span class="subst">&#123;cindex(y_val_dropped, y_val_best)&#125;</span>&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># add fixed hyperparamters to best combination of variable hyperparameters</span></span><br><span class="line">    best_hyperparams.update(fixed_hyperparams)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> best_rf, best_hyperparams</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">best_rf, best_hyperparams = random_forest_grid_search(X_train_dropped, y_train_dropped, X_val_dropped, y_val_dropped)</span><br></pre></td></tr></table></figure>
+<pre><code>[1/27] &#123;&#39;n_estimators&#39;: 50, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.6724567819148937
+
+[2/27] &#123;&#39;n_estimators&#39;: 50, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.6722240691489362
+
+[3/27] &#123;&#39;n_estimators&#39;: 50, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.6725066489361702
+
+[4/27] &#123;&#39;n_estimators&#39;: 50, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.6637965425531915
+
+[5/27] &#123;&#39;n_estimators&#39;: 50, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.6655585106382979
+
+[6/27] &#123;&#39;n_estimators&#39;: 50, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.659624335106383
+
+[7/27] &#123;&#39;n_estimators&#39;: 50, &#39;max_depth&#39;: 10, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.6611535904255319
+
+[8/27] &#123;&#39;n_estimators&#39;: 50, &#39;max_depth&#39;: 10, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.6647273936170213
+
+[9/27] &#123;&#39;n_estimators&#39;: 50, &#39;max_depth&#39;: 10, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.6605884308510638
+
+[10/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.6811502659574468
+
+[11/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.6815159574468085
+
+[12/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.6809175531914894
+
+[13/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.6765458776595744
+
+[14/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.6750831117021276
+
+[15/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.6745844414893617
+
+[16/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 10, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.668467420212766
+
+[17/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 10, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.6737699468085107
+
+[18/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 10, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.667436835106383
+
+[19/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.6811502659574468
+
+[20/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.6815159574468085
+
+[21/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.6809175531914894
+
+[22/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.6765458776595744
+
+[23/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.6750831117021276
+
+[24/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.6745844414893617
+
+[25/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 10, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.668467420212766
+
+[26/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 10, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.6737699468085107
+
+[27/27] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 10, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.667436835106383
+
+Best hyperparameters:
+&#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 2, &#39;random_state&#39;: 10&#125;
+Train C-Index: 0.7798145228600575
+Val C-Index: 0.6815159574468085</code></pre>
+<p>Finally, evaluate the model on the test set. This is a crucial step, as trying out many combinations of hyperparameters and evaluating them on the validation set could result in a model that ends up overfitting the validation set. We therefore need to check if the model performs well on unseen data, which is the role of the test set, which we have held out until now.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C3 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line">y_test_best = best_rf.predict_proba(X_test)[:, <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Test C-Index: <span class="subst">&#123;cindex(y_test.values, y_test_best)&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Test C-Index: 0.7013860174676174</code></pre>
+<p>Your C-Index on the test set should be greater than <code>0.6</code>.</p>
+<p><a name='7'></a> ## 7. Imputation</p>
+<p>You've now built and optimized a random forest model on our data. However, there was still a drop in test C-Index. This might be because you threw away more than half of the data of our data because of missing values for systolic blood pressure. Instead, we can try filling in, or imputing, these values.</p>
+<p>First, let's explore to see if our data is missing at random or not. Let's plot histograms of the dropped rows against each of the covariates (aside from systolic blood pressure) to see if there is a trend. Compare these to the histograms of the feature in the entire dataset. Try to see if one of the covariates has a signficantly different distribution in the two subsets.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">dropped_rows = X_train[X_train.isnull().<span class="built_in">any</span>(axis=<span class="number">1</span>)]</span><br><span class="line"></span><br><span class="line">columns_except_Systolic_BP = [col <span class="keyword">for</span> col <span class="keyword">in</span> X_train.columns <span class="keyword">if</span> col <span class="keyword">not</span> <span class="keyword">in</span> [<span class="string">&#x27;Systolic BP&#x27;</span>]]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> col <span class="keyword">in</span> columns_except_Systolic_BP:</span><br><span class="line">    sns.distplot(X_train.loc[:, col], norm_hist=<span class="literal">True</span>, kde=<span class="literal">False</span>, label=<span class="string">&#x27;full data&#x27;</span>)</span><br><span class="line">    sns.distplot(dropped_rows.loc[:, col], norm_hist=<span class="literal">True</span>, kde=<span class="literal">False</span>, label=<span class="string">&#x27;without missing data&#x27;</span>)</span><br><span class="line">    plt.legend()</span><br><span class="line"></span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_54_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_1.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_3.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_4.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_5.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_6.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_7.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_8.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_9.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_10.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_11.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_12.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_13.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_14.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_15.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_54_16.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p>Most of the covariates are distributed similarly whether or not we have discarded rows with missing data. In other words missingness of the data is independent of these covariates.</p>
+<p>If this had been true across <em>all</em> covariates, then the data would have been said to be <strong>missing completely at random (MCAR)</strong>.</p>
+<p>But when considering the age covariate, we see that much more data tends to be missing for patients over 65. The reason could be that blood pressure was measured less frequently for old people to avoid placing additional burden on them.</p>
+<p>As missingness is related to one or more covariates, the missing data is said to be <strong>missing at random (MAR)</strong>.</p>
+<p>Based on the information we have, there is however no reason to believe that the <em>values</em> of the missing data — or specifically the values of the missing systolic blood pressures — are related to the age of the patients. If this was the case, then this data would be said to be <strong>missing not at random (MNAR)</strong>.</p>
+<p><a name='8'></a> ## 8. Error Analysis</p>
+<p><a name='Ex-4'></a> ### Exercise 4 Using the information from the plots above, try to find a subgroup of the test data on which the model performs poorly. You should be able to easily find a subgroup of at least 250 cases on which the model has a C-Index of less than 0.69.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+Define a mask using a feature and a threshold, e.g. patients with a BMI below 20: <code>mask = X_test['BMI'] &lt; 20 </code>.
+</li>
+<li>
+Try to find a subgroup for which the model had little data.
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C4 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bad_subset</span>(<span class="params">forest, X_test, y_test</span>):</span></span><br><span class="line">    <span class="comment"># define mask to select large subset with poor performance</span></span><br><span class="line">    <span class="comment"># currently mask defines the entire set</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE the code after &#x27;mask =&#x27; with your code) ###</span></span><br><span class="line">    mask = X_test[<span class="string">&#x27;Age&#x27;</span>] &gt; <span class="number">67</span></span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line"></span><br><span class="line">    X_subgroup = X_test[mask]</span><br><span class="line">    y_subgroup = y_test[mask]</span><br><span class="line">    subgroup_size = <span class="built_in">len</span>(X_subgroup)</span><br><span class="line"></span><br><span class="line">    y_subgroup_preds = forest.predict_proba(X_subgroup)[:, <span class="number">1</span>]</span><br><span class="line">    performance = cindex(y_subgroup.values, y_subgroup_preds)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> performance, subgroup_size</span><br></pre></td></tr></table></figure>
+<h4 id="test-your-work">Test Your Work</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">performance, subgroup_size = bad_subset(best_rf, X_test, y_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Subgroup size should greater than 250, performance should be less than 0.69 &quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Subgroup size: <span class="subst">&#123;subgroup_size&#125;</span>, C-Index: <span class="subst">&#123;performance&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Subgroup size should greater than 250, performance should be less than 0.69 
+Subgroup size: 320, C-Index: 0.670638197475522</code></pre>
+<h4 id="expected-output">Expected Output</h4>
+<p>Note, your actual output will vary depending on the hyper-parameters that you chose and the mask that you chose. - Make sure that the c-index is less than 0.69 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Subgroup size: <span class="number">586</span>, C-Index: <span class="number">0.6275</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>Bonus</strong>: - See if you can get a c-index as low as 0.53 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Subgroup size: 251, C-Index: 0.5331</span><br></pre></td></tr></table></figure></p>
+<p><a name='9'></a> ## 9. Imputation Approaches</p>
+<p>Seeing that our data is not missing completely at random, we can handle the missing values by replacing them with substituted values based on the other values that we have. This is known as imputation.</p>
+<p>The first imputation strategy that we will use is <strong>mean substitution</strong>: we will replace the missing values for each feature with the mean of the available values. In the next cell, use the <code>SimpleImputer</code> from <code>sklearn</code> to use mean imputation for the missing values.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Impute values using the mean</span></span><br><span class="line">imputer = SimpleImputer(strategy=<span class="string">&#x27;mean&#x27;</span>)</span><br><span class="line">imputer.fit(X_train)</span><br><span class="line">X_train_mean_imputed = pd.DataFrame(imputer.transform(X_train), columns=X_train.columns)</span><br><span class="line">X_val_mean_imputed = pd.DataFrame(imputer.transform(X_val), columns=X_val.columns)</span><br></pre></td></tr></table></figure>
+<p><a name='Ex-5'></a> ### Exercise 5 Now perform a hyperparameter grid search to find the best-performing random forest model, and report results on the test set.</p>
+<p>Define the parameter ranges for the hyperparameter search in the next cell, and run the cell.</p>
+<h4 id="target-performance">Target performance</h4>
+<p>Make your test c-index at least 0.74 or higher</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+n_estimators: try values greater than 100
+</li>
+<li>
+max_depth: try values in the range 1 to 100
+</li>
+<li>
+min_samples_leaf: try float values below .5 and/or int values greater than 2
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Define ranges for the random forest hyperparameter search </span></span><br><span class="line">hyperparams = &#123;</span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE array values with your code) ###</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># how many trees should be in the forest (int)</span></span><br><span class="line">    <span class="string">&#x27;n_estimators&#x27;</span>: [<span class="number">200</span>,<span class="number">500</span>],</span><br><span class="line"></span><br><span class="line">    <span class="comment"># the maximum depth of trees in the forest (int)</span></span><br><span class="line">    <span class="string">&#x27;max_depth&#x27;</span>: [<span class="number">3</span>,<span class="number">5</span>],</span><br><span class="line"></span><br><span class="line">    <span class="comment"># the minimum number of samples in a leaf as a fraction</span></span><br><span class="line">    <span class="comment"># of the total number of samples in the training set</span></span><br><span class="line">    <span class="comment"># Can be int (in which case that is the minimum number)</span></span><br><span class="line">    <span class="comment"># or float (in which case the minimum is that fraction of the</span></span><br><span class="line">    <span class="comment"># number of training set samples)</span></span><br><span class="line">    <span class="string">&#x27;min_samples_leaf&#x27;</span>: [<span class="number">1</span>,<span class="number">2</span>],</span><br><span class="line"></span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C5 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line">rf = RandomForestClassifier</span><br><span class="line"></span><br><span class="line">rf_mean_imputed, best_hyperparams_mean_imputed = holdout_grid_search(rf, X_train_mean_imputed, y_train,</span><br><span class="line">                                                                     X_val_mean_imputed, y_val,</span><br><span class="line">                                                                     hyperparams, &#123;<span class="string">&#x27;random_state&#x27;</span>: <span class="number">10</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Performance for best hyperparameters:&quot;</span>)</span><br><span class="line"></span><br><span class="line">y_train_best = rf_mean_imputed.predict_proba(X_train_mean_imputed)[:, <span class="number">1</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;- Train C-Index: <span class="subst">&#123;cindex(y_train, y_train_best):<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">y_val_best = rf_mean_imputed.predict_proba(X_val_mean_imputed)[:, <span class="number">1</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;- Val C-Index: <span class="subst">&#123;cindex(y_val, y_val_best):<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">y_test_imp = rf_mean_imputed.predict_proba(X_test)[:, <span class="number">1</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;- Test C-Index: <span class="subst">&#123;cindex(y_test, y_test_imp):<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>[1/8] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.7395345453913784
+
+[2/8] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.7397907669057344
+
+[3/8] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.7491450235484942
+
+[4/8] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.7481646505507676
+
+[5/8] &#123;&#39;n_estimators&#39;: 500, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.740106701061148
+
+[6/8] &#123;&#39;n_estimators&#39;: 500, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.7403585798379725
+
+[7/8] &#123;&#39;n_estimators&#39;: 500, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.7496932941618408
+
+[8/8] &#123;&#39;n_estimators&#39;: 500, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.7494088448535303
+
+Performance for best hyperparameters:
+- Train C-Index: 0.8137
+- Val C-Index: 0.7497
+- Test C-Index: 0.7819</code></pre>
+<h4 id="expected-output-1">Expected output</h4>
+<p>Note, your actual c-index values will vary depending on the hyper-parameters that you choose.<br />
+- Try to get a good Test c-index, similar these numbers below:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Performance <span class="keyword">for</span> best hyperparameters:</span><br><span class="line">- Train C-Index: <span class="number">0.8109</span></span><br><span class="line">- Val C-Index: <span class="number">0.7495</span></span><br><span class="line">- Test C-Index: <span class="number">0.7805</span></span><br></pre></td></tr></table></figure>
+<p>Next, we will apply another imputation strategy, known as <strong>multivariate feature imputation</strong>, using scikit-learn's <code>IterativeImputer</code> class (see the <a target="_blank" rel="noopener" href="https://scikit-learn.org/stable/modules/impute.html#iterative-imputer">documentation</a>).</p>
+<p>With this strategy, for each feature that is missing values, a regression model is trained to predict observed values based on all of the other features, and the missing values are inferred using this model. As a single iteration across all features may not be enough to impute all missing values, several iterations may be performed, hence the name of the class <code>IterativeImputer</code>.</p>
+<p>In the next cell, use <code>IterativeImputer</code> to perform multivariate feature imputation.</p>
+<blockquote>
+<p>Note that the first time the cell is run, <code>imputer.fit(X_train)</code> may fail with the message <code>LinAlgError: SVD did not converge</code>: simply re-run the cell.</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Impute using regression on other covariates</span></span><br><span class="line">imputer = IterativeImputer(random_state=<span class="number">0</span>, sample_posterior=<span class="literal">False</span>, max_iter=<span class="number">1</span>, min_value=<span class="number">0</span>)</span><br><span class="line">imputer.fit(X_train)</span><br><span class="line">X_train_imputed = pd.DataFrame(imputer.transform(X_train), columns=X_train.columns)</span><br><span class="line">X_val_imputed = pd.DataFrame(imputer.transform(X_val), columns=X_val.columns)</span><br></pre></td></tr></table></figure>
+<p><a name='Ex-6'></a> ### Exercise 6</p>
+<p>Perform a hyperparameter grid search to find the best-performing random forest model, and report results on the test set. Define the parameter ranges for the hyperparameter search in the next cell, and run the cell.</p>
+<h4 id="target-performance-1">Target performance</h4>
+<p>Try to get a text c-index of at least 0.74 or higher.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+n_estimators: try values greater than 100
+</li>
+<li>
+max_depth: try values in the range 1 to 100
+</li>
+<li>
+min_samples_leaf: try float values below .5 and/or int values greater than 2
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Define ranges for the random forest hyperparameter search </span></span><br><span class="line">hyperparams = &#123;</span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE array values with your code) ###</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># how many trees should be in the forest (int)</span></span><br><span class="line">    <span class="string">&#x27;n_estimators&#x27;</span>: [<span class="number">200</span>,<span class="number">500</span>],</span><br><span class="line"></span><br><span class="line">    <span class="comment"># the maximum depth of trees in the forest (int)</span></span><br><span class="line">    <span class="string">&#x27;max_depth&#x27;</span>: [<span class="number">3</span>,<span class="number">5</span>,<span class="number">7</span>],</span><br><span class="line"></span><br><span class="line">    <span class="comment"># the minimum number of samples in a leaf as a fraction</span></span><br><span class="line">    <span class="comment"># of the total number of samples in the training set</span></span><br><span class="line">    <span class="comment"># Can be int (in which case that is the minimum number)</span></span><br><span class="line">    <span class="comment"># or float (in which case the minimum is that fraction of the</span></span><br><span class="line">    <span class="comment"># number of training set samples)</span></span><br><span class="line">    <span class="string">&#x27;min_samples_leaf&#x27;</span>: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],</span><br><span class="line"></span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C6 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line">rf = RandomForestClassifier</span><br><span class="line"></span><br><span class="line">rf_imputed, best_hyperparams_imputed = holdout_grid_search(rf, X_train_imputed, y_train,</span><br><span class="line">                                                           X_val_imputed, y_val,</span><br><span class="line">                                                           hyperparams, &#123;<span class="string">&#x27;random_state&#x27;</span>: <span class="number">10</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Performance for best hyperparameters:&quot;</span>)</span><br><span class="line"></span><br><span class="line">y_train_best = rf_imputed.predict_proba(X_train_imputed)[:, <span class="number">1</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;- Train C-Index: <span class="subst">&#123;cindex(y_train, y_train_best):<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">y_val_best = rf_imputed.predict_proba(X_val_imputed)[:, <span class="number">1</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;- Val C-Index: <span class="subst">&#123;cindex(y_val, y_val_best):<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">y_test_imp = rf_imputed.predict_proba(X_test)[:, <span class="number">1</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;- Test C-Index: <span class="subst">&#123;cindex(y_test, y_test_imp):<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>[1/18] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.7354751714838482
+
+[2/18] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.7357596207921587
+
+[3/18] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.7356792801478268
+
+[4/18] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.745511237919047
+
+[5/18] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.7446752609442414
+
+[6/18] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.7453787844243376
+
+[7/18] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 7, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.7486206379915707
+
+[8/18] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 7, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.7506139545185099
+
+[9/18] &#123;&#39;n_estimators&#39;: 200, &#39;max_depth&#39;: 7, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.749875689138162
+
+[10/18] &#123;&#39;n_estimators&#39;: 500, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.73679102095588
+
+[11/18] &#123;&#39;n_estimators&#39;: 500, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.737142782695928
+
+[12/18] &#123;&#39;n_estimators&#39;: 500, &#39;max_depth&#39;: 3, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.737118897639505
+
+[13/18] &#123;&#39;n_estimators&#39;: 500, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.7460540801104792
+
+[14/18] &#123;&#39;n_estimators&#39;: 500, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.7457783162772317
+
+[15/18] &#123;&#39;n_estimators&#39;: 500, &#39;max_depth&#39;: 5, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.746544809451534
+
+[16/18] &#123;&#39;n_estimators&#39;: 500, &#39;max_depth&#39;: 7, &#39;min_samples_leaf&#39;: 1&#125;
+Val C-Index: 0.7486162952540393
+
+[17/18] &#123;&#39;n_estimators&#39;: 500, &#39;max_depth&#39;: 7, &#39;min_samples_leaf&#39;: 2&#125;
+Val C-Index: 0.7508050349698939
+
+[18/18] &#123;&#39;n_estimators&#39;: 500, &#39;max_depth&#39;: 7, &#39;min_samples_leaf&#39;: 3&#125;
+Val C-Index: 0.7501840235028955
+
+Performance for best hyperparameters:
+- Train C-Index: 0.8774
+- Val C-Index: 0.7508
+- Test C-Index: 0.7834</code></pre>
+<h4 id="expected-output-2">Expected Output</h4>
+<p>Note, your actual output will vary depending on the hyper-parameters that you chose and the mask that you chose. <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Performance <span class="keyword">for</span> best hyperparameters:</span><br><span class="line">- Train C-Index: <span class="number">0.8131</span></span><br><span class="line">- Val C-Index: <span class="number">0.7454</span></span><br><span class="line">- Test C-Index: <span class="number">0.7797</span></span><br></pre></td></tr></table></figure></p>
+<p><a name='10'></a> ## 10. Comparison</p>
+<p>For good measure, retest on the subgroup from before to see if your new models do better.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">performance, subgroup_size = bad_subset(best_rf, X_test, y_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;C-Index (no imputation): <span class="subst">&#123;performance&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">performance, subgroup_size = bad_subset(rf_mean_imputed, X_test, y_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;C-Index (mean imputation): <span class="subst">&#123;performance&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">performance, subgroup_size = bad_subset(rf_imputed, X_test, y_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;C-Index (multivariate feature imputation): <span class="subst">&#123;performance&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>C-Index (no imputation): 0.670638197475522
+C-Index (mean imputation): 0.6847548267862058
+C-Index (multivariate feature imputation): 0.6926978884039164</code></pre>
+<p>We should see that avoiding complete case analysis (i.e. analysis only on observations for which there is no missing data) allows our model to generalize a bit better. Remember to examine your missing cases to judge whether they are missing at random or not!</p>
+<p><a name='11'></a> ## 11. Explanations: SHAP</p>
+<p>Using a random forest has improved results, but we've lost some of the natural interpretability of trees. In this section we'll try to explain the predictions using slightly more sophisticated techniques.</p>
+<p>You choose to apply <strong>SHAP (SHapley Additive exPlanations) </strong>, a cutting edge method that explains predictions made by black-box machine learning models (i.e. models which are too complex to be understandable by humans as is).</p>
+<blockquote>
+<p>Given a prediction made by a machine learning model, SHAP values explain the prediction by quantifying the additive importance of each feature to the prediction. SHAP values have their roots in cooperative game theory, where Shapley values are used to quantify the contribution of each player to the game.</p>
+<p>Although it is computationally expensive to compute SHAP values for general black-box models, in the case of trees and forests there exists a fast polynomial-time algorithm. For more details, see the <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1802.03888.pdf">TreeShap paper</a>.</p>
+</blockquote>
+<p>We'll use the <a target="_blank" rel="noopener" href="https://github.com/slundberg/shap">shap library</a> to do this for our random forest model. Run the next cell to output the most at risk individuals in the test set according to our model.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X_test_risk = X_test.copy(deep=<span class="literal">True</span>)</span><br><span class="line">X_test_risk.loc[:, <span class="string">&#x27;risk&#x27;</span>] = rf_imputed.predict_proba(X_test_risk)[:, <span class="number">1</span>]</span><br><span class="line">X_test_risk = X_test_risk.sort_values(by=<span class="string">&#x27;risk&#x27;</span>, ascending=<span class="literal">False</span>)</span><br><span class="line">X_test_risk.head()</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+Age
+</th>
+<th>
+Diastolic BP
+</th>
+<th>
+Poverty index
+</th>
+<th>
+Race
+</th>
+<th>
+Red blood cells
+</th>
+<th>
+Sedimentation rate
+</th>
+<th>
+Serum Albumin
+</th>
+<th>
+Serum Cholesterol
+</th>
+<th>
+Serum Iron
+</th>
+<th>
+Serum Magnesium
+</th>
+<th>
+Serum Protein
+</th>
+<th>
+Sex
+</th>
+<th>
+Systolic BP
+</th>
+<th>
+TIBC
+</th>
+<th>
+TS
+</th>
+<th>
+White blood cells
+</th>
+<th>
+BMI
+</th>
+<th>
+Pulse pressure
+</th>
+<th>
+risk
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+5493
+</th>
+<td>
+67.0
+</td>
+<td>
+80.0
+</td>
+<td>
+30.0
+</td>
+<td>
+1.0
+</td>
+<td>
+77.7
+</td>
+<td>
+59.0
+</td>
+<td>
+3.4
+</td>
+<td>
+231.0
+</td>
+<td>
+36.0
+</td>
+<td>
+1.40
+</td>
+<td>
+6.3
+</td>
+<td>
+1.0
+</td>
+<td>
+170.0
+</td>
+<td>
+202.0
+</td>
+<td>
+17.8
+</td>
+<td>
+8.4
+</td>
+<td>
+17.029470
+</td>
+<td>
+90.0
+</td>
+<td>
+0.689064
+</td>
+</tr>
+<tr>
+<th>
+6337
+</th>
+<td>
+69.0
+</td>
+<td>
+80.0
+</td>
+<td>
+233.0
+</td>
+<td>
+1.0
+</td>
+<td>
+77.7
+</td>
+<td>
+48.0
+</td>
+<td>
+4.2
+</td>
+<td>
+159.0
+</td>
+<td>
+87.0
+</td>
+<td>
+1.81
+</td>
+<td>
+6.9
+</td>
+<td>
+1.0
+</td>
+<td>
+146.0
+</td>
+<td>
+291.0
+</td>
+<td>
+29.9
+</td>
+<td>
+15.2
+</td>
+<td>
+17.931276
+</td>
+<td>
+66.0
+</td>
+<td>
+0.639300
+</td>
+</tr>
+<tr>
+<th>
+2044
+</th>
+<td>
+74.0
+</td>
+<td>
+80.0
+</td>
+<td>
+83.0
+</td>
+<td>
+1.0
+</td>
+<td>
+47.6
+</td>
+<td>
+19.0
+</td>
+<td>
+4.2
+</td>
+<td>
+205.0
+</td>
+<td>
+72.0
+</td>
+<td>
+1.71
+</td>
+<td>
+6.9
+</td>
+<td>
+1.0
+</td>
+<td>
+180.0
+</td>
+<td>
+310.0
+</td>
+<td>
+23.2
+</td>
+<td>
+10.8
+</td>
+<td>
+20.900101
+</td>
+<td>
+100.0
+</td>
+<td>
+0.582532
+</td>
+</tr>
+<tr>
+<th>
+1017
+</th>
+<td>
+65.0
+</td>
+<td>
+98.0
+</td>
+<td>
+16.0
+</td>
+<td>
+1.0
+</td>
+<td>
+49.4
+</td>
+<td>
+30.0
+</td>
+<td>
+3.4
+</td>
+<td>
+124.0
+</td>
+<td>
+129.0
+</td>
+<td>
+1.59
+</td>
+<td>
+7.7
+</td>
+<td>
+1.0
+</td>
+<td>
+184.0
+</td>
+<td>
+293.0
+</td>
+<td>
+44.0
+</td>
+<td>
+5.9
+</td>
+<td>
+30.858853
+</td>
+<td>
+86.0
+</td>
+<td>
+0.573548
+</td>
+</tr>
+<tr>
+<th>
+6609
+</th>
+<td>
+72.0
+</td>
+<td>
+90.0
+</td>
+<td>
+75.0
+</td>
+<td>
+1.0
+</td>
+<td>
+29.3
+</td>
+<td>
+59.0
+</td>
+<td>
+3.9
+</td>
+<td>
+216.0
+</td>
+<td>
+64.0
+</td>
+<td>
+1.63
+</td>
+<td>
+7.4
+</td>
+<td>
+2.0
+</td>
+<td>
+182.0
+</td>
+<td>
+322.0
+</td>
+<td>
+19.9
+</td>
+<td>
+9.3
+</td>
+<td>
+22.281793
+</td>
+<td>
+92.0
+</td>
+<td>
+0.565259
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>We can use SHAP values to try and understand the model output on specific individuals using force plots. Run the cell below to see a force plot on the riskiest individual.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">explainer = shap.TreeExplainer(rf_imputed)</span><br><span class="line">i = <span class="number">0</span></span><br><span class="line">shap_value = explainer.shap_values(X_test.loc[X_test_risk.index[i], :])[<span class="number">1</span>]</span><br><span class="line">shap.force_plot(explainer.expected_value[<span class="number">1</span>], shap_value, feature_names=X_test.columns, matplotlib=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_83_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p>How to read this chart: - The red sections on the left are features which push the model towards the final prediction in the positive direction (i.e. a higher Age increases the predicted risk). - The blue sections on the right are features that push the model towards the final prediction in the negative direction (if an increase in a feature leads to a lower risk, it will be shown in blue). - Note that the exact output of your chart will differ depending on the hyper-parameters that you choose for your model.</p>
+<p>We can also use SHAP values to understand the model output in aggregate. Run the next cell to initialize the SHAP values (this may take a few minutes).</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shap_values = shap.TreeExplainer(rf_imputed).shap_values(X_test)[<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<p>Run the next cell to see a summary plot of the SHAP values for each feature on each of the test examples. The colors indicate the value of the feature.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shap.summary_plot(shap_values, X_test)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_87_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p>Clearly we see that being a woman (<code>sex = 2.0</code>, as opposed to men for which <code>sex = 1.0</code>) has a negative SHAP value, meaning that it reduces the risk of dying within 10 years. High age and high systolic blood pressure have positive SHAP values, and are therefore related to increased mortality.</p>
+<p>You can see how features interact using dependence plots. These plot the SHAP value for a given feature for each data point, and color the points in using the value for another feature. This lets us begin to explain the variation in SHAP value for a single value of the main feature.</p>
+<p>Run the next cell to see the interaction between Age and Sex.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shap.dependence_plot(<span class="string">&#x27;Age&#x27;</span>, shap_values, X_test, interaction_index=<span class="string">&#x27;Sex&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_89_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p>We see that while Age &gt; 50 is generally bad (positive SHAP value), being a woman generally reduces the impact of age. This makes sense since we know that women generally live longer than men.</p>
+<p>Let's now look at poverty index and age.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shap.dependence_plot(<span class="string">&#x27;Poverty index&#x27;</span>, shap_values, X_test, interaction_index=<span class="string">&#x27;Age&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_91_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p>We see that the impact of poverty index drops off quickly, and for higher income individuals age begins to explain much of variation in the impact of poverty index.</p>
+<p>Try some other pairs and see what other interesting relationships you can find!</p>
+<h1 id="congratulations">Congratulations!</h1>
+<p>You have completed the second assignment in Course 2. Along the way you've learned to fit decision trees, random forests, and deal with missing data. Now you're ready to move on to week 3!</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Evaluation-of-Diagnostic-Models/2020/04/17/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/Evaluation-of-Diagnostic-Models/2020/04/17/" class="post-title-link" itemprop="url">Evaluation of Diagnostic Models</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-17 18:54:09" itemprop="dateCreated datePublished" datetime="2020-04-17T18:54:09+08:00">2020-04-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 15:55:19" itemprop="dateModified" datetime="2021-12-31T15:55:19+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Evaluation-of-Diagnostic-Models/2020/04/17/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Evaluation-of-Diagnostic-Models/2020/04/17/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Evaluation of Diagnostic Models</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/Evaluation-of-Diagnostic-Models/2020/04/17/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Fourier-Transform/2020/04/14/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/Fourier-Transform/2020/04/14/" class="post-title-link" itemprop="url">Fourier Transform</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-14 20:24:47" itemprop="dateCreated datePublished" datetime="2020-04-14T20:24:47+08:00">2020-04-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 15:52:43" itemprop="dateModified" datetime="2021-12-31T15:52:43+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Fourier-Transform/2020/04/14/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Fourier-Transform/2020/04/14/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Fourier Transform</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/Fourier-Transform/2020/04/14/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -870,299 +2607,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Lifelong-Learning/2020/03/14/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ruochi Zhang">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="RUOCHI.AI">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/Lifelong-Learning/2020/03/14/" class="post-title-link" itemprop="url">Lifelong Learning</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-03-14 02:28:06" itemprop="dateCreated datePublished" datetime="2020-03-14T02:28:06+08:00">2020-03-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-31 15:44:04" itemprop="dateModified" datetime="2021-12-31T15:44:04+08:00">2021-12-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/Lifelong-Learning/2020/03/14/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/Lifelong-Learning/2020/03/14/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Lifelong Learning</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/Lifelong-Learning/2020/03/14/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ruochi Zhang">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="RUOCHI.AI">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/Object-Detection-Summary/2020/03/06/" class="post-title-link" itemprop="url">Object Detection Summary</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-03-06 15:53:08" itemprop="dateCreated datePublished" datetime="2020-03-06T15:53:08+08:00">2020-03-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-31 15:40:44" itemprop="dateModified" datetime="2021-12-31T15:40:44+08:00">2021-12-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/Object-Detection-Summary/2020/03/06/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/Object-Detection-Summary/2020/03/06/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Object Detection Summary</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/Object-Detection-Summary/2020/03/06/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/AI-Search-II/2020/03/05/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ruochi Zhang">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="RUOCHI.AI">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/AI-Search-II/2020/03/05/" class="post-title-link" itemprop="url">AI - Search II</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-03-05 11:44:39" itemprop="dateCreated datePublished" datetime="2020-03-05T11:44:39+08:00">2020-03-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-31 15:10:45" itemprop="dateModified" datetime="2021-12-31T15:10:45+08:00">2021-12-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/AI-Search-II/2020/03/05/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/AI-Search-II/2020/03/05/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>CS221 course notes of Search problem in AI</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/AI-Search-II/2020/03/05/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1232,7 +2676,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-count">166</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1358,6 +2802,13 @@
 
   
 
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 

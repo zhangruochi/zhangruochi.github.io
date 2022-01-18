@@ -42,7 +42,7 @@
 <meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/14.png">
 <meta property="og:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/12.png">
 <meta property="article:published_time" content="2019-07-03T20:15:42.000Z">
-<meta property="article:modified_time" content="2021-12-31T07:44:24.014Z">
+<meta property="article:modified_time" content="2021-12-31T07:44:24.000Z">
 <meta property="article:author" content="Ruochi Zhang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://zhangruochi.com/Key-Value-Stores-Time-and-Ordering/2019/07/04/1.png">
@@ -118,6 +118,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -152,11 +153,35 @@
     <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
     </header>
@@ -795,7 +820,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-count">166</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -921,6 +946,13 @@
 
   
 
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 

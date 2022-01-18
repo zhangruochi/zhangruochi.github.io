@@ -99,6 +99,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -133,11 +134,35 @@
     <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
     </header>
@@ -172,6 +197,46 @@
     <div class="collection-year">
       <span class="collection-header">2020</span>
     </div>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2020-04-14T13:32:41+08:00"
+              content="2020-04-14">
+          04-14
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/PCA-from-scratch/2020/04/14/" itemprop="url">
+            <span itemprop="name">PCA from scratch</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2020-04-14T01:42:51+08:00"
+              content="2020-04-14">
+          04-14
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/DBSCAN-Clustering/2020/04/14/" itemprop="url">
+            <span itemprop="name">DBSCAN Clustering</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
 
   <article itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
@@ -336,46 +401,6 @@
     </header>
   </article>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2019-12-15T01:40:39+08:00"
-              content="2019-12-15">
-          12-15
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/Gated-RNN-Units/2019/12/15/" itemprop="url">
-            <span itemprop="name">Gated RNN Units</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2019-12-10T04:13:41+08:00"
-              content="2019-12-10">
-          12-10
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/Dependency-Parsing-and-Assignment3-of-CS224n/2019/12/10/" itemprop="url">
-            <span itemprop="name">Dependency Parsing and Assignment3 of CS224n</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
     </div>
   </div>
   
@@ -384,7 +409,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/categories/Artificial-Intelligence/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/categories/Artificial-Intelligence/">1</a><span class="page-number current">2</span><a class="page-number" href="/categories/Artificial-Intelligence/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/categories/Artificial-Intelligence/page/7/">7</a><a class="extend next" rel="next" href="/categories/Artificial-Intelligence/page/3/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/categories/Artificial-Intelligence/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/categories/Artificial-Intelligence/">1</a><span class="page-number current">2</span><a class="page-number" href="/categories/Artificial-Intelligence/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/categories/Artificial-Intelligence/page/8/">8</a><a class="extend next" rel="next" href="/categories/Artificial-Intelligence/page/3/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -450,7 +475,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-count">166</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -576,6 +601,13 @@
 
   
 
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 

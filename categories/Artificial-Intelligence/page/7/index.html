@@ -99,6 +99,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -133,11 +134,35 @@
     <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
     </header>
@@ -172,6 +197,46 @@
     <div class="collection-year">
       <span class="collection-header">2019</span>
     </div>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2019-03-28T16:12:16+08:00"
+              content="2019-03-28">
+          03-28
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/Character-level-language-model/2019/03/28/" itemprop="url">
+            <span itemprop="name">Character-level language model</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2019-03-27T12:41:11+08:00"
+              content="2019-03-27">
+          03-27
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/Convolutional-Neural-Networks/2019/03/27/" itemprop="url">
+            <span itemprop="name">Convolutional Neural Networks</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
 
   <article itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
@@ -333,46 +398,6 @@
     </header>
   </article>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2019-02-15T00:23:32+08:00"
-              content="2019-02-15">
-          02-15
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/Learning-to-answer-Yes-or-No/2019/02/15/" itemprop="url">
-            <span itemprop="name">Learning to answer Yes or No</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2019-02-14T23:04:29+08:00"
-              content="2019-02-14">
-          02-14
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/The%20Learning%20Problems/2019/02/14/" itemprop="url">
-            <span itemprop="name">The Learning Problems</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
     </div>
   </div>
   
@@ -381,7 +406,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/categories/Artificial-Intelligence/page/6/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/categories/Artificial-Intelligence/">1</a><span class="space">&hellip;</span><a class="page-number" href="/categories/Artificial-Intelligence/page/6/">6</a><span class="page-number current">7</span>
+    <a class="extend prev" rel="prev" href="/categories/Artificial-Intelligence/page/6/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/categories/Artificial-Intelligence/">1</a><span class="space">&hellip;</span><a class="page-number" href="/categories/Artificial-Intelligence/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/categories/Artificial-Intelligence/page/8/">8</a><a class="extend next" rel="next" href="/categories/Artificial-Intelligence/page/8/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -447,7 +472,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-count">166</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -573,6 +598,13 @@
 
   
 
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
