@@ -213,7 +213,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-01-18 16:43:18 / Modified: 16:50:46" itemprop="dateCreated datePublished" datetime="2022-01-18T16:43:18+08:00">2022-01-18</time>
+              <time title="Created: 2022-01-18 16:43:18 / Modified: 16:54:34" itemprop="dateCreated datePublished" datetime="2022-01-18T16:43:18+08:00">2022-01-18</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -250,15 +250,142 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>This paper argues it is dangerous to think of machine learning's quick wins as coming for free. Using the software engineering framework of technical debt.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/Hidden-Technical-Debt-in-Machine-Learning-Systems/2022/01/18/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h1 id="hidden-technical-debt-in-machine-learning-systems">Hidden Technical Debt in Machine Learning Systems</h1>
+<p>Category: Article Created: January 17, 2022 3:28 PM Status: Open Updated: January 17, 2022 5:02 PM</p>
+<h1 id="new-metaphors">New Metaphors</h1>
+<blockquote>
+<p><em>technical debt: long term costs incurred by moving quickly in software engineering.</em></p>
+</blockquote>
+<blockquote>
+<p><em>smell:</em> In software engineering, a design <em>smell</em> may indicate an underlying problem in a component or system.</p>
+</blockquote>
+<h1 id="background">Background</h1>
+<ol type="1">
+<li>This paper argues it is dangerous to think of machine learning’s quick wins as coming for free. Using the software engineering framework of <strong><em>technical debt</em></strong>, the authors find it is common to incur massive ongoing maintenance costs in real-world ML systems.</li>
+<li>Developing and deploying ML systems is relatively fast and cheap, but maintaining them over time is difficult and expensive.</li>
+<li>The authors argue that ML systems have a special capacity for incurring technical debt, because they have all of the maintenance problems of traditional code plus an additional set of ML-specific issues. This debt may be difficult to detect because it exists at the <strong><em>system</em> level</strong> rather than the code level.</li>
+</ol>
+<figure>
+<img src="Screen_Shot_2022-01-17_at_16.03.52.png" alt="Screen Shot 2022-01-17 at 16.03.52.png" /><figcaption aria-hidden="true">Screen Shot 2022-01-17 at 16.03.52.png</figcaption>
+</figure>
+<h1 id="highlights">Highlights</h1>
+<ol type="1">
+<li>This paper does not offer novel ML algorithms, but instead seeks to increase the community’s awareness of the difficult tradeoffs that must be considered in practice over the long term.</li>
+</ol>
+<h1 id="contents">Contents</h1>
+<h2 id="complex-models-erode-boundaries"><strong>Complex Models Erode Boundaries</strong></h2>
+<p>Traditional software engineering practice has shown that strong abstraction boundaries using encapsulation and modular design help create maintainable code. However, it is difficult to enforce strict abstraction boundaries for machine learning systems by prescribing specific intended behavior.</p>
+<p>ML is required in exactly those cases when the <strong>desired behavior cannot be effectively expressed in software logic without dependency on external data</strong>. The real world does not fit into tidy encapsulation.</p>
+<h3 id="entanglement">Entanglement</h3>
+<ol type="1">
+<li>Machine learning systems mix signals together, entangling them and making isolation of improvements impossible.</li>
+<li>The authors refer to this here as the CACE principle: <strong>Changing Anything Changes Everything</strong>.</li>
+<li>One possible mitigation strategy is to isolate models and serve ensembles. But relying on the combination creates a strong entanglement: improving an individual component model may actually make the system accuracy worse</li>
+</ol>
+<h3 id="correction-cascades."><strong>Correction Cascades.</strong></h3>
+<ol type="1">
+<li>Correction model has created a new system dependency on <span class="math inline">\(m_a\)</span>, making it significantly more expensive to analyze improvements to that model in the future.</li>
+<li>A correction cascade can create an improvement deadlock, as improving the accuracy of any individual component actually leads to system-level detriments.</li>
+</ol>
+<h3 id="undeclared-consumers"><strong>Undeclared Consumers</strong></h3>
+<ol type="1">
+<li>Without access controls, some of these consumers may be <em>undeclared</em>, silently using the output of a given model as an input to another system. In more classical software engineering, these issues are referred to as <strong>visibility debt.</strong></li>
+<li>In practice, this tight coupling can radically increase the cost and difficulty of making any changes to ma at all, even if they are improvements.</li>
+</ol>
+<h2 id="data-dependencies-cost-more-than-code-dependencies"><strong>Data Dependencies Cost More than Code Dependencies</strong></h2>
+<h3 id="unstable-data-dependencies"><strong>Unstable Data Dependencies</strong></h3>
+<ol type="1">
+<li>Some input signals are <em>unstable</em>, meaning that they qualitatively or quantitatively change behavior over time.</li>
+<li>One common mitigation strategy for unstable data dependencies is to create a <strong><em>versioned copy</em></strong> of a given signal.</li>
+</ol>
+<h3 id="underutilized-data-dependencies"><strong>Underutilized Data Dependencies</strong></h3>
+<ol type="1">
+<li>Underutilized data dependencies are input signals that provide little incremental modeling benefit. These can make an ML system unnecessarily vulnerable to change, sometimes catastrophically so, even though they could be removed with no detriment.</li>
+<li>Underutilized data dependencies can creep into a model in several ways.
+<ul>
+<li><strong>Legacy Features.</strong> The most common case is that a feature <span class="math inline">\(F\)</span> is included in a model early in its development. Over time, <span class="math inline">\(F\)</span> is made redundant by new features but this goes undetected.</li>
+<li><strong>Bundled Features.</strong> Sometimes, a group of features is evaluated and found to be beneficial. Because of deadline pressures or similar effects, all the features in the bundle are added to the model together, possibly including features that add little or no value.</li>
+<li><span class="math inline">\(\epsilon\)</span>-<strong>Features.</strong> As machine learning researchers, it is tempting to improve model accuracy even when the accuracy gain is very small or when the complexity overhead might be high.</li>
+<li><strong>Correlated Features.</strong> Often two features are strongly correlated, but one is more directly causal. Many ML methods have difficulty detecting this and credit the two features equally, or may even pick the non-causal one. This results in brittleness if world behavior later changes the correlations.</li>
+</ul></li>
+</ol>
+<h3 id="static-analysis-of-data-dependencies"><strong>Static Analysis of Data Dependencies</strong></h3>
+<ol type="1">
+<li>Tools for static analysis of data dependencies are far less common, but are essential for error checking, tracking down consumers, and enforcing migration and updates.</li>
+</ol>
+<h2 id="feedback-loops">Feedback Loops</h2>
+<p>One of the key features of live ML systems is that they often end up influencing their own behavior if they update over time. This leads to a form of <em>analysis debt</em>, in which it is difficult to predict the behavior of a given model before it is released.</p>
+<h3 id="direct-feedback-loops"><strong>Direct Feedback Loops</strong></h3>
+<p>A model may directly influence the selection of its own future training data.</p>
+<h3 id="hidden-feedback-loops"><strong>Hidden Feedback Loops</strong></h3>
+<p>A more difficult case is <em>hidden</em> feedback loops, in which two systems influence each other indirectly through the world.</p>
+<h2 id="ml-system-anti-patterns"><strong>ML-System Anti-Patterns</strong></h2>
+<h3 id="glue-code"><strong>Glue Code</strong></h3>
+<ol type="1">
+<li>ML researchers tend to develop general purpose solutions as self-contained packages.</li>
+<li>Glue code is costly in the long term because it tends to freeze a system to the peculiarities of a specific package</li>
+<li>In this way, using a generic package can <em>inhibit</em> improvements, because it makes it harder to take advantage of domain-specific properties or to tweak the objective function to achieve a domain-specific goal.</li>
+</ol>
+<h3 id="pipeline-jungles"><strong>Pipeline Jungles</strong></h3>
+<ol type="1">
+<li>As a special case of glue code, <em>pipeline jungles</em> often appear in data preparation. These can evolve organically, as new signals are identified and new information sources added incrementally.</li>
+<li>Without care, the resulting system for preparing data in an ML-friendly format may become a jungle of scrapes, joins, and sampling steps, often with intermediate files output.</li>
+</ol>
+<p>Glue code and pipeline jungles are symptomatic of integration issues that may have a root cause in overly separated “research” and “engineering” roles. When ML packages are developed in an ivory tower setting, the result may appear like black boxes to the teams that employ them in practice. A hybrid research approach where engineers and researchers are embedded together on the same teams (and indeed, are often the same people) can help reduce this source of friction significantly.</p>
+<h3 id="dead-experimental-codepaths."><strong>Dead Experimental Codepaths.</strong></h3>
+<ol type="1">
+<li>It becomes increasingly attractive in the short term to perform experiments with alternative methods by implementing experimental codepaths as conditional branches within the main production code.</li>
+<li>For any individual change, the cost of experimenting in this manner is relatively low—none of the surrounding infrastructure needs to be reworked. However, over time, these accumulated codepaths can create a growing debt due to the increasing difficulties of maintaining backward compatibility and an exponential increase in cyclomatic complexity.</li>
+</ol>
+<h3 id="abstraction-debt"><strong>Abstraction Debt</strong></h3>
+<p>There is a distinct lack of strong abstractions to support ML systems.</p>
+<h3 id="common-smells"><strong>Common Smells</strong></h3>
+<ol type="1">
+<li>Plain-Old-Data Type Smell. ****</li>
+<li>Multiple-Language Smell.</li>
+<li>Prototype Smell.</li>
+</ol>
+<h2 id="configuration-debt"><strong>Configuration Debt</strong></h2>
+<ol type="1">
+<li>Another potentially surprising area where debt can accumulate is in the configuration of machine learning systems.</li>
+<li>The Authors have observed that both researchers and engineers may treat configuration (and extension of configuration) as an afterthought.</li>
+</ol>
+<h2 id="dealing-with-changes-in-the-external-world"><strong>Dealing with Changes in the External World</strong></h2>
+<p>One of the things that makes ML systems so fascinating is that they often interact directly with the external world. Experience has shown that the external world is rarely stable.</p>
+<h3 id="fixed-thresholds-in-dynamic-systems."><strong>Fixed Thresholds in Dynamic Systems.</strong></h3>
+<ol type="1">
+<li>It is often necessary to pick a <em>decision threshold</em> for a given model to perform some action.</li>
+<li>However, such thresholds are often manually set. Thus if a model updates on new data, the old manually set threshold may be invalid.</li>
+</ol>
+<h3 id="monitoring-and-testing"><strong>Monitoring and Testing</strong></h3>
+<ol type="1">
+<li>Prediction Bias: In a system that is working as intended, it should usually be the case that the distribution of predicted labels is equal to the distribution of observed labels.</li>
+<li>Action Limits: It can be useful to set and enforce action limits as a sanity check.</li>
+<li>Up-Stream Producers: These up-stream processes should be thoroughly monitored, tested, and routinely meet a service level objective that takes the downstream ML system needs into account.</li>
+</ol>
+<h2 id="other-areas-of-ml-related-debt"><strong>Other Areas of ML-related Debt</strong></h2>
+<ol type="1">
+<li>Data Testing Debt ****</li>
+<li>Reproducibility Debt ****</li>
+<li>Process Management Debt ****</li>
+<li>Cultural Debt</li>
+</ol>
+<h1 id="conclusions"><strong>Conclusions</strong></h1>
+<p>Technical debt is a useful metaphor, but it unfortunately does not provide a strict metric that can be tracked over time. A team is still able to move quickly is not in itself evidence of low debt or good practices, since the full cost of debt becomes apparent only over time.</p>
+<p>A few useful questions to consider are:</p>
+<ol type="1">
+<li>How easily can an entirely new algorithmic approach be tested at full scale?</li>
+<li>What is the transitive closure of all data dependencies?</li>
+<li>How precisely can the impact of a new change to the system be measured?</li>
+<li>Does improving one model or signal degrade others?</li>
+<li>How quickly can new members of the team be brought up to speed?</li>
+</ol>
+<h1 id="personal-thoughts">Personal thoughts</h1>
+<ol type="1">
+<li>The reason why a machine learning system has more hidden debt is that it has not only the technical debt that traditional software has, but also the technical debt associated with machine learning.</li>
+<li>Hidden debts of machine learning system includes boundary erosion, entanglement, hidden feedback loops, undeclared consumers, data dependencies, configuration issues, changes in the external world, and a variety of system-level anti-patterns.</li>
+</ol>
+
       
     </div>
 
