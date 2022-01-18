@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="分布式系统和传统的单机系统不同，彼此是通过网络而不是”主板”连接、消息通讯是不可靠的。因此如果没有任何同步机制，同一系统的成员之间无法确保时间戳的误差控制在某个范围内。这个基本条件的缺失，会给上层应用的设计带来很多的麻烦。比如，一个业务流程的两个阶段分别在两台机器上处理，而后在第三台机器上将处理记录join起来，就可能因为时间戳的问题引发混乱。如何做好时间同步的协议，成为了分布式系统中的一个基本的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Time and Ordering">
+<meta property="og:url" content="https://zhangruochi.com/Time-and-Ordering/2020/05/09/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="分布式系统和传统的单机系统不同，彼此是通过网络而不是”主板”连接、消息通讯是不可靠的。因此如果没有任何同步机制，同一系统的成员之间无法确保时间戳的误差控制在某个范围内。这个基本条件的缺失，会给上层应用的设计带来很多的麻烦。比如，一个业务流程的两个阶段分别在两台机器上处理，而后在第三台机器上将处理记录join起来，就可能因为时间戳的问题引发混乱。如何做好时间同步的协议，成为了分布式系统中的一个基本的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Time-and-Ordering/2020/05/09/1.png">
+<meta property="og:image" content="https://zhangruochi.com/Time-and-Ordering/2020/05/09/2.png">
+<meta property="og:image" content="https://zhangruochi.com/Time-and-Ordering/2020/05/09/3.png">
+<meta property="og:image" content="https://zhangruochi.com/Time-and-Ordering/2020/05/09/4.png">
+<meta property="og:image" content="https://zhangruochi.com/Time-and-Ordering/2020/05/09/5.png">
+<meta property="article:published_time" content="2020-05-08T17:10:01.000Z">
+<meta property="article:modified_time" content="2020-05-09T05:36:27.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Time-and-Ordering/2020/05/09/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Time-and-Ordering/2020/05/09/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Time and Ordering | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Time-and-Ordering/2020/05/09/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Time and Ordering
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-05-09 01:10:01 / Modified: 13:36:27" itemprop="dateCreated datePublished" datetime="2020-05-09T01:10:01+08:00">2020-05-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/" itemprop="url" rel="index"><span itemprop="name">Big Data Architecture</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/Distributed-Cloud-Computing/" itemprop="url" rel="index"><span itemprop="name">Distributed & Cloud Computing</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Time-and-Ordering/2020/05/09/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Time-and-Ordering/2020/05/09/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>分布式系统和传统的单机系统不同，彼此是通过网络而不是”主板”连接、消息通讯是不可靠的。因此如果没有任何同步机制，同一系统的成员之间无法确保时间戳的误差控制在某个范围内。这个基本条件的缺失，会给上层应用的设计带来很多的麻烦。比如，一个业务流程的两个阶段分别在两台机器上处理，而后在第三台机器上将处理记录join起来，就可能因为时间戳的问题引发混乱。如何做好时间同步的协议，成为了分布式系统中的一个基本的问题。</p>
+<p>在系统对时的时候，有两类基本的协议，第一个是外部对时，简单的说，就是整个分布式系统中的所有成员，与外部某个指定的源头进行时间同步，确保与源头的时间的diff在某个误差范围<span class="math inline">\(D\)</span>内; 另一种是内部对时，即内部通过广播等各种手段，确保系统内的成员俩俩间的时间误差在一定范围内。从这里可以看出，如果一个集群使用了外部对时，控制误差在<span class="math inline">\(D\)</span>以内，那么这个集群内部的时间的误差，也一定能够控制在<span class="math inline">\(2D\)</span>的范围内。但反过来不一定，因为有可能整个集群与外部的时间存在很大的整体偏差，尽管在内部彼此的偏差很小。</p>
+<p>那么如何进行时间的同步呢？这里介绍两个经典的协议：Cristian和NTP。</p>
+<h2 id="cristian">Cristian</h2>
+<p>Cristian的基本过程是这样的，假定现在P进程要从授时服务器S获取时间，那么最朴素的做法就是P向S发送请求，S将自己的时间t返回给P，而后P设置自己的时间为t。这个做法存在一个很关键的问题，就是由于网络的通讯时间是不确定的，P拿到t的时候，已经经过了不确定多久了，无法估计结束后P与S的时间误差范围。因此，我们需要将网络通讯的时间，即RTT(Rount Trip Time)也考虑进来。在这个场景下，RTT指的是P进程发出请求，到得到S的回应消息的时间差，这个时间差是P进程自己可以记录求得的。假定我们知道从 <span class="math inline">\(P \to S\)</span>的最小延时是 <span class="math inline">\(min_1\)</span>, <span class="math inline">\(S \to P\)</span>的最小延时是<span class="math inline">\(min_2\)</span>,那么，我们可以推断，真实的时间在<span class="math inline">\([t+min_2, t+RTT-min_1]\)</span>间内，Cristian的做法就将对时结果设置为：<span class="math inline">\(t&#39;=t+\frac{RTT+min_2-min_1}{2}\)</span> 这个中间位置上。那么，其误差就能控制在<span class="math inline">\(\pm \frac{RTT-min_1-min_2}{2}\)</span> 的范围内。</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="1.png" width = "70%" height="70%">
+</center>
+<h2 id="ntp">NTP</h2>
+<p>另外一个知名的时间同步协议是NTP，全称Network Time Protocol。NTP协议一般在某个大的机构内部署，将机构内的设备组织成树形结构，每个节点都从父节点处获取时间。整个同步过程分为两轮，第一轮父节点记录自己发送返回的时间点<span class="math inline">\(ts_1\)</span>，子节点记录自己接收到返回消息的时间 <span class="math inline">\(tr_1\)</span>；而后第二轮，子节点记录自己的发送时间<span class="math inline">\(ts_2\)</span>；；父节点记录收到请求的时间<span class="math inline">\(tr_2\)</span>后将<span class="math inline">\(ts_1\)</span> 和 <span class="math inline">\(tr_2\)</span>返回。那么子节点可以计算出自己和父节点之间的时间偏差为: <span class="math inline">\(o=\frac{(tr_{1}-tr_{2}+ts_{2}-ts{1})}{2}\)</span>，并以此为依据进行修正(一般需要确保时间不能“倒流”)。那么为什么<span class="math inline">\(o\)</span>是这么计算呢？假定子节点与父节点的时间偏差(offset)为<span class="math inline">\(o\prime\)</span>、父节点往子节点的通讯时延为<span class="math inline">\(L_1\)</span>、子节点往父节点的通讯时延为<span class="math inline">\(L_2\)</span>，那么:</p>
+<p><span class="math display">\[
+\begin{align*} 
+&amp; tr_{1}=ts_{1}+L_{1}+o&#39; \\
+&amp; tr_{2}=ts_{2}+L_{2}-o&#39; \\
+\end{align*}
+\]</span></p>
+<p>相减可以得到: <span class="math display">\[o&#39;= \frac{(tr_1-tr_2+ts_2-ts_1)}{2} + \frac{(L_2 - L1)}{2} = o + \frac{(L_2-L1)}{2}\]</span></p>
+<p>因此:</p>
+<p><span class="math display">\[
+\lvert o&#39;-o \rvert \leqslant \lvert \frac{(L_2-L_1)}{2}\rvert &lt; \frac{(L_{1}+L_{2})}{2} = \frac{RTT}{2}
+\]</span></p>
+<p>由此可知o的这个值也在RTT相关的一个误差范围内，是可估计的。 从上面两个协议可以看出，对时的误差是与RTT强相关的。由于消息的传递受制于光速、距离越远时间准确度的保证就越差。对于那些假定了时间误差在某个范围内的分布式协议，在跨越距离很大的时候，我们就必须要将这个误差对系统的影响考虑在内，这将显著增加分布式系统设计的复杂度、或者影响设计出来的系统的吞吐(尤其是有高一致性要求的事务型系统)。</p>
+<p>最后，不论是Cristian还是NTP，都只描述了一次对时如何将时间的偏移(clow skew)控制在一定范围内。由于不同机器的时钟的行进速度(clock drift)是不同的，因此我们需要每隔一段时间，进行一次修正，以消除时钟节奏不同的影响。多久需要做一次同步呢? 这个做一个简单的计算就可以得到。假定系统整体时钟的行进速率与标准时钟的速率小于MDR(Max Drift Rate, 一般由时钟的实现方式决定)，那么系统内俩俩时钟的行进速率差小于2MDR。如果我们要求系统内时间差不能超过M，那就必须以不低于<span class="math inline">\(\delta = \frac{M}{2 \times {MDR}}\)</span>的间隔进行时间同步。在现实的系统中，我们需要计算合理的M，以避免系统内出现过多的时间同步消息。</p>
+<p>在上面部分，我们谈到了分布式系统里进程彼此的物理时间是如何进行同步的，并介绍了一些经典的时间同步算法。但静下心来仔细想想，我们希望进行时间同步，很多时候是希望不同的进程，对系统内事件的顺序达成一致。至于是否是使用真实世界的那个时间来排序，往往并不是那么重要。 那么，如何在一个分布式系统中，对发生在众多节点上的事件进行定序呢？目前已知的做法包括以下几种：</p>
+<ul>
+<li>使用物理时间同步的方法，确保众多节点的时间偏差在某个范围内。而后记录事件的发生时间及理论误差范围，比如将每个事件的发生时间登记为<span class="math inline">\((t \pm \Delta)\)</span>如果两个事件的时间范围没有overlap，那么就自然的可以排序判断；否则，则需要引入一个新的排序规则(比如以节点id)，对这两个事件约定一个排序。spanner中采用了这种方式。</li>
+<li>采用Lamport Timestamp及其引申算法进行定序，确保事件满足causality consistency的性质，成为后续更高层次的分布式算法设计的基础。本文后面主要将展开这类算法，并引出分布式系统中一些基础概念。这些基础概念是理解分布式共识问题(consensus problem)的基础。</li>
+</ul>
+<h2 id="lamport">Lamport</h2>
+<p>为明确这个问题，我们首先需要先对事件的序(happen-before)做出一个定义。在Lamport的体系中，事件的先后关系是按照如下原则设定的：</p>
+<ul>
+<li>规则一：如果A、B两个事件都发生在同一个进程内，那么，A、B之间的序自然可以由这个进程给出。假如进程先执行了A后执行了B，那么可以说A在B之前发生，记为<span class="math inline">\(A \prec B\)</span>;</li>
+<li>规则二：如果进程x往进程y发送了一条消息M；设在进程x的消息发送事件为A，进程y收到消息的事件为B，则显然我们应当认为A在B之前发生，同样记为<span class="math inline">\(A \prec B\)</span>.</li>
+</ul>
+<p>由此引出了Lamport timestamp的算法，这个算法就是一种给事件打上逻辑时间戳、确保其满足causality的基本属性。这个算法的基本过程为：</p>
+<ul>
+<li>每个进程都记录自己的一个当前时间戳，初始的时候，大家都是0</li>
+<li>如果进程内部发生了一个新的事件，那么将当前时间戳记为 <span class="math inline">\(t&#39;=t+1\)</span>，并认为事件发生于<span class="math inline">\(t&#39;\)</span>时刻</li>
+<li>如果进程A向进程B通讯，则发送消息的时候，进程A的时间戳<span class="math inline">\(t&#39;\_A = t_A + 1\)</span>并随消息发送到B，B更新自己的时间戳为<span class="math inline">\(t&#39;\_B = max(t&#39;\_B, t&#39;\_A) + 1\)</span>.</li>
+</ul>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="2.png" width = "70%" height="70%">
+</center>
+<h3 id="concurrent-events">Concurrent Events</h3>
+<ul>
+<li>A pair of concurrent events doesn’t have a causal path from one event to another (either way, in the pair)</li>
+<li>Lamport timestamps not guaranteed to be ordered or unequal for concurrent events</li>
+<li>Ok, since concurrent events are not causality related!</li>
+<li>Remember</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">E1 -&gt; E2 =&gt; timestamp(E1) &lt; timestamp (E2), </span><br><span class="line">BUT timestamp(E1) &lt; timestamp (E2) =&gt; &#123;E1 -&gt; E2&#125; OR &#123;E1 and E2 concurrent&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="vector-timestamps">Vector timestamps</h2>
+<ul>
+<li>Used in key-value stores like Riak</li>
+<li>Each process uses a vector of integer clocks</li>
+<li>Suppose there are N processes in the group 1...N</li>
+<li>Each vector has N elements</li>
+<li>Process i maintains vector Vi[1...N]</li>
+<li><span class="math inline">\(j_{th}\)</span> element of vector clock at process <span class="math inline">\(i\)</span>, <span class="math inline">\(V_i[j]\)</span>, is <span class="math inline">\(i’s\)</span> knowledge of latest events at process <span class="math inline">\(j\)</span></li>
+</ul>
+<p>Incrementing vector clocks</p>
+<ol type="1">
+<li>On an instruction or send event at process <span class="math inline">\(i\)</span>, it increments only its <span class="math inline">\(i_{th}\)</span> element of its vector clock.</li>
+<li>Each message carries the send-event’s vector timestamp V_{message}[1...N]</li>
+<li>On receiving a message at process <span class="math inline">\(i\)</span>:</li>
+</ol>
+<p><span class="math display">\[
+\begin{align*} 
+&amp;V_i[i] = V_i[i] + 1 \\
+&amp; V_i[j] = max(V_{message}[j], V_i[j]) \quad for \ quad j \neq i \\
+\end{align*}
+\]</span></p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="3.png" width = "70%" height="70%">
+</center>
+<h3 id="causality">Causality</h3>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="4.png" width = "70%" height="70%">
+</center>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="5.png" width = "70%" height="70%">
+</center>
+<h2 id="reference">Reference</h2>
+<ul>
+<li>https://lvsizhe.github.io/course/2018/09/time-in-distributed-systems-part1.html</li>
+<li>lecture slide from https://www.coursera.org/learn/cloud-computing/lecture/dy8wf/2-5-vector-clocks</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Programming-Language-New-Types-Pattern-Matching-Tail-Recursion/2020/05/03/" rel="prev" title="Programming Language: New Types, Pattern Matching, Tail Recursion">
+      <i class="fa fa-chevron-left"></i> Programming Language: New Types, Pattern Matching, Tail Recursion
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/ML-Interview-Feature-Engineering-and-Evaluation/2020/05/24/" rel="next" title="ML-Interview-Feature-Engineering-and-Evaluation">
+      ML-Interview-Feature-Engineering-and-Evaluation <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#cristian"><span class="nav-number">1.</span> <span class="nav-text">Cristian</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ntp"><span class="nav-number">2.</span> <span class="nav-text">NTP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lamport"><span class="nav-number">3.</span> <span class="nav-text">Lamport</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#concurrent-events"><span class="nav-number">3.1.</span> <span class="nav-text">Concurrent Events</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vector-timestamps"><span class="nav-number">4.</span> <span class="nav-text">Vector timestamps</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#causality"><span class="nav-number">4.1.</span> <span class="nav-text">Causality</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">268</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

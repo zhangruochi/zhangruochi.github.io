@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Background The goal of reducing sequential computation also forms the foundation of the Extended Neural GPU, ByteNet and ConvS2S, all of which use convolutional neural networks as basic building block">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Transformer">
+<meta property="og:url" content="https://zhangruochi.com/Transformer/2019/12/20/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Background The goal of reducing sequential computation also forms the foundation of the Extended Neural GPU, ByteNet and ConvS2S, all of which use convolutional neural networks as basic building block">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Transformer/2019/12/20/ModalNet-19.png">
+<meta property="og:image" content="https://zhangruochi.com/Transformer/2019/12/20/attention.png">
+<meta property="og:image" content="https://zhangruochi.com/Transformer/2019/12/20/ModalNet-20.png">
+<meta property="og:image" content="https://zhangruochi.com/Transformer/2019/12/20/ModalNet-21.png">
+<meta property="article:published_time" content="2019-12-20T04:24:40.000Z">
+<meta property="article:modified_time" content="2019-12-21T18:20:04.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="cs224n">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Transformer/2019/12/20/ModalNet-19.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Transformer/2019/12/20/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Transformer | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Transformer/2019/12/20/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Transformer
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-20 12:24:40" itemprop="dateCreated datePublished" datetime="2019-12-20T12:24:40+08:00">2019-12-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-22 02:20:04" itemprop="dateModified" datetime="2019-12-22T02:20:04+08:00">2019-12-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Transformer/2019/12/20/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Transformer/2019/12/20/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="background">Background</h2>
+<p>The goal of reducing sequential computation also forms the foundation of the Extended Neural GPU, ByteNet and ConvS2S, all of which use convolutional neural networks as basic building block, computing hidden representations in parallel for all input and output positions. In these models, the number of operations required to relate signals from two arbitrary input or output positions grows in the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. This makes it more difficult to learn dependencies between distant positions. In the Transformer this is reduced to a constant number of operations, albeit at the cost of reduced effective resolution due to averaging attention-weighted positions, an effect we counteract with Multi-Head Attention.</p>
+<p>Self-attention, sometimes called intra-attention is an attention mechanism relating different positions of a single sequence in order to compute a representation of the sequence. Self-attention has been used successfully in a variety of tasks including reading comprehension, abstractive summarization, textual entailment and learning task-independent sentence representations. End-to-end memory networks are based on a recurrent attention mechanism instead of sequencealigned recurrence and have been shown to perform well on simple-language question answering and language modeling tasks.</p>
+<p>To the best of our knowledge, however, the Transformer is the first transduction model relying entirely on self-attention to compute representations of its input and output without using sequence aligned RNNs or convolution.</p>
+<h2 id="embeddings-and-softmax">Embeddings and Softmax</h2>
+<p>Similarly to other sequence transduction models, we use learned embeddings to convert the input tokens and output tokens to vectors of dimension <span class="math inline">\(d_{\text{model}}\)</span>. We also use the usual learned linear transformation and softmax function to convert the decoder output to predicted next-token probabilities. In our model, we share the same weight matrix between the two embedding layers and the pre-softmax linear transformation, similar to <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1608.05859">(cite)</a>. In the embedding layers, we multiply those weights by <span class="math inline">\(\sqrt{d_{\text{model}}}\)</span>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Embeddings</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, d_model, vocab</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(Embeddings, self).__init__()</span><br><span class="line">        self.lut = nn.Embedding(vocab, d_model)</span><br><span class="line">        self.d_model = d_model</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.lut(x) * math.sqrt(self.d_model)</span><br></pre></td></tr></table></figure>
+<h2 id="positional-encoding">Positional Encoding</h2>
+<p>Since our model contains no recurrence and no convolution, <strong>in order for the model to make use of the order of the sequence</strong>, we must inject some information about the relative or absolute position of the tokens in the sequence. To this end, we add "positional encodings" to the input embeddings at the bottoms of the encoder and decoder stacks. The positional encodings have the same dimension <span class="math inline">\(d_{\text{model}}\)</span> as the embeddings, so that the two can be summed. There are many choices of positional encodings, learned and fixed <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1705.03122.pdf">(cite)</a>.</p>
+<p>In this work, we use sine and cosine functions of different frequencies:</p>
+<p><span class="math display">\[PE_{(pos,2i)} = sin(pos / 10000^{2i/d_{\text{model}}})\]</span></p>
+<p><span class="math display">\[PE_{(pos,2i+1)} = cos(pos / 10000^{2i/d_{\text{model}}})\]</span></p>
+<p>where <span class="math inline">\(pos\)</span> is the position and <span class="math inline">\(i\)</span> is the dimension. That is, each dimension of the positional encoding corresponds to a sinusoid. The wavelengths form a geometric progression from <span class="math inline">\(2\pi\)</span> to <span class="math inline">\(10000 \cdot 2\pi\)</span>. We chose this function because we hypothesized it would allow the model to easily learn to attend by relative positions, since for any fixed offset <span class="math inline">\(k\)</span>, <span class="math inline">\(PE_{pos+k}\)</span> can be represented as a linear function of <span class="math inline">\(PE_{pos}\)</span>.</p>
+<p>In addition, we apply dropout to the sums of the embeddings and the positional encodings in both the encoder and decoder stacks. For the base model, we use a rate of <span class="math inline">\(P_{drop}=0.1\)</span>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PositionalEncoding</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&quot;Implement the PE function.&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, d_model, dropout, max_len=<span class="number">5000</span></span>):</span></span><br><span class="line">        <span class="built_in">super</span>(PositionalEncoding, self).__init__()</span><br><span class="line">        self.dropout = nn.Dropout(p=dropout)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Compute the positional encodings once in log space.</span></span><br><span class="line">        pe = torch.zeros(max_len, d_model)</span><br><span class="line">        position = torch.arange(<span class="number">0</span>, max_len).unsqueeze(<span class="number">1</span>)</span><br><span class="line">        div_term = torch.exp(torch.arange(<span class="number">0</span>, d_model, <span class="number">2</span>) *</span><br><span class="line">                             -(math.log(<span class="number">10000.0</span>) / d_model))</span><br><span class="line">        pe[:, <span class="number">0</span>::<span class="number">2</span>] = torch.sin(position * div_term)</span><br><span class="line">        pe[:, <span class="number">1</span>::<span class="number">2</span>] = torch.cos(position * div_term)</span><br><span class="line">        pe = pe.unsqueeze(<span class="number">0</span>)</span><br><span class="line">        self.register_buffer(<span class="string">&#x27;pe&#x27;</span>, pe)</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        x = x + Variable(self.pe[:, :x.size(<span class="number">1</span>)], </span><br><span class="line">                         requires_grad=<span class="literal">False</span>)</span><br><span class="line">        <span class="keyword">return</span> self.dropout(x)</span><br></pre></td></tr></table></figure>
+<h2 id="layer-norm-and-residual-connection">Layer Norm and residual connection</h2>
+<p>We employ a residual connection <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1512.03385">(cite)</a> around each of the two sub-layers, followed by layer normalization <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1607.06450">(cite)</a>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LayerNorm</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&quot;Construct a layernorm module (See citation for details).&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, features, eps=<span class="number">1e-6</span></span>):</span></span><br><span class="line">        <span class="built_in">super</span>(LayerNorm, self).__init__()</span><br><span class="line">        self.a_2 = nn.Parameter(torch.ones(features))</span><br><span class="line">        self.b_2 = nn.Parameter(torch.zeros(features))</span><br><span class="line">        self.eps = eps</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        mean = x.mean(-<span class="number">1</span>, keepdim=<span class="literal">True</span>)</span><br><span class="line">        std = x.std(-<span class="number">1</span>, keepdim=<span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">return</span> self.a_2 * (x - mean) / (std + self.eps) + self.b_2</span><br></pre></td></tr></table></figure>
+<p>That is, the output of each sub-layer is <span class="math inline">\(\mathrm{LayerNorm}(x + \mathrm{Sublayer}(x))\)</span>, where <span class="math inline">\(\mathrm{Sublayer}(x)\)</span> is the function implemented by the sub-layer itself. We apply dropout <a target="_blank" rel="noopener" href="http://jmlr.org/papers/v15/srivastava14a.html">(cite)</a> to the output of each sub-layer, before it is added to the sub-layer input and normalized.</p>
+<p>To facilitate these residual connections, all sub-layers in the model, as well as the embedding layers, produce outputs of dimension <span class="math inline">\(d_{\text{model}}=512\)</span>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SublayerConnection</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    A residual connection followed by a layer norm.</span></span><br><span class="line"><span class="string">    Note for code simplicity the norm is first as opposed to last.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size, dropout</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(SublayerConnection, self).__init__()</span><br><span class="line">        self.norm = LayerNorm(size)</span><br><span class="line">        self.dropout = nn.Dropout(dropout)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x, sublayer</span>):</span></span><br><span class="line">        <span class="string">&quot;Apply residual connection to any sublayer with the same size.&quot;</span></span><br><span class="line">        <span class="keyword">return</span> x + self.dropout(sublayer(self.norm(x)))</span><br></pre></td></tr></table></figure>
+<p>Each layer has two sub-layers. The first is a multi-head self-attention mechanism, and the second is a simple, position-wise fully connected feed-forward network.</p>
+<h2 id="attention">Attention</h2>
+<h3 id="scaled-dot-product-attention">Scaled Dot-Product Attention</h3>
+<p>An attention function can be described as mapping a <code>query</code> and a set of <code>key</code>-<code>value</code> pairs to an output, where the query, keys, values, and output are all vectors. The output is computed as a weighted sum of the values, where the weight assigned to each value is computed by a compatibility function of the query with the corresponding key.</p>
+<p>We call our particular attention <code>Scaled Dot-Product Attention</code>. The input consists of queries and keys of dimension <span class="math inline">\(d_k\)</span>, and values of dimension <span class="math inline">\(d_v\)</span>. We compute the dot products of the query with all keys, divide each by <span class="math inline">\(\sqrt{d_k}\)</span>, and apply a softmax function to obtain the weights on the values.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="ModalNet-19.png"  width = "20%" height="20%">
+</center>
+<p>In practice, we compute the attention function on a set of queries simultaneously, packed together into a matrix <span class="math inline">\(Q\)</span>. The keys and values are also packed together into matrices <span class="math inline">\(K\)</span> and <span class="math inline">\(V\)</span>. We compute the matrix of outputs as:</p>
+<p><span class="math display">\[\mathrm{Attention}(Q, K, V) = \mathrm{softmax}(\frac{QK^T}{\sqrt{d_k}})V\]</span></p>
+<p>The two most commonly used attention functions are additive attention <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1409.0473">(cite)</a>, and dot-product (multiplicative) attention. Dot-product attention is identical to our algorithm, except for the scaling factor of <span class="math inline">\(\frac{1}{\sqrt{d_k}}\)</span>. Additive attention computes the compatibility function using a feed-forward network with a single hidden layer. While the two are similar in theoretical complexity, dot-product attention is much faster and more space-efficient in practice, since it can be implemented using highly optimized matrix multiplication code.</p>
+<p>While for small values of <span class="math inline">\(d_k\)</span> the two mechanisms perform similarly, additive attention outperforms dot product attention without scaling for larger values of <span class="math inline">\(d_k\)</span> <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1703.03906">(cite)</a>. We suspect that for large values of <span class="math inline">\(d_k\)</span>, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients (To illustrate why the dot products get large, assume that the components of <span class="math inline">\(q\)</span> and <span class="math inline">\(k\)</span> are independent random variables with mean <span class="math inline">\(0\)</span> and variance <span class="math inline">\(1\)</span>. Then their dot product, <span class="math inline">\(q \cdot k = \sum_{i=1}^{d_k} q_ik_i\)</span>, has mean <span class="math inline">\(0\)</span> and variance <span class="math inline">\(d_k\)</span>.). To counteract this effect, we scale the dot products by <span class="math inline">\(\frac{1}{\sqrt{d_k}}\)</span>.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="attention.png" width = "50%" height="50%">
+</center>
+<h3 id="multi-head-attention">Multi-head attention</h3>
+<p>Multi-head attention allows the model to jointly attend to information from different representation subspaces at different positions. With a single attention head, averaging inhibits this.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="ModalNet-20.png" width = "50%" height="50%">
+</center>
+<p><span class="math display">\[    
+\mathrm{MultiHead}(Q, K, V) = \mathrm{Concat}(\mathrm{head_1}, ..., \mathrm{head_h})W^O    \\                                           
+    \text{where}~\mathrm{head_i} = \mathrm{Attention}(QW^Q_i, KW^K_i, VW^V_i)                                
+\]</span></p>
+<p>Where the projections are parameter matrices <span class="math inline">\(W^Q_i \in \mathbb{R}^{d_{\text{model}} \times d_k}\)</span>, <span class="math inline">\(W^K_i \in \mathbb{R}^{d_{\text{model}} \times d_k}\)</span>, <span class="math inline">\(W^V_i \in \mathbb{R}^{d_{\text{model}} \times d_v}\)</span> and <span class="math inline">\(W^O \in \mathbb{R}^{hd_v \times d_{\text{model}}}\)</span>. In this work we employ <span class="math inline">\(h=8\)</span> parallel attention layers, or heads. For each of these we use <span class="math inline">\(d_k=d_v=d_{\text{model}}/h=64\)</span>. Due to the reduced dimension of each head, the total computational cost is similar to that of single-head attention with full dimensionality.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MultiHeadedAttention</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, h, d_model, dropout=<span class="number">0.1</span></span>):</span></span><br><span class="line">        <span class="string">&quot;Take in model size and number of heads.&quot;</span></span><br><span class="line">        <span class="built_in">super</span>(MultiHeadedAttention, self).__init__()</span><br><span class="line">        <span class="keyword">assert</span> d_model % h == <span class="number">0</span></span><br><span class="line">        <span class="comment"># We assume d_v always equals d_k</span></span><br><span class="line">        self.d_k = d_model // h</span><br><span class="line">        self.h = h</span><br><span class="line">        self.linears = clones(nn.Linear(d_model, d_model), <span class="number">4</span>)</span><br><span class="line">        self.attn = <span class="literal">None</span></span><br><span class="line">        self.dropout = nn.Dropout(p=dropout)</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, query, key, value, mask=<span class="literal">None</span></span>):</span></span><br><span class="line">        <span class="string">&quot;Implements Figure 2&quot;</span></span><br><span class="line">        <span class="keyword">if</span> mask <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="comment"># Same mask applied to all h heads.</span></span><br><span class="line">            mask = mask.unsqueeze(<span class="number">1</span>)</span><br><span class="line">        nbatches = query.size(<span class="number">0</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 1) Do all the linear projections in batch from d_model =&gt; h x d_k </span></span><br><span class="line">        query, key, value = \</span><br><span class="line">            [l(x).view(nbatches, -<span class="number">1</span>, self.h, self.d_k).transpose(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">             <span class="keyword">for</span> l, x <span class="keyword">in</span> <span class="built_in">zip</span>(self.linears, (query, key, value))]</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 2) Apply attention on all the projected vectors in batch. </span></span><br><span class="line">        x, self.attn = attention(query, key, value, mask=mask, </span><br><span class="line">                                 dropout=self.dropout)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 3) &quot;Concat&quot; using a view and apply a final linear. </span></span><br><span class="line">        x = x.transpose(<span class="number">1</span>, <span class="number">2</span>).contiguous() \</span><br><span class="line">             .view(nbatches, -<span class="number">1</span>, self.h * self.d_k)</span><br><span class="line">        <span class="keyword">return</span> self.linears[-<span class="number">1</span>](x)</span><br></pre></td></tr></table></figure>
+<h3 id="applications-of-attention-in-our-model">Applications of Attention in our Model</h3>
+<p>The Transformer uses multi-head attention in three different ways:<br />
+1. In <strong>encoder-decoder attention</strong> layers, the queries come from the previous decoder layer, and the memory keys and values come from the <code>output of the encoder</code>. This allows every position in the decoder to attend over all positions in the input sequence. This mimics the typical encoder-decoder attention mechanisms in sequence-to-sequence models such as <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1609.08144">(cite)</a>.</p>
+<ol start="2" type="1">
+<li>The encoder contains self-attention layers. In a self-attention layer all of the keys, values and queries come from the same place, in this case, the output of the previous layer in the encoder. Each position in the encoder can attend to all positions in the previous layer of the encoder.<br />
+</li>
+<li>Similarly, self-attention layers in the decoder allow each position in the decoder to attend to all positions in the decoder up to and including that position. We need to prevent leftward information flow in the decoder to preserve the auto-regressive property. We implement this inside of scaled dot-product attention by masking out (setting to <span class="math inline">\(-\infty\)</span>) all values in the input of the softmax which correspond to illegal connections.</li>
+</ol>
+<h2 id="position-wise-feed-forward-networks">Position-wise Feed-Forward Networks</h2>
+<p>In addition to attention sub-layers, each of the layers in our encoder and decoder contains a fully connected feed-forward network, which is applied to each position separately and identically. This consists of two linear transformations with a ReLU activation in between.</p>
+<p><span class="math display">\[\mathrm{FFN}(x)=\max(0, xW_1 + b_1) W_2 + b_2\]</span></p>
+<p>While the linear transformations are the same across different positions, they use different parameters from layer to layer. Another way of describing this is as two convolutions with kernel size 1. The dimensionality of input and output is <span class="math inline">\(d_{\text{model}}=512\)</span>, and the inner-layer has dimensionality <span class="math inline">\(d_{ff}=2048\)</span>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PositionwiseFeedForward</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&quot;Implements FFN equation.&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, d_model, d_ff, dropout=<span class="number">0.1</span></span>):</span></span><br><span class="line">        <span class="built_in">super</span>(PositionwiseFeedForward, self).__init__()</span><br><span class="line">        self.w_1 = nn.Linear(d_model, d_ff)</span><br><span class="line">        self.w_2 = nn.Linear(d_ff, d_model)</span><br><span class="line">        self.dropout = nn.Dropout(dropout)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.w_2(self.dropout(F.relu(self.w_1(x))))</span><br></pre></td></tr></table></figure>
+<h2 id="model-architecture">Model Architecture</h2>
+<p>Most competitive neural sequence transduction models have an encoder-decoder structure <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1409.0473">(cite)</a>. Here, the encoder maps an input sequence of symbol representations <span class="math inline">\((x_1, ..., x_n)\)</span> to a sequence of continuous representations <span class="math inline">\(\mathbf{z} = (z_1, ..., z_n)\)</span>. Given <span class="math inline">\(\mathbf{z}\)</span>, the decoder then generates an output sequence <span class="math inline">\((y_1,...,y_m)\)</span> of symbols one element at a time. At each step the model is auto-regressive <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1308.0850">(cite)</a>, consuming the previously generated symbols as additional input when generating the next.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="ModalNet-21.png" width = "50%" height="50%">
+</center>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EncoderDecoder</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    A standard Encoder-Decoder architecture. Base for this and many </span></span><br><span class="line"><span class="string">    other models.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, encoder, decoder, src_embed, tgt_embed, generator</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(EncoderDecoder, self).__init__()</span><br><span class="line">        self.encoder = encoder</span><br><span class="line">        self.decoder = decoder</span><br><span class="line">        self.src_embed = src_embed</span><br><span class="line">        self.tgt_embed = tgt_embed</span><br><span class="line">        self.generator = generator</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, src, tgt, src_mask, tgt_mask</span>):</span></span><br><span class="line">        <span class="string">&quot;Take in and process masked src and target sequences.&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self.decode(self.encode(src, src_mask), src_mask,</span><br><span class="line">                            tgt, tgt_mask)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">encode</span>(<span class="params">self, src, src_mask</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.encoder(self.src_embed(src), src_mask)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decode</span>(<span class="params">self, memory, src_mask, tgt, tgt_mask</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.decoder(self.tgt_embed(tgt), memory, src_mask, tgt_mask)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Generator</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&quot;Define standard linear + softmax generation step.&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, d_model, vocab</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(Generator, self).__init__()</span><br><span class="line">        self.proj = nn.Linear(d_model, vocab)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        <span class="keyword">return</span> F.log_softmax(self.proj(x), dim=-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="encoder-and-decoder-stacks">Encoder and Decoder Stacks</h2>
+<h3 id="encoder">Encoder</h3>
+<p>The encoder is composed of a stack of <span class="math inline">\(N=6\)</span> identical layers.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">clones</span>(<span class="params">module, N</span>):</span></span><br><span class="line">    <span class="string">&quot;Produce N identical layers.&quot;</span></span><br><span class="line">    <span class="keyword">return</span> nn.ModuleList([copy.deepcopy(module) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(N)])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Encoder</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&quot;Core encoder is a stack of N layers&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, layer, N</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(Encoder, self).__init__()</span><br><span class="line">        self.layers = clones(layer, N)</span><br><span class="line">        self.norm = LayerNorm(layer.size)</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x, mask</span>):</span></span><br><span class="line">        <span class="string">&quot;Pass the input (and mask) through each layer in turn.&quot;</span></span><br><span class="line">        <span class="keyword">for</span> layer <span class="keyword">in</span> self.layers:</span><br><span class="line">            x = layer(x, mask)</span><br><span class="line">        <span class="keyword">return</span> self.norm(x)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EncoderLayer</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&quot;Encoder is made up of self-attn and feed forward (defined below)&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size, self_attn, feed_forward, dropout</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(EncoderLayer, self).__init__()</span><br><span class="line">        self.self_attn = self_attn</span><br><span class="line">        self.feed_forward = feed_forward</span><br><span class="line">        self.sublayer = clones(SublayerConnection(size, dropout), <span class="number">2</span>)</span><br><span class="line">        self.size = size</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x, mask</span>):</span></span><br><span class="line">        <span class="string">&quot;Follow Figure 1 (left) for connections.&quot;</span></span><br><span class="line">        x = self.sublayer[<span class="number">0</span>](x, <span class="keyword">lambda</span> x: self.self_attn(x, x, x, mask))</span><br><span class="line">        <span class="keyword">return</span> self.sublayer[<span class="number">1</span>](x, self.feed_forward)</span><br></pre></td></tr></table></figure>
+<h3 id="decoder">Decoder</h3>
+<p>The decoder is also composed of a stack of <span class="math inline">\(N=6\)</span> identical layers.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Decoder</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&quot;Generic N layer decoder with masking.&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, layer, N</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(Decoder, self).__init__()</span><br><span class="line">        self.layers = clones(layer, N)</span><br><span class="line">        self.norm = LayerNorm(layer.size)</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x, memory, src_mask, tgt_mask</span>):</span></span><br><span class="line">        <span class="keyword">for</span> layer <span class="keyword">in</span> self.layers:</span><br><span class="line">            x = layer(x, memory, src_mask, tgt_mask)</span><br><span class="line">        <span class="keyword">return</span> self.norm(x)</span><br></pre></td></tr></table></figure>
+<p>In addition to the two sub-layers in each encoder layer, the decoder inserts a third sub-layer, which performs multi-head attention over the output of the encoder stack. Similar to the encoder, we employ residual connections around each of the sub-layers, followed by layer normalization.<br />
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DecoderLayer</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&quot;Decoder is made of self-attn, src-attn, and feed forward (defined below)&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size, self_attn, src_attn, feed_forward, dropout</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(DecoderLayer, self).__init__()</span><br><span class="line">        self.size = size</span><br><span class="line">        self.self_attn = self_attn</span><br><span class="line">        self.src_attn = src_attn</span><br><span class="line">        self.feed_forward = feed_forward</span><br><span class="line">        self.sublayer = clones(SublayerConnection(size, dropout), <span class="number">3</span>)</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x, memory, src_mask, tgt_mask</span>):</span></span><br><span class="line">        <span class="string">&quot;Follow Figure 1 (right) for connections.&quot;</span></span><br><span class="line">        m = memory</span><br><span class="line">        x = self.sublayer[<span class="number">0</span>](x, <span class="keyword">lambda</span> x: self.self_attn(x, x, x, tgt_mask))</span><br><span class="line">        x = self.sublayer[<span class="number">1</span>](x, <span class="keyword">lambda</span> x: self.src_attn(x, m, m, src_mask))</span><br><span class="line">        <span class="keyword">return</span> self.sublayer[<span class="number">2</span>](x, self.feed_forward)</span><br></pre></td></tr></table></figure></p>
+<p>We also modify the self-attention sub-layer in the decoder stack to prevent positions from attending to subsequent positions. This masking, combined with fact that the output embeddings are offset by one position, ensures that the predictions for position <span class="math inline">\(i\)</span> can depend only on the known outputs at positions less than <span class="math inline">\(i\)</span>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">subsequent_mask</span>(<span class="params">size</span>):</span></span><br><span class="line">    <span class="string">&quot;Mask out subsequent positions.&quot;</span></span><br><span class="line">    attn_shape = (<span class="number">1</span>, size, size)</span><br><span class="line">    subsequent_mask = np.triu(np.ones(attn_shape), k=<span class="number">1</span>).astype(<span class="string">&#x27;uint8&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> torch.from_numpy(subsequent_mask) == <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<h2 id="full-model">Full Model</h2>
+<p>Here we define a function from hyperparameters to a full model.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_model</span>(<span class="params">src_vocab, tgt_vocab, N=<span class="number">6</span>, </span></span></span><br><span class="line"><span class="params"><span class="function">               d_model=<span class="number">512</span>, d_ff=<span class="number">2048</span>, h=<span class="number">8</span>, dropout=<span class="number">0.1</span></span>):</span></span><br><span class="line">    <span class="string">&quot;Helper: Construct a model from hyperparameters.&quot;</span></span><br><span class="line">    c = copy.deepcopy</span><br><span class="line">    attn = MultiHeadedAttention(h, d_model)</span><br><span class="line">    ff = PositionwiseFeedForward(d_model, d_ff, dropout)</span><br><span class="line">    position = PositionalEncoding(d_model, dropout)</span><br><span class="line">    model = EncoderDecoder(</span><br><span class="line">        Encoder(EncoderLayer(d_model, c(attn), c(ff), dropout), N),</span><br><span class="line">        Decoder(DecoderLayer(d_model, c(attn), c(attn), </span><br><span class="line">                             c(ff), dropout), N),</span><br><span class="line">        nn.Sequential(Embeddings(d_model, src_vocab), c(position)),</span><br><span class="line">        nn.Sequential(Embeddings(d_model, tgt_vocab), c(position)),</span><br><span class="line">        Generator(d_model, tgt_vocab))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># This was important from their code. </span></span><br><span class="line">    <span class="comment"># Initialize parameters with Glorot / fan_avg.</span></span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> model.parameters():</span><br><span class="line">        <span class="keyword">if</span> p.dim() &gt; <span class="number">1</span>:</span><br><span class="line">            nn.init.xavier_uniform(p)</span><br><span class="line">    <span class="keyword">return</span> model</span><br></pre></td></tr></table></figure>
+<h2 id="reference">Reference</h2>
+<ol type="1">
+<li>http://nlp.seas.harvard.edu/2018/04/03/attention.html</li>
+<li>https://jalammar.github.io/illustrated-transformer/</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/cs224n/" rel="tag"># cs224n</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Subword-Models/2019/12/19/" rel="prev" title="Subword Models">
+      <i class="fa fa-chevron-left"></i> Subword Models
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/ELMo-OpenAI-GPT-BERT/2019/12/21/" rel="next" title="ELMo,OpenAI GPT,BERT">
+      ELMo,OpenAI GPT,BERT <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#background"><span class="nav-number">1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#embeddings-and-softmax"><span class="nav-number">2.</span> <span class="nav-text">Embeddings and Softmax</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#positional-encoding"><span class="nav-number">3.</span> <span class="nav-text">Positional Encoding</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#layer-norm-and-residual-connection"><span class="nav-number">4.</span> <span class="nav-text">Layer Norm and residual connection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#attention"><span class="nav-number">5.</span> <span class="nav-text">Attention</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#scaled-dot-product-attention"><span class="nav-number">5.1.</span> <span class="nav-text">Scaled Dot-Product Attention</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multi-head-attention"><span class="nav-number">5.2.</span> <span class="nav-text">Multi-head attention</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#applications-of-attention-in-our-model"><span class="nav-number">5.3.</span> <span class="nav-text">Applications of Attention in our Model</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#position-wise-feed-forward-networks"><span class="nav-number">6.</span> <span class="nav-text">Position-wise Feed-Forward Networks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#model-architecture"><span class="nav-number">7.</span> <span class="nav-text">Model Architecture</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#encoder-and-decoder-stacks"><span class="nav-number">8.</span> <span class="nav-text">Encoder and Decoder Stacks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#encoder"><span class="nav-number">8.1.</span> <span class="nav-text">Encoder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#decoder"><span class="nav-number">8.2.</span> <span class="nav-text">Decoder</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#full-model"><span class="nav-number">9.</span> <span class="nav-text">Full Model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">10.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">268</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

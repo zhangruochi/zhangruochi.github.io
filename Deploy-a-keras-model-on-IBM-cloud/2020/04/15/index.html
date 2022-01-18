@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Zero to Singularity: Create, Tune, Deploy and Scale a Deep Neural Network in 90 Minutes This notebook is part of a masterclass held at IBM Think on 13th of February 2019 in San Fransisco In this exerc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deploy a keras model on IBM cloud">
+<meta property="og:url" content="https://zhangruochi.com/Deploy-a-keras-model-on-IBM-cloud/2020/04/15/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Zero to Singularity: Create, Tune, Deploy and Scale a Deep Neural Network in 90 Minutes This notebook is part of a masterclass held at IBM Think on 13th of February 2019 in San Fransisco In this exerc">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-15T11:11:05.000Z">
+<meta property="article:modified_time" content="2020-04-18T02:58:47.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhangruochi.com/Deploy-a-keras-model-on-IBM-cloud/2020/04/15/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Deploy a keras model on IBM cloud | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Deploy-a-keras-model-on-IBM-cloud/2020/04/15/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Deploy a keras model on IBM cloud
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-15 19:11:05" itemprop="dateCreated datePublished" datetime="2020-04-15T19:11:05+08:00">2020-04-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-04-18 10:58:47" itemprop="dateModified" datetime="2020-04-18T10:58:47+08:00">2020-04-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI-Workflow/" itemprop="url" rel="index"><span itemprop="name">AI Workflow</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI-Workflow/Deployment/" itemprop="url" rel="index"><span itemprop="name">Deployment</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Deploy-a-keras-model-on-IBM-cloud/2020/04/15/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Deploy-a-keras-model-on-IBM-cloud/2020/04/15/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="zero-to-singularity-create-tune-deploy-and-scale-a-deep-neural-network-in-90-minutes">Zero to Singularity: Create, Tune, Deploy and Scale a Deep Neural Network in 90 Minutes</h1>
+<p>This notebook is part of a masterclass held at IBM Think on 13th of February 2019 in San Fransisco In this exercise you will train a Keras DeepLearning model running on top of TensorFlow.</p>
+<p>Note: For sake of bringing the training runtime down we've done two things</p>
+<ol type="1">
+<li><p>Used a softmax regression model over a Convolutional Neural Network</p></li>
+<li><p>Trained only for one epoch instead of 20</p></li>
+</ol>
+<p>This leads to approx. 5% less accuracy</p>
+<p>Authors</p>
+<p>Romeo Kienzler - Chief Data Scientist, IBM Watson IoT</p>
+<p>Krishnamurthy Arthanarisamy - Architect, Watson Machine Learning Software Lab, Bangalore</p>
+<h1 id="prerequisites">Prerequisites</h1>
+<p>Please make sure the currently installed version of Keras and Tensorflow are matching the requirememts, if not, please run the two PIP commands below in order to re-install. Please restart the kernal before proceeding, please re-check if the versions are matching.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> keras</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Current:\t&#x27;</span>, keras.__version__)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Expected:\t 2.2.5 &#x27;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Using TensorFlow backend.
+
+
+Current:     2.2.4
+Expected:    2.2.5 </code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Current:\t&#x27;</span>, tf.__version__)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Expected:\t 1.15.0&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Current:     1.13.1
+Expected:    1.15.0</code></pre>
+<h1 id="important">IMPORTANT !!!</h1>
+<p>If you ran the two lines below please restart your kernel (Kernel-&gt;Restart &amp; Clear Output)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">!pip install keras==<span class="number">2.2</span><span class="number">.5</span> </span><br><span class="line">!pip install tensorflow==<span class="number">1.15</span><span class="number">.0</span></span><br></pre></td></tr></table></figure>
+<h1 id="train-a-mnist-digits-recognition-model">1.0 Train a MNIST digits recognition model</h1>
+<p>We start with some global parameters and imports</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#some learners constantly reported 502 errors in Watson Studio. </span></span><br><span class="line"><span class="comment">#This is due to the limited resources in the free tier and the heavy resource consumption of Keras.</span></span><br><span class="line"><span class="comment">#This is a workaround to limit resource consumption</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> backend <span class="keyword">as</span> K</span><br><span class="line"></span><br><span class="line">K.set_session(K.tf.Session(config=K.tf.ConfigProto(intra_op_parallelism_threads=<span class="number">1</span>, inter_op_parallelism_threads=<span class="number">1</span>)))</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Model</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Input, Dense</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense, Dropout, Flatten</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Conv2D, MaxPooling2D</span><br><span class="line"><span class="keyword">from</span> keras.datasets <span class="keyword">import</span> mnist</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential, load_model</span><br><span class="line"><span class="keyword">from</span> keras.optimizers <span class="keyword">import</span> RMSprop</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> LeakyReLU</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> backend <span class="keyword">as</span> K</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">batch_size = <span class="number">128</span></span><br><span class="line">num_classes = <span class="number">10</span></span><br><span class="line">epochs = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># the data, split between train and test sets</span></span><br><span class="line">(x_train, y_train), (x_test, y_test) = mnist.load_data()</span><br><span class="line"></span><br><span class="line">x_train = x_train.reshape(<span class="number">60000</span>, <span class="number">784</span>)</span><br><span class="line">x_test = x_test.reshape(<span class="number">10000</span>, <span class="number">784</span>)</span><br><span class="line">x_train = x_train.astype(<span class="string">&#x27;float32&#x27;</span>)</span><br><span class="line">x_test = x_test.astype(<span class="string">&#x27;float32&#x27;</span>)</span><br><span class="line">x_train /= <span class="number">255</span></span><br><span class="line">x_test /= <span class="number">255</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># convert class vectors to binary class matrices</span></span><br><span class="line">y_train = keras.utils.to_categorical(y_train, num_classes)</span><br><span class="line">y_test = keras.utils.to_categorical(y_test, num_classes)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>Downloading data from https://s3.amazonaws.com/img-datasets/mnist.npz
+11493376/11490434 [==============================] - 0s 0us/step</code></pre>
+<h1 id="training-a-simple-model">Training a simple model</h1>
+<p>First we'll train a simple softmax regressor and check what accuracy we get</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">model = Sequential()</span><br><span class="line">model.add(Dense(<span class="number">512</span>, input_shape=(<span class="number">784</span>,)))</span><br><span class="line">model.add(Dense(num_classes, activation=<span class="string">&#x27;softmax&#x27;</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">model.<span class="built_in">compile</span>(loss=<span class="string">&#x27;categorical_crossentropy&#x27;</span>,</span><br><span class="line">        optimizer=<span class="string">&#x27;rmsprop&#x27;</span>,</span><br><span class="line">        metrics=[<span class="string">&#x27;accuracy&#x27;</span>])</span><br><span class="line"></span><br><span class="line">model.fit(x_train, y_train,</span><br><span class="line">        batch_size=batch_size,</span><br><span class="line">        epochs=epochs,</span><br><span class="line">        verbose=<span class="number">1</span>,</span><br><span class="line">        validation_data=(x_test, y_test))</span><br><span class="line">        </span><br><span class="line">score = model.evaluate(x_test, y_test, verbose=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Accuracy:&#x27;</span>,score[<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>WARNING:tensorflow:From /opt/conda/envs/Python36/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+WARNING:tensorflow:From /opt/conda/envs/Python36/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+Train on 60000 samples, validate on 10000 samples
+Epoch 1/1
+60000/60000 [==============================] - 14s 230us/step - loss: 0.3857 - acc: 0.8886 - val_loss: 0.3232 - val_acc: 0.9110
+
+
+Accuracy: 0.911</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#some cleanup from the previous run</span></span><br><span class="line">!rm -f ker_*</span><br><span class="line">!rm -f my_best_model.tgz</span><br></pre></td></tr></table></figure>
+<p>You should see an accuracy of approximately 90%. Now lets define a hyper-parameter grid including different activation functions and gradient descent optimizers. We’re optimizing over the grid using grid search (nested for loops) and store each model variant in a file. We then decide for the best one in order to deploy to IBM Watson Machine Learning.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#define parameter grid</span></span><br><span class="line"></span><br><span class="line">activation_functions_layer_1 = [<span class="string">&#x27;sigmoid&#x27;</span>,<span class="string">&#x27;tanh&#x27;</span>,<span class="string">&#x27;relu&#x27;</span>]</span><br><span class="line">opimizers = [<span class="string">&#x27;rmsprop&#x27;</span>,<span class="string">&#x27;adagrad&#x27;</span>,<span class="string">&#x27;adadelta&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#optimize over parameter grid (grid search)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> activation_function_layer_1 <span class="keyword">in</span> activation_functions_layer_1:</span><br><span class="line">    <span class="keyword">for</span> opimizer <span class="keyword">in</span> opimizers:</span><br><span class="line">        </span><br><span class="line">        model = Sequential()</span><br><span class="line">        model.add(Dense(<span class="number">512</span>, activation = activation_function_layer_1, input_shape=(<span class="number">784</span>,)))</span><br><span class="line">        model.add(Dense(num_classes, activation=<span class="string">&#x27;softmax&#x27;</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        model.<span class="built_in">compile</span>(loss=<span class="string">&#x27;categorical_crossentropy&#x27;</span>,</span><br><span class="line">              optimizer=opimizer,</span><br><span class="line">              metrics=[<span class="string">&#x27;accuracy&#x27;</span>])</span><br><span class="line"></span><br><span class="line">        model.fit(x_train, y_train,</span><br><span class="line">              batch_size=batch_size,</span><br><span class="line">              epochs=epochs,</span><br><span class="line">              verbose=<span class="number">1</span>,</span><br><span class="line">              validation_data=(x_test, y_test))</span><br><span class="line">        </span><br><span class="line">        score = model.evaluate(x_test, y_test, verbose=<span class="number">0</span>)</span><br><span class="line">        save_path = <span class="string">&quot;ker_func_mnist_model_2.%s.%s.%s.h5&quot;</span> % (activation_function_layer_1,opimizer,score[<span class="number">1</span>])</span><br><span class="line">        model.save(save_path)</span><br></pre></td></tr></table></figure>
+<pre><code>Train on 60000 samples, validate on 10000 samples
+Epoch 1/1
+60000/60000 [==============================] - 16s 269us/step - loss: 0.4272 - acc: 0.8839 - val_loss: 0.2807 - val_acc: 0.9172
+Train on 60000 samples, validate on 10000 samples
+Epoch 1/1
+60000/60000 [==============================] - 14s 233us/step - loss: 0.4151 - acc: 0.8871 - val_loss: 0.2874 - val_acc: 0.9162
+Train on 60000 samples, validate on 10000 samples
+Epoch 1/1
+60000/60000 [==============================] - 16s 261us/step - loss: 0.5419 - acc: 0.8611 - val_loss: 0.3225 - val_acc: 0.9081
+Train on 60000 samples, validate on 10000 samples
+Epoch 1/1
+60000/60000 [==============================] - 14s 238us/step - loss: 0.3358 - acc: 0.9009 - val_loss: 0.2107 - val_acc: 0.9391
+Train on 60000 samples, validate on 10000 samples
+Epoch 1/1
+60000/60000 [==============================] - 14s 239us/step - loss: 0.3241 - acc: 0.9076 - val_loss: 0.2284 - val_acc: 0.9358
+Train on 60000 samples, validate on 10000 samples
+Epoch 1/1
+60000/60000 [==============================] - 18s 308us/step - loss: 0.3640 - acc: 0.8943 - val_loss: 0.2737 - val_acc: 0.9186
+Train on 60000 samples, validate on 10000 samples
+Epoch 1/1
+60000/60000 [==============================] - 22s 374us/step - loss: 0.2554 - acc: 0.9270 - val_loss: 0.1215 - val_acc: 0.9625
+Train on 60000 samples, validate on 10000 samples
+Epoch 1/1
+60000/60000 [==============================] - 22s 367us/step - loss: 0.2377 - acc: 0.9315 - val_loss: 0.1378 - val_acc: 0.9588
+Train on 60000 samples, validate on 10000 samples
+Epoch 1/1
+60000/60000 [==============================] - 24s 402us/step - loss: 0.2918 - acc: 0.9167 - val_loss: 0.1622 - val_acc: 0.9528</code></pre>
+<h1 id="model-evaluation">Model evaluation</h1>
+<p>Let's have a look at all the models and see which hyper parameter configuration was the best one. You should see that relu and rmsprop gives you &gt; 95% of accuracy on the validation set</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -ltr *</span><br></pre></td></tr></table></figure>
+<pre><code>-rw-r----- 1 dsxuser dsxuser    2289 Apr 15 22:31 rklib.py
+-rw-r----- 1 dsxuser dsxuser 3276560 Apr 15 22:33 ker_func_mnist_model_2.sigmoid.rmsprop.0.9172.h5
+-rw-r----- 1 dsxuser dsxuser 3276560 Apr 15 22:33 ker_func_mnist_model_2.sigmoid.adagrad.0.9162.h5
+-rw-r----- 1 dsxuser dsxuser 4905120 Apr 15 22:34 ker_func_mnist_model_2.sigmoid.adadelta.0.9081.h5
+-rw-r----- 1 dsxuser dsxuser 3276560 Apr 15 22:34 ker_func_mnist_model_2.tanh.rmsprop.0.9391.h5
+-rw-r----- 1 dsxuser dsxuser 3276568 Apr 15 22:34 ker_func_mnist_model_2.tanh.adagrad.0.9358.h5
+-rw-r----- 1 dsxuser dsxuser 4905128 Apr 15 22:35 ker_func_mnist_model_2.tanh.adadelta.0.9186.h5
+-rw-r----- 1 dsxuser dsxuser 3276568 Apr 15 22:35 ker_func_mnist_model_2.relu.rmsprop.0.9625.h5
+-rw-r----- 1 dsxuser dsxuser 3276568 Apr 15 22:35 ker_func_mnist_model_2.relu.adagrad.0.9588.h5
+-rw-r----- 1 dsxuser dsxuser 4905128 Apr 15 22:36 ker_func_mnist_model_2.relu.adadelta.0.9528.h5
+-rw-r----- 1 dsxuser dsxuser 2887392 Apr 15 22:38 my_best_model.tgz
+
+systemml:
+total 0
+
+__pycache__:
+total 4
+-rw-r----- 1 dsxuser dsxuser 1584 Apr 15 22:26 rklib.cpython-36.pyc
+
+scratch_space:
+total 0
+
+mkdir :
+total 4
+drwxr-x--- 3 dsxuser dsxuser 4096 Apr 15 22:30</code></pre>
+<p>Now it's time to create a tarball out of your favorite model, please replace the name of your favorite model H5 file with “please-put-me-here”</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!tar -zcvf my_best_model.tgz ker_func_mnist_model_2.relu.rmsprop<span class="number">.0</span><span class="number">.9625</span>.h5</span><br></pre></td></tr></table></figure>
+<pre><code>ker_func_mnist_model_2.relu.rmsprop.0.9625.h5</code></pre>
+<h2 id="save-the-trained-model-to-wml-repository">2.0 Save the trained model to WML Repository</h2>
+<p>We will use <code>watson_machine_learning_client</code> python library to save the trained model to WML Repository, to deploy the saved model and to make predictions using the deployed model.</br></p>
+<p><code>watson_machine_learning_client</code> can be installed using the following <code>pip</code> command in case you are running outside Watson Studio:</p>
+<p><code>!pip install watson-machine-learning-client --upgrade</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> watson_machine_learning_client <span class="keyword">import</span> WatsonMachineLearningAPIClient</span><br></pre></td></tr></table></figure>
+<pre><code>2020-04-15 22:57:03,361 - watson_machine_learning_client.metanames - WARNING - &#39;AUTHOR_EMAIL&#39; meta prop is deprecated. It will be ignored.</code></pre>
+<p>Please go to https://cloud.ibm.com/, login, click on the “Create Resource” button. From the “AI” category, please choose “Machine Learning”. Wait for the “Create” button to activate and click on “Create”. Click on “Service Credentials”, then “New Credential”, then “Add”. From the new entry in the table, under “ACTIONS”, please click on “View Credentials”. Please copy the whole JSON object to your clipboard. Now just paste the JSON object below so that you are able to use your personal instance of Watson Machine Learning.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">wml_credentials=&#123;</span><br><span class="line">  <span class="string">&quot;apikey&quot;</span>: <span class="string">&quot;4EdHtgVIK5DfjhpOmUT8Tr9i5ad-9oWYMiyClbj0PUxJ&quot;</span>,</span><br><span class="line">  <span class="string">&quot;iam_apikey_description&quot;</span>: <span class="string">&quot;Auto-generated for key 9fa77406-bf31-478f-bfc9-78d8d16a0bd4&quot;</span>,</span><br><span class="line">  <span class="string">&quot;iam_apikey_name&quot;</span>: <span class="string">&quot;Service credentials-1&quot;</span>,</span><br><span class="line">  <span class="string">&quot;iam_role_crn&quot;</span>: <span class="string">&quot;crn:v1:bluemix:public:iam::::serviceRole:Writer&quot;</span>,</span><br><span class="line">  <span class="string">&quot;iam_serviceid_crn&quot;</span>: <span class="string">&quot;crn:v1:bluemix:public:iam-identity::a/dd8b066c8db947e8a36d2ac8acffee25::serviceid:ServiceId-b4b64d34-d93c-42dc-b024-af27a9ade4da&quot;</span>,</span><br><span class="line">  <span class="string">&quot;instance_id&quot;</span>: <span class="string">&quot;07660d0f-85d9-48fe-bc53-fe800754f9f8&quot;</span>,</span><br><span class="line">  <span class="string">&quot;url&quot;</span>: <span class="string">&quot;https://us-south.ml.cloud.ibm.com&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client = WatsonMachineLearningAPIClient(wml_credentials)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">model_props = &#123;client.repository.ModelMetaNames.AUTHOR_NAME: <span class="string">&quot;RCZHANG&quot;</span>, </span><br><span class="line">               client.repository.ModelMetaNames.AUTHOR_EMAIL: <span class="string">&quot;lvduzhen@gmail.com&quot;</span>, </span><br><span class="line">               client.repository.ModelMetaNames.NAME: <span class="string">&quot;KK3_clt_keras_mnist&quot;</span>,</span><br><span class="line">               client.repository.ModelMetaNames.FRAMEWORK_NAME: <span class="string">&quot;tensorflow&quot;</span>,</span><br><span class="line">               client.repository.ModelMetaNames.FRAMEWORK_VERSION: <span class="string">&quot;1.15&quot;</span> ,</span><br><span class="line">               client.repository.ModelMetaNames.FRAMEWORK_LIBRARIES: [&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;keras&quot;</span>, <span class="string">&quot;version&quot;</span>: <span class="string">&quot;2.2.5&quot;</span>&#125;]</span><br><span class="line">              &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">published_model = client.repository.store_model(model=<span class="string">&quot;my_best_model.tgz&quot;</span>, meta_props=model_props)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">published_model_uid = client.repository.get_model_uid(published_model)</span><br><span class="line">model_details = client.repository.get_details(published_model_uid)</span><br></pre></td></tr></table></figure>
+<h2 id="deploy-the-keras-model">3.0 Deploy the Keras model</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.deployments.<span class="built_in">list</span>()</span><br></pre></td></tr></table></figure>
+<pre><code>------------------------------------  -------------------  ------  --------------  ------------------------  ---------------  -------------
+GUID                                  NAME                 TYPE    STATE           CREATED                   FRAMEWORK        ARTIFACT TYPE
+e69bb10d-67ea-4fa9-9788-4bbf80edac85  k1_keras_mnist_clt1  online  DEPLOY_SUCCESS  2020-04-15T22:59:44.929Z  tensorflow-1.15  model
+------------------------------------  -------------------  ------  --------------  ------------------------  ---------------  -------------</code></pre>
+<p>To keep your environment clean, just delete all deployments from previous runs</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># client.deployments.delete(&quot;PASTE_YOUR_GUID_HERE_IF_APPLICABLE&quot;)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">created_deployment = client.deployments.create(published_model_uid, name=<span class="string">&quot;k1_keras_mnist_clt1&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>#######################################################################################
+
+Synchronous deployment creation for uid: &#39;cc79b7b9-ae8b-4cf1-b7a3-165b104867ab&#39; started
+
+#######################################################################################
+
+
+INITIALIZING
+DEPLOY_IN_PROGRESS...
+DEPLOY_SUCCESS
+
+
+------------------------------------------------------------------------------------------------
+Successfully finished deployment creation, deployment_uid=&#39;e69bb10d-67ea-4fa9-9788-4bbf80edac85&#39;
+------------------------------------------------------------------------------------------------</code></pre>
+<h2 id="test-the-model">Test the model</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#scoring_endpoint = client.deployments.get_scoring_url(created_deployment)</span></span><br><span class="line">scoring_endpoint = created_deployment[<span class="string">&#x27;entity&#x27;</span>][<span class="string">&#x27;scoring_url&#x27;</span>]</span><br><span class="line"><span class="built_in">print</span>(scoring_endpoint)</span><br></pre></td></tr></table></figure>
+<pre><code>https://us-south.ml.cloud.ibm.com/v3/wml_instances/07660d0f-85d9-48fe-bc53-fe800754f9f8/deployments/e69bb10d-67ea-4fa9-9788-4bbf80edac85/online</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x_score_1 = x_test[<span class="number">23</span>].tolist()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;The answer should be: &#x27;</span>,np.argmax(y_test[<span class="number">23</span>]))</span><br><span class="line">scoring_payload = &#123;<span class="string">&#x27;values&#x27;</span>: [x_score_1]&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>The answer should be:  5</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">predictions = client.deployments.score(scoring_endpoint, scoring_payload)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;And the answer is!... &#x27;</span>,predictions[<span class="string">&#x27;values&#x27;</span>][<span class="number">0</span>][<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>And the answer is!...  5</code></pre>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Fourier-Transform/2020/04/14/" rel="prev" title="Fourier Transform">
+      <i class="fa fa-chevron-left"></i> Fourier Transform
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Chest-X-Ray-Medical-Diagnosis-with-Deep-Learning/2020/04/15/" rel="next" title="Chest X-Ray Medical Diagnosis with Deep Learning">
+      Chest X-Ray Medical Diagnosis with Deep Learning <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#zero-to-singularity-create-tune-deploy-and-scale-a-deep-neural-network-in-90-minutes"><span class="nav-number">1.</span> <span class="nav-text">Zero to Singularity: Create, Tune, Deploy and Scale a Deep Neural Network in 90 Minutes</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prerequisites"><span class="nav-number">2.</span> <span class="nav-text">Prerequisites</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#important"><span class="nav-number">3.</span> <span class="nav-text">IMPORTANT !!!</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#train-a-mnist-digits-recognition-model"><span class="nav-number">4.</span> <span class="nav-text">1.0 Train a MNIST digits recognition model</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#training-a-simple-model"><span class="nav-number">5.</span> <span class="nav-text">Training a simple model</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#model-evaluation"><span class="nav-number">6.</span> <span class="nav-text">Model evaluation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#save-the-trained-model-to-wml-repository"><span class="nav-number">6.1.</span> <span class="nav-text">2.0 Save the trained model to WML Repository</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deploy-the-keras-model"><span class="nav-number">6.2.</span> <span class="nav-text">3.0 Deploy the Keras model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#test-the-model"><span class="nav-number">6.3.</span> <span class="nav-text">Test the model</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">268</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

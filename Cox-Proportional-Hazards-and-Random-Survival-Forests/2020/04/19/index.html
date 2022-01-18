@@ -1,0 +1,2987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Cox Proportional Hazards and Random Survival Forests Welcome to the final assignment in Course 2! In this assignment you&#39;ll develop risk models using survival data and a combination of linear and non-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cox Proportional Hazards and Random Survival Forests">
+<meta property="og:url" content="https://zhangruochi.com/Cox-Proportional-Hazards-and-Random-Survival-Forests/2020/04/19/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Cox Proportional Hazards and Random Survival Forests Welcome to the final assignment in Course 2! In this assignment you&#39;ll develop risk models using survival data and a combination of linear and non-">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Cox-Proportional-Hazards-and-Random-Survival-Forests/2020/04/19/1-hot-encode.png">
+<meta property="og:image" content="https://zhangruochi.com/Cox-Proportional-Hazards-and-Random-Survival-Forests/2020/04/19/output_67_0.png">
+<meta property="article:published_time" content="2020-04-19T05:54:32.000Z">
+<meta property="article:modified_time" content="2020-04-19T17:54:52.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Medicine">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Cox-Proportional-Hazards-and-Random-Survival-Forests/2020/04/19/1-hot-encode.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Cox-Proportional-Hazards-and-Random-Survival-Forests/2020/04/19/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Cox Proportional Hazards and Random Survival Forests | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Cox-Proportional-Hazards-and-Random-Survival-Forests/2020/04/19/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Cox Proportional Hazards and Random Survival Forests
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-19 13:54:32" itemprop="dateCreated datePublished" datetime="2020-04-19T13:54:32+08:00">2020-04-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-04-20 01:54:52" itemprop="dateModified" datetime="2020-04-20T01:54:52+08:00">2020-04-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Cox-Proportional-Hazards-and-Random-Survival-Forests/2020/04/19/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Cox-Proportional-Hazards-and-Random-Survival-Forests/2020/04/19/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="cox-proportional-hazards-and-random-survival-forests">Cox Proportional Hazards and Random Survival Forests</h1>
+<p>Welcome to the final assignment in Course 2! In this assignment you'll develop risk models using survival data and a combination of linear and non-linear techniques. We'll be using a dataset with survival data of patients with Primary Biliary Cirrhosis (pbc). PBC is a progressive disease of the liver caused by a buildup of bile within the liver (cholestasis) that results in damage to the small bile ducts that drain bile from the liver. Our goal will be to understand the effects of different factors on the survival times of the patients. Along the way you'll learn about the following topics:</p>
+<ul>
+<li>Cox Proportional Hazards
+<ul>
+<li>Data Preprocessing for Cox Models.</li>
+</ul></li>
+<li>Random Survival Forests
+<ul>
+<li>Permutation Methods for Interpretation.</li>
+</ul></li>
+</ul>
+<h2 id="outline">Outline</h2>
+<ul>
+<li><a href="#1">1. Import Packages</a></li>
+<li><a href="#2">2. Load the Dataset</a></li>
+<li><a href="#3">3. Explore the Dataset</a></li>
+<li><a href="#4">4. Cox Proportional Hazards</a>
+<ul>
+<li><a href="#Ex-1">Exercise 1</a></li>
+</ul></li>
+<li><a href="#5">5. Fitting and Interpreting a Cox Model</a></li>
+<li><a href="#3">6. Hazard ratio</a>
+<ul>
+<li><a href="#Ex-2">Exercise 2</a></li>
+</ul></li>
+<li><a href="#7">7. Harrell's C-Index</a>
+<ul>
+<li><a href="#Ex-3">Exercise 3</a></li>
+</ul></li>
+<li><a href="#8">8. Random Survival Forests</a></li>
+<li><a href="#9">9. Permutation Method for Interpretation</a></li>
+</ul>
+<p><a name='1'></a> ## 1. Import Packages</p>
+<p>We'll first import all the packages that we need for this assignment.</p>
+<ul>
+<li><code>sklearn</code> is one of the most popular machine learning libraries.</li>
+<li><code>numpy</code> is the fundamental package for scientific computing in python.</li>
+<li><code>pandas</code> is what we'll use to manipulate our data.</li>
+<li><code>matplotlib</code> is a plotting library.</li>
+<li><code>lifelines</code> is an open-source survival analysis library.</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sklearn</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> lifelines <span class="keyword">import</span> CoxPHFitter</span><br><span class="line"><span class="keyword">from</span> lifelines.utils <span class="keyword">import</span> concordance_index <span class="keyword">as</span> cindex</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> util <span class="keyword">import</span> load_data</span><br></pre></td></tr></table></figure>
+<p><a name='2'></a> ## 2. Load the Dataset</p>
+<p>Run the next cell to load the data.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df = load_data()</span><br></pre></td></tr></table></figure>
+<p><a name='3'></a> ## 3. Explore the Dataset</p>
+<p>In the lecture videos <code>time</code> was in months, however in this assignment, <code>time</code> will be converted into years. Also notice that we have assigned a numeric value to <code>sex</code>, where <code>female = 0</code> and <code>male = 1</code>.</p>
+<p>Next, familiarize yourself with the data and the shape of it.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(df.shape)</span><br><span class="line"></span><br><span class="line"><span class="comment"># df.head() only outputs the top few rows</span></span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<pre><code>(258, 19)</code></pre>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+time
+</th>
+<th>
+status
+</th>
+<th>
+trt
+</th>
+<th>
+age
+</th>
+<th>
+sex
+</th>
+<th>
+ascites
+</th>
+<th>
+hepato
+</th>
+<th>
+spiders
+</th>
+<th>
+edema
+</th>
+<th>
+bili
+</th>
+<th>
+chol
+</th>
+<th>
+albumin
+</th>
+<th>
+copper
+</th>
+<th>
+alk.phos
+</th>
+<th>
+ast
+</th>
+<th>
+trig
+</th>
+<th>
+platelet
+</th>
+<th>
+protime
+</th>
+<th>
+stage
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1.095890
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+58.765229
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+1.0
+</td>
+<td>
+1.0
+</td>
+<td>
+1.0
+</td>
+<td>
+14.5
+</td>
+<td>
+261.0
+</td>
+<td>
+2.60
+</td>
+<td>
+156.0
+</td>
+<td>
+1718.0
+</td>
+<td>
+137.95
+</td>
+<td>
+172.0
+</td>
+<td>
+190.0
+</td>
+<td>
+12.2
+</td>
+<td>
+4.0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+12.328767
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+56.446270
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.1
+</td>
+<td>
+302.0
+</td>
+<td>
+4.14
+</td>
+<td>
+54.0
+</td>
+<td>
+7394.8
+</td>
+<td>
+113.52
+</td>
+<td>
+88.0
+</td>
+<td>
+221.0
+</td>
+<td>
+10.6
+</td>
+<td>
+3.0
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+2.772603
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+70.072553
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.5
+</td>
+<td>
+1.4
+</td>
+<td>
+176.0
+</td>
+<td>
+3.48
+</td>
+<td>
+210.0
+</td>
+<td>
+516.0
+</td>
+<td>
+96.10
+</td>
+<td>
+55.0
+</td>
+<td>
+151.0
+</td>
+<td>
+12.0
+</td>
+<td>
+4.0
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+5.273973
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+54.740589
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.5
+</td>
+<td>
+1.8
+</td>
+<td>
+244.0
+</td>
+<td>
+2.54
+</td>
+<td>
+64.0
+</td>
+<td>
+6121.8
+</td>
+<td>
+60.63
+</td>
+<td>
+92.0
+</td>
+<td>
+183.0
+</td>
+<td>
+10.3
+</td>
+<td>
+4.0
+</td>
+</tr>
+<tr>
+<th>
+6
+</th>
+<td>
+5.019178
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+55.534565
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+322.0
+</td>
+<td>
+4.09
+</td>
+<td>
+52.0
+</td>
+<td>
+824.0
+</td>
+<td>
+60.45
+</td>
+<td>
+213.0
+</td>
+<td>
+204.0
+</td>
+<td>
+9.7
+</td>
+<td>
+3.0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Take a minute to examine particular cases.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">i = <span class="number">20</span></span><br><span class="line">df.iloc[i, :]</span><br></pre></td></tr></table></figure>
+<pre><code>time          11.175342
+status         1.000000
+trt            0.000000
+age           44.520192
+sex            1.000000
+ascites        0.000000
+hepato         1.000000
+spiders        0.000000
+edema          0.000000
+bili           2.100000
+chol         456.000000
+albumin        4.000000
+copper       124.000000
+alk.phos    5719.000000
+ast          221.880000
+trig         230.000000
+platelet      70.000000
+protime        9.900000
+stage          2.000000
+Name: 23, dtype: float64</code></pre>
+<p>Now, split your dataset into train, validation and test set using 60/20/20 split.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">np.random.seed(<span class="number">0</span>)</span><br><span class="line">df_dev, df_test = train_test_split(df, test_size = <span class="number">0.2</span>)</span><br><span class="line">df_train, df_val = train_test_split(df_dev, test_size = <span class="number">0.25</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Total number of patients:&quot;</span>, df.shape[<span class="number">0</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Total number of patients in training set:&quot;</span>, df_train.shape[<span class="number">0</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Total number of patients in validation set:&quot;</span>, df_val.shape[<span class="number">0</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Total number of patients in test set:&quot;</span>, df_test.shape[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>Total number of patients: 258
+Total number of patients in training set: 154
+Total number of patients in validation set: 52
+Total number of patients in test set: 52</code></pre>
+<p>Before proceeding to modeling, let's normalize the continuous covariates to make sure they're on the same scale. Again, we should normalize the test data using statistics from the train data.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">continuous_columns = [<span class="string">&#x27;age&#x27;</span>, <span class="string">&#x27;bili&#x27;</span>, <span class="string">&#x27;chol&#x27;</span>, <span class="string">&#x27;albumin&#x27;</span>, <span class="string">&#x27;copper&#x27;</span>, <span class="string">&#x27;alk.phos&#x27;</span>, <span class="string">&#x27;ast&#x27;</span>, <span class="string">&#x27;trig&#x27;</span>, <span class="string">&#x27;platelet&#x27;</span>, <span class="string">&#x27;protime&#x27;</span>]</span><br><span class="line">mean = df_train.loc[:, continuous_columns].mean()</span><br><span class="line">std = df_train.loc[:, continuous_columns].std()</span><br><span class="line">df_train.loc[:, continuous_columns] = (df_train.loc[:, continuous_columns] - mean) / std</span><br><span class="line">df_val.loc[:, continuous_columns] = (df_val.loc[:, continuous_columns] - mean) / std</span><br><span class="line">df_test.loc[:, continuous_columns] = (df_test.loc[:, continuous_columns] - mean) / std</span><br></pre></td></tr></table></figure>
+<p>Let's check the summary statistics on our training dataset to make sure it's standardized.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df_train.loc[:, continuous_columns].describe()</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+age
+</th>
+<th>
+bili
+</th>
+<th>
+chol
+</th>
+<th>
+albumin
+</th>
+<th>
+copper
+</th>
+<th>
+alk.phos
+</th>
+<th>
+ast
+</th>
+<th>
+trig
+</th>
+<th>
+platelet
+</th>
+<th>
+protime
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+count
+</th>
+<td>
+1.540000e+02
+</td>
+<td>
+1.540000e+02
+</td>
+<td>
+1.540000e+02
+</td>
+<td>
+1.540000e+02
+</td>
+<td>
+1.540000e+02
+</td>
+<td>
+1.540000e+02
+</td>
+<td>
+1.540000e+02
+</td>
+<td>
+1.540000e+02
+</td>
+<td>
+1.540000e+02
+</td>
+<td>
+1.540000e+02
+</td>
+</tr>
+<tr>
+<th>
+mean
+</th>
+<td>
+9.833404e-16
+</td>
+<td>
+-3.258577e-16
+</td>
+<td>
+1.153478e-16
+</td>
+<td>
+1.153478e-16
+</td>
+<td>
+5.767392e-18
+</td>
+<td>
+1.326500e-16
+</td>
+<td>
+-1.263059e-15
+</td>
+<td>
+8.074349e-17
+</td>
+<td>
+2.018587e-17
+</td>
+<td>
+1.291896e-14
+</td>
+</tr>
+<tr>
+<th>
+std
+</th>
+<td>
+1.000000e+00
+</td>
+<td>
+1.000000e+00
+</td>
+<td>
+1.000000e+00
+</td>
+<td>
+1.000000e+00
+</td>
+<td>
+1.000000e+00
+</td>
+<td>
+1.000000e+00
+</td>
+<td>
+1.000000e+00
+</td>
+<td>
+1.000000e+00
+</td>
+<td>
+1.000000e+00
+</td>
+<td>
+1.000000e+00
+</td>
+</tr>
+<tr>
+<th>
+min
+</th>
+<td>
+-2.304107e+00
+</td>
+<td>
+-5.735172e-01
+</td>
+<td>
+-1.115330e+00
+</td>
+<td>
+-3.738104e+00
+</td>
+<td>
+-9.856552e-01
+</td>
+<td>
+-7.882167e-01
+</td>
+<td>
+-1.489281e+00
+</td>
+<td>
+-1.226674e+00
+</td>
+<td>
+-2.058899e+00
+</td>
+<td>
+-1.735556e+00
+</td>
+</tr>
+<tr>
+<th>
+25%
+</th>
+<td>
+-6.535035e-01
+</td>
+<td>
+-4.895812e-01
+</td>
+<td>
+-5.186963e-01
+</td>
+<td>
+-5.697976e-01
+</td>
+<td>
+-6.470611e-01
+</td>
+<td>
+-5.186471e-01
+</td>
+<td>
+-8.353982e-01
+</td>
+<td>
+-6.884514e-01
+</td>
+<td>
+-6.399831e-01
+</td>
+<td>
+-7.382590e-01
+</td>
+</tr>
+<tr>
+<th>
+50%
+</th>
+<td>
+-6.443852e-03
+</td>
+<td>
+-3.846612e-01
+</td>
+<td>
+-2.576693e-01
+</td>
+<td>
+5.663556e-02
+</td>
+<td>
+-3.140636e-01
+</td>
+<td>
+-3.416086e-01
+</td>
+<td>
+-2.260984e-01
+</td>
+<td>
+-2.495932e-01
+</td>
+<td>
+-4.100373e-02
+</td>
+<td>
+-1.398807e-01
+</td>
+</tr>
+<tr>
+<th>
+75%
+</th>
+<td>
+5.724289e-01
+</td>
+<td>
+2.977275e-02
+</td>
+<td>
+1.798617e-01
+</td>
+<td>
+6.890921e-01
+</td>
+<td>
+3.435366e-01
+</td>
+<td>
+-4.620597e-03
+</td>
+<td>
+6.061159e-01
+</td>
+<td>
+3.755727e-01
+</td>
+<td>
+6.617988e-01
+</td>
+<td>
+3.587680e-01
+</td>
+</tr>
+<tr>
+<th>
+max
+</th>
+<td>
+2.654276e+00
+</td>
+<td>
+5.239050e+00
+</td>
+<td>
+6.243146e+00
+</td>
+<td>
+2.140730e+00
+</td>
+<td>
+5.495204e+00
+</td>
+<td>
+4.869263e+00
+</td>
+<td>
+3.058176e+00
+</td>
+<td>
+5.165751e+00
+</td>
+<td>
+3.190823e+00
+</td>
+<td>
+4.447687e+00
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><a name='4'></a> ## 4. Cox Proportional Hazards</p>
+<p>Our goal is to build a risk score using the survival data that we have. We'll begin by fitting a Cox Proportional Hazards model to your data.</p>
+<p>Recall that the Cox Proportional Hazards model describes the hazard for an individual <span class="math inline">\(i\)</span> at time <span class="math inline">\(t\)</span> as</p>
+<p><span class="math display">\[
+\lambda(t, x) = \lambda_0(t)e^{\theta^T X_i}
+\]</span></p>
+<p>The <span class="math inline">\(\lambda_0\)</span> term is a baseline hazard and incorporates the risk over time, and the other term incorporates the risk due to the individual's covariates. After fitting the model, we can rank individuals using the person-dependent risk term <span class="math inline">\(e^{\theta^T X_i}\)</span>.</p>
+<p>Categorical variables cannot be used in a regression model as they are. In order to use them, conversion to a series of variables is required.</p>
+<p>Since our data has a mix of categorical (<code>stage</code>) and continuous (<code>wblc</code>) variables, before we proceed further we need to do some data engineering. To tackle the issue at hand we'll be using the <code>Dummy Coding</code> technique. In order to use Cox Proportional Hazards, we will have to turn the categorical data into one hot features so that we can fit our Cox model. Luckily, Pandas has a built-in function called <code>get_dummies</code> that will make it easier for us to implement our function. It turns categorical features into multiple binary features.</p>
+<p><img src="1-hot-encode.png" style="padding-top: 5px;width: 60%;left: 0px;margin-left: 150px;margin-right: 0px;"></p>
+<p><a name='Ex-1'></a> ### Exercise 1 In the cell below, implement the <code>to_one_hot(...)</code> function.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+Remember to drop the first dummy for each each category to avoid convergence issues when fitting the proportional hazards model.
+</li>
+<li>
+Check out the <a target="_blank" rel="noopener" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.get_dummies.html" > get_dummies() </a> documentation.
+</li>
+<li>
+Use <code>dtype=np.float64</code>.
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C1 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">to_one_hot</span>(<span class="params">dataframe, columns</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Convert columns in dataframe to one-hot encoding.</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        dataframe (dataframe): pandas dataframe containing covariates</span></span><br><span class="line"><span class="string">        columns (list of strings): list categorical column names to one hot encode</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        one_hot_df (dataframe): dataframe with categorical columns encoded</span></span><br><span class="line"><span class="string">                            as binary variables</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    one_hot_df = pd.get_dummies(dataframe,columns=columns, drop_first = <span class="literal">True</span>, dtype=np.float64)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> one_hot_df</span><br></pre></td></tr></table></figure>
+<p>Now we'll use the function you coded to transform the training, validation, and test sets.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># List of categorical columns</span></span><br><span class="line">to_encode = [<span class="string">&#x27;edema&#x27;</span>, <span class="string">&#x27;stage&#x27;</span>]</span><br><span class="line"></span><br><span class="line">one_hot_train = to_one_hot(df_train, to_encode)</span><br><span class="line">one_hot_val = to_one_hot(df_val, to_encode)</span><br><span class="line">one_hot_test = to_one_hot(df_test, to_encode)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(one_hot_val.columns.tolist())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;There are <span class="subst">&#123;<span class="built_in">len</span>(one_hot_val.columns)&#125;</span> columns&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>[&#39;time&#39;, &#39;status&#39;, &#39;trt&#39;, &#39;age&#39;, &#39;sex&#39;, &#39;ascites&#39;, &#39;hepato&#39;, &#39;spiders&#39;, &#39;bili&#39;, &#39;chol&#39;, &#39;albumin&#39;, &#39;copper&#39;, &#39;alk.phos&#39;, &#39;ast&#39;, &#39;trig&#39;, &#39;platelet&#39;, &#39;protime&#39;, &#39;edema_0.5&#39;, &#39;edema_1.0&#39;, &#39;stage_2.0&#39;, &#39;stage_3.0&#39;, &#39;stage_4.0&#39;]
+There are 22 columns</code></pre>
+<h4 id="expected-output">Expected output</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="string">&#x27;time&#x27;</span>, <span class="string">&#x27;status&#x27;</span>, <span class="string">&#x27;trt&#x27;</span>, <span class="string">&#x27;age&#x27;</span>, <span class="string">&#x27;sex&#x27;</span>, <span class="string">&#x27;ascites&#x27;</span>, <span class="string">&#x27;hepato&#x27;</span>, <span class="string">&#x27;spiders&#x27;</span>, <span class="string">&#x27;bili&#x27;</span>, <span class="string">&#x27;chol&#x27;</span>, <span class="string">&#x27;albumin&#x27;</span>, <span class="string">&#x27;copper&#x27;</span>, <span class="string">&#x27;alk.phos&#x27;</span>, <span class="string">&#x27;ast&#x27;</span>, <span class="string">&#x27;trig&#x27;</span>, <span class="string">&#x27;platelet&#x27;</span>, <span class="string">&#x27;protime&#x27;</span>, <span class="string">&#x27;edema_0.5&#x27;</span>, <span class="string">&#x27;edema_1.0&#x27;</span>, <span class="string">&#x27;stage_2.0&#x27;</span>, <span class="string">&#x27;stage_3.0&#x27;</span>, <span class="string">&#x27;stage_4.0&#x27;</span>]</span><br><span class="line">There are <span class="number">22</span> columns</span><br></pre></td></tr></table></figure>
+<h3 id="look-for-new-features">Look for new features</h3>
+<p>Now, let's take a peek at one of the transformed data sets. Do you notice any new features?</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(one_hot_train.shape)</span><br><span class="line">one_hot_train.head()</span><br></pre></td></tr></table></figure>
+<pre><code>(154, 22)</code></pre>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+time
+</th>
+<th>
+status
+</th>
+<th>
+trt
+</th>
+<th>
+age
+</th>
+<th>
+sex
+</th>
+<th>
+ascites
+</th>
+<th>
+hepato
+</th>
+<th>
+spiders
+</th>
+<th>
+bili
+</th>
+<th>
+chol
+</th>
+<th>
+...
+</th>
+<th>
+alk.phos
+</th>
+<th>
+ast
+</th>
+<th>
+trig
+</th>
+<th>
+platelet
+</th>
+<th>
+protime
+</th>
+<th>
+edema_0.5
+</th>
+<th>
+edema_1.0
+</th>
+<th>
+stage_2.0
+</th>
+<th>
+stage_3.0
+</th>
+<th>
+stage_4.0
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+279
+</th>
+<td>
+3.868493
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+-0.414654
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+-0.300725
+</td>
+<td>
+-0.096081
+</td>
+<td>
+...
+</td>
+<td>
+0.167937
+</td>
+<td>
+0.401418
+</td>
+<td>
+0.330031
+</td>
+<td>
+0.219885
+</td>
+<td>
+-1.137178
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+137
+</th>
+<td>
+3.553425
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.069681
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.895363
+</td>
+<td>
+0.406085
+</td>
+<td>
+...
+</td>
+<td>
+0.101665
+</td>
+<td>
+0.472367
+</td>
+<td>
+1.621764
+</td>
+<td>
+-0.120868
+</td>
+<td>
+-0.239610
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+249
+</th>
+<td>
+4.846575
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+-0.924494
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+-0.510565
+</td>
+<td>
+-0.225352
+</td>
+<td>
+...
+</td>
+<td>
+0.245463
+</td>
+<td>
+1.899020
+</td>
+<td>
+-0.580807
+</td>
+<td>
+0.422207
+</td>
+<td>
+0.159309
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+</tr>
+<tr>
+<th>
+266
+</th>
+<td>
+0.490411
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.938314
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+1.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.748475
+</td>
+<td>
+-0.608191
+</td>
+<td>
+...
+</td>
+<td>
+-0.650254
+</td>
+<td>
+-0.288898
+</td>
+<td>
+-0.481443
+</td>
+<td>
+-0.727833
+</td>
+<td>
+1.356065
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+12.328767
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.563645
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+1.0
+</td>
+<td>
+-0.405645
+</td>
+<td>
+-0.210436
+</td>
+<td>
+...
+</td>
+<td>
+2.173526
+</td>
+<td>
+-0.144699
+</td>
+<td>
+-0.531125
+</td>
+<td>
+-0.450972
+</td>
+<td>
+-0.139881
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+5 rows × 22 columns
+</p>
+</div>
+<p><a name='5'></a> ## 5. Fitting and Interpreting a Cox Model</p>
+<p>Run the following cell to fit your Cox Proportional Hazards model using the <code>lifelines</code> package.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cph = CoxPHFitter()</span><br><span class="line">cph.fit(one_hot_train, duration_col = <span class="string">&#x27;time&#x27;</span>, event_col = <span class="string">&#x27;status&#x27;</span>, step_size=<span class="number">0.1</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>&lt;lifelines.CoxPHFitter: fitted with 154 total observations, 90 right-censored observations&gt;</code></pre>
+<p>You can use <code>cph.print_summary()</code> to view the coefficients associated with each covariate as well as confidence intervals.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cph.print_summary()</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<tbody>
+<tr>
+<th>
+model
+</th>
+<td>
+lifelines.CoxPHFitter
+</td>
+</tr>
+<tr>
+<th>
+duration col
+</th>
+<td>
+'time'
+</td>
+</tr>
+<tr>
+<th>
+event col
+</th>
+<td>
+'status'
+</td>
+</tr>
+<tr>
+<th>
+number of observations
+</th>
+<td>
+154
+</td>
+</tr>
+<tr>
+<th>
+number of events observed
+</th>
+<td>
+64
+</td>
+</tr>
+<tr>
+<th>
+partial log-likelihood
+</th>
+<td>
+-230.82
+</td>
+</tr>
+<tr>
+<th>
+time fit was run
+</th>
+<td>
+2020-04-19 16:30:56 UTC
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+coef
+</th>
+<th>
+exp(coef)
+</th>
+<th>
+se(coef)
+</th>
+<th>
+coef lower 95%
+</th>
+<th>
+coef upper 95%
+</th>
+<th>
+exp(coef) lower 95%
+</th>
+<th>
+exp(coef) upper 95%
+</th>
+<th>
+z
+</th>
+<th>
+p
+</th>
+<th>
+-log2(p)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+trt
+</th>
+<td>
+-0.22
+</td>
+<td>
+0.80
+</td>
+<td>
+0.30
+</td>
+<td>
+-0.82
+</td>
+<td>
+0.37
+</td>
+<td>
+0.44
+</td>
+<td>
+1.45
+</td>
+<td>
+-0.73
+</td>
+<td>
+0.46
+</td>
+<td>
+1.11
+</td>
+</tr>
+<tr>
+<th>
+age
+</th>
+<td>
+0.23
+</td>
+<td>
+1.26
+</td>
+<td>
+0.19
+</td>
+<td>
+-0.13
+</td>
+<td>
+0.60
+</td>
+<td>
+0.88
+</td>
+<td>
+1.82
+</td>
+<td>
+1.26
+</td>
+<td>
+0.21
+</td>
+<td>
+2.27
+</td>
+</tr>
+<tr>
+<th>
+sex
+</th>
+<td>
+0.34
+</td>
+<td>
+1.41
+</td>
+<td>
+0.40
+</td>
+<td>
+-0.45
+</td>
+<td>
+1.14
+</td>
+<td>
+0.64
+</td>
+<td>
+3.11
+</td>
+<td>
+0.84
+</td>
+<td>
+0.40
+</td>
+<td>
+1.33
+</td>
+</tr>
+<tr>
+<th>
+ascites
+</th>
+<td>
+-0.10
+</td>
+<td>
+0.91
+</td>
+<td>
+0.56
+</td>
+<td>
+-1.20
+</td>
+<td>
+1.01
+</td>
+<td>
+0.30
+</td>
+<td>
+2.75
+</td>
+<td>
+-0.17
+</td>
+<td>
+0.86
+</td>
+<td>
+0.21
+</td>
+</tr>
+<tr>
+<th>
+hepato
+</th>
+<td>
+0.31
+</td>
+<td>
+1.36
+</td>
+<td>
+0.38
+</td>
+<td>
+-0.44
+</td>
+<td>
+1.06
+</td>
+<td>
+0.64
+</td>
+<td>
+2.89
+</td>
+<td>
+0.81
+</td>
+<td>
+0.42
+</td>
+<td>
+1.26
+</td>
+</tr>
+<tr>
+<th>
+spiders
+</th>
+<td>
+-0.18
+</td>
+<td>
+0.83
+</td>
+<td>
+0.38
+</td>
+<td>
+-0.94
+</td>
+<td>
+0.57
+</td>
+<td>
+0.39
+</td>
+<td>
+1.77
+</td>
+<td>
+-0.47
+</td>
+<td>
+0.64
+</td>
+<td>
+0.66
+</td>
+</tr>
+<tr>
+<th>
+bili
+</th>
+<td>
+0.05
+</td>
+<td>
+1.05
+</td>
+<td>
+0.18
+</td>
+<td>
+-0.29
+</td>
+<td>
+0.39
+</td>
+<td>
+0.75
+</td>
+<td>
+1.48
+</td>
+<td>
+0.29
+</td>
+<td>
+0.77
+</td>
+<td>
+0.37
+</td>
+</tr>
+<tr>
+<th>
+chol
+</th>
+<td>
+0.19
+</td>
+<td>
+1.20
+</td>
+<td>
+0.15
+</td>
+<td>
+-0.10
+</td>
+<td>
+0.47
+</td>
+<td>
+0.91
+</td>
+<td>
+1.60
+</td>
+<td>
+1.28
+</td>
+<td>
+0.20
+</td>
+<td>
+2.33
+</td>
+</tr>
+<tr>
+<th>
+albumin
+</th>
+<td>
+-0.40
+</td>
+<td>
+0.67
+</td>
+<td>
+0.18
+</td>
+<td>
+-0.75
+</td>
+<td>
+-0.06
+</td>
+<td>
+0.47
+</td>
+<td>
+0.94
+</td>
+<td>
+-2.28
+</td>
+<td>
+0.02
+</td>
+<td>
+5.46
+</td>
+</tr>
+<tr>
+<th>
+copper
+</th>
+<td>
+0.30
+</td>
+<td>
+1.35
+</td>
+<td>
+0.16
+</td>
+<td>
+-0.01
+</td>
+<td>
+0.61
+</td>
+<td>
+0.99
+</td>
+<td>
+1.84
+</td>
+<td>
+1.91
+</td>
+<td>
+0.06
+</td>
+<td>
+4.14
+</td>
+</tr>
+<tr>
+<th>
+alk.phos
+</th>
+<td>
+-0.22
+</td>
+<td>
+0.80
+</td>
+<td>
+0.14
+</td>
+<td>
+-0.49
+</td>
+<td>
+0.05
+</td>
+<td>
+0.61
+</td>
+<td>
+1.05
+</td>
+<td>
+-1.62
+</td>
+<td>
+0.11
+</td>
+<td>
+3.24
+</td>
+</tr>
+<tr>
+<th>
+ast
+</th>
+<td>
+0.21
+</td>
+<td>
+1.24
+</td>
+<td>
+0.16
+</td>
+<td>
+-0.10
+</td>
+<td>
+0.53
+</td>
+<td>
+0.91
+</td>
+<td>
+1.69
+</td>
+<td>
+1.34
+</td>
+<td>
+0.18
+</td>
+<td>
+2.48
+</td>
+</tr>
+<tr>
+<th>
+trig
+</th>
+<td>
+0.20
+</td>
+<td>
+1.23
+</td>
+<td>
+0.16
+</td>
+<td>
+-0.11
+</td>
+<td>
+0.52
+</td>
+<td>
+0.89
+</td>
+<td>
+1.68
+</td>
+<td>
+1.27
+</td>
+<td>
+0.21
+</td>
+<td>
+2.28
+</td>
+</tr>
+<tr>
+<th>
+platelet
+</th>
+<td>
+0.14
+</td>
+<td>
+1.15
+</td>
+<td>
+0.15
+</td>
+<td>
+-0.16
+</td>
+<td>
+0.43
+</td>
+<td>
+0.86
+</td>
+<td>
+1.54
+</td>
+<td>
+0.92
+</td>
+<td>
+0.36
+</td>
+<td>
+1.48
+</td>
+</tr>
+<tr>
+<th>
+protime
+</th>
+<td>
+0.36
+</td>
+<td>
+1.43
+</td>
+<td>
+0.17
+</td>
+<td>
+0.03
+</td>
+<td>
+0.69
+</td>
+<td>
+1.03
+</td>
+<td>
+1.99
+</td>
+<td>
+2.15
+</td>
+<td>
+0.03
+</td>
+<td>
+4.97
+</td>
+</tr>
+<tr>
+<th>
+edema_0.5
+</th>
+<td>
+1.24
+</td>
+<td>
+3.47
+</td>
+<td>
+0.46
+</td>
+<td>
+0.35
+</td>
+<td>
+2.14
+</td>
+<td>
+1.42
+</td>
+<td>
+8.50
+</td>
+<td>
+2.72
+</td>
+<td>
+0.01
+</td>
+<td>
+7.28
+</td>
+</tr>
+<tr>
+<th>
+edema_1.0
+</th>
+<td>
+2.02
+</td>
+<td>
+7.51
+</td>
+<td>
+0.60
+</td>
+<td>
+0.84
+</td>
+<td>
+3.20
+</td>
+<td>
+2.31
+</td>
+<td>
+24.43
+</td>
+<td>
+3.35
+</td>
+<td>
+&lt;0.005
+</td>
+<td>
+10.28
+</td>
+</tr>
+<tr>
+<th>
+stage_2.0
+</th>
+<td>
+1.21
+</td>
+<td>
+3.35
+</td>
+<td>
+1.08
+</td>
+<td>
+-0.92
+</td>
+<td>
+3.33
+</td>
+<td>
+0.40
+</td>
+<td>
+28.06
+</td>
+<td>
+1.11
+</td>
+<td>
+0.27
+</td>
+<td>
+1.91
+</td>
+</tr>
+<tr>
+<th>
+stage_3.0
+</th>
+<td>
+1.18
+</td>
+<td>
+3.27
+</td>
+<td>
+1.09
+</td>
+<td>
+-0.96
+</td>
+<td>
+3.33
+</td>
+<td>
+0.38
+</td>
+<td>
+27.86
+</td>
+<td>
+1.08
+</td>
+<td>
+0.28
+</td>
+<td>
+1.84
+</td>
+</tr>
+<tr>
+<th>
+stage_4.0
+</th>
+<td>
+1.41
+</td>
+<td>
+4.10
+</td>
+<td>
+1.15
+</td>
+<td>
+-0.85
+</td>
+<td>
+3.67
+</td>
+<td>
+0.43
+</td>
+<td>
+39.43
+</td>
+<td>
+1.22
+</td>
+<td>
+0.22
+</td>
+<td>
+2.18
+</td>
+</tr>
+</tbody>
+</table>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<tbody>
+<tr>
+<th>
+Concordance
+</th>
+<td>
+0.83
+</td>
+</tr>
+<tr>
+<th>
+Log-likelihood ratio test
+</th>
+<td>
+97.63 on 20 df, -log2(p)=38.13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Question:</strong></p>
+<ul>
+<li>According to the model, was treatment <code>trt</code> beneficial?</li>
+<li>What was its associated hazard ratio?
+<ul>
+<li>Note that the hazard ratio is how much an incremental increase in the feature variable changes the hazard.</li>
+</ul></li>
+</ul>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Check your answer!</b></font>
+</summary>
+<p>
+<ul>
+<ul>
+<li>
+You should see that the treatment (trt) was beneficial because it has a negative impact on the hazard (the coefficient is negative, and exp(coef) is less than 1).
+</li>
+<li>
+The associated hazard ratio is ~0.8, because this is the exp(coef) of treatment.
+</li>
+</ul>
+</p>
+<p>We can compare the predicted survival curves for treatment variables. Run the next cell to plot survival curves using the <code>plot_covariate_groups()</code> function. - The y-axis is th survival rate - The x-axis is time</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cph.plot_covariate_groups(<span class="string">&#x27;trt&#x27;</span>, values=[<span class="number">0</span>, <span class="number">1</span>]);</span><br></pre></td></tr></table></figure>
+<p>Notice how the group without treatment has a lower survival rate at all times (the x-axis is time) compared to the treatment group.</p>
+<p><a name='6'></a> ## 6. Hazard Ratio</p>
+<p>Recall from the lecture videos that the Hazard Ratio between two patients was the likelihood of one patient (e.g smoker) being more at risk than the other (e.g non-smoker). <span class="math display">\[
+\frac{\lambda_{smoker}(t)}{\lambda_{nonsmoker}(t)} = e^{\theta (X_{smoker} - X_{nonsmoker})^T}
+\]</span></p>
+<p>Where</p>
+<p><span class="math display">\[
+\lambda_{smoker}(t) = \lambda_0(t)e^{\theta X_{smoker}^T}
+\]</span> and <span class="math display">\[
+\lambda_{nonsmoker}(t) = \lambda_0(t)e^{\theta X_{nonsmoker}^T} \\
+\]</span></p>
+<p><a name='Ex-2'></a> ### Exercise 2 In the cell below, write a function to compute the hazard ratio between two individuals given the model's coefficients.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+use numpy.dot
+</li>
+<li>
+use nump.exp
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C2 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hazard_ratio</span>(<span class="params">case_1, case_2, cox_params</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Return the hazard ratio of case_1 : case_2 using</span></span><br><span class="line"><span class="string">    the coefficients of the cox model.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        case_1 (np.array): (1 x d) array of covariates</span></span><br><span class="line"><span class="string">        case_2 (np.array): (1 x d) array of covariates</span></span><br><span class="line"><span class="string">        model (np.array): (1 x d) array of cox model coefficients</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        hazard_ratio (float): hazard ratio of case_1 : case_2</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    hr = np.exp(np.dot(cox_params,(case_1 - case_2).T))</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> hr</span><br></pre></td></tr></table></figure>
+<p>Now, evaluate it on the following pair of indivduals: <code>i = 1</code> and <code>j = 5</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">i = <span class="number">1</span></span><br><span class="line">case_1 = one_hot_train.iloc[i, :].drop([<span class="string">&#x27;time&#x27;</span>, <span class="string">&#x27;status&#x27;</span>])</span><br><span class="line"></span><br><span class="line">j = <span class="number">5</span></span><br><span class="line">case_2 = one_hot_train.iloc[j, :].drop([<span class="string">&#x27;time&#x27;</span>, <span class="string">&#x27;status&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(hazard_ratio(case_1.values, case_2.values, cph.params_.values))</span><br></pre></td></tr></table></figure>
+<pre><code>15.029017732492221</code></pre>
+<h4 id="expected-output-1">Expected Output:</h4>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">15.029017732492221</span></span><br></pre></td></tr></table></figure>
+<p><strong>Question:</strong></p>
+<p>Is <code>case_1</code> or <code>case_2</code> at greater risk?</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Check your answer!</b></font>
+</summary>
+<p>
+<ul>
+<ul>
+<li>
+You should see that <code>case_1</code> is at higher risk.
+</li>
+<li>
+The hazard ratio of case 1 / case 2 is greater than 1, so case 1 had a higher hazard relative to case 2
+</li>
+</ul>
+</p>
+<p>Inspect different pairs, and see if you can figure out which patient is more at risk.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">i = <span class="number">4</span></span><br><span class="line">case_a = one_hot_train.iloc[i, :].drop([<span class="string">&#x27;time&#x27;</span>, <span class="string">&#x27;status&#x27;</span>])</span><br><span class="line"></span><br><span class="line">j = <span class="number">7</span></span><br><span class="line">case_b = one_hot_train.iloc[j, :].drop([<span class="string">&#x27;time&#x27;</span>, <span class="string">&#x27;status&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Case A\n\n&quot;</span>, case_a, <span class="string">&quot;\n&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Case B\n\n&quot;</span>, case_b, <span class="string">&quot;\n&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Hazard Ratio:&quot;</span>, hazard_ratio(case_a.values, case_b.values, cph.params_.values))</span><br></pre></td></tr></table></figure>
+<pre><code>Case A
+
+ trt          0.000000
+age          0.563645
+sex          0.000000
+ascites      0.000000
+hepato       1.000000
+spiders      1.000000
+bili        -0.405645
+chol        -0.210436
+albumin      1.514297
+copper      -0.481961
+alk.phos     2.173526
+ast         -0.144699
+trig        -0.531125
+platelet    -0.450972
+protime     -0.139881
+edema_0.5    0.000000
+edema_1.0    0.000000
+stage_2.0    0.000000
+stage_3.0    1.000000
+stage_4.0    0.000000
+Name: 1, dtype: float64 
+
+Case B
+
+ trt          0.000000
+age          0.463447
+sex          0.000000
+ascites      0.000000
+hepato       1.000000
+spiders      0.000000
+bili        -0.489581
+chol        -0.309875
+albumin     -1.232371
+copper      -0.504348
+alk.phos     2.870427
+ast         -0.936261
+trig        -0.150229
+platelet     3.190823
+protime     -0.139881
+edema_0.5    0.000000
+edema_1.0    0.000000
+stage_2.0    0.000000
+stage_3.0    0.000000
+stage_4.0    1.000000
+Name: 38, dtype: float64 
+
+Hazard Ratio: 0.1780450006997129</code></pre>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Check your answer!</b></font>
+</summary>
+<p>
+<ul>
+<ul>
+<li>
+You should see that <code>case_2</code> is at higher risk.
+</li>
+<li>
+The hazard ratio of case 1 / case 2 is less than 1, so case 2 had a higher hazard relative to case 1
+</li>
+</ul>
+</p>
+<p><a name='7'></a> ## 7. Harrell's C-index</p>
+<p>To evaluate how good our model is performing, we will write our own version of the C-index. Similar to the week 1 case, C-index in the survival context is the probability that, given a randomly selected pair of individuals, the one who died sooner has a higher risk score.</p>
+<p>However, we need to take into account censoring. Imagine a pair of patients, <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>.</p>
+<h4 id="scenario-1">Scenario 1</h4>
+<ul>
+<li>A was censored at time <span class="math inline">\(t_A\)</span></li>
+<li>B died at <span class="math inline">\(t_B\)</span></li>
+<li><span class="math inline">\(t_A &lt; t_B\)</span>.</li>
+</ul>
+<p>Because of censoring, we can't say whether <span class="math inline">\(A\)</span> or <span class="math inline">\(B\)</span> should have a higher risk score.</p>
+<h4 id="scenario-2">Scenario 2</h4>
+<p>Now imagine that <span class="math inline">\(t_A &gt; t_B\)</span>.</p>
+<ul>
+<li>A was censored at time <span class="math inline">\(t_A\)</span></li>
+<li>B died at <span class="math inline">\(t_B\)</span></li>
+<li><span class="math inline">\(t_A &gt; t_B\)</span></li>
+</ul>
+<p>Now we can definitively say that <span class="math inline">\(B\)</span> should have a higher risk score than <span class="math inline">\(A\)</span>, since we know for a fact that <span class="math inline">\(A\)</span> lived longer.</p>
+<p>Therefore, when we compute our C-index - We should only consider pairs where at most one person is censored - If they are censored, then their censored time should occur <em>after</em> the other person's time of death.</p>
+<p>The metric we get if we use this rule is called <strong>Harrel's C-index</strong>.</p>
+<p>Note that in this case, being censored at time <span class="math inline">\(t\)</span> means that the true death time was some time AFTER time <span class="math inline">\(t\)</span> and not at <span class="math inline">\(t\)</span>. - Therefore if <span class="math inline">\(t_A = t_B\)</span> and A was censored: - Then <span class="math inline">\(A\)</span> actually lived longer than <span class="math inline">\(B\)</span>. - This will effect how you deal with ties in the exercise below!</p>
+<p><a name='Ex-3'></a> ### Exercise 3 Fill in the function below to compute Harrel's C-index.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+If you get a division by zero error, consider checking how you count when a pair is permissible (in the case where one patient is censored and the other is not censored).
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C3 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">harrell_c</span>(<span class="params">y_true, scores, event</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Compute Harrel C-index given true event/censoring times,</span></span><br><span class="line"><span class="string">    model output, and event indicators.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        y_true (array): array of true event times</span></span><br><span class="line"><span class="string">        scores (array): model risk scores</span></span><br><span class="line"><span class="string">        event (array): indicator, 1 if event occurred at that index, 0 for censorship</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        result (float): C-index metric</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    </span><br><span class="line">    n = <span class="built_in">len</span>(y_true)</span><br><span class="line">    <span class="keyword">assert</span> (<span class="built_in">len</span>(scores) == n <span class="keyword">and</span> <span class="built_in">len</span>(event) == n)</span><br><span class="line">    </span><br><span class="line">    concordant = <span class="number">0.0</span></span><br><span class="line">    permissible = <span class="number">0.0</span></span><br><span class="line">    ties = <span class="number">0.0</span></span><br><span class="line">    </span><br><span class="line">    result = <span class="number">0.0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; and &#x27;pass&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># use double for loop to go through cases</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">        <span class="comment"># set lower bound on j to avoid double counting</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i+<span class="number">1</span>, n):</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># check if at most one is censored</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> (event[i] == <span class="number">0</span> <span class="keyword">and</span> event[j] == <span class="number">0</span>):</span><br><span class="line"></span><br><span class="line">                <span class="comment"># check if neither are censored</span></span><br><span class="line">                <span class="keyword">if</span> event[i] == <span class="number">1</span> <span class="keyword">and</span> event[j] == <span class="number">1</span>:</span><br><span class="line">                    permissible += <span class="number">1</span></span><br><span class="line">                    </span><br><span class="line">                    <span class="comment"># check if scores are tied</span></span><br><span class="line">                    <span class="keyword">if</span> y_true[i] == y_true[j]:</span><br><span class="line">                        ties += <span class="number">1</span></span><br><span class="line">                    </span><br><span class="line">                    <span class="comment"># check for concordant</span></span><br><span class="line">                    <span class="keyword">elif</span> y_true[i] &gt; y_true[j] <span class="keyword">and</span> scores[i] &lt; scores[j]:</span><br><span class="line">                        concordant += <span class="number">1</span></span><br><span class="line">                    <span class="keyword">elif</span> y_true[i] &lt; y_true[j] <span class="keyword">and</span> scores[i] &gt; scores[j]:</span><br><span class="line">                        concordant += <span class="number">1</span></span><br><span class="line">                </span><br><span class="line">                <span class="comment"># check if one is censored</span></span><br><span class="line">                <span class="keyword">elif</span> event[i] == <span class="number">0</span> <span class="keyword">or</span> event[j] == <span class="number">0</span>:</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment"># get censored index</span></span><br><span class="line">                    censored = j</span><br><span class="line">                    uncensored = i</span><br><span class="line">                    </span><br><span class="line">                    <span class="keyword">if</span> event[i] == <span class="number">0</span>:</span><br><span class="line">                        censored = i</span><br><span class="line">                        uncensored = j</span><br><span class="line">                        </span><br><span class="line">                    <span class="comment"># check if permissible</span></span><br><span class="line">                    <span class="comment"># Note: in this case, we are assuming that censored at a time</span></span><br><span class="line">                    <span class="comment"># means that you did NOT die at that time. That is, if you</span></span><br><span class="line">                    <span class="comment"># live until time 30 and have event = 0, then you lived THROUGH</span></span><br><span class="line">                    <span class="comment"># time 30.</span></span><br><span class="line">                    <span class="keyword">if</span> y_true[censored] &gt;= y_true[uncensored]:</span><br><span class="line">                        permissible += <span class="number">1</span></span><br><span class="line">                        </span><br><span class="line">                        <span class="comment"># check if scores are tied</span></span><br><span class="line">                        <span class="keyword">if</span> scores[i] == scores[j]:</span><br><span class="line">                            <span class="comment"># update ties </span></span><br><span class="line">                            ties += <span class="number">1</span></span><br><span class="line">                            </span><br><span class="line">                        <span class="comment"># check if scores are concordant </span></span><br><span class="line">                        <span class="keyword">if</span> y_true[censored] &gt;= y_true[uncensored] <span class="keyword">and</span> scores[censored] &lt; scores[uncensored]:</span><br><span class="line">                            concordant += <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># set result to c-index computed from number of concordant pairs,</span></span><br><span class="line">    <span class="comment"># number of ties, and number of permissible pairs (REPLACE 0 with your code) </span></span><br><span class="line">    result = (concordant + <span class="number">0.5</span> * ties) / permissible</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> result   </span><br></pre></td></tr></table></figure>
+<p>You can test your function on the following test cases:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">y_true = [<span class="number">30</span>, <span class="number">12</span>, <span class="number">84</span>, <span class="number">9</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Case 1</span></span><br><span class="line">event = [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line">scores = [<span class="number">0.5</span>, <span class="number">0.9</span>, <span class="number">0.1</span>, <span class="number">1.0</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Case 1&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Expected: 1.0, Output: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(harrell_c(y_true, scores, event)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Case 2</span></span><br><span class="line">scores = [<span class="number">0.9</span>, <span class="number">0.5</span>, <span class="number">1.0</span>, <span class="number">0.1</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\nCase 2&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Expected: 0.0, Output: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(harrell_c(y_true, scores, event)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Case 3</span></span><br><span class="line">event = [<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line">scores = [<span class="number">0.5</span>, <span class="number">0.9</span>, <span class="number">0.1</span>, <span class="number">1.0</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\nCase 3&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Expected: 1.0, Output: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(harrell_c(y_true, scores, event)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Case 4</span></span><br><span class="line">y_true = [<span class="number">30</span>, <span class="number">30</span>, <span class="number">20</span>, <span class="number">20</span>]</span><br><span class="line">event = [<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]</span><br><span class="line">scores = [<span class="number">10</span>, <span class="number">5</span>, <span class="number">15</span>, <span class="number">20</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\nCase 4&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Expected: 0.75, Output: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(harrell_c(y_true, scores, event)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Case 5</span></span><br><span class="line">y_true = <span class="built_in">list</span>(<span class="built_in">reversed</span>([<span class="number">30</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">20</span>, <span class="number">20</span>]))</span><br><span class="line">event = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]</span><br><span class="line">scores = <span class="built_in">list</span>(<span class="built_in">reversed</span>([<span class="number">15</span>, <span class="number">10</span>, <span class="number">5</span>, <span class="number">15</span>, <span class="number">20</span>]))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\nCase 5&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Expected: 0.583, Output: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(harrell_c(y_true, scores, event)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Case 6</span></span><br><span class="line">y_true = [<span class="number">10</span>,<span class="number">10</span>]</span><br><span class="line">event = [<span class="number">0</span>,<span class="number">1</span>]</span><br><span class="line">scores = [<span class="number">4</span>,<span class="number">5</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\nCase 6&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Expected: 1.0 , Output:<span class="subst">&#123;harrell_c(y_true, scores, event):<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Case 1
+Expected: 1.0, Output: 1.0
+
+Case 2
+Expected: 0.0, Output: 0.0
+
+Case 3
+Expected: 1.0, Output: 1.0
+
+Case 4
+Expected: 0.75, Output: 0.75
+
+Case 5
+Expected: 0.583, Output: 0.5833333333333334
+
+Case 6
+Expected: 1.0 , Output:1.0000</code></pre>
+<p>Now use the Harrell's C-index function to evaluate the cox model on our data sets.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Train</span></span><br><span class="line">scores = cph.predict_partial_hazard(one_hot_train)</span><br><span class="line">cox_train_scores = harrell_c(one_hot_train[<span class="string">&#x27;time&#x27;</span>].values, scores.values, one_hot_train[<span class="string">&#x27;status&#x27;</span>].values)</span><br><span class="line"><span class="comment"># Validation</span></span><br><span class="line">scores = cph.predict_partial_hazard(one_hot_val)</span><br><span class="line">cox_val_scores = harrell_c(one_hot_val[<span class="string">&#x27;time&#x27;</span>].values, scores.values, one_hot_val[<span class="string">&#x27;status&#x27;</span>].values)</span><br><span class="line"><span class="comment"># Test</span></span><br><span class="line">scores = cph.predict_partial_hazard(one_hot_test)</span><br><span class="line">cox_test_scores = harrell_c(one_hot_test[<span class="string">&#x27;time&#x27;</span>].values, scores.values, one_hot_test[<span class="string">&#x27;status&#x27;</span>].values)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Train:&quot;</span>, cox_train_scores)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Val:&quot;</span>, cox_val_scores)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test:&quot;</span>, cox_test_scores)</span><br></pre></td></tr></table></figure>
+<pre><code>Train: 0.8265139116202946
+Val: 0.8544776119402985
+Test: 0.8478543563068921</code></pre>
+<p>What do these values tell us ?</p>
+<p><a name='8'></a> ## 8. Random Survival Forests</p>
+<p>This performed well, but you have a hunch you can squeeze out better performance by using a machine learning approach. You decide to use a Random Survival Forest. To do this, you can use the <code>RandomForestSRC</code> package in R. To call R function from Python, we'll use the <code>r2py</code> package. Run the following cell to import the necessary requirements.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">%load_ext rpy2.ipython</span><br><span class="line">%R require(ggplot2)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> rpy2.robjects.packages <span class="keyword">import</span> importr</span><br><span class="line"><span class="comment"># import R&#x27;s &quot;base&quot; package</span></span><br><span class="line">base = importr(<span class="string">&#x27;base&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># import R&#x27;s &quot;utils&quot; package</span></span><br><span class="line">utils = importr(<span class="string">&#x27;utils&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># import rpy2&#x27;s package module</span></span><br><span class="line"><span class="keyword">import</span> rpy2.robjects.packages <span class="keyword">as</span> rpackages</span><br><span class="line"></span><br><span class="line">forest = rpackages.importr(<span class="string">&#x27;randomForestSRC&#x27;</span>, lib_loc=<span class="string">&#x27;R&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> rpy2 <span class="keyword">import</span> robjects <span class="keyword">as</span> ro</span><br><span class="line">R = ro.r</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> rpy2.robjects <span class="keyword">import</span> pandas2ri</span><br><span class="line">pandas2ri.activate()</span><br></pre></td></tr></table></figure>
+<pre><code>R[write to console]: Loading required package: ggplot2</code></pre>
+<p>Instead of encoding our categories as binary features, we can use the original dataframe since trees deal well with raw categorical data (can you think why this might be?).</p>
+<p>Run the code cell below to build your forest.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model = forest.rfsrc(ro.Formula(<span class="string">&#x27;Surv(time, status) ~ .&#x27;</span>), data=df_train, ntree=<span class="number">300</span>, nodedepth=<span class="number">5</span>, seed=-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(model)</span><br></pre></td></tr></table></figure>
+<pre><code>                         Sample size: 154
+                    Number of deaths: 64
+                     Number of trees: 300
+           Forest terminal node size: 15
+       Average no. of terminal nodes: 6.54
+No. of variables tried at each split: 5
+              Total no. of variables: 17
+       Resampling used to grow trees: swor
+    Resample size used to grow trees: 97
+                            Analysis: RSF
+                              Family: surv
+                      Splitting rule: logrank *random*
+       Number of random split points: 10
+                          Error rate: 19.07%</code></pre>
+<p>Finally, let's evaluate on our validation and test sets, and compare it with our Cox model.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">result = R.predict(model, newdata=df_val)</span><br><span class="line">scores = np.array(result.rx(<span class="string">&#x27;predicted&#x27;</span>)[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Cox Model Validation Score:&quot;</span>, cox_val_scores)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Survival Forest Validation Score:&quot;</span>, harrell_c(df_val[<span class="string">&#x27;time&#x27;</span>].values, scores, df_val[<span class="string">&#x27;status&#x27;</span>].values))</span><br></pre></td></tr></table></figure>
+<pre><code>Cox Model Validation Score: 0.8544776119402985
+Survival Forest Validation Score: 0.8296019900497512</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">result = R.predict(model, newdata=df_test)</span><br><span class="line">scores = np.array(result.rx(<span class="string">&#x27;predicted&#x27;</span>)[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Cox Model Test Score:&quot;</span>, cox_test_scores)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Survival Forest Validation Score:&quot;</span>, harrell_c(df_test[<span class="string">&#x27;time&#x27;</span>].values, scores, df_test[<span class="string">&#x27;status&#x27;</span>].values))</span><br></pre></td></tr></table></figure>
+<pre><code>Cox Model Test Score: 0.8478543563068921
+Survival Forest Validation Score: 0.8621586475942783</code></pre>
+<p>Your random forest model should be outperforming the Cox model slightly. Let's dig deeper to see how they differ.</p>
+<p><a name='9'></a> ## 9. Permutation Method for Interpretation</p>
+<p>We'll dig a bit deeper into interpretation methods for forests a bit later, but for now just know that random surival forests come with their own built in variable importance feature. The method is referred to as VIMP, and for the purpose of this section you should just know that higher absolute value of the VIMP means that the variable generally has a larger effect on the model outcome.</p>
+<p>Run the next cell to compute and plot VIMP for the random survival forest.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">vimps = np.array(forest.vimp(model).rx(<span class="string">&#x27;importance&#x27;</span>)[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">y = np.arange(<span class="built_in">len</span>(vimps))</span><br><span class="line">plt.barh(y, np.<span class="built_in">abs</span>(vimps))</span><br><span class="line">plt.yticks(y, df_train.drop([<span class="string">&#x27;time&#x27;</span>, <span class="string">&#x27;status&#x27;</span>], axis=<span class="number">1</span>).columns)</span><br><span class="line">plt.title(<span class="string">&quot;VIMP (absolute value)&quot;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_67_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<h3 id="question">Question:</h3>
+<p>How does the variable importance compare to that of the Cox model? Which variable is important in both models? Which variable is important in the random survival forest but not in the Cox model? You should see that <code>edema</code> is important in both the random survival forest and the Cox model. You should also see that <code>bili</code> is important in the random survival forest but not the Cox model .</p>
+<h1 id="congratulations">Congratulations!</h1>
+<p>You've finished the last assignment in course 2! Take a minute to look back at the analysis you've done over the last four assignments. You've done a great job!</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Medicine/" rel="tag"># Medicine</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Survival-Estimates-that-Vary-with-Time/2020/04/18/" rel="prev" title="Survival Estimates that Vary with Time">
+      <i class="fa fa-chevron-left"></i> Survival Estimates that Vary with Time
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Develop-a-blockchain-application-from-scratch-in-Python/2020/04/21/" rel="next" title="Develop a blockchain application from scratch in Python">
+      Develop a blockchain application from scratch in Python <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#cox-proportional-hazards-and-random-survival-forests"><span class="nav-number">1.</span> <span class="nav-text">Cox Proportional Hazards and Random Survival Forests</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#outline"><span class="nav-number">1.1.</span> <span class="nav-text">Outline</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#expected-output"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">Expected output</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#look-for-new-features"><span class="nav-number">1.1.1.</span> <span class="nav-text">Look for new features</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#expected-output-1"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">Expected Output:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scenario-1"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">Scenario 1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scenario-2"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">Scenario 2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#question"><span class="nav-number">1.1.2.</span> <span class="nav-text">Question:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#congratulations"><span class="nav-number">2.</span> <span class="nav-text">Congratulations!</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">268</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

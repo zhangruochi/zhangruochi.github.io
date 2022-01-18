@@ -1,0 +1,2397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Language Models: Auto-Complete In this assignment, you will build an auto-complete system. Auto-complete system is something you may see every day - When you google something, you often have suggestio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Auto-Complete">
+<meta property="og:url" content="https://zhangruochi.com/Auto-Complete/2020/07/19/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Language Models: Auto-Complete In this assignment, you will build an auto-complete system. Auto-complete system is something you may see every day - When you google something, you often have suggestio">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-07-19T09:45:54.000Z">
+<meta property="article:modified_time" content="2020-07-19T09:46:20.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhangruochi.com/Auto-Complete/2020/07/19/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Auto-Complete | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Auto-Complete/2020/07/19/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Auto-Complete
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-07-19 17:45:54 / Modified: 17:46:20" itemprop="dateCreated datePublished" datetime="2020-07-19T17:45:54+08:00">2020-07-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Auto-Complete/2020/07/19/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Auto-Complete/2020/07/19/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="language-models-auto-complete">Language Models: Auto-Complete</h1>
+<p>In this assignment, you will build an auto-complete system. Auto-complete system is something you may see every day - When you google something, you often have suggestions to help you complete your search. - When you are writing an email, you get suggestions telling you possible endings to your sentence.</p>
+<p>By the end of this assignment, you will develop a prototype of such a system.</p>
+<p><img src = "stanford.png" style="width:700px;height:300px;"/></p>
+<h2 id="outline">Outline</h2>
+<ul>
+<li><a href="#1">1 Load and Preprocess Data</a></li>
+<li><a href="#1.1">1.1: Load the data</a></li>
+<li><a href="#1.2">1.2 Pre-process the data</a>
+<ul>
+<li><a href="#ex-01">Exercise 01</a></li>
+<li><a href="#ex-02">Exercise 02</a></li>
+<li><a href="#ex-03">Exercise 03</a></li>
+<li><a href="#ex-04">Exercise 04</a></li>
+<li><a href="#ex-05">Exercise 05</a></li>
+<li><a href="#ex-06">Exercise 06</a></li>
+<li><a href="#ex-07">Exercise 07</a></li>
+</ul></li>
+<li><a href="#2">2 Develop n-gram based language models</a>
+<ul>
+<li><a href="#ex-08">Exercise 08</a></li>
+<li><a href="#ex-09">Exercise 09</a><br />
+</li>
+</ul></li>
+<li><a href="#3">3 Perplexity</a>
+<ul>
+<li><a href="#ex-10">Exercise 10</a></li>
+</ul></li>
+<li><a href="#4">4 Build an auto-complete system</a>
+<ul>
+<li><a href="#ex-11">Exercise 11</a></li>
+</ul></li>
+</ul>
+<p>A key building block for an auto-complete system is a language model. A language model assigns the probability to a sequence of words, in a way that more "likely" sequences receive higher scores. For example, &gt;"I have a pen" is expected to have a higher probability than &gt;"I am a pen" since the first one seems to be a more natural sentence in the real world.</p>
+<p>You can take advantage of this probability calculation to develop an auto-complete system.<br />
+Suppose the user typed &gt;"I eat scrambled" Then you can find a word <code>x</code> such that "I eat scrambled x" receives the highest probability. If x = "eggs", the sentence would be &gt;"I eat scrambled eggs"</p>
+<p>While a variety of language models have been developed, this assignment uses <strong>N-grams</strong>, a simple but powerful method for language modeling. - N-grams are also used in machine translation and speech recognition.</p>
+<p>Here are the steps of this assignment:</p>
+<ol type="1">
+<li>Load and preprocess data
+<ul>
+<li>Load and tokenize data.</li>
+<li>Split the sentences into train and test sets.</li>
+<li>Replace words with a low frequency by an unknown marker <code>&lt;unk&gt;</code>.</li>
+</ul></li>
+<li>Develop N-gram based language models
+<ul>
+<li>Compute the count of n-grams from a given data set.</li>
+<li>Estimate the conditional probability of a next word with k-smoothing.</li>
+</ul></li>
+<li>Evaluate the N-gram models by computing the perplexity score.</li>
+<li>Use your own model to suggest an upcoming word given your sentence.</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line">nltk.data.path.append(<span class="string">&#x27;.&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><a name='1'></a> ## Part 1: Load and Preprocess Data</p>
+<p><a name='1.1'></a> ### Part 1.1: Load the data You will use twitter data. Load the data and view the first few sentences by running the next cell.</p>
+<p>Notice that data is a long string that contains many many tweets. Observe that there is a line break "" between tweets.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;en_US.twitter.txt&quot;</span>, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    data = f.read()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Data type:&quot;</span>, <span class="built_in">type</span>(data))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Number of letters:&quot;</span>, <span class="built_in">len</span>(data))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;First 300 letters of the data&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;-------&quot;</span>)</span><br><span class="line">display(data[<span class="number">0</span>:<span class="number">300</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;-------&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Last 300 letters of the data&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;-------&quot;</span>)</span><br><span class="line">display(data[-<span class="number">300</span>:])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;-------&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Data type: &lt;class &#39;str&#39;&gt;
+Number of letters: 3335477
+First 300 letters of the data
+-------
+
+
+
+&quot;How are you? Btw thanks for the RT. You gonna be in DC anytime soon? Love to see you. Been way, way too long.\nWhen you meet someone special... you&#39;ll know. Your heart will beat more rapidly and you&#39;ll smile for no reason.\nthey&#39;ve decided its more fun if I don&#39;t.\nSo Tired D; Played Lazer Tag &amp; Ran A &quot;
+
+
+-------
+Last 300 letters of the data
+-------
+
+
+
+&quot;ust had one a few weeks back....hopefully we will be back soon! wish you the best yo\nColombia is with an &#39;o&#39;...“: We now ship to 4 countries in South America (fist pump). Please welcome Columbia to the Stunner Family”\n#GutsiestMovesYouCanMake Giving a cat a bath.\nCoffee after 5 was a TERRIBLE idea.\n&quot;
+
+
+-------</code></pre>
+<p><a name='1.2'></a> ### Part 1.2 Pre-process the data</p>
+<p>Preprocess this data with the following steps:</p>
+<ol type="1">
+<li>Split data into sentences using "" as the delimiter.</li>
+<li>Split each sentence into tokens. Note that in this assignment we use "token" and "words" interchangeably.</li>
+<li>Assign sentences into train or test sets.</li>
+<li>Find tokens that appear at least N times in the training data.</li>
+<li>Replace tokens that appear less than N times by <code>&lt;unk&gt;</code></li>
+</ol>
+<p>Note: we omit validation data in this exercise. - In real applications, we should hold a part of data as a validation set and use it to tune our training. - We skip this process for simplicity.</p>
+<p><a name='ex-01'></a> ### Exercise 01</p>
+<p>Split data into sentences.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+Use <a target="_blank" rel="noopener" href="https://docs.python.org/3/library/stdtypes.html?highlight=split#str.split" >str.split</a>
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C1 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment">### GRADED_FUNCTION: split_to_sentences ###</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">split_to_sentences</span>(<span class="params">data</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Split data by linebreak &quot;\n&quot;</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        data: str</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        A list of sentences</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    sentences = data.split(<span class="string">&quot;\n&quot;</span>)</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Additional clearning (This part is already implemented)</span></span><br><span class="line">    <span class="comment"># - Remove leading and trailing spaces from each sentence</span></span><br><span class="line">    <span class="comment"># - Drop sentences if they are empty strings.</span></span><br><span class="line">    sentences = [s.strip() <span class="keyword">for</span> s <span class="keyword">in</span> sentences]</span><br><span class="line">    sentences = [s <span class="keyword">for</span> s <span class="keyword">in</span> sentences <span class="keyword">if</span> <span class="built_in">len</span>(s) &gt; <span class="number">0</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> sentences    </span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test your code</span></span><br><span class="line">x = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">I have a pen.\nI have an apple. \nAh\nApple pen.\n</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="built_in">print</span>(x)</span><br><span class="line"></span><br><span class="line">split_to_sentences(x)</span><br></pre></td></tr></table></figure>
+<pre><code>I have a pen.
+I have an apple. 
+Ah
+Apple pen.
+
+
+
+
+
+
+
+[&#39;I have a pen.&#39;, &#39;I have an apple.&#39;, &#39;Ah&#39;, &#39;Apple pen.&#39;]</code></pre>
+<p>Expected answer: <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="string">&#x27;I have a pen.&#x27;</span>, <span class="string">&#x27;I have an apple.&#x27;</span>, <span class="string">&#x27;Ah&#x27;</span>, <span class="string">&#x27;Apple pen.&#x27;</span>]</span><br></pre></td></tr></table></figure></p>
+<p><a name='ex-02'></a> ### Exercise 02 The next step is to tokenize sentences (split a sentence into a list of words). - Convert all tokens into lower case so that words which are capitalized (for example, at the start of a sentence) in the original text are treated the same as the lowercase versions of the words. - Append each tokenized list of words into a list of tokenized sentences.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+Use <a target="_blank" rel="noopener" href="https://docs.python.org/3/library/stdtypes.html?highlight=split#str.lower" >str.lower</a> to convert strings to lowercase.
+</li>
+<li>
+Please use <a target="_blank" rel="noopener" href="https://www.nltk.org/api/nltk.tokenize.html#nltk.tokenize.punkt.PunktLanguageVars.word_tokenize" >nltk.word_tokenize</a> to split sentences into tokens.
+</li>
+<li>
+If you used str.split insteaad of nltk.word_tokenize, there are additional edge cases to handle, such as the punctuation (comma, period) that follows a word.
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C2 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment">### GRADED_FUNCTION: tokenize_sentences ###</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tokenize_sentences</span>(<span class="params">sentences</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Tokenize sentences into tokens (words)</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        sentences: List of strings</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        List of lists of tokens</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Initialize the list of lists of tokenized sentences</span></span><br><span class="line">    tokenized_sentences = []</span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Go through each sentence</span></span><br><span class="line">    <span class="keyword">for</span> sentence <span class="keyword">in</span> sentences:</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Convert to lowercase letters</span></span><br><span class="line">        sentence = sentence.lower()</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Convert into a list of words</span></span><br><span class="line">        tokenized = nltk.word_tokenize(sentence)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># append the list of words to the list of lists</span></span><br><span class="line">        tokenized_sentences.append(tokenized)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> tokenized_sentences</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test your code</span></span><br><span class="line">sentences = [<span class="string">&quot;Sky is blue.&quot;</span>, <span class="string">&quot;Leaves are green.&quot;</span>, <span class="string">&quot;Roses are red.&quot;</span>]</span><br><span class="line">tokenize_sentences(sentences)</span><br></pre></td></tr></table></figure>
+<pre><code>[[&#39;sky&#39;, &#39;is&#39;, &#39;blue&#39;, &#39;.&#39;],
+ [&#39;leaves&#39;, &#39;are&#39;, &#39;green&#39;, &#39;.&#39;],
+ [&#39;roses&#39;, &#39;are&#39;, &#39;red&#39;, &#39;.&#39;]]</code></pre>
+<h3 id="expected-output">Expected output</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[[<span class="string">&#x27;sky&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>, <span class="string">&#x27;.&#x27;</span>],</span><br><span class="line"> [<span class="string">&#x27;leaves&#x27;</span>, <span class="string">&#x27;are&#x27;</span>, <span class="string">&#x27;green&#x27;</span>, <span class="string">&#x27;.&#x27;</span>],</span><br><span class="line"> [<span class="string">&#x27;roses&#x27;</span>, <span class="string">&#x27;are&#x27;</span>, <span class="string">&#x27;red&#x27;</span>, <span class="string">&#x27;.&#x27;</span>]]</span><br></pre></td></tr></table></figure>
+<p><a name='ex-03'></a> ### Exercise 03</p>
+<p>Use the two functions that you have just implemented to get the tokenized data. - split the data into sentences - tokenize those sentences</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C3 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment">### GRADED_FUNCTION: get_tokenized_data ###</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_tokenized_data</span>(<span class="params">data</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Make a list of tokenized sentences</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        data: String</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        List of lists of tokens</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Get the sentences by splitting up the data</span></span><br><span class="line">    sentences = split_to_sentences(data)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Get the list of lists of tokens by tokenizing the sentences</span></span><br><span class="line">    tokenized_sentences = tokenize_sentences(sentences)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> tokenized_sentences</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test your function</span></span><br><span class="line">x = <span class="string">&quot;Sky is blue.\nLeaves are green\nRoses are red.&quot;</span></span><br><span class="line">get_tokenized_data(x)</span><br></pre></td></tr></table></figure>
+<pre><code>[[&#39;sky&#39;, &#39;is&#39;, &#39;blue&#39;, &#39;.&#39;],
+ [&#39;leaves&#39;, &#39;are&#39;, &#39;green&#39;],
+ [&#39;roses&#39;, &#39;are&#39;, &#39;red&#39;, &#39;.&#39;]]</code></pre>
+<h5 id="expected-outcome">Expected outcome</h5>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[[<span class="string">&#x27;sky&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>, <span class="string">&#x27;.&#x27;</span>],</span><br><span class="line"> [<span class="string">&#x27;leaves&#x27;</span>, <span class="string">&#x27;are&#x27;</span>, <span class="string">&#x27;green&#x27;</span>],</span><br><span class="line"> [<span class="string">&#x27;roses&#x27;</span>, <span class="string">&#x27;are&#x27;</span>, <span class="string">&#x27;red&#x27;</span>, <span class="string">&#x27;.&#x27;</span>]]</span><br></pre></td></tr></table></figure>
+<h3 id="split-into-train-and-test-sets">Split into train and test sets</h3>
+<p>Now run the cell below to split data into training and test sets.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tokenized_data = get_tokenized_data(data)</span><br><span class="line">random.seed(<span class="number">87</span>)</span><br><span class="line">random.shuffle(tokenized_data)</span><br><span class="line"></span><br><span class="line">train_size = <span class="built_in">int</span>(<span class="built_in">len</span>(tokenized_data) * <span class="number">0.8</span>)</span><br><span class="line">train_data = tokenized_data[<span class="number">0</span>:train_size]</span><br><span class="line">test_data = tokenized_data[train_size:]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;&#123;&#125; data are split into &#123;&#125; train and &#123;&#125; test set&quot;</span>.<span class="built_in">format</span>(</span><br><span class="line">    <span class="built_in">len</span>(tokenized_data), <span class="built_in">len</span>(train_data), <span class="built_in">len</span>(test_data)))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;First training sample:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(train_data[<span class="number">0</span>])</span><br><span class="line">      </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;First test sample&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(test_data[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>47961 data are split into 38368 train and 9593 test set
+First training sample:
+[&#39;i&#39;, &#39;personally&#39;, &#39;would&#39;, &#39;like&#39;, &#39;as&#39;, &#39;our&#39;, &#39;official&#39;, &#39;glove&#39;, &#39;of&#39;, &#39;the&#39;, &#39;team&#39;, &#39;local&#39;, &#39;company&#39;, &#39;and&#39;, &#39;quality&#39;, &#39;production&#39;]
+First test sample
+[&#39;that&#39;, &#39;picture&#39;, &#39;i&#39;, &#39;just&#39;, &#39;seen&#39;, &#39;whoa&#39;, &#39;dere&#39;, &#39;!&#39;, &#39;!&#39;, &#39;&gt;&#39;, &#39;&gt;&#39;, &#39;&gt;&#39;, &#39;&gt;&#39;, &#39;&gt;&#39;, &#39;&gt;&#39;, &#39;&gt;&#39;]</code></pre>
+<h5 id="expected-output-1">Expected output</h5>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">47961</span> data are split into <span class="number">38368</span> train <span class="keyword">and</span> <span class="number">9593</span> test set</span><br><span class="line">First training sample:</span><br><span class="line">[<span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;personally&#x27;</span>, <span class="string">&#x27;would&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;as&#x27;</span>, <span class="string">&#x27;our&#x27;</span>, <span class="string">&#x27;official&#x27;</span>, <span class="string">&#x27;glove&#x27;</span>, <span class="string">&#x27;of&#x27;</span>, <span class="string">&#x27;the&#x27;</span>, <span class="string">&#x27;team&#x27;</span>, <span class="string">&#x27;local&#x27;</span>, <span class="string">&#x27;company&#x27;</span>, <span class="string">&#x27;and&#x27;</span>, <span class="string">&#x27;quality&#x27;</span>, <span class="string">&#x27;production&#x27;</span>]</span><br><span class="line">First test sample</span><br><span class="line">[<span class="string">&#x27;that&#x27;</span>, <span class="string">&#x27;picture&#x27;</span>, <span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;just&#x27;</span>, <span class="string">&#x27;seen&#x27;</span>, <span class="string">&#x27;whoa&#x27;</span>, <span class="string">&#x27;dere&#x27;</span>, <span class="string">&#x27;!&#x27;</span>, <span class="string">&#x27;!&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<p><a name='ex-04'></a> ### Exercise 04</p>
+<p>You won't use all the tokens (words) appearing in the data for training. Instead, you will use the more frequently used words.<br />
+- You will focus on the words that appear at least N times in the data. - First count how many times each word appears in the data.</p>
+<p>You will need a double for-loop, one for sentences and the other for tokens within a sentence.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+If you decide to import and use defaultdict, remember to cast the dictionary back to a regular 'dict' before returning it.
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C4 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment">### GRADED_FUNCTION: count_words ###</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">count_words</span>(<span class="params">tokenized_sentences</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Count the number of word appearence in the tokenized sentences</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        tokenized_sentences: List of lists of strings</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        dict that maps word (str) to the frequency (int)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">        </span><br><span class="line">    word_counts = &#123;&#125;</span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Loop through each sentence</span></span><br><span class="line">    <span class="keyword">for</span> sentence <span class="keyword">in</span> tokenized_sentences: <span class="comment"># complete this line</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Go through each token in the sentence</span></span><br><span class="line">        <span class="keyword">for</span> token <span class="keyword">in</span> sentence: <span class="comment"># complete this line</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># If the token is not in the dictionary yet, set the count to 1</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> token <span class="keyword">in</span> word_counts: <span class="comment"># complete this line</span></span><br><span class="line">                word_counts[token] = <span class="number">1</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment"># If the token is already in the dictionary, increment the count by 1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                word_counts[token] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> word_counts</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test your code</span></span><br><span class="line">tokenized_sentences = [[<span class="string">&#x27;sky&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>, <span class="string">&#x27;.&#x27;</span>],</span><br><span class="line">                       [<span class="string">&#x27;leaves&#x27;</span>, <span class="string">&#x27;are&#x27;</span>, <span class="string">&#x27;green&#x27;</span>, <span class="string">&#x27;.&#x27;</span>],</span><br><span class="line">                       [<span class="string">&#x27;roses&#x27;</span>, <span class="string">&#x27;are&#x27;</span>, <span class="string">&#x27;red&#x27;</span>, <span class="string">&#x27;.&#x27;</span>]]</span><br><span class="line">count_words(tokenized_sentences)</span><br></pre></td></tr></table></figure>
+<pre><code>&#123;&#39;sky&#39;: 1,
+ &#39;is&#39;: 1,
+ &#39;blue&#39;: 1,
+ &#39;.&#39;: 3,
+ &#39;leaves&#39;: 1,
+ &#39;are&#39;: 2,
+ &#39;green&#39;: 1,
+ &#39;roses&#39;: 1,
+ &#39;red&#39;: 1&#125;</code></pre>
+<h5 id="expected-output-2">Expected output</h5>
+<p>Note that the order may differ.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;sky&#x27;</span>: <span class="number">1</span>,</span><br><span class="line"> <span class="string">&#x27;is&#x27;</span>: <span class="number">1</span>,</span><br><span class="line"> <span class="string">&#x27;blue&#x27;</span>: <span class="number">1</span>,</span><br><span class="line"> <span class="string">&#x27;.&#x27;</span>: <span class="number">3</span>,</span><br><span class="line"> <span class="string">&#x27;leaves&#x27;</span>: <span class="number">1</span>,</span><br><span class="line"> <span class="string">&#x27;are&#x27;</span>: <span class="number">2</span>,</span><br><span class="line"> <span class="string">&#x27;green&#x27;</span>: <span class="number">1</span>,</span><br><span class="line"> <span class="string">&#x27;roses&#x27;</span>: <span class="number">1</span>,</span><br><span class="line"> <span class="string">&#x27;red&#x27;</span>: <span class="number">1</span>&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="handling-out-of-vocabulary-words">Handling 'Out of Vocabulary' words</h3>
+<p>If your model is performing autocomplete, but encounters a word that it never saw during training, it won't have an input word to help it determine the next word to suggest. The model will not be able to predict the next word because there are no counts for the current word. - This 'new' word is called an 'unknown word', or <b>out of vocabulary (OOV)</b> words. - The percentage of unknown words in the test set is called the <b> OOV </b> rate.</p>
+<p>To handle unknown words during prediction, use a special token to represent all unknown words 'unk'. - Modify the training data so that it has some 'unknown' words to train on. - Words to convert into "unknown" words are those that do not occur very frequently in the training set. - Create a list of the most frequent words in the training set, called the <b> closed vocabulary </b>. - Convert all the other words that are not part of the closed vocabulary to the token 'unk'.</p>
+<p><a name='ex-05'></a> ### Exercise 05</p>
+<p>You will now create a function that takes in a text document and a threshold 'count_threshold'. - Any word whose count is greater than or equal to the threshold 'count_threshold' is kept in the closed vocabulary. - used that you want to keep, returns the document containing only the word closed vocabulary and the word unk.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C5 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment">### GRADED_FUNCTION: get_words_with_nplus_frequency ###</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_words_with_nplus_frequency</span>(<span class="params">tokenized_sentences, count_threshold</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Find the words that appear N times or more</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        tokenized_sentences: List of lists of sentences</span></span><br><span class="line"><span class="string">        count_threshold: minimum number of occurrences for a word to be in the closed vocabulary.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        List of words that appear N times or more</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># Initialize an empty list to contain the words that</span></span><br><span class="line">    <span class="comment"># appear at least &#x27;minimum_freq&#x27; times.</span></span><br><span class="line">    closed_vocab = []</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Get the word couts of the tokenized sentences</span></span><br><span class="line">    <span class="comment"># Use the function that you defined earlier to count the words</span></span><br><span class="line">    word_counts = count_words(tokenized_sentences)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># for each word and its count</span></span><br><span class="line">    <span class="keyword">for</span> word, cnt <span class="keyword">in</span> word_counts.items(): <span class="comment"># complete this line</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># check that the word&#x27;s count</span></span><br><span class="line">        <span class="comment"># is at least as great as the minimum count</span></span><br><span class="line">        <span class="keyword">if</span> cnt &gt;= count_threshold:</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># append the word to the list</span></span><br><span class="line">            closed_vocab.append(word)</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> closed_vocab</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test your code</span></span><br><span class="line">tokenized_sentences = [[<span class="string">&#x27;sky&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>, <span class="string">&#x27;.&#x27;</span>],</span><br><span class="line">                       [<span class="string">&#x27;leaves&#x27;</span>, <span class="string">&#x27;are&#x27;</span>, <span class="string">&#x27;green&#x27;</span>, <span class="string">&#x27;.&#x27;</span>],</span><br><span class="line">                       [<span class="string">&#x27;roses&#x27;</span>, <span class="string">&#x27;are&#x27;</span>, <span class="string">&#x27;red&#x27;</span>, <span class="string">&#x27;.&#x27;</span>]]</span><br><span class="line">tmp_closed_vocab = get_words_with_nplus_frequency(tokenized_sentences, count_threshold=<span class="number">2</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Closed vocabulary:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(tmp_closed_vocab)</span><br></pre></td></tr></table></figure>
+<pre><code>Closed vocabulary:
+[&#39;.&#39;, &#39;are&#39;]</code></pre>
+<h5 id="expected-output-3">Expected output</h5>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Closed vocabulary:</span><br><span class="line">[<span class="string">&#x27;.&#x27;</span>, <span class="string">&#x27;are&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<p><a name='ex-06'></a> ### Exercise 06</p>
+<p>The words that appear 'count_threshold' times or more are in the 'closed vocabulary. - All other words are regarded as 'unknown'. - Replace words not in the closed vocabulary with the token "&lt;unk&gt;".</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C6 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment">### GRADED_FUNCTION: replace_oov_words_by_unk ###</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">replace_oov_words_by_unk</span>(<span class="params">tokenized_sentences, vocabulary, unknown_token=<span class="string">&quot;&lt;unk&gt;&quot;</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Replace words not in the given vocabulary with &#x27;&lt;unk&gt;&#x27; token.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        tokenized_sentences: List of lists of strings</span></span><br><span class="line"><span class="string">        vocabulary: List of strings that we will use</span></span><br><span class="line"><span class="string">        unknown_token: A string representing unknown (out-of-vocabulary) words</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        List of lists of strings, with words not in the vocabulary replaced</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Place vocabulary into a set for faster search</span></span><br><span class="line">    vocabulary = <span class="built_in">set</span>(vocabulary)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Initialize a list that will hold the sentences</span></span><br><span class="line">    <span class="comment"># after less frequent words are replaced by the unknown token</span></span><br><span class="line">    replaced_tokenized_sentences = []</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Go through each sentence</span></span><br><span class="line">    <span class="keyword">for</span> sentence <span class="keyword">in</span> tokenized_sentences:</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Initialize the list that will contain</span></span><br><span class="line">        <span class="comment"># a single sentence with &quot;unknown_token&quot; replacements</span></span><br><span class="line">        replaced_sentence = []</span><br><span class="line">        <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># for each token in the sentence</span></span><br><span class="line">        <span class="keyword">for</span> token <span class="keyword">in</span> sentence: <span class="comment"># complete this line</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment"># Check if the token is in the closed vocabulary</span></span><br><span class="line">            <span class="keyword">if</span> token <span class="keyword">in</span> vocabulary: <span class="comment"># complete this line</span></span><br><span class="line">                <span class="comment"># If so, append the word to the replaced_sentence</span></span><br><span class="line">                replaced_sentence.append(token)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># otherwise, append the unknown token instead</span></span><br><span class="line">                replaced_sentence.append(unknown_token)</span><br><span class="line">        <span class="comment">### END CODE HERE ###</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Append the list of tokens to the list of lists</span></span><br><span class="line">        replaced_tokenized_sentences.append(replaced_sentence)</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">return</span> replaced_tokenized_sentences</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tokenized_sentences = [[<span class="string">&quot;dogs&quot;</span>, <span class="string">&quot;run&quot;</span>], [<span class="string">&quot;cats&quot;</span>, <span class="string">&quot;sleep&quot;</span>]]</span><br><span class="line">vocabulary = [<span class="string">&quot;dogs&quot;</span>, <span class="string">&quot;sleep&quot;</span>]</span><br><span class="line">tmp_replaced_tokenized_sentences = replace_oov_words_by_unk(tokenized_sentences, vocabulary)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Original sentence:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(tokenized_sentences)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;tokenized_sentences with less frequent words converted to &#x27;&lt;unk&gt;&#x27;:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(tmp_replaced_tokenized_sentences)</span><br></pre></td></tr></table></figure>
+<pre><code>Original sentence:
+[[&#39;dogs&#39;, &#39;run&#39;], [&#39;cats&#39;, &#39;sleep&#39;]]
+tokenized_sentences with less frequent words converted to &#39;&lt;unk&gt;&#39;:
+[[&#39;dogs&#39;, &#39;&lt;unk&gt;&#39;], [&#39;&lt;unk&gt;&#39;, &#39;sleep&#39;]]</code></pre>
+<h3 id="expected-answer">Expected answer</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Original sentence:</span><br><span class="line">[[<span class="string">&#x27;dogs&#x27;</span>, <span class="string">&#x27;run&#x27;</span>], [<span class="string">&#x27;cats&#x27;</span>, <span class="string">&#x27;sleep&#x27;</span>]]</span><br><span class="line">tokenized_sentences with less frequent words converted to <span class="string">&#x27;&lt;unk&gt;&#x27;</span>:</span><br><span class="line">[[<span class="string">&#x27;dogs&#x27;</span>, <span class="string">&#x27;&lt;unk&gt;&#x27;</span>], [<span class="string">&#x27;&lt;unk&gt;&#x27;</span>, <span class="string">&#x27;sleep&#x27;</span>]]</span><br></pre></td></tr></table></figure>
+<p><a name='ex-07'></a> ### Exercise 07</p>
+<p>Now we are ready to process our data by combining the functions that you just implemented.</p>
+<ol type="1">
+<li>Find tokens that appear at least count_threshold times in the training data.</li>
+<li>Replace tokens that appear less than count_threshold times by "&lt;unk&gt;" both for training and test data.</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C7 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment">### GRADED_FUNCTION: preprocess_data ###</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">preprocess_data</span>(<span class="params">train_data, test_data, count_threshold</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Preprocess data, i.e.,</span></span><br><span class="line"><span class="string">        - Find tokens that appear at least N times in the training data.</span></span><br><span class="line"><span class="string">        - Replace tokens that appear less than N times by &quot;&lt;unk&gt;&quot; both for training and test data.        </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        train_data, test_data: List of lists of strings.</span></span><br><span class="line"><span class="string">        count_threshold: Words whose count is less than this are </span></span><br><span class="line"><span class="string">                      treated as unknown.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        Tuple of</span></span><br><span class="line"><span class="string">        - training data with low frequent words replaced by &quot;&lt;unk&gt;&quot;</span></span><br><span class="line"><span class="string">        - test data with low frequent words replaced by &quot;&lt;unk&gt;&quot;</span></span><br><span class="line"><span class="string">        - vocabulary of words that appear n times or more in the training data</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Get the closed vocabulary using the train data</span></span><br><span class="line">    vocabulary = get_words_with_nplus_frequency(train_data, count_threshold)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># For the train data, replace less common words with &quot;&lt;unk&gt;&quot;</span></span><br><span class="line">    train_data_replaced = replace_oov_words_by_unk(train_data, vocabulary, unknown_token=<span class="string">&quot;&lt;unk&gt;&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># For the test data, replace less common words with &quot;&lt;unk&gt;&quot;</span></span><br><span class="line">    test_data_replaced = replace_oov_words_by_unk(test_data, vocabulary, unknown_token=<span class="string">&quot;&lt;unk&gt;&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    <span class="keyword">return</span> train_data_replaced, test_data_replaced, vocabulary</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test your code</span></span><br><span class="line">tmp_train = [[<span class="string">&#x27;sky&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>, <span class="string">&#x27;.&#x27;</span>],</span><br><span class="line">     [<span class="string">&#x27;leaves&#x27;</span>, <span class="string">&#x27;are&#x27;</span>, <span class="string">&#x27;green&#x27;</span>]]</span><br><span class="line">tmp_test = [[<span class="string">&#x27;roses&#x27;</span>, <span class="string">&#x27;are&#x27;</span>, <span class="string">&#x27;red&#x27;</span>, <span class="string">&#x27;.&#x27;</span>]]</span><br><span class="line"></span><br><span class="line">tmp_train_repl, tmp_test_repl, tmp_vocab = preprocess_data(tmp_train, </span><br><span class="line">                                                           tmp_test, </span><br><span class="line">                                                           count_threshold = <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;tmp_train_repl&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(tmp_train_repl)</span><br><span class="line"><span class="built_in">print</span>()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;tmp_test_repl&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(tmp_test_repl)</span><br><span class="line"><span class="built_in">print</span>()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;tmp_vocab&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(tmp_vocab)</span><br></pre></td></tr></table></figure>
+<pre><code>tmp_train_repl
+[[&#39;sky&#39;, &#39;is&#39;, &#39;blue&#39;, &#39;.&#39;], [&#39;leaves&#39;, &#39;are&#39;, &#39;green&#39;]]
+
+tmp_test_repl
+[[&#39;&lt;unk&gt;&#39;, &#39;are&#39;, &#39;&lt;unk&gt;&#39;, &#39;.&#39;]]
+
+tmp_vocab
+[&#39;sky&#39;, &#39;is&#39;, &#39;blue&#39;, &#39;.&#39;, &#39;leaves&#39;, &#39;are&#39;, &#39;green&#39;]</code></pre>
+<h5 id="expected-outcome-1">Expected outcome</h5>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">tmp_train_repl</span><br><span class="line">[[<span class="string">&#x27;sky&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>, <span class="string">&#x27;.&#x27;</span>], [<span class="string">&#x27;leaves&#x27;</span>, <span class="string">&#x27;are&#x27;</span>, <span class="string">&#x27;green&#x27;</span>]]</span><br><span class="line"></span><br><span class="line">tmp_test_repl</span><br><span class="line">[[<span class="string">&#x27;&lt;unk&gt;&#x27;</span>, <span class="string">&#x27;are&#x27;</span>, <span class="string">&#x27;&lt;unk&gt;&#x27;</span>, <span class="string">&#x27;.&#x27;</span>]]</span><br><span class="line"></span><br><span class="line">tmp_vocab</span><br><span class="line">[<span class="string">&#x27;sky&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>, <span class="string">&#x27;.&#x27;</span>, <span class="string">&#x27;leaves&#x27;</span>, <span class="string">&#x27;are&#x27;</span>, <span class="string">&#x27;green&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="preprocess-the-train-and-test-data">Preprocess the train and test data</h3>
+<p>Run the cell below to complete the preprocessing both for training and test sets.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">minimum_freq = <span class="number">2</span></span><br><span class="line">train_data_processed, test_data_processed, vocabulary = preprocess_data(train_data, </span><br><span class="line">                                                                        test_data, </span><br><span class="line">                                                                        minimum_freq)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;First preprocessed training sample:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(train_data_processed[<span class="number">0</span>])</span><br><span class="line"><span class="built_in">print</span>()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;First preprocessed test sample:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(test_data_processed[<span class="number">0</span>])</span><br><span class="line"><span class="built_in">print</span>()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;First 10 vocabulary:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(vocabulary[<span class="number">0</span>:<span class="number">10</span>])</span><br><span class="line"><span class="built_in">print</span>()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Size of vocabulary:&quot;</span>, <span class="built_in">len</span>(vocabulary))</span><br></pre></td></tr></table></figure>
+<pre><code>First preprocessed training sample:
+[&#39;i&#39;, &#39;personally&#39;, &#39;would&#39;, &#39;like&#39;, &#39;as&#39;, &#39;our&#39;, &#39;official&#39;, &#39;glove&#39;, &#39;of&#39;, &#39;the&#39;, &#39;team&#39;, &#39;local&#39;, &#39;company&#39;, &#39;and&#39;, &#39;quality&#39;, &#39;production&#39;]
+
+First preprocessed test sample:
+[&#39;that&#39;, &#39;picture&#39;, &#39;i&#39;, &#39;just&#39;, &#39;seen&#39;, &#39;whoa&#39;, &#39;dere&#39;, &#39;!&#39;, &#39;!&#39;, &#39;&gt;&#39;, &#39;&gt;&#39;, &#39;&gt;&#39;, &#39;&gt;&#39;, &#39;&gt;&#39;, &#39;&gt;&#39;, &#39;&gt;&#39;]
+
+First 10 vocabulary:
+[&#39;i&#39;, &#39;personally&#39;, &#39;would&#39;, &#39;like&#39;, &#39;as&#39;, &#39;our&#39;, &#39;official&#39;, &#39;glove&#39;, &#39;of&#39;, &#39;the&#39;]
+
+Size of vocabulary: 14821</code></pre>
+<h5 id="expected-output-4">Expected output</h5>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">First preprocessed training sample:</span><br><span class="line">[<span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;personally&#x27;</span>, <span class="string">&#x27;would&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;as&#x27;</span>, <span class="string">&#x27;our&#x27;</span>, <span class="string">&#x27;official&#x27;</span>, <span class="string">&#x27;glove&#x27;</span>, <span class="string">&#x27;of&#x27;</span>, <span class="string">&#x27;the&#x27;</span>, <span class="string">&#x27;team&#x27;</span>, <span class="string">&#x27;local&#x27;</span>, <span class="string">&#x27;company&#x27;</span>, <span class="string">&#x27;and&#x27;</span>, <span class="string">&#x27;quality&#x27;</span>, <span class="string">&#x27;production&#x27;</span>]</span><br><span class="line"></span><br><span class="line">First preprocessed test sample:</span><br><span class="line">[<span class="string">&#x27;that&#x27;</span>, <span class="string">&#x27;picture&#x27;</span>, <span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;just&#x27;</span>, <span class="string">&#x27;seen&#x27;</span>, <span class="string">&#x27;whoa&#x27;</span>, <span class="string">&#x27;dere&#x27;</span>, <span class="string">&#x27;!&#x27;</span>, <span class="string">&#x27;!&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>]</span><br><span class="line"></span><br><span class="line">First <span class="number">10</span> vocabulary:</span><br><span class="line">[<span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;personally&#x27;</span>, <span class="string">&#x27;would&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;as&#x27;</span>, <span class="string">&#x27;our&#x27;</span>, <span class="string">&#x27;official&#x27;</span>, <span class="string">&#x27;glove&#x27;</span>, <span class="string">&#x27;of&#x27;</span>, <span class="string">&#x27;the&#x27;</span>]</span><br><span class="line"></span><br><span class="line">Size of vocabulary: <span class="number">14821</span></span><br></pre></td></tr></table></figure>
+<p>You are done with the preprocessing section of the assignment. Objects <code>train_data_processed</code>, <code>test_data_processed</code>, and <code>vocabulary</code> will be used in the rest of the exercises.</p>
+<p><a name='2'></a> ## Part 2: Develop n-gram based language models</p>
+<p>In this section, you will develop the n-grams language model. - Assume the probability of the next word depends only on the previous n-gram. - The previous n-gram is the series of the previous 'n' words.</p>
+<p>The conditional probability for the word at position 't' in the sentence, given that the words preceding it are <span class="math inline">\(w_{t-1}, w_{t-2} \cdots w_{t-n}\)</span> is:</p>
+<p><span class="math display">\[ P(w_t | w_{t-1}\dots w_{t-n}) \tag{1}\]</span></p>
+<p>You can estimate this probability by counting the occurrences of these series of words in the training data. - The probability can be estimated as a ratio, where - The numerator is the number of times word 't' appears after words t-1 through t-n appear in the training data. - The denominator is the number of times word t-1 through t-n appears in the training data.</p>
+<p><span class="math display">\[ \hat{P}(w_t | w_{t-1}\dots w_{t-n}) = \frac{C(w_{t-1}\dots w_{t-n}, w_n)}{C(w_{t-1}\dots w_{t-n})} \tag{2} \]</span></p>
+<ul>
+<li>The function <span class="math inline">\(C(\cdots)\)</span> denotes the number of occurence of the given sequence.</li>
+<li><span class="math inline">\(\hat{P}\)</span> means the estimation of <span class="math inline">\(P\)</span>.</li>
+<li>Notice that denominator of the equation (2) is the number of occurence of the previous <span class="math inline">\(n\)</span> words, and the numerator is the same sequence followed by the word <span class="math inline">\(w_t\)</span>.</li>
+</ul>
+<p>Later, you will modify the equation (2) by adding k-smoothing, which avoids errors when any counts are zero.</p>
+<p>The equation (2) tells us that to estimate probabilities based on n-grams, you need the counts of n-grams (for denominator) and (n+1)-grams (for numerator).</p>
+<p><a name='ex-08'></a> ### Exercise 08 Next, you will implement a function that computes the counts of n-grams for an arbitrary number <span class="math inline">\(n\)</span>.</p>
+<p>When computing the counts for n-grams, prepare the sentence beforehand by prepending <span class="math inline">\(n-1\)</span> starting markers "&lt;s&gt;" to indicate the beginning of the sentence.<br />
+- For example, in the bi-gram model (N=2), a sequence with two start tokens "&lt;s&gt;&lt;s&gt;" should predict the first word of a sentence. - So, if the sentence is "I like food", modify it to be "&lt;s&gt;&lt;s&gt; I like food". - Also prepare the sentence for counting by appending an end token "&lt;e&gt;" so that the model can predict when to finish a sentence.</p>
+<p>Technical note: In this implementation, you will store the counts as a dictionary. - The key of each key-value pair in the dictionary is a <strong>tuple</strong> of n words (and not a list) - The value in the key-value pair is the number of occurrences.<br />
+- The reason for using a tuple as a key instead of a list is because a list in Python is a mutable object (it can be changed after it is first created). A tuple is "immutable", so it cannot be altered after it is first created. This makes a tuple suitable as a data type for the key in a dictionary.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+To prepend or append, you can create lists and concatenate them using the + operator
+</li>
+<li>
+To create a list of a repeated value, you can follow this syntax: <code>['a'] * 3</code> to get <code>['a','a','a']</code>
+</li>
+<li>
+To set the range for index 'i', think of this example: An n-gram where n=2 (bigram), and the sentence is length N=5 (including two start tokens and one end token). So the index positions are <code>[0,1,2,3,4]</code>. The largest index 'i' where a bigram can start is at position i=3, because the word tokens at position 3 and 4 will form the bigram.
+</li>
+<li>
+Remember that the <code>range()</code> function excludes the value that is used for the maximum of the range. <code> range(3) </code> produces (0,1,2) but excludes 3.
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C8 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment">### GRADED FUNCTION: count_n_grams ###</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">count_n_grams</span>(<span class="params">data, n, start_token=<span class="string">&#x27;&lt;s&gt;&#x27;</span>, end_token = <span class="string">&#x27;&lt;e&gt;&#x27;</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Count all n-grams in the data</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        data: List of lists of words</span></span><br><span class="line"><span class="string">        n: number of words in a sequence</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        A dictionary that maps a tuple of n-words to its frequency</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Initialize dictionary of n-grams and their counts</span></span><br><span class="line">    n_grams = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Go through each sentence in the data</span></span><br><span class="line">    <span class="keyword">for</span> sentence <span class="keyword">in</span> data: <span class="comment"># complete this line</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># prepend start token n times, and  append &lt;e&gt; one time</span></span><br><span class="line">        sentence = [start_token] * n + sentence + [end_token]</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># convert list to tuple</span></span><br><span class="line">        <span class="comment"># So that the sequence of words can be used as</span></span><br><span class="line">        <span class="comment"># a key in the dictionary</span></span><br><span class="line">        sentence = <span class="built_in">tuple</span>(sentence)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Use &#x27;i&#x27; to indicate the start of the n-gram</span></span><br><span class="line">        <span class="comment"># from index 0</span></span><br><span class="line">        <span class="comment"># to the last index where the end of the n-gram</span></span><br><span class="line">        <span class="comment"># is within the sentence.</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(sentence)-n+<span class="number">1</span>): <span class="comment"># complete this line</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Get the n-gram from i to i+n</span></span><br><span class="line">            n_gram = sentence[i:i+n]</span><br><span class="line"></span><br><span class="line">            <span class="comment"># check if the n-gram is in the dictionary</span></span><br><span class="line">            <span class="keyword">if</span> n_gram <span class="keyword">in</span> n_grams: <span class="comment"># complete this line</span></span><br><span class="line">            </span><br><span class="line">                <span class="comment"># Increment the count for this n-gram</span></span><br><span class="line">                n_grams[n_gram] += <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># Initialize this n-gram count to 1</span></span><br><span class="line">                n_grams[n_gram] = <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">            <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    <span class="keyword">return</span> n_grams</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test your code</span></span><br><span class="line"><span class="comment"># CODE REVIEW COMMENT: Outcome does not match expected outcome</span></span><br><span class="line">sentences = [[<span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>],</span><br><span class="line">             [<span class="string">&#x27;this&#x27;</span>, <span class="string">&#x27;dog&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>]]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Uni-gram:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(count_n_grams(sentences, <span class="number">1</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Bi-gram:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(count_n_grams(sentences, <span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+<pre><code>Uni-gram:
+&#123;(&#39;&lt;s&gt;&#39;,): 2, (&#39;i&#39;,): 1, (&#39;like&#39;,): 2, (&#39;a&#39;,): 2, (&#39;cat&#39;,): 2, (&#39;&lt;e&gt;&#39;,): 2, (&#39;this&#39;,): 1, (&#39;dog&#39;,): 1, (&#39;is&#39;,): 1&#125;
+Bi-gram:
+&#123;(&#39;&lt;s&gt;&#39;, &#39;&lt;s&gt;&#39;): 2, (&#39;&lt;s&gt;&#39;, &#39;i&#39;): 1, (&#39;i&#39;, &#39;like&#39;): 1, (&#39;like&#39;, &#39;a&#39;): 2, (&#39;a&#39;, &#39;cat&#39;): 2, (&#39;cat&#39;, &#39;&lt;e&gt;&#39;): 2, (&#39;&lt;s&gt;&#39;, &#39;this&#39;): 1, (&#39;this&#39;, &#39;dog&#39;): 1, (&#39;dog&#39;, &#39;is&#39;): 1, (&#39;is&#39;, &#39;like&#39;): 1&#125;</code></pre>
+<p>Expected outcome:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Uni-gram:</span><br><span class="line">&#123;(<span class="string">&#x27;&lt;s&gt;&#x27;</span>,): <span class="number">2</span>, (<span class="string">&#x27;i&#x27;</span>,): <span class="number">1</span>, (<span class="string">&#x27;like&#x27;</span>,): <span class="number">2</span>, (<span class="string">&#x27;a&#x27;</span>,): <span class="number">2</span>, (<span class="string">&#x27;cat&#x27;</span>,): <span class="number">2</span>, (<span class="string">&#x27;&lt;e&gt;&#x27;</span>,): <span class="number">2</span>, (<span class="string">&#x27;this&#x27;</span>,): <span class="number">1</span>, (<span class="string">&#x27;dog&#x27;</span>,): <span class="number">1</span>, (<span class="string">&#x27;is&#x27;</span>,): <span class="number">1</span>&#125;</span><br><span class="line">Bi-gram:</span><br><span class="line">&#123;(<span class="string">&#x27;&lt;s&gt;&#x27;</span>, <span class="string">&#x27;&lt;s&gt;&#x27;</span>): <span class="number">2</span>, (<span class="string">&#x27;&lt;s&gt;&#x27;</span>, <span class="string">&#x27;i&#x27;</span>): <span class="number">1</span>, (<span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;like&#x27;</span>): <span class="number">1</span>, (<span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>): <span class="number">2</span>, (<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>): <span class="number">2</span>, (<span class="string">&#x27;cat&#x27;</span>, <span class="string">&#x27;&lt;e&gt;&#x27;</span>): <span class="number">2</span>, (<span class="string">&#x27;&lt;s&gt;&#x27;</span>, <span class="string">&#x27;this&#x27;</span>): <span class="number">1</span>, (<span class="string">&#x27;this&#x27;</span>, <span class="string">&#x27;dog&#x27;</span>): <span class="number">1</span>, (<span class="string">&#x27;dog&#x27;</span>, <span class="string">&#x27;is&#x27;</span>): <span class="number">1</span>, (<span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;like&#x27;</span>): <span class="number">1</span>&#125;</span><br></pre></td></tr></table></figure>
+<p><a name='ex-09'></a> ### Exercise 09</p>
+<p>Next, estimate the probability of a word given the prior 'n' words using the n-gram counts.</p>
+<p><span class="math display">\[ \hat{P}(w_t | w_{t-1}\dots w_{t-n}) = \frac{C(w_{t-1}\dots w_{t-n}, w_n)}{C(w_{t-1}\dots w_{t-n})} \tag{2} \]</span></p>
+<p>This formula doesn't work when a count of an n-gram is zero.. - Suppose we encounter an n-gram that did not occur in the training data.<br />
+- Then, the equation (2) cannot be evaluated (it becomes zero divided by zero).</p>
+<p>A way to handle zero counts is to add k-smoothing.<br />
+- K-smoothing adds a positive constant <span class="math inline">\(k\)</span> to each numerator and <span class="math inline">\(k \times |V|\)</span> in the denominator, where <span class="math inline">\(|V|\)</span> is the number of words in the vocabulary.</p>
+<p><span class="math display">\[ \hat{P}(w_t | w_{t-1}\dots w_{t-n}) = \frac{C(w_{t-1}\dots w_{t-n}, w_n) + k}{C(w_{t-1}\dots w_{t-n}) + k|V|} \tag{3} \]</span></p>
+<p>For n-grams that have a zero count, the equation (3) becomes <span class="math inline">\(\frac{1}{|V|}\)</span>. - This means that any n-gram with zero count has the same probability of <span class="math inline">\(\frac{1}{|V|}\)</span>.</p>
+<p>Define a function that computes the probability estimate (3) from n-gram counts and a constant <span class="math inline">\(k\)</span>.</p>
+<ul>
+<li>The function takes in a dictionary 'n_gram_counts', where the key is the n-gram and the value is the count of that n-gram.</li>
+<li>The function also takes another dictionary n_plus1_gram_counts, which you'll use to find the count for the previous n-gram plus the current word.</li>
+</ul>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+To define a tuple containing a single value, add a comma after that value. For example: <code>('apple',)</code> is a tuple containing a single string 'apple'
+</li>
+<li>
+To concatenate two tuples, use the '+' operator
+</li>
+<li>
+<a href="" > words </a>
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C9 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment">### GRADED FUNCTION: estimate_probabilityy ###</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">estimate_probability</span>(<span class="params">word, previous_n_gram, </span></span></span><br><span class="line"><span class="params"><span class="function">                         n_gram_counts, n_plus1_gram_counts, vocabulary_size, k=<span class="number">1.0</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Estimate the probabilities of a next word using the n-gram counts with k-smoothing</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        word: next word</span></span><br><span class="line"><span class="string">        previous_n_gram: A sequence of words of length n</span></span><br><span class="line"><span class="string">        n_gram_counts: Dictionary of counts of n-grams</span></span><br><span class="line"><span class="string">        n_plus1_gram_counts: Dictionary of counts of (n+1)-grams</span></span><br><span class="line"><span class="string">        vocabulary_size: number of words in the vocabulary</span></span><br><span class="line"><span class="string">        k: positive constant, smoothing parameter</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        A probability</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># convert list to tuple to use it as a dictionary key</span></span><br><span class="line">    previous_n_gram = <span class="built_in">tuple</span>(previous_n_gram)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Set the denominator</span></span><br><span class="line">    <span class="comment"># If the previous n-gram exists in the dictionary of n-gram counts,</span></span><br><span class="line">    <span class="comment"># Get its count.  Otherwise set the count to zero</span></span><br><span class="line">    <span class="comment"># Use the dictionary that has counts for n-grams</span></span><br><span class="line">    previous_n_gram_count = n_gram_counts.get(previous_n_gram, <span class="number">0</span>)</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># Calculate the denominator using the count of the previous n gram</span></span><br><span class="line">    <span class="comment"># and apply k-smoothing</span></span><br><span class="line">    denominator = previous_n_gram_count + k * vocabulary_size</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Define n plus 1 gram as the previous n-gram plus the current word as a tuple</span></span><br><span class="line">    n_plus1_gram = n_gram_counts.get(previous_n_gram, <span class="number">0</span>)</span><br><span class="line">  </span><br><span class="line">    <span class="comment"># Set the count to the count in the dictionary,</span></span><br><span class="line">    <span class="comment"># otherwise 0 if not in the dictionary</span></span><br><span class="line">    <span class="comment"># use the dictionary that has counts for the n-gram plus current word</span></span><br><span class="line">    n_plus1_gram_count = n_plus1_gram_counts.get(previous_n_gram + (word, ) ,<span class="number">0</span>)</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># Define the numerator use the count of the n-gram plus current word,</span></span><br><span class="line">    <span class="comment"># and apply smoothing</span></span><br><span class="line">    numerator = n_plus1_gram_count + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Calculate the probability as the numerator divided by denominator</span></span><br><span class="line">    probability = numerator / denominator</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> probability</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test your code</span></span><br><span class="line">sentences = [[<span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>],</span><br><span class="line">             [<span class="string">&#x27;this&#x27;</span>, <span class="string">&#x27;dog&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>]]</span><br><span class="line">unique_words = <span class="built_in">list</span>(<span class="built_in">set</span>(sentences[<span class="number">0</span>] + sentences[<span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line">unigram_counts = count_n_grams(sentences, <span class="number">1</span>)</span><br><span class="line">bigram_counts = count_n_grams(sentences, <span class="number">2</span>)</span><br><span class="line">tmp_prob = estimate_probability(<span class="string">&quot;cat&quot;</span>, <span class="string">&quot;a&quot;</span>, unigram_counts, bigram_counts, <span class="built_in">len</span>(unique_words), k=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;The estimated probability of word &#x27;cat&#x27; given the previous n-gram &#x27;a&#x27; is: <span class="subst">&#123;tmp_prob:<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>The estimated probability of word &#39;cat&#39; given the previous n-gram &#39;a&#39; is: 0.3333</code></pre>
+<h5 id="expected-output-5">Expected output</h5>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">The estimated probability of word <span class="string">&#x27;cat&#x27;</span> given the previous n-gram <span class="string">&#x27;a&#x27;</span> is: <span class="number">0.3333</span></span><br></pre></td></tr></table></figure>
+<h3 id="estimate-probabilities-for-all-words">Estimate probabilities for all words</h3>
+<p>The function defined below loops over all words in vocabulary to calculate probabilities for all possible words. - This function is provided for you.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">estimate_probabilities</span>(<span class="params">previous_n_gram, n_gram_counts, n_plus1_gram_counts, vocabulary, k=<span class="number">1.0</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Estimate the probabilities of next words using the n-gram counts with k-smoothing</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        previous_n_gram: A sequence of words of length n</span></span><br><span class="line"><span class="string">        n_gram_counts: Dictionary of counts of (n+1)-grams</span></span><br><span class="line"><span class="string">        n_plus1_gram_counts: Dictionary of counts of (n+1)-grams</span></span><br><span class="line"><span class="string">        vocabulary: List of words</span></span><br><span class="line"><span class="string">        k: positive constant, smoothing parameter</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        A dictionary mapping from next words to the probability.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># convert list to tuple to use it as a dictionary key</span></span><br><span class="line">    previous_n_gram = <span class="built_in">tuple</span>(previous_n_gram)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># add &lt;e&gt; &lt;unk&gt; to the vocabulary</span></span><br><span class="line">    <span class="comment"># &lt;s&gt; is not needed since it should not appear as the next word</span></span><br><span class="line">    vocabulary = vocabulary + [<span class="string">&quot;&lt;e&gt;&quot;</span>, <span class="string">&quot;&lt;unk&gt;&quot;</span>]</span><br><span class="line">    vocabulary_size = <span class="built_in">len</span>(vocabulary)</span><br><span class="line">    </span><br><span class="line">    probabilities = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> word <span class="keyword">in</span> vocabulary:</span><br><span class="line">        probability = estimate_probability(word, previous_n_gram, </span><br><span class="line">                                           n_gram_counts, n_plus1_gram_counts, </span><br><span class="line">                                           vocabulary_size, k=k)</span><br><span class="line">        probabilities[word] = probability</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> probabilities</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test your code</span></span><br><span class="line">sentences = [[<span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>],</span><br><span class="line">             [<span class="string">&#x27;this&#x27;</span>, <span class="string">&#x27;dog&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>]]</span><br><span class="line">unique_words = <span class="built_in">list</span>(<span class="built_in">set</span>(sentences[<span class="number">0</span>] + sentences[<span class="number">1</span>]))</span><br><span class="line">unigram_counts = count_n_grams(sentences, <span class="number">1</span>)</span><br><span class="line">bigram_counts = count_n_grams(sentences, <span class="number">2</span>)</span><br><span class="line">estimate_probabilities(<span class="string">&quot;a&quot;</span>, unigram_counts, bigram_counts, unique_words, k=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>&#123;&#39;dog&#39;: 0.09090909090909091,
+ &#39;like&#39;: 0.09090909090909091,
+ &#39;cat&#39;: 0.2727272727272727,
+ &#39;i&#39;: 0.09090909090909091,
+ &#39;is&#39;: 0.09090909090909091,
+ &#39;this&#39;: 0.09090909090909091,
+ &#39;a&#39;: 0.09090909090909091,
+ &#39;&lt;e&gt;&#39;: 0.09090909090909091,
+ &#39;&lt;unk&gt;&#39;: 0.09090909090909091&#125;</code></pre>
+<h5 id="expected-output-6">Expected output</h5>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;cat&#x27;</span>: <span class="number">0.2727272727272727</span>,</span><br><span class="line"> <span class="string">&#x27;i&#x27;</span>: <span class="number">0.09090909090909091</span>,</span><br><span class="line"> <span class="string">&#x27;this&#x27;</span>: <span class="number">0.09090909090909091</span>,</span><br><span class="line"> <span class="string">&#x27;a&#x27;</span>: <span class="number">0.09090909090909091</span>,</span><br><span class="line"> <span class="string">&#x27;is&#x27;</span>: <span class="number">0.09090909090909091</span>,</span><br><span class="line"> <span class="string">&#x27;like&#x27;</span>: <span class="number">0.09090909090909091</span>,</span><br><span class="line"> <span class="string">&#x27;dog&#x27;</span>: <span class="number">0.09090909090909091</span>,</span><br><span class="line"> <span class="string">&#x27;&lt;e&gt;&#x27;</span>: <span class="number">0.09090909090909091</span>,</span><br><span class="line"> <span class="string">&#x27;&lt;unk&gt;&#x27;</span>: <span class="number">0.09090909090909091</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Additional test</span></span><br><span class="line">trigram_counts = count_n_grams(sentences, <span class="number">3</span>)</span><br><span class="line">estimate_probabilities([<span class="string">&quot;&lt;s&gt;&quot;</span>, <span class="string">&quot;&lt;s&gt;&quot;</span>], bigram_counts, trigram_counts, unique_words, k=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>&#123;&#39;dog&#39;: 0.09090909090909091,
+ &#39;like&#39;: 0.09090909090909091,
+ &#39;cat&#39;: 0.09090909090909091,
+ &#39;i&#39;: 0.18181818181818182,
+ &#39;is&#39;: 0.09090909090909091,
+ &#39;this&#39;: 0.18181818181818182,
+ &#39;a&#39;: 0.09090909090909091,
+ &#39;&lt;e&gt;&#39;: 0.09090909090909091,
+ &#39;&lt;unk&gt;&#39;: 0.09090909090909091&#125;</code></pre>
+<h5 id="expected-output-7">Expected output</h5>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;cat&#x27;</span>: <span class="number">0.09090909090909091</span>,</span><br><span class="line"> <span class="string">&#x27;i&#x27;</span>: <span class="number">0.18181818181818182</span>,</span><br><span class="line"> <span class="string">&#x27;this&#x27;</span>: <span class="number">0.18181818181818182</span>,</span><br><span class="line"> <span class="string">&#x27;a&#x27;</span>: <span class="number">0.09090909090909091</span>,</span><br><span class="line"> <span class="string">&#x27;is&#x27;</span>: <span class="number">0.09090909090909091</span>,</span><br><span class="line"> <span class="string">&#x27;like&#x27;</span>: <span class="number">0.09090909090909091</span>,</span><br><span class="line"> <span class="string">&#x27;dog&#x27;</span>: <span class="number">0.09090909090909091</span>,</span><br><span class="line"> <span class="string">&#x27;&lt;e&gt;&#x27;</span>: <span class="number">0.09090909090909091</span>,</span><br><span class="line"> <span class="string">&#x27;&lt;unk&gt;&#x27;</span>: <span class="number">0.09090909090909091</span>&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="count-and-probability-matrices">Count and probability matrices</h3>
+<p>As we have seen so far, the n-gram counts computed above are sufficient for computing the probabilities of the next word.<br />
+- It can be more intuitive to present them as count or probability matrices. - The functions defined in the next cells return count or probability matrices. - This function is provided for you.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_count_matrix</span>(<span class="params">n_plus1_gram_counts, vocabulary</span>):</span></span><br><span class="line">    <span class="comment"># add &lt;e&gt; &lt;unk&gt; to the vocabulary</span></span><br><span class="line">    <span class="comment"># &lt;s&gt; is omitted since it should not appear as the next word</span></span><br><span class="line">    vocabulary = vocabulary + [<span class="string">&quot;&lt;e&gt;&quot;</span>, <span class="string">&quot;&lt;unk&gt;&quot;</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># obtain unique n-grams</span></span><br><span class="line">    n_grams = []</span><br><span class="line">    <span class="keyword">for</span> n_plus1_gram <span class="keyword">in</span> n_plus1_gram_counts.keys():</span><br><span class="line">        n_gram = n_plus1_gram[<span class="number">0</span>:-<span class="number">1</span>]</span><br><span class="line">        n_grams.append(n_gram)</span><br><span class="line">    n_grams = <span class="built_in">list</span>(<span class="built_in">set</span>(n_grams))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># mapping from n-gram to row</span></span><br><span class="line">    row_index = &#123;n_gram:i <span class="keyword">for</span> i, n_gram <span class="keyword">in</span> <span class="built_in">enumerate</span>(n_grams)&#125;</span><br><span class="line">    <span class="comment"># mapping from next word to column</span></span><br><span class="line">    col_index = &#123;word:j <span class="keyword">for</span> j, word <span class="keyword">in</span> <span class="built_in">enumerate</span>(vocabulary)&#125;</span><br><span class="line">    </span><br><span class="line">    nrow = <span class="built_in">len</span>(n_grams)</span><br><span class="line">    ncol = <span class="built_in">len</span>(vocabulary)</span><br><span class="line">    count_matrix = np.zeros((nrow, ncol))</span><br><span class="line">    <span class="keyword">for</span> n_plus1_gram, count <span class="keyword">in</span> n_plus1_gram_counts.items():</span><br><span class="line">        n_gram = n_plus1_gram[<span class="number">0</span>:-<span class="number">1</span>]</span><br><span class="line">        word = n_plus1_gram[-<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">if</span> word <span class="keyword">not</span> <span class="keyword">in</span> vocabulary:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        i = row_index[n_gram]</span><br><span class="line">        j = col_index[word]</span><br><span class="line">        count_matrix[i, j] = count</span><br><span class="line">    </span><br><span class="line">    count_matrix = pd.DataFrame(count_matrix, index=n_grams, columns=vocabulary)</span><br><span class="line">    <span class="keyword">return</span> count_matrix</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sentences = [[<span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>],</span><br><span class="line">                 [<span class="string">&#x27;this&#x27;</span>, <span class="string">&#x27;dog&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>]]</span><br><span class="line">unique_words = <span class="built_in">list</span>(<span class="built_in">set</span>(sentences[<span class="number">0</span>] + sentences[<span class="number">1</span>]))</span><br><span class="line">bigram_counts = count_n_grams(sentences, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;bigram counts&#x27;</span>)</span><br><span class="line">display(make_count_matrix(bigram_counts, unique_words))</span><br></pre></td></tr></table></figure>
+<pre><code>bigram counts</code></pre>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+dog
+</th>
+<th>
+like
+</th>
+<th>
+cat
+</th>
+<th>
+i
+</th>
+<th>
+is
+</th>
+<th>
+this
+</th>
+<th>
+a
+</th>
+<th>
+&lt;e&gt;
+</th>
+<th>
+&lt;unk&gt;
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+(dog,)
+</th>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(like,)
+</th>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+2.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(&lt;s&gt;,)
+</th>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(i,)
+</th>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(is,)
+</th>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(this,)
+</th>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(cat,)
+</th>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+2.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(a,)
+</th>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+2.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h5 id="expected-output-8">Expected output</h5>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">bigram counts</span><br><span class="line">          cat    i   <span class="keyword">this</span>   a  is   like  dog  &lt;e&gt;   &lt;unk&gt;</span><br><span class="line">(&lt;s&gt;,)    <span class="number">0.0</span>   <span class="number">1.0</span>  <span class="number">1.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br><span class="line">(a,)      <span class="number">2.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br><span class="line">(<span class="keyword">this</span>,)   <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">1.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br><span class="line">(like,)   <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">2.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br><span class="line">(dog,)    <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">1.0</span>  <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br><span class="line">(cat,)    <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">2.0</span>    <span class="number">0.0</span></span><br><span class="line">(is,)     <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">1.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br><span class="line">(i,)      <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">1.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Show trigram counts</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;\ntrigram counts&#x27;</span>)</span><br><span class="line">trigram_counts = count_n_grams(sentences, <span class="number">3</span>)</span><br><span class="line">display(make_count_matrix(trigram_counts, unique_words))</span><br></pre></td></tr></table></figure>
+<pre><code>trigram counts</code></pre>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+dog
+</th>
+<th>
+like
+</th>
+<th>
+cat
+</th>
+<th>
+i
+</th>
+<th>
+is
+</th>
+<th>
+this
+</th>
+<th>
+a
+</th>
+<th>
+&lt;e&gt;
+</th>
+<th>
+&lt;unk&gt;
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+(&lt;s&gt;, &lt;s&gt;)
+</th>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(&lt;s&gt;, i)
+</th>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(is, like)
+</th>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(i, like)
+</th>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(&lt;s&gt;, this)
+</th>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(a, cat)
+</th>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+2.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(like, a)
+</th>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+2.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(dog, is)
+</th>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+(this, dog)
+</th>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+1.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h5 id="expected-output-9">Expected output</h5>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">trigram counts</span><br><span class="line">              cat    i   <span class="keyword">this</span>   a  is   like  dog  &lt;e&gt;   &lt;unk&gt;</span><br><span class="line">(dog, is)     <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">1.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br><span class="line">(<span class="keyword">this</span>, dog)   <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">1.0</span>  <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br><span class="line">(a, cat)      <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">2.0</span>    <span class="number">0.0</span></span><br><span class="line">(like, a)     <span class="number">2.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br><span class="line">(is, like)    <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">1.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br><span class="line">(&lt;s&gt;, i)      <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">1.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br><span class="line">(i, like)     <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">1.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br><span class="line">(&lt;s&gt;, &lt;s&gt;)    <span class="number">0.0</span>   <span class="number">1.0</span>  <span class="number">1.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br><span class="line">(&lt;s&gt;, <span class="keyword">this</span>)   <span class="number">0.0</span>   <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>   <span class="number">1.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span></span><br></pre></td></tr></table></figure>
+<p>The following function calculates the probabilities of each word given the previous n-gram, and stores this in matrix form. - This function is provided for you.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_probability_matrix</span>(<span class="params">n_plus1_gram_counts, vocabulary, k</span>):</span></span><br><span class="line">    count_matrix = make_count_matrix(n_plus1_gram_counts, unique_words)</span><br><span class="line">    count_matrix += k</span><br><span class="line">    prob_matrix = count_matrix.div(count_matrix.<span class="built_in">sum</span>(axis=<span class="number">1</span>), axis=<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> prob_matrix</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sentences = [[<span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>],</span><br><span class="line">                 [<span class="string">&#x27;this&#x27;</span>, <span class="string">&#x27;dog&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>]]</span><br><span class="line">unique_words = <span class="built_in">list</span>(<span class="built_in">set</span>(sentences[<span class="number">0</span>] + sentences[<span class="number">1</span>]))</span><br><span class="line">bigram_counts = count_n_grams(sentences, <span class="number">2</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;bigram probabilities&quot;</span>)</span><br><span class="line">display(make_probability_matrix(bigram_counts, unique_words, k=<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+<pre><code>bigram probabilities</code></pre>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+dog
+</th>
+<th>
+like
+</th>
+<th>
+cat
+</th>
+<th>
+i
+</th>
+<th>
+is
+</th>
+<th>
+this
+</th>
+<th>
+a
+</th>
+<th>
+&lt;e&gt;
+</th>
+<th>
+&lt;unk&gt;
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+(dog,)
+</th>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.200000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+</tr>
+<tr>
+<th>
+(like,)
+</th>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.272727
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+</tr>
+<tr>
+<th>
+(&lt;s&gt;,)
+</th>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.181818
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.181818
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+</tr>
+<tr>
+<th>
+(i,)
+</th>
+<td>
+0.100000
+</td>
+<td>
+0.200000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+</tr>
+<tr>
+<th>
+(is,)
+</th>
+<td>
+0.100000
+</td>
+<td>
+0.200000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+</tr>
+<tr>
+<th>
+(this,)
+</th>
+<td>
+0.200000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+</tr>
+<tr>
+<th>
+(cat,)
+</th>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.272727
+</td>
+<td>
+0.090909
+</td>
+</tr>
+<tr>
+<th>
+(a,)
+</th>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.272727
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;trigram probabilities&quot;</span>)</span><br><span class="line">trigram_counts = count_n_grams(sentences, <span class="number">3</span>)</span><br><span class="line">display(make_probability_matrix(trigram_counts, unique_words, k=<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+<pre><code>trigram probabilities</code></pre>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+dog
+</th>
+<th>
+like
+</th>
+<th>
+cat
+</th>
+<th>
+i
+</th>
+<th>
+is
+</th>
+<th>
+this
+</th>
+<th>
+a
+</th>
+<th>
+&lt;e&gt;
+</th>
+<th>
+&lt;unk&gt;
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+(&lt;s&gt;, &lt;s&gt;)
+</th>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.181818
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.181818
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+</tr>
+<tr>
+<th>
+(&lt;s&gt;, i)
+</th>
+<td>
+0.100000
+</td>
+<td>
+0.200000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+</tr>
+<tr>
+<th>
+(is, like)
+</th>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.200000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+</tr>
+<tr>
+<th>
+(i, like)
+</th>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.200000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+</tr>
+<tr>
+<th>
+(&lt;s&gt;, this)
+</th>
+<td>
+0.200000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+</tr>
+<tr>
+<th>
+(a, cat)
+</th>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.272727
+</td>
+<td>
+0.090909
+</td>
+</tr>
+<tr>
+<th>
+(like, a)
+</th>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.272727
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+<td>
+0.090909
+</td>
+</tr>
+<tr>
+<th>
+(dog, is)
+</th>
+<td>
+0.100000
+</td>
+<td>
+0.200000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+</tr>
+<tr>
+<th>
+(this, dog)
+</th>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.200000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+<td>
+0.100000
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Confirm that you obtain the same results as for the <code>estimate_probabilities</code> function that you implemented.</p>
+<p><a name='3'></a> ## Part 3: Perplexity</p>
+<p>In this section, you will generate the perplexity score to evaluate your model on the test set. - You will also use back-off when needed. - Perplexity is used as an evaluation metric of your language model. - To calculate the the perplexity score of the test set on an n-gram model, use:</p>
+<p><span class="math display">\[ PP(W) =\sqrt[N]{ \prod_{t=n+1}^N \frac{1}{P(w_t | w_{t-n} \cdots w_{t-1})} } \tag{4}\]</span></p>
+<ul>
+<li>where <span class="math inline">\(N\)</span> is the length of the sentence.</li>
+<li><span class="math inline">\(n\)</span> is the number of words in the n-gram (e.g. 2 for a bigram).</li>
+<li>In math, the numbering starts at one and not zero.</li>
+</ul>
+<p>In code, array indexing starts at zero, so the code will use ranges for <span class="math inline">\(t\)</span> according to this formula:</p>
+<p><span class="math display">\[ PP(W) =\sqrt[N]{ \prod_{t=n}^{N-1} \frac{1}{P(w_t | w_{t-n} \cdots w_{t-1})} } \tag{4.1}\]</span></p>
+<p>The higher the probabilities are, the lower the perplexity will be. - The more the n-grams tell us about the sentence, the lower the perplexity score will be.</p>
+<p><a name='ex-10'></a> ### Exercise 10 Compute the perplexity score given an N-gram count matrix and a sentence.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+Remember that <code>range(2,4)</code> produces the integers [2, 3] (and excludes 4).
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C10 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: calculate_perplexity</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calculate_perplexity</span>(<span class="params">sentence, n_gram_counts, n_plus1_gram_counts, vocabulary_size, k=<span class="number">1.0</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Calculate perplexity for a list of sentences</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        sentence: List of strings</span></span><br><span class="line"><span class="string">        n_gram_counts: Dictionary of counts of (n+1)-grams</span></span><br><span class="line"><span class="string">        n_plus1_gram_counts: Dictionary of counts of (n+1)-grams</span></span><br><span class="line"><span class="string">        vocabulary_size: number of unique words in the vocabulary</span></span><br><span class="line"><span class="string">        k: Positive smoothing constant</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        Perplexity score</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># length of previous words</span></span><br><span class="line">    n = <span class="built_in">len</span>(<span class="built_in">list</span>(n_gram_counts.keys())[<span class="number">0</span>]) </span><br><span class="line">    </span><br><span class="line">    <span class="comment"># prepend &lt;s&gt; and append &lt;e&gt;</span></span><br><span class="line">    sentence = [<span class="string">&quot;&lt;s&gt;&quot;</span>] * n + sentence + [<span class="string">&quot;&lt;e&gt;&quot;</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Cast the sentence from a list to a tuple</span></span><br><span class="line">    sentence = <span class="built_in">tuple</span>(sentence)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># length of sentence (after adding &lt;s&gt; and &lt;e&gt; tokens)</span></span><br><span class="line">    N = <span class="built_in">len</span>(sentence)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># The variable p will hold the product</span></span><br><span class="line">    <span class="comment"># that is calculated inside the n-root</span></span><br><span class="line">    <span class="comment"># Update this in the code below</span></span><br><span class="line">    product_pi = <span class="number">1.0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Index t ranges from n to N - 1, inclusive on both ends</span></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(n, N): <span class="comment"># complete this line</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># get the n-gram preceding the word at position t</span></span><br><span class="line">        n_gram = sentence[t-n:t]</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># get the word at position t</span></span><br><span class="line">        word = sentence[t]</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Estimate the probability of the word given the n-gram</span></span><br><span class="line">        <span class="comment"># using the n-gram counts, n-plus1-gram counts,</span></span><br><span class="line">        <span class="comment"># vocabulary size, and smoothing constant</span></span><br><span class="line">        probability = estimate_probability(word, n_gram, </span><br><span class="line">                         n_gram_counts, n_plus1_gram_counts, vocabulary_size, k)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Update the product of the probabilities</span></span><br><span class="line">        <span class="comment"># This &#x27;product_pi&#x27; is a cumulative product </span></span><br><span class="line">        <span class="comment"># of the (1/P) factors that are calculated in the loop</span></span><br><span class="line">        product_pi *= (<span class="number">1</span>/probability)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Take the Nth root of the product</span></span><br><span class="line">    perplexity = product_pi ** (<span class="number">1</span>/N)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ### </span></span><br><span class="line">    <span class="keyword">return</span> perplexity</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test your code</span></span><br><span class="line"></span><br><span class="line">sentences = [[<span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>],</span><br><span class="line">                 [<span class="string">&#x27;this&#x27;</span>, <span class="string">&#x27;dog&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>]]</span><br><span class="line">unique_words = <span class="built_in">list</span>(<span class="built_in">set</span>(sentences[<span class="number">0</span>] + sentences[<span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line">unigram_counts = count_n_grams(sentences, <span class="number">1</span>)</span><br><span class="line">bigram_counts = count_n_grams(sentences, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">perplexity_train1 = calculate_perplexity(sentences[<span class="number">0</span>],</span><br><span class="line">                                         unigram_counts, bigram_counts,</span><br><span class="line">                                         <span class="built_in">len</span>(unique_words), k=<span class="number">1.0</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Perplexity for first train sample: <span class="subst">&#123;perplexity_train1:<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">test_sentence = [<span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;dog&#x27;</span>]</span><br><span class="line">perplexity_test = calculate_perplexity(test_sentence,</span><br><span class="line">                                       unigram_counts, bigram_counts,</span><br><span class="line">                                       <span class="built_in">len</span>(unique_words), k=<span class="number">1.0</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Perplexity for test sample: <span class="subst">&#123;perplexity_test:<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Perplexity for first train sample: 2.8040
+Perplexity for test sample: 3.9654</code></pre>
+<h3 id="expected-output-10">Expected Output</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Perplexity <span class="keyword">for</span> first train sample: <span class="number">2.8040</span></span><br><span class="line">Perplexity <span class="keyword">for</span> test sample: <span class="number">3.9654</span></span><br></pre></td></tr></table></figure>
+<p><b> Note: </b> If your sentence is really long, there will be underflow when multiplying many fractions. - To handle longer sentences, modify your implementation to take the sum of the log of the probabilities.</p>
+<p><a name='4'></a> ## Part 4: Build an auto-complete system</p>
+<p>In this section, you will combine the language models developed so far to implement an auto-complete system.</p>
+<p><a name='ex-11'></a> ### Exercise 11 Compute probabilities for all possible next words and suggest the most likely one. - This function also take an optional argument <code>start_with</code>, which specifies the first few letters of the next words.</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+<code>estimate_probabilities</code> returns a dictionary where the key is a word and the value is the word's probability.
+</li>
+<li>
+Use <code>str1.startswith(str2)</code> to determine if a string starts with the letters of another string. For example, <code>'learning'.startswith('lea')</code> returns True, whereas <code>'learning'.startswith('ear')</code> returns False. There are two additional parameters in <code>str.startswith()</code>, but you can use the default values for those parameters in this case.
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C11 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: suggest_a_word</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">suggest_a_word</span>(<span class="params">previous_tokens, n_gram_counts, n_plus1_gram_counts, vocabulary, k=<span class="number">1.0</span>, start_with=<span class="literal">None</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Get suggestion for the next word</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        previous_tokens: The sentence you input where each token is a word. Must have length &gt; n </span></span><br><span class="line"><span class="string">        n_gram_counts: Dictionary of counts of (n+1)-grams</span></span><br><span class="line"><span class="string">        n_plus1_gram_counts: Dictionary of counts of (n+1)-grams</span></span><br><span class="line"><span class="string">        vocabulary: List of words</span></span><br><span class="line"><span class="string">        k: positive constant, smoothing parameter</span></span><br><span class="line"><span class="string">        start_with: If not None, specifies the first few letters of the next word</span></span><br><span class="line"><span class="string">        </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        A tuple of </span></span><br><span class="line"><span class="string">          - string of the most likely next word</span></span><br><span class="line"><span class="string">          - corresponding probability</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># length of previous words</span></span><br><span class="line">    n = <span class="built_in">len</span>(<span class="built_in">list</span>(n_gram_counts.keys())[<span class="number">0</span>]) </span><br><span class="line">    </span><br><span class="line">    <span class="comment"># From the words that the user already typed</span></span><br><span class="line">    <span class="comment"># get the most recent &#x27;n&#x27; words as the previous n-gram</span></span><br><span class="line">    previous_n_gram = previous_tokens[-n:]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Estimate the probabilities that each word in the vocabulary</span></span><br><span class="line">    <span class="comment"># is the next word,</span></span><br><span class="line">    <span class="comment"># given the previous n-gram, the dictionary of n-gram counts,</span></span><br><span class="line">    <span class="comment"># the dictionary of n plus 1 gram counts, and the smoothing constant</span></span><br><span class="line">    probabilities = estimate_probabilities(previous_n_gram, n_gram_counts, n_plus1_gram_counts, vocabulary, k=<span class="number">1.0</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Initialize suggested word to None</span></span><br><span class="line">    <span class="comment"># This will be set to the word with highest probability</span></span><br><span class="line">    suggestion = <span class="literal">None</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Initialize the highest word probability to 0</span></span><br><span class="line">    <span class="comment"># this will be set to the highest probability </span></span><br><span class="line">    <span class="comment"># of all words to be suggested</span></span><br><span class="line">    max_prob = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># For each word and its probability in the probabilities dictionary:</span></span><br><span class="line">    <span class="keyword">for</span> word, prob <span class="keyword">in</span> probabilities.items(): <span class="comment"># complete this line</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># If the optional start_with string is set</span></span><br><span class="line">        <span class="keyword">if</span> start_with: <span class="comment"># complete this line</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment"># Check if the beginning of word does not match with the letters in &#x27;start_with&#x27;</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> word.startswith(start_with): <span class="comment"># complete this line</span></span><br><span class="line"></span><br><span class="line">                <span class="comment"># if they don&#x27;t match, skip this word (move onto the next word)</span></span><br><span class="line">                 <span class="keyword">continue</span><span class="comment"># complete this line</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Check if this word&#x27;s probability</span></span><br><span class="line">        <span class="comment"># is greater than the current maximum probability</span></span><br><span class="line">        <span class="keyword">if</span> prob &gt; max_prob: <span class="comment"># complete this line</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment"># If so, save this word as the best suggestion (so far)</span></span><br><span class="line">            suggestion = word</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># Save the new maximum probability</span></span><br><span class="line">            max_prob = prob</span><br><span class="line"></span><br><span class="line">    <span class="comment">### END CODE HERE</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> suggestion, max_prob</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test your code</span></span><br><span class="line">sentences = [[<span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>],</span><br><span class="line">             [<span class="string">&#x27;this&#x27;</span>, <span class="string">&#x27;dog&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>]]</span><br><span class="line">unique_words = <span class="built_in">list</span>(<span class="built_in">set</span>(sentences[<span class="number">0</span>] + sentences[<span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line">unigram_counts = count_n_grams(sentences, <span class="number">1</span>)</span><br><span class="line">bigram_counts = count_n_grams(sentences, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">previous_tokens = [<span class="string">&quot;i&quot;</span>, <span class="string">&quot;like&quot;</span>]</span><br><span class="line">tmp_suggest1 = suggest_a_word(previous_tokens, unigram_counts, bigram_counts, unique_words, k=<span class="number">1.0</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;The previous words are &#x27;i like&#x27;,\n\tand the suggested word is `<span class="subst">&#123;tmp_suggest1[<span class="number">0</span>]&#125;</span>` with a probability of <span class="subst">&#123;tmp_suggest1[<span class="number">1</span>]:<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>()</span><br><span class="line"><span class="comment"># test your code when setting the starts_with</span></span><br><span class="line">tmp_starts_with = <span class="string">&#x27;c&#x27;</span></span><br><span class="line">tmp_suggest2 = suggest_a_word(previous_tokens, unigram_counts, bigram_counts, unique_words, k=<span class="number">1.0</span>, start_with=tmp_starts_with)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;The previous words are &#x27;i like&#x27;, the suggestion must start with `<span class="subst">&#123;tmp_starts_with&#125;</span>`\n\tand the suggested word is `<span class="subst">&#123;tmp_suggest2[<span class="number">0</span>]&#125;</span>` with a probability of <span class="subst">&#123;tmp_suggest2[<span class="number">1</span>]:<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>The previous words are &#39;i like&#39;,
+    and the suggested word is `a` with a probability of 0.2727
+
+The previous words are &#39;i like&#39;, the suggestion must start with `c`
+    and the suggested word is `cat` with a probability of 0.0909</code></pre>
+<h3 id="expected-output-11">Expected output</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">The previous words are <span class="string">&#x27;i like&#x27;</span>,</span><br><span class="line">    <span class="keyword">and</span> the suggested word is `a` with a probability of <span class="number">0.2727</span></span><br><span class="line"></span><br><span class="line">The previous words are <span class="string">&#x27;i like&#x27;</span>, the suggestion must start with `c`</span><br><span class="line">    <span class="keyword">and</span> the suggested word is `cat` with a probability of <span class="number">0.0909</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="get-multiple-suggestions">Get multiple suggestions</h3>
+<p>The function defined below loop over varioud n-gram models to get multiple suggestions.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_suggestions</span>(<span class="params">previous_tokens, n_gram_counts_list, vocabulary, k=<span class="number">1.0</span>, start_with=<span class="literal">None</span></span>):</span></span><br><span class="line">    model_counts = <span class="built_in">len</span>(n_gram_counts_list)</span><br><span class="line">    suggestions = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(model_counts-<span class="number">1</span>):</span><br><span class="line">        n_gram_counts = n_gram_counts_list[i]</span><br><span class="line">        n_plus1_gram_counts = n_gram_counts_list[i+<span class="number">1</span>]</span><br><span class="line">        </span><br><span class="line">        suggestion = suggest_a_word(previous_tokens, n_gram_counts,</span><br><span class="line">                                    n_plus1_gram_counts, vocabulary,</span><br><span class="line">                                    k=k, start_with=start_with)</span><br><span class="line">        suggestions.append(suggestion)</span><br><span class="line">    <span class="keyword">return</span> suggestions</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test your code</span></span><br><span class="line">sentences = [[<span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>],</span><br><span class="line">             [<span class="string">&#x27;this&#x27;</span>, <span class="string">&#x27;dog&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;like&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>]]</span><br><span class="line">unique_words = <span class="built_in">list</span>(<span class="built_in">set</span>(sentences[<span class="number">0</span>] + sentences[<span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line">unigram_counts = count_n_grams(sentences, <span class="number">1</span>)</span><br><span class="line">bigram_counts = count_n_grams(sentences, <span class="number">2</span>)</span><br><span class="line">trigram_counts = count_n_grams(sentences, <span class="number">3</span>)</span><br><span class="line">quadgram_counts = count_n_grams(sentences, <span class="number">4</span>)</span><br><span class="line">qintgram_counts = count_n_grams(sentences, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">n_gram_counts_list = [unigram_counts, bigram_counts, trigram_counts, quadgram_counts, qintgram_counts]</span><br><span class="line">previous_tokens = [<span class="string">&quot;i&quot;</span>, <span class="string">&quot;like&quot;</span>]</span><br><span class="line">tmp_suggest3 = get_suggestions(previous_tokens, n_gram_counts_list, unique_words, k=<span class="number">1.0</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;The previous words are &#x27;i like&#x27;, the suggestions are:&quot;</span>)</span><br><span class="line">display(tmp_suggest3)</span><br></pre></td></tr></table></figure>
+<pre><code>The previous words are &#39;i like&#39;, the suggestions are:
+
+
+
+[(&#39;a&#39;, 0.2727272727272727),
+ (&#39;a&#39;, 0.2),
+ (&#39;dog&#39;, 0.1111111111111111),
+ (&#39;dog&#39;, 0.1111111111111111)]</code></pre>
+<h3 id="suggest-multiple-words-using-n-grams-of-varying-length">Suggest multiple words using n-grams of varying length</h3>
+<p>Congratulations! You have developed all building blocks for implementing your own auto-complete systems.</p>
+<p>Let's see this with n-grams of varying lengths (unigrams, bigrams, trigrams, 4-grams...6-grams).</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">n_gram_counts_list = []</span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">6</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Computing n-gram counts with n =&quot;</span>, n, <span class="string">&quot;...&quot;</span>)</span><br><span class="line">    n_model_counts = count_n_grams(train_data_processed, n)</span><br><span class="line">    n_gram_counts_list.append(n_model_counts)</span><br></pre></td></tr></table></figure>
+<pre><code>Computing n-gram counts with n = 1 ...
+Computing n-gram counts with n = 2 ...
+Computing n-gram counts with n = 3 ...
+Computing n-gram counts with n = 4 ...
+Computing n-gram counts with n = 5 ...</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">previous_tokens = [<span class="string">&quot;i&quot;</span>, <span class="string">&quot;am&quot;</span>, <span class="string">&quot;to&quot;</span>]</span><br><span class="line">tmp_suggest4 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=<span class="number">1.0</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;The previous words are <span class="subst">&#123;previous_tokens&#125;</span>, the suggestions are:&quot;</span>)</span><br><span class="line">display(tmp_suggest4)</span><br></pre></td></tr></table></figure>
+<pre><code>The previous words are [&#39;i&#39;, &#39;am&#39;, &#39;to&#39;], the suggestions are:
+
+
+
+[(&#39;be&#39;, 0.027665685098338604),
+ (&#39;have&#39;, 0.00013487086115044844),
+ (&#39;have&#39;, 0.00013490725126475548),
+ (&#39;i&#39;, 6.746272684341901e-05)]</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">previous_tokens = [<span class="string">&quot;i&quot;</span>, <span class="string">&quot;want&quot;</span>, <span class="string">&quot;to&quot;</span>, <span class="string">&quot;go&quot;</span>]</span><br><span class="line">tmp_suggest5 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=<span class="number">1.0</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;The previous words are <span class="subst">&#123;previous_tokens&#125;</span>, the suggestions are:&quot;</span>)</span><br><span class="line">display(tmp_suggest5)</span><br></pre></td></tr></table></figure>
+<pre><code>The previous words are [&#39;i&#39;, &#39;want&#39;, &#39;to&#39;, &#39;go&#39;], the suggestions are:
+
+
+
+[(&#39;to&#39;, 0.014051961029228078),
+ (&#39;to&#39;, 0.004697942168993581),
+ (&#39;to&#39;, 0.0009424436216762033),
+ (&#39;to&#39;, 0.0004044489383215369)]</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">previous_tokens = [<span class="string">&quot;hey&quot;</span>, <span class="string">&quot;how&quot;</span>, <span class="string">&quot;are&quot;</span>]</span><br><span class="line">tmp_suggest6 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=<span class="number">1.0</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;The previous words are <span class="subst">&#123;previous_tokens&#125;</span>, the suggestions are:&quot;</span>)</span><br><span class="line">display(tmp_suggest6)</span><br></pre></td></tr></table></figure>
+<pre><code>The previous words are [&#39;hey&#39;, &#39;how&#39;, &#39;are&#39;], the suggestions are:
+
+
+
+[(&#39;you&#39;, 0.023426812585499317),
+ (&#39;you&#39;, 0.003559435862995299),
+ (&#39;you&#39;, 0.00013491635186184566),
+ (&#39;i&#39;, 6.746272684341901e-05)]</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">previous_tokens = [<span class="string">&quot;hey&quot;</span>, <span class="string">&quot;how&quot;</span>, <span class="string">&quot;are&quot;</span>, <span class="string">&quot;you&quot;</span>]</span><br><span class="line">tmp_suggest7 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=<span class="number">1.0</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;The previous words are <span class="subst">&#123;previous_tokens&#125;</span>, the suggestions are:&quot;</span>)</span><br><span class="line">display(tmp_suggest7)</span><br></pre></td></tr></table></figure>
+<pre><code>The previous words are [&#39;hey&#39;, &#39;how&#39;, &#39;are&#39;, &#39;you&#39;], the suggestions are:
+
+
+
+[(&quot;&#39;re&quot;, 0.023973994311255586),
+ (&#39;?&#39;, 0.002888465830762161),
+ (&#39;?&#39;, 0.0016134453781512605),
+ (&#39;&lt;e&gt;&#39;, 0.00013491635186184566)]</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">previous_tokens = [<span class="string">&quot;hey&quot;</span>, <span class="string">&quot;how&quot;</span>, <span class="string">&quot;are&quot;</span>, <span class="string">&quot;you&quot;</span>]</span><br><span class="line">tmp_suggest8 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=<span class="number">1.0</span>, start_with=<span class="string">&quot;d&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;The previous words are <span class="subst">&#123;previous_tokens&#125;</span>, the suggestions are:&quot;</span>)</span><br><span class="line">display(tmp_suggest8)</span><br></pre></td></tr></table></figure>
+<pre><code>The previous words are [&#39;hey&#39;, &#39;how&#39;, &#39;are&#39;, &#39;you&#39;], the suggestions are:
+
+
+
+[(&#39;do&#39;, 0.009020723283218204),
+ (&#39;doing&#39;, 0.0016411737674785006),
+ (&#39;doing&#39;, 0.00047058823529411766),
+ (&#39;dvd&#39;, 6.745817593092283e-05)]</code></pre>
+<h1 id="congratulations">Congratulations!</h1>
+<p>You've completed this assignment by building an autocomplete model using an n-gram language model!</p>
+<p>Please continue onto the fourth and final week of this course!</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Auto-Correct/2020/07/19/" rel="prev" title="Auto Correct">
+      <i class="fa fa-chevron-left"></i> Auto Correct
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Understanding-Deepfakes-with-Keras/2020/07/30/" rel="next" title="Understanding Deepfakes with Keras">
+      Understanding Deepfakes with Keras <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#language-models-auto-complete"><span class="nav-number">1.</span> <span class="nav-text">Language Models: Auto-Complete</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#outline"><span class="nav-number">1.1.</span> <span class="nav-text">Outline</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#expected-output"><span class="nav-number">1.1.1.</span> <span class="nav-text">Expected output</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#expected-outcome"><span class="nav-number">1.1.1.0.1.</span> <span class="nav-text">Expected outcome</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#split-into-train-and-test-sets"><span class="nav-number">1.1.2.</span> <span class="nav-text">Split into train and test sets</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#expected-output-1"><span class="nav-number">1.1.2.0.1.</span> <span class="nav-text">Expected output</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#expected-output-2"><span class="nav-number">1.1.2.0.2.</span> <span class="nav-text">Expected output</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#handling-out-of-vocabulary-words"><span class="nav-number">1.1.3.</span> <span class="nav-text">Handling &#39;Out of Vocabulary&#39; words</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#expected-output-3"><span class="nav-number">1.1.3.0.1.</span> <span class="nav-text">Expected output</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#expected-answer"><span class="nav-number">1.1.4.</span> <span class="nav-text">Expected answer</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#expected-outcome-1"><span class="nav-number">1.1.4.0.1.</span> <span class="nav-text">Expected outcome</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#preprocess-the-train-and-test-data"><span class="nav-number">1.1.5.</span> <span class="nav-text">Preprocess the train and test data</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#expected-output-4"><span class="nav-number">1.1.5.0.1.</span> <span class="nav-text">Expected output</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#expected-output-5"><span class="nav-number">1.1.5.0.2.</span> <span class="nav-text">Expected output</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#estimate-probabilities-for-all-words"><span class="nav-number">1.1.6.</span> <span class="nav-text">Estimate probabilities for all words</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#expected-output-6"><span class="nav-number">1.1.6.0.1.</span> <span class="nav-text">Expected output</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#expected-output-7"><span class="nav-number">1.1.6.0.2.</span> <span class="nav-text">Expected output</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#count-and-probability-matrices"><span class="nav-number">1.1.7.</span> <span class="nav-text">Count and probability matrices</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#expected-output-8"><span class="nav-number">1.1.7.0.1.</span> <span class="nav-text">Expected output</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#expected-output-9"><span class="nav-number">1.1.7.0.2.</span> <span class="nav-text">Expected output</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#expected-output-10"><span class="nav-number">1.1.8.</span> <span class="nav-text">Expected Output</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#expected-output-11"><span class="nav-number">1.1.9.</span> <span class="nav-text">Expected output</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#get-multiple-suggestions"><span class="nav-number">1.1.10.</span> <span class="nav-text">Get multiple suggestions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#suggest-multiple-words-using-n-grams-of-varying-length"><span class="nav-number">1.1.11.</span> <span class="nav-text">Suggest multiple words using n-grams of varying length</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#congratulations"><span class="nav-number">2.</span> <span class="nav-text">Congratulations!</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">268</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Assignment 3: Question Answering Welcome to this week&#39;s assignment of course 4. In this you will explore question answering. You will implement the &quot;Text to Text Transfer from Transformers&quot; (better kn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Assignment 3: Question Answering">
+<meta property="og:url" content="https://zhangruochi.com/Assignment-3-Question-Answering/2020/09/27/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Assignment 3: Question Answering Welcome to this week&#39;s assignment of course 4. In this you will explore question answering. You will implement the &quot;Text to Text Transfer from Transformers&quot; (better kn">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-09-27T09:13:45.000Z">
+<meta property="article:modified_time" content="2020-09-27T09:15:12.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhangruochi.com/Assignment-3-Question-Answering/2020/09/27/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Assignment 3: Question Answering | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Assignment-3-Question-Answering/2020/09/27/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Assignment 3: Question Answering
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-09-27 17:13:45 / Modified: 17:15:12" itemprop="dateCreated datePublished" datetime="2020-09-27T17:13:45+08:00">2020-09-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Assignment-3-Question-Answering/2020/09/27/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Assignment-3-Question-Answering/2020/09/27/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="assignment-3-question-answering">Assignment 3: Question Answering</h1>
+<p>Welcome to this week's assignment of course 4. In this you will explore question answering. You will implement the "Text to Text Transfer from Transformers" (better known as T5). Since you implemented transformers from scratch last week you will now be able to use them.</p>
+<p><img src = "qa.png"></p>
+<h2 id="outline">Outline</h2>
+<ul>
+<li><a href="#0">Overview</a></li>
+<li><a href="#0">Part 0: Importing the Packages</a></li>
+<li><a href="#1">Part 1: C4 Dataset</a>
+<ul>
+<li><a href="#1.1">1.1 Pre-Training Objective</a></li>
+<li><a href="#1.2">1.2 Process C4</a>
+<ul>
+<li><a href="#1.2.1">1.2.1 Decode to natural language</a></li>
+</ul></li>
+<li><a href="#1.3">1.3 Tokenizing and Masking</a>
+<ul>
+<li><a href="#ex01">Exercise 01</a></li>
+</ul></li>
+<li><a href="#1.4">1.4 Creating the Pairs</a></li>
+</ul></li>
+<li><a href="#2">Part 2: Transfomer</a>
+<ul>
+<li><a href="#2.1">2.1 Transformer Encoder</a>
+<ul>
+<li><a href="#2.1.1">2.1.1 The Feedforward Block</a>
+<ul>
+<li><a href="#ex02">Exercise 02</a></li>
+</ul></li>
+<li><a href="#2.1.2">2.1.2 The Encoder Block</a>
+<ul>
+<li><a href="#ex03">Exercise 03</a></li>
+</ul></li>
+<li><a href="#2.1.3">2.1.3 The Transformer Encoder</a>
+<ul>
+<li><a href="#ex04">Exercise 04</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<p><a name='0'></a> ### Overview</p>
+<p>This assignment will be different from the two previous ones. Due to memory and time constraints of this environment you will not be able to train a model and use it for inference. Instead you will create the necessary building blocks for the transformer encoder model and will use a pretrained version of the same model in two ungraded labs after this assignment.</p>
+<p>After completing these 3 (1 graded and 2 ungraded) labs you will: * Implement the code neccesary for Bidirectional Encoder Representation from Transformer (BERT). * Understand how the C4 dataset is structured. * Use a pretrained model for inference. * Understand how the "Text to Text Transfer from Transformers" or T5 model works.</p>
+<p><a name='0'></a> # Part 0: Importing the Packages</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ast</span><br><span class="line"><span class="keyword">import</span> string</span><br><span class="line"><span class="keyword">import</span> textwrap</span><br><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> trax </span><br><span class="line"><span class="keyword">from</span> trax <span class="keyword">import</span> layers <span class="keyword">as</span> tl</span><br><span class="line"><span class="keyword">from</span> trax.supervised <span class="keyword">import</span> decoding</span><br><span class="line"></span><br><span class="line"><span class="comment"># Will come handy later.</span></span><br><span class="line">wrapper = textwrap.TextWrapper(width=<span class="number">70</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set random seed</span></span><br><span class="line">np.random.seed(<span class="number">42</span>)</span><br></pre></td></tr></table></figure>
+<p><a name='1'></a> ## Part 1: C4 Dataset</p>
+<p>The <a target="_blank" rel="noopener" href="https://www.tensorflow.org/datasets/catalog/c4">C4</a> is a huge data set. For the purpose of this assignment you will use a few examples out of it which are present in <code>data.txt</code>. C4 is based on the <a target="_blank" rel="noopener" href="https://commoncrawl.org/">common crawl</a> project. Feel free to read more on their website.</p>
+<p>Run the cell below to see how the examples look like.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># load example jsons</span></span><br><span class="line">example_jsons = <span class="built_in">list</span>(<span class="built_in">map</span>(ast.literal_eval, <span class="built_in">open</span>(<span class="string">&#x27;data.txt&#x27;</span>)))</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Printing the examples to see how the data looks like</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;example number <span class="subst">&#123;i+<span class="number">1</span>&#125;</span>: \n\n<span class="subst">&#123;example_jsons[i]&#125;</span> \n&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>example number 1: 
+
+&#123;&#39;content-length&#39;: b&#39;1970&#39;, &#39;content-type&#39;: b&#39;text/plain&#39;, &#39;text&#39;: b&#39;Beginners BBQ Class Taking Place in Missoula!\nDo you want to get better at making delicious BBQ? You will have the opportunity, put this on your calendar now. Thursday, September 22nd join World Class BBQ Champion, Tony Balay from Lonestar Smoke Rangers. He will be teaching a beginner level class for everyone who wants to get better with their culinary skills.\nHe will teach you everything you need to know to compete in a KCBS BBQ competition, including techniques, recipes, timelines, meat selection and trimming, plus smoker and fire information.\nThe cost to be in the class is $35 per person, and for spectators it is free. Included in the cost will be either a t-shirt or apron and you will be tasting samples of each meat that is prepared.&#39;, &#39;timestamp&#39;: b&#39;2019-04-25T12:57:54Z&#39;, &#39;url&#39;: b&#39;https://klyq.com/beginners-bbq-class-taking-place-in-missoula/&#39;&#125; 
+
+example number 2: 
+
+&#123;&#39;content-length&#39;: b&#39;12064&#39;, &#39;content-type&#39;: b&#39;text/plain&#39;, &#39;text&#39;: b&#39;Discussion in \&#39;Mac OS X Lion (10.7)\&#39; started by axboi87, Jan 20, 2012.\nI\&#39;ve got a 500gb internal drive and a 240gb SSD.\nWhen trying to restore using disk utility i\&#39;m given the error &quot;Not enough space on disk ____ to restore&quot;\nBut I shouldn\&#39;t have to do that!!!\nAny ideas or workarounds before resorting to the above?\nUse Carbon Copy Cloner to copy one drive to the other. I\&#39;ve done this several times going from larger HDD to smaller SSD and I wound up with a bootable SSD drive. One step you have to remember not to skip is to use Disk Utility to partition the SSD as GUID partition scheme HFS+ before doing the clone. If it came Apple Partition Scheme, even if you let CCC do the clone, the resulting drive won\&#39;t be bootable. CCC usually works in &quot;file mode&quot; and it can easily copy a larger drive (that\&#39;s mostly empty) onto a smaller drive. If you tell CCC to clone a drive you did NOT boot from, it can work in block copy mode where the destination drive must be the same size or larger than the drive you are cloning from (if I recall).\nI\&#39;ve actually done this somehow on Disk Utility several times (booting from a different drive (or even the dvd) so not running disk utility from the drive your cloning) and had it work just fine from larger to smaller bootable clone. Definitely format the drive cloning to first, as bootable Apple etc..\nThanks for pointing this out. My only experience using DU to go larger to smaller was when I was trying to make a Lion install stick and I was unable to restore InstallESD.dmg to a 4 GB USB stick but of course the reason that wouldn\&#39;t fit is there was slightly more than 4 GB of data.&#39;, &#39;timestamp&#39;: b&#39;2019-04-21T10:07:13Z&#39;, &#39;url&#39;: b&#39;https://forums.macrumors.com/threads/restore-from-larger-disk-to-smaller-disk.1311329/&#39;&#125; 
+
+example number 3: 
+
+&#123;&#39;content-length&#39;: b&#39;5235&#39;, &#39;content-type&#39;: b&#39;text/plain&#39;, &#39;text&#39;: b&#39;Foil plaid lycra and spandex shortall with metallic slinky insets. Attached metallic elastic belt with O-ring. Headband included. Great hip hop or jazz dance costume. Made in the USA.&#39;, &#39;timestamp&#39;: b&#39;2019-04-25T10:40:23Z&#39;, &#39;url&#39;: b&#39;https://awishcometrue.com/Catalogs/Clearance/Tweens/V1960-Find-A-Way&#39;&#125; 
+
+example number 4: 
+
+&#123;&#39;content-length&#39;: b&#39;4967&#39;, &#39;content-type&#39;: b&#39;text/plain&#39;, &#39;text&#39;: b&quot;How many backlinks per day for new site?\nDiscussion in &#39;Black Hat SEO&#39; started by Omoplata, Dec 3, 2010.\n1) for a newly created site, what&#39;s the max # backlinks per day I should do to be safe?\n2) how long do I have to let my site age before I can start making more blinks?\nI did about 6000 forum profiles every 24 hours for 10 days for one of my sites which had a brand new domain.\nThere is three backlinks for every of these forum profile so thats 18 000 backlinks every 24 hours and nothing happened in terms of being penalized or sandboxed. This is now maybe 3 months ago and the site is ranking on first page for a lot of my targeted keywords.\nbuild more you can in starting but do manual submission and not spammy type means manual + relevant to the post.. then after 1 month you can make a big blast..\nWow, dude, you built 18k backlinks a day on a brand new site? How quickly did you rank up? What kind of competition/searches did those keywords have?&quot;, &#39;timestamp&#39;: b&#39;2019-04-21T12:46:19Z&#39;, &#39;url&#39;: b&#39;https://www.blackhatworld.com/seo/how-many-backlinks-per-day-for-new-site.258615/&#39;&#125; 
+
+example number 5: 
+
+&#123;&#39;content-length&#39;: b&#39;4499&#39;, &#39;content-type&#39;: b&#39;text/plain&#39;, &#39;text&#39;: b&#39;The Denver Board of Education opened the 2017-18 school year with an update on projects that include new construction, upgrades, heat mitigation and quality learning environments.\nWe are excited that Denver students will be the beneficiaries of a four year, $572 million General Obligation Bond. Since the passage of the bond, our construction team has worked to schedule the projects over the four-year term of the bond.\nDenver voters on Tuesday approved bond and mill funding measures for students in Denver Public Schools, agreeing to invest $572 million in bond funding to build and improve schools and $56.6 million in operating dollars to support proven initiatives, such as early literacy.\nDenver voters say yes to bond and mill levy funding support for DPS students and schools. Click to learn more about the details of the voter-approved bond measure.\nDenver voters on Nov. 8 approved bond and mill funding measures for DPS students and schools. Learn more about what\xe2\x80\x99s included in the mill levy measure.&#39;, &#39;timestamp&#39;: b&#39;2019-04-20T14:33:21Z&#39;, &#39;url&#39;: b&#39;http://bond.dpsk12.org/category/news/&#39;&#125; </code></pre>
+<p>Notice the <code>b</code> before each string? This means that this data comes as bytes rather than strings. Strings are actually lists of bytes so for the rest of the assignments the name <code>strings</code> will be used to describe the data.</p>
+<p>To check this run the following cell:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span>(example_jsons[<span class="number">0</span>].get(<span class="string">&#x27;text&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<pre><code>bytes</code></pre>
+<p><a name='1.1'></a> ### 1.1 Pre-Training Objective</p>
+<p><strong>Note:</strong> The word "mask" will be used throughout this assignment in context of hiding/removing word(s)</p>
+<p>You will be implementing the BERT loss as shown in the following image.</p>
+<p><img src = "loss.png" width="600" height = "400"></p>
+<p>Assume you have the following text: <span style="color:blue"> <strong>Thank you <span style="color:red">for inviting </span> me to your party <span style="color:red">last</span> week</strong> </span></p>
+<p>Now as input you will mask the words in red in the text:</p>
+<p><span style="color:blue"> <strong>Input:</strong></span> Thank you <strong>X</strong> me to your party <strong>Y</strong> week.</p>
+<p><span style="color:blue"><strong>Output:</strong></span> The model should predict the words(s) for <strong>X</strong> and <strong>Y</strong>.</p>
+<p><strong>Z</strong> is used to represent the end.</p>
+<p><a name='1.2'></a> ### 1.2 Process C4</p>
+<p>C4 only has the plain string <code>text</code> field, so you will tokenize and have <code>inputs</code> and <code>targets</code> out of it for supervised learning. Given your inputs, the goal is to predict the targets during training.</p>
+<p>You will now take the <code>text</code> and convert it to <code>inputs</code> and <code>targets</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Grab text field from dictionary</span></span><br><span class="line">natural_language_texts = [example_json[<span class="string">&#x27;text&#x27;</span>] <span class="keyword">for</span> example_json <span class="keyword">in</span> example_jsons]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># First text example</span></span><br><span class="line">natural_language_texts[<span class="number">4</span>]</span><br></pre></td></tr></table></figure>
+<pre><code>b&#39;The Denver Board of Education opened the 2017-18 school year with an update on projects that include new construction, upgrades, heat mitigation and quality learning environments.\nWe are excited that Denver students will be the beneficiaries of a four year, $572 million General Obligation Bond. Since the passage of the bond, our construction team has worked to schedule the projects over the four-year term of the bond.\nDenver voters on Tuesday approved bond and mill funding measures for students in Denver Public Schools, agreeing to invest $572 million in bond funding to build and improve schools and $56.6 million in operating dollars to support proven initiatives, such as early literacy.\nDenver voters say yes to bond and mill levy funding support for DPS students and schools. Click to learn more about the details of the voter-approved bond measure.\nDenver voters on Nov. 8 approved bond and mill funding measures for DPS students and schools. Learn more about what\xe2\x80\x99s included in the mill levy measure.&#39;</code></pre>
+<p><a name='1.2.1'></a> #### 1.2.1 Decode to natural language</p>
+<p>The following functions will help you <code>detokenize</code> and<code>tokenize</code> the text data.</p>
+<p>The <code>sentencepiece</code> vocabulary was used to convert from text to ids. This vocabulary file is loaded and used in this helper functions.</p>
+<p><code>natural_language_texts</code> has the text from the examples we gave you.</p>
+<p>Run the cells below to see what is going on.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Special tokens</span></span><br><span class="line">PAD, EOS, UNK = <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">detokenize</span>(<span class="params">np_array</span>):</span></span><br><span class="line">    <span class="keyword">return</span> trax.data.detokenize(</span><br><span class="line">        np_array,</span><br><span class="line">        vocab_type=<span class="string">&#x27;sentencepiece&#x27;</span>,</span><br><span class="line">        vocab_file=<span class="string">&#x27;sentencepiece.model&#x27;</span>,</span><br><span class="line">        vocab_dir=<span class="string">&#x27;.&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tokenize</span>(<span class="params">s</span>):</span></span><br><span class="line">  <span class="comment"># The trax.data.tokenize function operates on streams,</span></span><br><span class="line">  <span class="comment"># that&#x27;s why we have to create 1-element stream with iter</span></span><br><span class="line">  <span class="comment"># and later retrieve the result with next.</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">next</span>(trax.data.tokenize(</span><br><span class="line">        <span class="built_in">iter</span>([s]),</span><br><span class="line">        vocab_type=<span class="string">&#x27;sentencepiece&#x27;</span>,</span><br><span class="line">        vocab_file=<span class="string">&#x27;sentencepiece.model&#x27;</span>,</span><br><span class="line">        vocab_dir=<span class="string">&#x27;.&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># printing the encoding of each word to see how subwords are tokenized</span></span><br><span class="line">tokenized_text = [(tokenize(word).tolist(), word) <span class="keyword">for</span> word <span class="keyword">in</span> natural_language_texts[<span class="number">0</span>].split()]</span><br><span class="line"><span class="built_in">print</span>(tokenized_text, <span class="string">&#x27;\n&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>[([12847, 277], b&#39;Beginners&#39;), ([15068], b&#39;BBQ&#39;), ([4501], b&#39;Class&#39;), ([3, 12297], b&#39;Taking&#39;), ([3399], b&#39;Place&#39;), ([16], b&#39;in&#39;), ([5964, 7115, 9, 55], b&#39;Missoula!&#39;), ([531], b&#39;Do&#39;), ([25], b&#39;you&#39;), ([241], b&#39;want&#39;), ([12], b&#39;to&#39;), ([129], b&#39;get&#39;), ([394], b&#39;better&#39;), ([44], b&#39;at&#39;), ([492], b&#39;making&#39;), ([3326], b&#39;delicious&#39;), ([15068, 58], b&#39;BBQ?&#39;), ([148], b&#39;You&#39;), ([56], b&#39;will&#39;), ([43], b&#39;have&#39;), ([8], b&#39;the&#39;), ([1004, 6], b&#39;opportunity,&#39;), ([474], b&#39;put&#39;), ([48], b&#39;this&#39;), ([30], b&#39;on&#39;), ([39], b&#39;your&#39;), ([4793], b&#39;calendar&#39;), ([230, 5], b&#39;now.&#39;), ([2721, 6], b&#39;Thursday,&#39;), ([1600], b&#39;September&#39;), ([1630, 727], b&#39;22nd&#39;), ([1715], b&#39;join&#39;), ([1150], b&#39;World&#39;), ([4501], b&#39;Class&#39;), ([15068], b&#39;BBQ&#39;), ([16127, 6], b&#39;Champion,&#39;), ([9137], b&#39;Tony&#39;), ([2659, 5595], b&#39;Balay&#39;), ([45], b&#39;from&#39;), ([301, 782, 3624], b&#39;Lonestar&#39;), ([14627, 15], b&#39;Smoke&#39;), ([12612, 277, 5], b&#39;Rangers.&#39;), ([216], b&#39;He&#39;), ([56], b&#39;will&#39;), ([36], b&#39;be&#39;), ([2119], b&#39;teaching&#39;), ([3, 9], b&#39;a&#39;), ([19529], b&#39;beginner&#39;), ([593], b&#39;level&#39;), ([853], b&#39;class&#39;), ([21], b&#39;for&#39;), ([921], b&#39;everyone&#39;), ([113], b&#39;who&#39;), ([2746], b&#39;wants&#39;), ([12], b&#39;to&#39;), ([129], b&#39;get&#39;), ([394], b&#39;better&#39;), ([28], b&#39;with&#39;), ([70], b&#39;their&#39;), ([17712], b&#39;culinary&#39;), ([1098, 5], b&#39;skills.&#39;), ([216], b&#39;He&#39;), ([56], b&#39;will&#39;), ([3884], b&#39;teach&#39;), ([25], b&#39;you&#39;), ([762], b&#39;everything&#39;), ([25], b&#39;you&#39;), ([174], b&#39;need&#39;), ([12], b&#39;to&#39;), ([214], b&#39;know&#39;), ([12], b&#39;to&#39;), ([5978], b&#39;compete&#39;), ([16], b&#39;in&#39;), ([3, 9], b&#39;a&#39;), ([3, 23405, 4547], b&#39;KCBS&#39;), ([15068], b&#39;BBQ&#39;), ([2259, 6], b&#39;competition,&#39;), ([379], b&#39;including&#39;), ([2097, 6], b&#39;techniques,&#39;), ([5459, 6], b&#39;recipes,&#39;), ([13618, 7, 6], b&#39;timelines,&#39;), ([3604], b&#39;meat&#39;), ([1801], b&#39;selection&#39;), ([11], b&#39;and&#39;), ([27856, 6], b&#39;trimming,&#39;), ([303], b&#39;plus&#39;), ([24190], b&#39;smoker&#39;), ([11], b&#39;and&#39;), ([1472], b&#39;fire&#39;), ([251, 5], b&#39;information.&#39;), ([37], b&#39;The&#39;), ([583], b&#39;cost&#39;), ([12], b&#39;to&#39;), ([36], b&#39;be&#39;), ([16], b&#39;in&#39;), ([8], b&#39;the&#39;), ([853], b&#39;class&#39;), ([19], b&#39;is&#39;), ([25264], b&#39;$35&#39;), ([399], b&#39;per&#39;), ([568, 6], b&#39;person,&#39;), ([11], b&#39;and&#39;), ([21], b&#39;for&#39;), ([21380, 7], b&#39;spectators&#39;), ([34], b&#39;it&#39;), ([19], b&#39;is&#39;), ([339, 5], b&#39;free.&#39;), ([15746, 26], b&#39;Included&#39;), ([16], b&#39;in&#39;), ([8], b&#39;the&#39;), ([583], b&#39;cost&#39;), ([56], b&#39;will&#39;), ([36], b&#39;be&#39;), ([893], b&#39;either&#39;), ([3, 9], b&#39;a&#39;), ([3, 17, 18, 9486], b&#39;t-shirt&#39;), ([42], b&#39;or&#39;), ([3, 9, 1409, 29], b&#39;apron&#39;), ([11], b&#39;and&#39;), ([25], b&#39;you&#39;), ([56], b&#39;will&#39;), ([36], b&#39;be&#39;), ([12246], b&#39;tasting&#39;), ([5977], b&#39;samples&#39;), ([13], b&#39;of&#39;), ([284], b&#39;each&#39;), ([3604], b&#39;meat&#39;), ([24], b&#39;that&#39;), ([19], b&#39;is&#39;), ([2657, 5], b&#39;prepared.&#39;)] </code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># We can see that detokenize successfully undoes the tokenization</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;tokenized: <span class="subst">&#123;tokenize(<span class="string">&#x27;Beginners&#x27;</span>)&#125;</span>\ndetokenized: <span class="subst">&#123;detokenize(tokenize(<span class="string">&#x27;Beginners&#x27;</span>))&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>tokenized: [12847   277]
+detokenized: Beginners</code></pre>
+<p>As you can see above, you were able to take a piece of string and tokenize it.</p>
+<p>Now you will create <code>input</code> and <code>target</code> pairs that will allow you to train your model. T5 uses the ids at the end of the vocab file as sentinels. For example, it will replace: - <code>vocab_size - 1</code> by <code>&lt;Z&gt;</code> - <code>vocab_size - 2</code> by <code>&lt;Y&gt;</code> - and so forth.</p>
+<p>It assigns every word a <code>chr</code>.</p>
+<p>The <code>pretty_decode</code> function below, which you will use in a bit, helps in handling the type when decoding. Take a look and try to understand what the function is doing.</p>
+<p>Notice that: <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">string.ascii_letters = <span class="string">&#x27;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#x27;</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>NOTE:</strong> Targets may have more than the 52 sentinels we replace, but this is just to give you an idea of things.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">vocab_size = trax.data.vocab_size(</span><br><span class="line">    vocab_type=<span class="string">&#x27;sentencepiece&#x27;</span>,</span><br><span class="line">    vocab_file=<span class="string">&#x27;sentencepiece.model&#x27;</span>,</span><br><span class="line">    vocab_dir=<span class="string">&#x27;.&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_sentinels</span>(<span class="params">vocab_size=vocab_size, display=<span class="literal">False</span></span>):</span></span><br><span class="line">    sentinels = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> i, char <span class="keyword">in</span> <span class="built_in">enumerate</span>(<span class="built_in">reversed</span>(string.ascii_letters), <span class="number">1</span>):</span><br><span class="line">        decoded_text = detokenize([vocab_size - i]) </span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Sentinels, ex: &lt;Z&gt; - &lt;a&gt;</span></span><br><span class="line">        sentinels[decoded_text] = <span class="string">f&#x27;&lt;<span class="subst">&#123;char&#125;</span>&gt;&#x27;</span>    </span><br><span class="line">    </span><br><span class="line">        <span class="keyword">if</span> display:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&#x27;The sentinel is &lt;<span class="subst">&#123;char&#125;</span>&gt; and the decoded token is:&#x27;</span>, decoded_text)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sentinels</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sentinels = get_sentinels(vocab_size, display=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>The sentinel is &lt;Z&gt; and the decoded token is: Internațional
+The sentinel is &lt;Y&gt; and the decoded token is: erwachsene
+The sentinel is &lt;X&gt; and the decoded token is: Cushion
+The sentinel is &lt;W&gt; and the decoded token is: imunitar
+The sentinel is &lt;V&gt; and the decoded token is: Intellectual
+The sentinel is &lt;U&gt; and the decoded token is: traditi
+The sentinel is &lt;T&gt; and the decoded token is: disguise
+The sentinel is &lt;S&gt; and the decoded token is: exerce
+The sentinel is &lt;R&gt; and the decoded token is: nourishe
+The sentinel is &lt;Q&gt; and the decoded token is: predominant
+The sentinel is &lt;P&gt; and the decoded token is: amitié
+The sentinel is &lt;O&gt; and the decoded token is: erkennt
+The sentinel is &lt;N&gt; and the decoded token is: dimension
+The sentinel is &lt;M&gt; and the decoded token is: inférieur
+The sentinel is &lt;L&gt; and the decoded token is: refugi
+The sentinel is &lt;K&gt; and the decoded token is: cheddar
+The sentinel is &lt;J&gt; and the decoded token is: unterlieg
+The sentinel is &lt;I&gt; and the decoded token is: garanteaz
+The sentinel is &lt;H&gt; and the decoded token is: făcute
+The sentinel is &lt;G&gt; and the decoded token is: réglage
+The sentinel is &lt;F&gt; and the decoded token is: pedepse
+The sentinel is &lt;E&gt; and the decoded token is: Germain
+The sentinel is &lt;D&gt; and the decoded token is: distinctly
+The sentinel is &lt;C&gt; and the decoded token is: Schraub
+The sentinel is &lt;B&gt; and the decoded token is: emanat
+The sentinel is &lt;A&gt; and the decoded token is: trimestre
+The sentinel is &lt;z&gt; and the decoded token is: disrespect
+The sentinel is &lt;y&gt; and the decoded token is: Erasmus
+The sentinel is &lt;x&gt; and the decoded token is: Australia
+The sentinel is &lt;w&gt; and the decoded token is: permeabil
+The sentinel is &lt;v&gt; and the decoded token is: deseori
+The sentinel is &lt;u&gt; and the decoded token is: manipulated
+The sentinel is &lt;t&gt; and the decoded token is: suggér
+The sentinel is &lt;s&gt; and the decoded token is: corespund
+The sentinel is &lt;r&gt; and the decoded token is: nitro
+The sentinel is &lt;q&gt; and the decoded token is: oyons
+The sentinel is &lt;p&gt; and the decoded token is: Account
+The sentinel is &lt;o&gt; and the decoded token is: échéan
+The sentinel is &lt;n&gt; and the decoded token is: laundering
+The sentinel is &lt;m&gt; and the decoded token is: genealogy
+The sentinel is &lt;l&gt; and the decoded token is: QuickBooks
+The sentinel is &lt;k&gt; and the decoded token is: constituted
+The sentinel is &lt;j&gt; and the decoded token is: Fertigung
+The sentinel is &lt;i&gt; and the decoded token is: goutte
+The sentinel is &lt;h&gt; and the decoded token is: regulă
+The sentinel is &lt;g&gt; and the decoded token is: overwhelmingly
+The sentinel is &lt;f&gt; and the decoded token is: émerg
+The sentinel is &lt;e&gt; and the decoded token is: broyeur
+The sentinel is &lt;d&gt; and the decoded token is: povești
+The sentinel is &lt;c&gt; and the decoded token is: emulator
+The sentinel is &lt;b&gt; and the decoded token is: halloween
+The sentinel is &lt;a&gt; and the decoded token is: combustibil</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pretty_decode</span>(<span class="params">encoded_str_list, sentinels=sentinels</span>):</span></span><br><span class="line">    <span class="comment"># If already a string, just do the replacements.</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">isinstance</span>(encoded_str_list, (<span class="built_in">str</span>, <span class="built_in">bytes</span>)):</span><br><span class="line">        <span class="keyword">for</span> token, char <span class="keyword">in</span> sentinels.items():</span><br><span class="line">            encoded_str_list = encoded_str_list.replace(token, char)</span><br><span class="line">        <span class="keyword">return</span> encoded_str_list</span><br><span class="line">  </span><br><span class="line">    <span class="comment"># We need to decode and then prettyfy it.</span></span><br><span class="line">    <span class="keyword">return</span> pretty_decode(detokenize(encoded_str_list))</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pretty_decode(<span class="string">&quot;I want to dress up as an Intellectual this halloween.&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>&#39;I want to dress up as an &lt;V&gt; this &lt;b&gt;.&#39;</code></pre>
+<p>The functions above make your <code>inputs</code> and <code>targets</code> more readable. For example, you might see something like this once you implement the masking function below.</p>
+<ul>
+<li><span style="color:red"> Input sentence: </span> Younes and Lukasz were working together in the lab yesterday after lunch.</li>
+<li><span style="color:red">Input: </span> Younes and Lukasz <strong>Z</strong> together in the <strong>Y</strong> yesterday after lunch.</li>
+<li><span style="color:red">Target: </span> <strong>Z</strong> were working <strong>Y</strong> lab.</li>
+</ul>
+<p><a name='1.3'></a> ### 1.3 Tokenizing and Masking</p>
+<p>You will now implement the <code>tokenize_and_mask</code> function. This function will allow you to tokenize and mask input words with a noise probability. We usually mask 15% of the words.</p>
+<p><a name='ex01'></a> ### Exercise 01</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C1</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: tokenize_and_mask</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tokenize_and_mask</span>(<span class="params">text, vocab_size=vocab_size, noise=<span class="number">0.15</span>, </span></span></span><br><span class="line"><span class="params"><span class="function">                      randomizer=np.random.uniform, tokenize=tokenize</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Tokenizes and masks a given input.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        text (str or bytes): Text input.</span></span><br><span class="line"><span class="string">        vocab_size (int, optional): Size of the vocabulary. Defaults to vocab_size.</span></span><br><span class="line"><span class="string">        noise (float, optional): Probability of masking a token. Defaults to 0.15.</span></span><br><span class="line"><span class="string">        randomizer (function, optional): Function that generates random values. Defaults to np.random.uniform.</span></span><br><span class="line"><span class="string">        tokenize (function, optional): Tokenizer function. Defaults to tokenize.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        tuple: Tuple of lists of integers associated to inputs and targets.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># current sentinel number (starts at 0)</span></span><br><span class="line">    cur_sentinel_num = <span class="number">0</span></span><br><span class="line">    <span class="comment"># inputs</span></span><br><span class="line">    inps = []</span><br><span class="line">    <span class="comment"># targets</span></span><br><span class="line">    targs = []</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; WITH YOUR CODE) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># prev_no_mask is True if the previous token was NOT masked, False otherwise</span></span><br><span class="line">    <span class="comment"># set prev_no_mask to True</span></span><br><span class="line">    prev_no_mask = <span class="literal">True</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># loop through tokenized `text`</span></span><br><span class="line">    <span class="keyword">for</span> token <span class="keyword">in</span> tokenize(text):</span><br><span class="line">        <span class="comment"># check if the `noise` is greater than a random value (weighted coin flip)</span></span><br><span class="line">        <span class="keyword">if</span> randomizer() &lt; noise:</span><br><span class="line">            <span class="comment"># check to see if the previous token was not masked</span></span><br><span class="line">            <span class="keyword">if</span> prev_no_mask==<span class="literal">True</span>: <span class="comment"># add new masked token at end_id</span></span><br><span class="line">                <span class="comment"># number of masked tokens increases by 1</span></span><br><span class="line">                cur_sentinel_num += <span class="number">1</span></span><br><span class="line">                <span class="comment"># compute `end_id` by subtracting current sentinel value out of the total vocabulary size</span></span><br><span class="line">                end_id = vocab_size - cur_sentinel_num</span><br><span class="line">                <span class="comment"># append `end_id` at the end of the targets</span></span><br><span class="line">                targs.append(end_id)</span><br><span class="line">                <span class="comment"># append `end_id` at the end of the inputs</span></span><br><span class="line">                inps.append(end_id)</span><br><span class="line">            <span class="comment"># append `token` at the end of the targets</span></span><br><span class="line">            targs.append(token)</span><br><span class="line">            <span class="comment"># set prev_no_mask accordingly</span></span><br><span class="line">            prev_no_mask = <span class="literal">False</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">else</span>: <span class="comment"># don&#x27;t have two masked tokens in a row</span></span><br><span class="line">            <span class="comment"># append `token ` at the end of the inputs</span></span><br><span class="line">            inps.append(token)</span><br><span class="line">            <span class="comment"># set prev_no_mask accordingly</span></span><br><span class="line">            prev_no_mask = <span class="literal">True</span></span><br><span class="line">            </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    <span class="keyword">return</span> inps, targs</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Some logic to mock a np.random value generator</span></span><br><span class="line"><span class="comment"># Needs to be in the same cell for it to always generate same output</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">testing_rnd</span>():</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dummy_generator</span>():</span></span><br><span class="line">        vals = np.linspace(<span class="number">0</span>, <span class="number">1</span>, <span class="number">10</span>)</span><br><span class="line">        cyclic_vals = itertools.cycle(vals)</span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">            <span class="keyword">yield</span> <span class="built_in">next</span>(cyclic_vals)</span><br><span class="line"></span><br><span class="line">    dumr = itertools.cycle(dummy_generator())</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dummy_randomizer</span>():</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">next</span>(dumr)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> dummy_randomizer</span><br><span class="line"></span><br><span class="line">input_str = natural_language_texts[<span class="number">0</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;input string:\n\n<span class="subst">&#123;input_str&#125;</span>\n&quot;</span>)</span><br><span class="line">inps, targs = tokenize_and_mask(input_str, randomizer=testing_rnd())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;tokenized inputs:\n\n<span class="subst">&#123;inps&#125;</span>\n&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;targets:\n\n<span class="subst">&#123;targs&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>input string:
+
+b&#39;Beginners BBQ Class Taking Place in Missoula!\nDo you want to get better at making delicious BBQ? You will have the opportunity, put this on your calendar now. Thursday, September 22nd join World Class BBQ Champion, Tony Balay from Lonestar Smoke Rangers. He will be teaching a beginner level class for everyone who wants to get better with their culinary skills.\nHe will teach you everything you need to know to compete in a KCBS BBQ competition, including techniques, recipes, timelines, meat selection and trimming, plus smoker and fire information.\nThe cost to be in the class is $35 per person, and for spectators it is free. Included in the cost will be either a t-shirt or apron and you will be tasting samples of each meat that is prepared.&#39;
+
+tokenized inputs:
+
+[31999, 15068, 4501, 3, 12297, 3399, 16, 5964, 7115, 31998, 531, 25, 241, 12, 129, 394, 44, 492, 31997, 58, 148, 56, 43, 8, 1004, 6, 474, 31996, 39, 4793, 230, 5, 2721, 6, 1600, 1630, 31995, 1150, 4501, 15068, 16127, 6, 9137, 2659, 5595, 31994, 782, 3624, 14627, 15, 12612, 277, 5, 216, 31993, 2119, 3, 9, 19529, 593, 853, 21, 921, 31992, 12, 129, 394, 28, 70, 17712, 1098, 5, 31991, 3884, 25, 762, 25, 174, 12, 214, 12, 31990, 3, 9, 3, 23405, 4547, 15068, 2259, 6, 31989, 6, 5459, 6, 13618, 7, 6, 3604, 1801, 31988, 6, 303, 24190, 11, 1472, 251, 5, 37, 31987, 36, 16, 8, 853, 19, 25264, 399, 568, 31986, 21, 21380, 7, 34, 19, 339, 5, 15746, 31985, 8, 583, 56, 36, 893, 3, 9, 3, 31984, 9486, 42, 3, 9, 1409, 29, 11, 25, 31983, 12246, 5977, 13, 284, 3604, 24, 19, 2657, 31982]
+
+targets:
+
+[31999, 12847, 277, 31998, 9, 55, 31997, 3326, 15068, 31996, 48, 30, 31995, 727, 1715, 31994, 45, 301, 31993, 56, 36, 31992, 113, 2746, 31991, 216, 56, 31990, 5978, 16, 31989, 379, 2097, 31988, 11, 27856, 31987, 583, 12, 31986, 6, 11, 31985, 26, 16, 31984, 17, 18, 31983, 56, 36, 31982, 5]</code></pre>
+<h4 id="expected-output"><strong>Expected Output:</strong></h4>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">b<span class="number">&#x27;B</span>eginners BBQ Class Taking Place in Missoula!\nDo you want to get better at making delicious BBQ? You will have the opportunity, put <span class="keyword">this</span> on your calendar now. Thursday, September <span class="number">22</span>nd join World Class BBQ Champion, Tony Balay from Lonestar Smoke Rangers. He will be teaching a beginner level <span class="class"><span class="keyword">class</span> <span class="title">for</span> <span class="title">everyone</span> <span class="title">who</span> <span class="title">wants</span> <span class="title">to</span> <span class="title">get</span> <span class="title">better</span> <span class="title">with</span> <span class="title">their</span> <span class="title">culinary</span> <span class="title">skills</span>.\<span class="title">nHe</span> <span class="title">will</span> <span class="title">teach</span> <span class="title">you</span> <span class="title">everything</span> <span class="title">you</span> <span class="title">need</span> <span class="title">to</span> <span class="title">know</span> <span class="title">to</span> <span class="title">compete</span> <span class="title">in</span> <span class="title">a</span> <span class="title">KCBS</span> <span class="title">BBQ</span> <span class="title">competition</span>, <span class="title">including</span> <span class="title">techniques</span>, <span class="title">recipes</span>, <span class="title">timelines</span>, <span class="title">meat</span> <span class="title">selection</span> <span class="title">and</span> <span class="title">trimming</span>, <span class="title">plus</span> <span class="title">smoker</span> <span class="title">and</span> <span class="title">fire</span> <span class="title">information</span>.\<span class="title">nThe</span> <span class="title">cost</span> <span class="title">to</span> <span class="title">be</span> <span class="title">in</span> <span class="title">the</span> <span class="keyword">class</span> <span class="title">is</span> $35 <span class="title">per</span> <span class="title">person</span>, <span class="title">and</span> <span class="title">for</span> <span class="title">spectators</span> <span class="title">it</span> <span class="title">is</span> <span class="title">free</span>. <span class="title">Included</span> <span class="title">in</span> <span class="title">the</span> <span class="title">cost</span> <span class="title">will</span> <span class="title">be</span> <span class="title">either</span> <span class="title">a</span> <span class="title">t</span>-<span class="title">shirt</span> <span class="title">or</span> <span class="title">apron</span> <span class="title">and</span> <span class="title">you</span> <span class="title">will</span> <span class="title">be</span> <span class="title">tasting</span> <span class="title">samples</span> <span class="title">of</span> <span class="title">each</span> <span class="title">meat</span> <span class="title">that</span> <span class="title">is</span> <span class="title">prepared</span>.&#x27;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">tokenized</span> <span class="title">inputs</span>:</span></span><br><span class="line"></span><br><span class="line">[<span class="number">31999</span>, <span class="number">15068</span>, <span class="number">4501</span>, <span class="number">3</span>, <span class="number">12297</span>, <span class="number">3399</span>, <span class="number">16</span>, <span class="number">5964</span>, <span class="number">7115</span>, <span class="number">31998</span>, <span class="number">531</span>, <span class="number">25</span>, <span class="number">241</span>, <span class="number">12</span>, <span class="number">129</span>, <span class="number">394</span>, <span class="number">44</span>, <span class="number">492</span>, <span class="number">31997</span>, <span class="number">58</span>, <span class="number">148</span>, <span class="number">56</span>, <span class="number">43</span>, <span class="number">8</span>, <span class="number">1004</span>, <span class="number">6</span>, <span class="number">474</span>, <span class="number">31996</span>, <span class="number">39</span>, <span class="number">4793</span>, <span class="number">230</span>, <span class="number">5</span>, <span class="number">2721</span>, <span class="number">6</span>, <span class="number">1600</span>, <span class="number">1630</span>, <span class="number">31995</span>, <span class="number">1150</span>, <span class="number">4501</span>, <span class="number">15068</span>, <span class="number">16127</span>, <span class="number">6</span>, <span class="number">9137</span>, <span class="number">2659</span>, <span class="number">5595</span>, <span class="number">31994</span>, <span class="number">782</span>, <span class="number">3624</span>, <span class="number">14627</span>, <span class="number">15</span>, <span class="number">12612</span>, <span class="number">277</span>, <span class="number">5</span>, <span class="number">216</span>, <span class="number">31993</span>, <span class="number">2119</span>, <span class="number">3</span>, <span class="number">9</span>, <span class="number">19529</span>, <span class="number">593</span>, <span class="number">853</span>, <span class="number">21</span>, <span class="number">921</span>, <span class="number">31992</span>, <span class="number">12</span>, <span class="number">129</span>, <span class="number">394</span>, <span class="number">28</span>, <span class="number">70</span>, <span class="number">17712</span>, <span class="number">1098</span>, <span class="number">5</span>, <span class="number">31991</span>, <span class="number">3884</span>, <span class="number">25</span>, <span class="number">762</span>, <span class="number">25</span>, <span class="number">174</span>, <span class="number">12</span>, <span class="number">214</span>, <span class="number">12</span>, <span class="number">31990</span>, <span class="number">3</span>, <span class="number">9</span>, <span class="number">3</span>, <span class="number">23405</span>, <span class="number">4547</span>, <span class="number">15068</span>, <span class="number">2259</span>, <span class="number">6</span>, <span class="number">31989</span>, <span class="number">6</span>, <span class="number">5459</span>, <span class="number">6</span>, <span class="number">13618</span>, <span class="number">7</span>, <span class="number">6</span>, <span class="number">3604</span>, <span class="number">1801</span>, <span class="number">31988</span>, <span class="number">6</span>, <span class="number">303</span>, <span class="number">24190</span>, <span class="number">11</span>, <span class="number">1472</span>, <span class="number">251</span>, <span class="number">5</span>, <span class="number">37</span>, <span class="number">31987</span>, <span class="number">36</span>, <span class="number">16</span>, <span class="number">8</span>, <span class="number">853</span>, <span class="number">19</span>, <span class="number">25264</span>, <span class="number">399</span>, <span class="number">568</span>, <span class="number">31986</span>, <span class="number">21</span>, <span class="number">21380</span>, <span class="number">7</span>, <span class="number">34</span>, <span class="number">19</span>, <span class="number">339</span>, <span class="number">5</span>, <span class="number">15746</span>, <span class="number">31985</span>, <span class="number">8</span>, <span class="number">583</span>, <span class="number">56</span>, <span class="number">36</span>, <span class="number">893</span>, <span class="number">3</span>, <span class="number">9</span>, <span class="number">3</span>, <span class="number">31984</span>, <span class="number">9486</span>, <span class="number">42</span>, <span class="number">3</span>, <span class="number">9</span>, <span class="number">1409</span>, <span class="number">29</span>, <span class="number">11</span>, <span class="number">25</span>, <span class="number">31983</span>, <span class="number">12246</span>, <span class="number">5977</span>, <span class="number">13</span>, <span class="number">284</span>, <span class="number">3604</span>, <span class="number">24</span>, <span class="number">19</span>, <span class="number">2657</span>, <span class="number">31982</span>]</span><br><span class="line"></span><br><span class="line">targets:</span><br><span class="line"></span><br><span class="line">[<span class="number">31999</span>, <span class="number">12847</span>, <span class="number">277</span>, <span class="number">31998</span>, <span class="number">9</span>, <span class="number">55</span>, <span class="number">31997</span>, <span class="number">3326</span>, <span class="number">15068</span>, <span class="number">31996</span>, <span class="number">48</span>, <span class="number">30</span>, <span class="number">31995</span>, <span class="number">727</span>, <span class="number">1715</span>, <span class="number">31994</span>, <span class="number">45</span>, <span class="number">301</span>, <span class="number">31993</span>, <span class="number">56</span>, <span class="number">36</span>, <span class="number">31992</span>, <span class="number">113</span>, <span class="number">2746</span>, <span class="number">31991</span>, <span class="number">216</span>, <span class="number">56</span>, <span class="number">31990</span>, <span class="number">5978</span>, <span class="number">16</span>, <span class="number">31989</span>, <span class="number">379</span>, <span class="number">2097</span>, <span class="number">31988</span>, <span class="number">11</span>, <span class="number">27856</span>, <span class="number">31987</span>, <span class="number">583</span>, <span class="number">12</span>, <span class="number">31986</span>, <span class="number">6</span>, <span class="number">11</span>, <span class="number">31985</span>, <span class="number">26</span>, <span class="number">16</span>, <span class="number">31984</span>, <span class="number">17</span>, <span class="number">18</span>, <span class="number">31983</span>, <span class="number">56</span>, <span class="number">36</span>, <span class="number">31982</span>, <span class="number">5</span>]</span><br></pre></td></tr></table></figure>
+<p>You will now use the inputs and the targets from the <code>tokenize_and_mask</code> function you implemented above. Take a look at the masked sentence using your <code>inps</code> and <code>targs</code> from the sentence above.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Inputs: \n\n&#x27;</span>, pretty_decode(inps))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;\nTargets: \n\n&#x27;</span>, pretty_decode(targs))</span><br></pre></td></tr></table></figure>
+<pre><code>Inputs: 
+
+ &lt;Z&gt; BBQ Class Taking Place in Missoul &lt;Y&gt; Do you want to get better at making &lt;X&gt;? You will have the opportunity, put &lt;W&gt; your calendar now. Thursday, September 22 &lt;V&gt; World Class BBQ Champion, Tony Balay &lt;U&gt;onestar Smoke Rangers. He &lt;T&gt; teaching a beginner level class for everyone&lt;S&gt; to get better with their culinary skills.&lt;R&gt; teach you everything you need to know to &lt;Q&gt; a KCBS BBQ competition,&lt;P&gt;, recipes, timelines, meat selection &lt;O&gt;, plus smoker and fire information. The&lt;N&gt; be in the class is $35 per person &lt;M&gt; for spectators it is free. Include &lt;L&gt; the cost will be either a  &lt;K&gt;shirt or apron and you &lt;J&gt; tasting samples of each meat that is prepared &lt;I&gt;
+
+Targets: 
+
+ &lt;Z&gt; Beginners &lt;Y&gt;a! &lt;X&gt; delicious BBQ &lt;W&gt; this on &lt;V&gt;nd join &lt;U&gt; from L &lt;T&gt; will be&lt;S&gt; who wants&lt;R&gt; He will &lt;Q&gt; compete in&lt;P&gt; including techniques &lt;O&gt; and trimming&lt;N&gt; cost to &lt;M&gt;, and &lt;L&gt;d in &lt;K&gt;t- &lt;J&gt; will be &lt;I&gt;.</code></pre>
+<p><a name='1.4'></a> ### 1.4 Creating the Pairs</p>
+<p>You will now create pairs using your dataset. You will iterate over your data and create (inp, targ) pairs using the functions that we have given you.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Apply tokenize_and_mask</span></span><br><span class="line">inputs_targets_pairs = [tokenize_and_mask(text) <span class="keyword">for</span> text <span class="keyword">in</span> natural_language_texts]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">display_input_target_pairs</span>(<span class="params">inputs_targets_pairs</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i, inp_tgt_pair <span class="keyword">in</span> <span class="built_in">enumerate</span>(inputs_targets_pairs, <span class="number">1</span>):</span><br><span class="line">        inps, tgts = inp_tgt_pair</span><br><span class="line">        inps, tgts = pretty_decode(inps), pretty_decode(tgts)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;i&#125;</span>]\n\n&#x27;</span></span><br><span class="line">              <span class="string">f&#x27;inputs:\n<span class="subst">&#123;wrapper.fill(text=inps)&#125;</span>\n\n&#x27;</span></span><br><span class="line">              <span class="string">f&#x27;targets:\n<span class="subst">&#123;wrapper.fill(text=tgts)&#125;</span>\n\n\n\n&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">display_input_target_pairs(inputs_targets_pairs)</span><br></pre></td></tr></table></figure>
+<pre><code>[1]
+
+inputs:
+Beginners BBQ Class Taking &lt;Z&gt; in Missoul &lt;Y&gt;! Do you want to get
+better at making delicious &lt;X&gt;? You will have the opportunity, &lt;W&gt;
+this on &lt;V&gt; calendar now. Thursday &lt;U&gt; September 22 &lt;T&gt; join&lt;S&gt; Class
+BBQ Champion, Tony Balay from Lonestar Smoke&lt;R&gt;ers &lt;Q&gt; He will be
+teaching a beginner&lt;P&gt; class &lt;O&gt; everyone who wants&lt;N&gt; get better with
+their &lt;M&gt; skills &lt;L&gt; He will teach &lt;K&gt; everything you need to know to
+&lt;J&gt; in a KCBS BBQ &lt;I&gt; techniques, recipes, timelines, meat&lt;H&gt; and
+trimming, plus smoker and fire information. The cost to be&lt;G&gt; the
+class is $35 &lt;F&gt; person, and&lt;E&gt; spectators it is free. Included in the
+cost will&lt;D&gt; either &lt;C&gt; t- &lt;B&gt; or apron and you will be tasting
+samples &lt;A&gt; each meat that &lt;z&gt; prepared.
+
+targets:
+&lt;Z&gt; Place &lt;Y&gt;a &lt;X&gt; BBQ &lt;W&gt; put &lt;V&gt; your &lt;U&gt;, &lt;T&gt;nd&lt;S&gt; World&lt;R&gt; Rang
+&lt;Q&gt;.&lt;P&gt; level &lt;O&gt; for&lt;N&gt; to &lt;M&gt; culinary &lt;L&gt;. &lt;K&gt; you &lt;J&gt; compete &lt;I&gt;
+competition, including&lt;H&gt; selection&lt;G&gt; in &lt;F&gt; per&lt;E&gt; for&lt;D&gt; be&lt;C&gt;a
+&lt;B&gt;shirt &lt;A&gt; of &lt;z&gt; is
+
+
+
+
+[2]
+
+inputs:
+&lt;Z&gt; in &#39;Mac OS X &lt;Y&gt; (10 &lt;X&gt;7)&#39; started by axb &lt;W&gt;i87, Jan 20, 2012.
+I&#39;ve got &lt;V&gt;a 500g &lt;U&gt; drive &lt;T&gt; a 240gb SSD. When trying to restore
+using&lt;S&gt; utility i&#39;m given the error &quot;Not enough space on disk&lt;R&gt;____
+to restore &lt;Q&gt; But I shouldn&#39;t have to do that!!! Any ideas or
+work&lt;P&gt;s before &lt;O&gt;ing to the above? Use Carbon Copy Cloner to copy
+one drive to the other. I&#39;&lt;N&gt; done &lt;M&gt; several times going from &lt;L&gt;D
+to &lt;K&gt; SSD and I wound &lt;J&gt; a bootable SSD drive. One step you &lt;I&gt;
+remember not to skip is to use Disk Utility to partition the SSD as
+GUID partition scheme&lt;H&gt; doing the &lt;G&gt;ne. If it came Apple &lt;F&gt;ition
+Scheme, even if&lt;E&gt; let&lt;D&gt;CC do the clone, the resulting drive&lt;C&gt; boot
+&lt;B&gt;. C &lt;A&gt; usually works &lt;z&gt; &quot;file mode&quot; and it can easily copy a
+larger drive (that&#39;s mostly empty &lt;y&gt; onto a smaller drive.&lt;x&gt; you&lt;w&gt;
+CCC to clone a drive you did&lt;v&gt; boot&lt;u&gt;, it can work &lt;t&gt; copy mode &lt;s&gt;
+destination&lt;r&gt; must be&lt;q&gt; size or larger than the drive you
+are&lt;p&gt;cloning from &lt;o&gt;if &lt;n&gt; recall &lt;m&gt;ve actually done this somehow
+on Disk Utility &lt;l&gt; times&lt;k&gt;booting from &lt;j&gt;a different drive (or even
+the dvd)&lt;i&gt; not running disk utility from the drive your clo&lt;h&gt;ing)
+and had it work just fine from larger to smaller bootable clo&lt;g&gt;.
+Definitely format the drive cloning to first &lt;f&gt; as bootable Apple
+etc.. Thanks for &lt;e&gt; this out. My only experience &lt;d&gt; DU to go larger
+to smaller was when &lt;c&gt; trying to make  &lt;b&gt; install stick and I was
+unable to restore InstallESD &lt;a&gt;dmg to a 4 GB Théâtre ofKeep the
+reason that wouldn&#39;t fit isdürftig was slightly moreutti GB of data.
+
+targets:
+&lt;Z&gt; Discussion &lt;Y&gt; Lion &lt;X&gt;. &lt;W&gt;o &lt;V&gt;  &lt;U&gt;b internal &lt;T&gt; and&lt;S&gt;
+disk&lt;R&gt;  &lt;Q&gt;&quot;&lt;P&gt;around &lt;O&gt; resort&lt;N&gt;ve &lt;M&gt; this &lt;L&gt; larger HD &lt;K&gt;
+smaller &lt;J&gt; up with &lt;I&gt; have to&lt;H&gt; HFS+ before&lt;G&gt;clo &lt;F&gt; Part&lt;E&gt;
+you&lt;D&gt; C&lt;C&gt; won&#39;t be &lt;B&gt;able &lt;A&gt;CC &lt;z&gt; in &lt;y&gt;)&lt;x&gt; If&lt;w&gt; tell&lt;v&gt; NOT&lt;u&gt;
+from &lt;t&gt; in block &lt;s&gt; where the&lt;r&gt; drive&lt;q&gt; the same&lt;p&gt;  &lt;o&gt; ( &lt;n&gt; I
+&lt;m&gt;). I&#39; &lt;l&gt; several&lt;k&gt; ( &lt;j&gt; &lt;i&gt; so&lt;h&gt;n&lt;g&gt;ne &lt;f&gt;,&lt;e&gt;pointing &lt;d&gt;
+using &lt;c&gt; I was &lt;b&gt;a Lion &lt;a&gt;. Théâtre USB stick butKeep coursedürftig
+thereutti than 4
+
+
+
+
+[3]
+
+inputs:
+&lt;Z&gt;il plaid &lt;Y&gt;lycra &lt;X&gt; spandex shortall with metallic slinky
+&lt;W&gt;sets. Attache &lt;V&gt; metallic elastic belt with O &lt;U&gt;ring. Head &lt;T&gt;
+included. Great hip hop&lt;S&gt; jazz dance costume.&lt;R&gt; in the USA.
+
+targets:
+&lt;Z&gt; Fo &lt;Y&gt;  &lt;X&gt; and &lt;W&gt; in &lt;V&gt;d &lt;U&gt;- &lt;T&gt;band&lt;S&gt; or&lt;R&gt; Made
+
+
+
+
+[4]
+
+inputs:
+How many backlink &lt;Z&gt; per day for new site? Discussion &lt;Y&gt; &#39;Black &lt;X&gt;
+SEO&#39; started by Omoplata, Dec 3, 2010. 1) for a &lt;W&gt; created site,
+what&#39;s &lt;V&gt; max &lt;U&gt;links per day I should do to be safe? 2) how &lt;T&gt; do
+I have&lt;S&gt; let my site&lt;R&gt; before I can start making more blinks? I did
+about 6000 forum profiles every 24 hours for 10 days for &lt;Q&gt; of my
+sites&lt;P&gt; had a brand new domain. There is &lt;O&gt; backlinks for every&lt;N&gt;
+these &lt;M&gt; profile so &lt;L&gt;s 18 000 backlinks every 24 hours and nothing
+happened in terms of being penalized &lt;K&gt; sandboxed. This is now maybe
+3 months ago &lt;J&gt; the site &lt;I&gt; ranking on first page for&lt;H&gt;a lot&lt;G&gt; my
+targeted keywords. build more you can in starting &lt;F&gt; do manual
+submission and not spammy&lt;E&gt; means manual +&lt;D&gt; to&lt;C&gt; post.. &lt;B&gt; after
+1 month you can &lt;A&gt; a &lt;z&gt; blast.. Wow, dude, you built 18k backlink
+&lt;y&gt; a day&lt;x&gt; a brand&lt;w&gt;? How quickly did&lt;v&gt; rank up? What kind of
+competition/search&lt;u&gt; did &lt;t&gt; keywords have?
+
+targets:
+&lt;Z&gt;s &lt;Y&gt; in &lt;X&gt; Hat &lt;W&gt; newly &lt;V&gt; the &lt;U&gt; # back &lt;T&gt; long&lt;S&gt; to&lt;R&gt; age
+&lt;Q&gt; one&lt;P&gt; which &lt;O&gt; three&lt;N&gt; of &lt;M&gt; forum &lt;L&gt; that &lt;K&gt; or &lt;J&gt; and &lt;I&gt;
+is&lt;H&gt; &lt;G&gt; of &lt;F&gt; but&lt;E&gt; type&lt;D&gt; relevant&lt;C&gt; the &lt;B&gt; then &lt;A&gt; make &lt;z&gt;
+big &lt;y&gt;s&lt;x&gt; on&lt;w&gt; new site&lt;v&gt; you&lt;u&gt;es &lt;t&gt; those
+
+
+
+
+[5]
+
+inputs:
+The Denver Board of Education opened the 2017-18 school year with an
+update &lt;Z&gt; projects that include new construction &lt;Y&gt; upgrades, heat
+mitigation &lt;X&gt; quality learning environments. We &lt;W&gt; excited &lt;V&gt;
+Denver students will be the beneficiaries &lt;U&gt;a four year, $572 million
+General Oblig &lt;T&gt; Bond.&lt;S&gt; the passage of the bond, our construction
+team has worked to schedule&lt;R&gt; projects over &lt;Q&gt; four-year term&lt;P&gt;
+bond. Denver voters on Tuesday approved bond and mill funding &lt;O&gt;
+for&lt;N&gt; in Denver Public Schools, agreeing to invest $572 million in
+bond funding &lt;M&gt; build and improve schools and &lt;L&gt;6.6 million in
+operating dollars to support proven initiatives, &lt;K&gt; as early &lt;J&gt;
+Denver voters say &lt;I&gt; to bond and mill levy funding&lt;H&gt; for&lt;G&gt;PS
+students and schools. Click to learn more about the details of the
+voter-approved &lt;F&gt; measure. Denver voters&lt;E&gt;. 8 approved bond and mill
+funding&lt;D&gt; for DPS students and schools. Learn more about what’s
+included in the mill &lt;C&gt;y measure.
+
+targets:
+&lt;Z&gt; on &lt;Y&gt;, &lt;X&gt; and &lt;W&gt; are &lt;V&gt; that &lt;U&gt; of  &lt;T&gt;ation&lt;S&gt; Since&lt;R&gt; the
+&lt;Q&gt; the&lt;P&gt; of the &lt;O&gt; measures&lt;N&gt; students &lt;M&gt; to &lt;L&gt; $5 &lt;K&gt; such &lt;J&gt;
+literacy. &lt;I&gt; yes&lt;H&gt; support&lt;G&gt; D &lt;F&gt; bond&lt;E&gt; on Nov&lt;D&gt; measures&lt;C&gt;lev</code></pre>
+<p><a name='2'></a> # Part 2: Transfomer</p>
+<p>We now load a Transformer model checkpoint that has been pre-trained using the above C4 dataset and decode from it. This will save you a lot of time rather than have to train your model yourself. Later in this notebook, we will show you how to fine-tune your model.</p>
+<p><img src = "fulltransformer.png" width="300" height="600"></p>
+<p>Start by loading in the model. We copy the checkpoint to local dir for speed, otherwise initialization takes a very long time. Last week you implemented the decoder part for the transformer. Now you will implement the encoder part. Concretely you will implement the following.</p>
+<p><img src = "encoder.png" width="300" height="600"></p>
+<p><a name='2.1'></a> ### 2.1 Transformer Encoder</p>
+<p>You will now implement the transformer encoder. Concretely you will implement two functions. The first function is <code>FeedForwardBlock</code>.</p>
+<p><a name='2.1.1'></a> #### 2.1.1 The Feedforward Block</p>
+<p>The <code>FeedForwardBlock</code> function is an important one so you will start by implementing it. To do so, you need to return a list of the following:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.normalization.LayerNorm"><code>tl.LayerNorm()</code></a> = layer normalization.</li>
+<li><a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.core.Dense"><code>tl.Dense(d_ff)</code></a> = fully connected layer.</li>
+<li><a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.activation_fns.Relu"><code>activation</code></a> = activation relu, tanh, sigmoid etc.</li>
+<li><code>dropout_middle</code> = we gave you this function (don't worry about its implementation).</li>
+<li><a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.core.Dense"><code>tl.Dense(d_model)</code></a> = fully connected layer with same dimension as the model.</li>
+<li><code>dropout_final</code> = we gave you this function (don't worry about its implementation).</li>
+</ul>
+<p>You can always take a look at <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/">trax documentation</a> if needed.</p>
+<p><strong>Instructions</strong>: Implement the feedforward part of the transformer. You will be returning a list.</p>
+<p><a name='ex02'></a> ### Exercise 02</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C2</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: FeedForwardBlock</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">FeedForwardBlock</span>(<span class="params">d_model, d_ff, dropout, dropout_shared_axes, mode, activation</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Returns a list of layers implementing a feed-forward block.</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        d_model: int:  depth of embedding</span></span><br><span class="line"><span class="string">        d_ff: int: depth of feed-forward layer</span></span><br><span class="line"><span class="string">        dropout: float: dropout rate (how much to drop out)</span></span><br><span class="line"><span class="string">        dropout_shared_axes: list of integers, axes to share dropout mask</span></span><br><span class="line"><span class="string">        mode: str: &#x27;train&#x27; or &#x27;eval&#x27;</span></span><br><span class="line"><span class="string">        activation: the non-linearity in feed-forward layer</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        A list of layers which maps vectors to vectors.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    dropout_middle = tl.Dropout(rate=dropout,</span><br><span class="line">                                shared_axes=dropout_shared_axes, </span><br><span class="line">                                mode=mode)</span><br><span class="line">  </span><br><span class="line">    dropout_final = tl.Dropout(rate=dropout, </span><br><span class="line">                               shared_axes=dropout_shared_axes, </span><br><span class="line">                               mode=mode)</span><br><span class="line"></span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; WITH YOUR CODE) ###</span></span><br><span class="line">    </span><br><span class="line">    ff_block = [ </span><br><span class="line">        <span class="comment"># trax Layer normalization </span></span><br><span class="line">        tl.LayerNorm(),</span><br><span class="line">        <span class="comment"># trax Dense layer using `d_ff`</span></span><br><span class="line">        tl.Dense(d_ff),</span><br><span class="line">        <span class="comment"># activation() layer - you need to call (use parentheses) this func!</span></span><br><span class="line">        activation(),</span><br><span class="line">        <span class="comment"># dropout middle layer</span></span><br><span class="line">        dropout_middle,</span><br><span class="line">        <span class="comment"># trax Dense layer using `d_model`</span></span><br><span class="line">        tl.Dense(d_model),</span><br><span class="line">        <span class="comment"># dropout final layer</span></span><br><span class="line">        dropout_final,</span><br><span class="line">    ]</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> ff_block</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Print the block layout</span></span><br><span class="line">feed_forward_example = FeedForwardBlock(d_model=<span class="number">512</span>, d_ff=<span class="number">2048</span>, dropout=<span class="number">0.8</span>, dropout_shared_axes=<span class="number">0</span>, mode = <span class="string">&#x27;train&#x27;</span>, activation = tl.Relu)</span><br><span class="line"><span class="built_in">print</span>(feed_forward_example)</span><br></pre></td></tr></table></figure>
+<pre><code>[LayerNorm, Dense_2048, Relu, Dropout, Dense_512, Dropout]</code></pre>
+<h4 id="expected-output-1"><strong>Expected Output:</strong></h4>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[LayerNorm, Dense_2048, Relu, Dropout, Dense_512, Dropout]</span><br></pre></td></tr></table></figure>
+<p><a name='2.1.2'></a> #### 2.1.2 The Encoder Block</p>
+<p>The encoder block will use the <code>FeedForwardBlock</code>.</p>
+<p>You will have to build two residual connections. Inside the first residual connection you will have the <code>tl.layerNorm()</code>, <code>attention</code>, and <code>dropout_</code> layers. The second residual connection will have the <code>feed_forward</code>.</p>
+<p>You will also need to implement <code>feed_forward</code>, <code>attention</code> and <code>dropout_</code> blocks.</p>
+<p>So far you haven't seen the <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.attention.Attention"><code>tl.Attention()</code></a> and <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.combinators.Residual"><code>tl.Residual()</code></a> layers so you can check the docs by clicking on them.</p>
+<p><a name='ex03'></a> ### Exercise 03</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C3</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: EncoderBlock</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">EncoderBlock</span>(<span class="params">d_model, d_ff, n_heads, dropout, dropout_shared_axes,</span></span></span><br><span class="line"><span class="params"><span class="function">                  mode, ff_activation, FeedForwardBlock=FeedForwardBlock</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Returns a list of layers that implements a Transformer encoder block.</span></span><br><span class="line"><span class="string">    The input to the layer is a pair, (activations, mask), where the mask was</span></span><br><span class="line"><span class="string">    created from the original source tokens to prevent attending to the padding</span></span><br><span class="line"><span class="string">    part of the input.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        d_model (int): depth of embedding.</span></span><br><span class="line"><span class="string">        d_ff (int): depth of feed-forward layer.</span></span><br><span class="line"><span class="string">        n_heads (int): number of attention heads.</span></span><br><span class="line"><span class="string">        dropout (float): dropout rate (how much to drop out).</span></span><br><span class="line"><span class="string">        dropout_shared_axes (int): axes on which to share dropout mask.</span></span><br><span class="line"><span class="string">        mode (str): &#x27;train&#x27; or &#x27;eval&#x27;.</span></span><br><span class="line"><span class="string">        ff_activation (function): the non-linearity in feed-forward layer.</span></span><br><span class="line"><span class="string">        FeedForwardBlock (function): A function that returns the feed forward block.</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        list: A list of layers that maps (activations, mask) to (activations, mask).</span></span><br><span class="line"><span class="string">        </span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; WITH YOUR CODE) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Attention block</span></span><br><span class="line">    attention = tl.Attention( </span><br><span class="line">        <span class="comment"># Use dimension of the model</span></span><br><span class="line">        d_feature=d_model,</span><br><span class="line">        <span class="comment"># Set it equal to number of attention heads</span></span><br><span class="line">        n_heads=n_heads,</span><br><span class="line">        <span class="comment"># Set it equal `dropout`</span></span><br><span class="line">        dropout=dropout,</span><br><span class="line">        <span class="comment"># Set it equal `mode`</span></span><br><span class="line">        mode=mode</span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Call the function `FeedForwardBlock` (implemented before) and pass in the parameters</span></span><br><span class="line">    feed_forward = FeedForwardBlock(d_model, d_ff, dropout, dropout_shared_axes, mode, ff_activation)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Dropout block</span></span><br><span class="line">    dropout_ = tl.Dropout( </span><br><span class="line">        <span class="comment"># set it equal to `dropout`</span></span><br><span class="line">        rate=dropout,</span><br><span class="line">        <span class="comment"># set it equal to the axes on which to share dropout mask</span></span><br><span class="line">        shared_axes=dropout_shared_axes,</span><br><span class="line">        <span class="comment"># set it equal to `mode`</span></span><br><span class="line">        mode=mode</span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line">    encoder_block = [ </span><br><span class="line">        <span class="comment"># add `Residual` layer</span></span><br><span class="line">        tl.Residual(</span><br><span class="line">            <span class="comment"># add norm layer</span></span><br><span class="line">            tl.LayerNorm(),</span><br><span class="line">            <span class="comment"># add attention</span></span><br><span class="line">            attention,</span><br><span class="line">            <span class="comment"># add dropout</span></span><br><span class="line">            dropout_,</span><br><span class="line">        ),</span><br><span class="line">        <span class="comment"># add another `Residual` layer</span></span><br><span class="line">        tl.Residual(</span><br><span class="line">            <span class="comment"># add feed forward</span></span><br><span class="line">            feed_forward,</span><br><span class="line">        ),</span><br><span class="line">    ]</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> encoder_block</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Print the block layout</span></span><br><span class="line">encoder_example = EncoderBlock(d_model=<span class="number">512</span>, d_ff=<span class="number">2048</span>, n_heads=<span class="number">6</span>, dropout=<span class="number">0.8</span>, dropout_shared_axes=<span class="number">0</span>, mode = <span class="string">&#x27;train&#x27;</span>, ff_activation=tl.Relu)</span><br><span class="line"><span class="built_in">print</span>(encoder_example)</span><br></pre></td></tr></table></figure>
+<pre><code>[Serial_in2_out2[
+  Branch_in2_out3[
+    None
+    Serial_in2_out2[
+      LayerNorm
+      Serial_in2_out2[
+        Dup_out2
+        Dup_out2
+        Serial_in4_out2[
+          Parallel_in3_out3[
+            Dense_512
+            Dense_512
+            Dense_512
+          ]
+          PureAttention_in4_out2
+          Dense_512
+        ]
+      ]
+      Dropout
+    ]
+  ]
+  Add_in2
+], Serial[
+  Branch_out2[
+    None
+    Serial[
+      LayerNorm
+      Dense_2048
+      Relu
+      Dropout
+      Dense_512
+      Dropout
+    ]
+  ]
+  Add_in2
+]]</code></pre>
+<h4 id="expected-output-2"><strong>Expected Output:</strong></h4>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">[Serial_in2_out2[</span><br><span class="line">  Branch_in2_out3[</span><br><span class="line">    None</span><br><span class="line">    Serial_in2_out2[</span><br><span class="line">      LayerNorm</span><br><span class="line">      Serial_in2_out2[</span><br><span class="line">        Dup_out2</span><br><span class="line">        Dup_out2</span><br><span class="line">        Serial_in4_out2[</span><br><span class="line">          Parallel_in3_out3[</span><br><span class="line">            Dense_512</span><br><span class="line">            Dense_512</span><br><span class="line">            Dense_512</span><br><span class="line">          ]</span><br><span class="line">          PureAttention_in4_out2</span><br><span class="line">          Dense_512</span><br><span class="line">        ]</span><br><span class="line">      ]</span><br><span class="line">      Dropout</span><br><span class="line">    ]</span><br><span class="line">  ]</span><br><span class="line">  Add_in2</span><br><span class="line">], Serial[</span><br><span class="line">  Branch_out2[</span><br><span class="line">    None</span><br><span class="line">    Serial[</span><br><span class="line">      LayerNorm</span><br><span class="line">      Dense_2048</span><br><span class="line">      Relu</span><br><span class="line">      Dropout</span><br><span class="line">      Dense_512</span><br><span class="line">      Dropout</span><br><span class="line">    ]</span><br><span class="line">  ]</span><br><span class="line">  Add_in2</span><br><span class="line">]]</span><br></pre></td></tr></table></figure>
+<p><a name='2.1.3'></a> ### 2.1.3 The Transformer Encoder</p>
+<p>Now that you have implemented the <code>EncoderBlock</code>, it is time to build the full encoder. BERT, or Bidirectional Encoder Representations from Transformers is one such encoder.</p>
+<p>You will implement its core code in the function below by using the functions you have coded so far.</p>
+<p>The model takes in many hyperparameters, such as the <code>vocab_size</code>, the number of classes, the dimension of your model, etc. You want to build a generic function that will take in many parameters, so you can use it later. At the end of the day, anyone can just load in an API and call transformer, but we think it is important to make sure you understand how it is built. Let's get started.</p>
+<p><strong>Instructions:</strong> For this encoder you will need a <code>positional_encoder</code> first (which is already provided) followed by <code>n_layers</code> encoder blocks, which are the same encoder blocks you previously built. Once you store the <code>n_layers</code> <code>EncoderBlock</code> in a list, you are going to encode a <code>Serial</code> layer with the following sublayers:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.combinators.Branch"><code>tl.Branch</code></a>: helps with the branching and has the following sublayers:
+<ul>
+<li><code>positional_encoder</code>.</li>
+<li><a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.attention.PaddingMask"><code>tl.PaddingMask()</code></a>: layer that maps integer sequences to padding masks.</li>
+</ul></li>
+<li>Your list of <code>EncoderBlock</code>s</li>
+<li><a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.combinators.Select"><code>tl.Select([0], n_in=2)</code></a>: Copies, reorders, or deletes stack elements according to indices.</li>
+<li><a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.normalization.LayerNorm"><code>tl.LayerNorm()</code></a>.</li>
+<li><a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.core.Mean"><code>tl.Mean()</code></a>: Mean along the first axis.</li>
+<li><code>tl.Dense()</code> with n_units set to n_classes.</li>
+<li><code>tl.LogSoftmax()</code></li>
+</ul>
+<p>Please refer to the <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/">trax documentation</a> for further information.</p>
+<p><a name='ex04'></a> ### Exercise 04</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C4</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: TransformerEncoder</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TransformerEncoder</span>(<span class="params">vocab_size=vocab_size,</span></span></span><br><span class="line"><span class="params"><span class="function">                       n_classes=<span class="number">10</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">                       d_model=<span class="number">512</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">                       d_ff=<span class="number">2048</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">                       n_layers=<span class="number">6</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">                       n_heads=<span class="number">8</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">                       dropout=<span class="number">0.1</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">                       dropout_shared_axes=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">                       max_len=<span class="number">2048</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">                       mode=<span class="string">&#x27;train&#x27;</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">                       ff_activation=tl.Relu,</span></span></span><br><span class="line"><span class="params"><span class="function">                       EncoderBlock=EncoderBlock</span>):</span></span><br><span class="line">    </span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Returns a Transformer encoder model.</span></span><br><span class="line"><span class="string">    The input to the model is a tensor of tokens.</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        vocab_size (int): vocab size. Defaults to vocab_size.</span></span><br><span class="line"><span class="string">        n_classes (int): how many classes on output. Defaults to 10.</span></span><br><span class="line"><span class="string">        d_model (int): depth of embedding. Defaults to 512.</span></span><br><span class="line"><span class="string">        d_ff (int): depth of feed-forward layer. Defaults to 2048.</span></span><br><span class="line"><span class="string">        n_layers (int): number of encoder/decoder layers. Defaults to 6.</span></span><br><span class="line"><span class="string">        n_heads (int): number of attention heads. Defaults to 8.</span></span><br><span class="line"><span class="string">        dropout (float): dropout rate (how much to drop out). Defaults to 0.1.</span></span><br><span class="line"><span class="string">        dropout_shared_axes (int): axes on which to share dropout mask. Defaults to None.</span></span><br><span class="line"><span class="string">        max_len (int): maximum symbol length for positional encoding. Defaults to 2048.</span></span><br><span class="line"><span class="string">        mode (str): &#x27;train&#x27; or &#x27;eval&#x27;. Defaults to &#x27;train&#x27;.</span></span><br><span class="line"><span class="string">        ff_activation (function): the non-linearity in feed-forward layer. Defaults to tl.Relu.</span></span><br><span class="line"><span class="string">        EncoderBlock (function): Returns the encoder block. Defaults to EncoderBlock.</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        trax.layers.combinators.Serial: A Transformer model as a layer that maps</span></span><br><span class="line"><span class="string">        from a tensor of tokens to activations over a set of output classes.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    positional_encoder = [</span><br><span class="line">        tl.Embedding(vocab_size, d_model),</span><br><span class="line">        tl.Dropout(rate=dropout, shared_axes=dropout_shared_axes, mode=mode),</span><br><span class="line">        tl.PositionalEncoding(max_len=max_len)</span><br><span class="line">    ]</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; WITH YOUR CODE) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Use the function `EncoderBlock` (implemented above) and pass in the parameters over `n_layers`</span></span><br><span class="line">    encoder_blocks = [EncoderBlock(d_model, d_ff, n_heads, dropout, dropout_shared_axes,</span><br><span class="line">                  mode, ff_activation, FeedForwardBlock=FeedForwardBlock) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n_layers)]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Assemble and return the model.</span></span><br><span class="line">    <span class="keyword">return</span> tl.Serial(</span><br><span class="line">        <span class="comment"># Encode</span></span><br><span class="line">        tl.Branch(</span><br><span class="line">            <span class="comment"># Use `positional_encoder`</span></span><br><span class="line">            positional_encoder,</span><br><span class="line">            <span class="comment"># Use trax padding mask</span></span><br><span class="line">            tl.PaddingMask(),</span><br><span class="line">        ),</span><br><span class="line">        <span class="comment"># Use `encoder_blocks`</span></span><br><span class="line">        encoder_blocks,</span><br><span class="line">        <span class="comment"># Use select layer</span></span><br><span class="line">        tl.Select([<span class="number">0</span>], n_in=<span class="number">2</span>),</span><br><span class="line">        <span class="comment"># Use trax layer normalization</span></span><br><span class="line">        tl.LayerNorm(),</span><br><span class="line">        <span class="comment"># Map to output categories.</span></span><br><span class="line">        <span class="comment"># Use trax mean. set axis to 1</span></span><br><span class="line">        tl.Mean(axis = <span class="number">1</span>),</span><br><span class="line">        <span class="comment"># Use trax Dense using `n_classes`</span></span><br><span class="line">        tl.Dense(n_classes),</span><br><span class="line">        <span class="comment"># Use trax log softmax</span></span><br><span class="line">        tl.LogSoftmax(),</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Run this cell to see the structure of your model</span></span><br><span class="line"><span class="comment"># Only 1 layer is used to keep the output readable</span></span><br><span class="line">TransformerEncoder(n_layers=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Serial[
+  Branch_out2[
+    [Embedding_32000_512, Dropout, PositionalEncoding]
+    PaddingMask(0)
+  ]
+  Serial_in2_out2[
+    Branch_in2_out3[
+      None
+      Serial_in2_out2[
+        LayerNorm
+        Serial_in2_out2[
+          Dup_out2
+          Dup_out2
+          Serial_in4_out2[
+            Parallel_in3_out3[
+              Dense_512
+              Dense_512
+              Dense_512
+            ]
+            PureAttention_in4_out2
+            Dense_512
+          ]
+        ]
+        Dropout
+      ]
+    ]
+    Add_in2
+  ]
+  Serial[
+    Branch_out2[
+      None
+      Serial[
+        LayerNorm
+        Dense_2048
+        Relu
+        Dropout
+        Dense_512
+        Dropout
+      ]
+    ]
+    Add_in2
+  ]
+  Select[0]_in2
+  LayerNorm
+  Mean
+  Dense_10
+  LogSoftmax
+]</code></pre>
+<h4 id="expected-output-3"><strong>Expected Output:</strong></h4>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">Serial[</span><br><span class="line">  Branch_out2[</span><br><span class="line">    [Embedding_32000_512, Dropout, PositionalEncoding]</span><br><span class="line">    <span class="built_in">PaddingMask</span>(<span class="number">0</span>)</span><br><span class="line">  ]</span><br><span class="line">  Serial_in2_out2[</span><br><span class="line">    Branch_in2_out3[</span><br><span class="line">      None</span><br><span class="line">      Serial_in2_out2[</span><br><span class="line">        LayerNorm</span><br><span class="line">        Serial_in2_out2[</span><br><span class="line">          Dup_out2</span><br><span class="line">          Dup_out2</span><br><span class="line">          Serial_in4_out2[</span><br><span class="line">            Parallel_in3_out3[</span><br><span class="line">              Dense_512</span><br><span class="line">              Dense_512</span><br><span class="line">              Dense_512</span><br><span class="line">            ]</span><br><span class="line">            PureAttention_in4_out2</span><br><span class="line">            Dense_512</span><br><span class="line">          ]</span><br><span class="line">        ]</span><br><span class="line">        Dropout</span><br><span class="line">      ]</span><br><span class="line">    ]</span><br><span class="line">    Add_in2</span><br><span class="line">  ]</span><br><span class="line">  Serial[</span><br><span class="line">    Branch_out2[</span><br><span class="line">      None</span><br><span class="line">      Serial[</span><br><span class="line">        LayerNorm</span><br><span class="line">        Dense_2048</span><br><span class="line">        Relu</span><br><span class="line">        Dropout</span><br><span class="line">        Dense_512</span><br><span class="line">        Dropout</span><br><span class="line">      ]</span><br><span class="line">    ]</span><br><span class="line">    Add_in2</span><br><span class="line">  ]</span><br><span class="line">  Select[<span class="number">0</span>]_in2</span><br><span class="line">  LayerNorm</span><br><span class="line">  Mean</span><br><span class="line">  Dense_10</span><br><span class="line">  LogSoftmax</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p><strong>NOTE Congratulations! You have completed all of the graded functions of this assignment.</strong> Since the rest of the assignment takes a lot of time and memory to run we are providing some extra ungraded labs for you to see this model in action.</p>
+<p><strong>Keep it up!</strong></p>
+<p>To see this model in action continue to the next 2 ungraded labs. <strong>We strongly recommend you to try the colab versions of them as they will yield a much smoother experience.</strong> The links to the colabs can be found within the ungraded labs or if you already know how to open files within colab here are some shortcuts (if not, head to the ungraded labs which contain some extra instructions):</p>
+<p><a target="_blank" rel="noopener" href="https://drive.google.com/file/d/1EHAbMnW6u-GqYWh5r3Z8uLbz4KNpKOAv/view?usp=sharing">BERT Loss Model Colab</a></p>
+<p><a target="_blank" rel="noopener" href="https://drive.google.com/file/d/1c-8KJkTySRGqCx_JjwjvXuRBTNTqEE0N/view?usp=sharing">T5 SQuAD Model Colab</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Transformer-Summarizer/2020/09/27/" rel="prev" title="Transformer Summarizer">
+      <i class="fa fa-chevron-left"></i> Transformer Summarizer
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Assignment-4-Chatbot/2020/09/28/" rel="next" title="Assignment 4: Chatbot">
+      Assignment 4: Chatbot <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#assignment-3-question-answering"><span class="nav-number">1.</span> <span class="nav-text">Assignment 3: Question Answering</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#outline"><span class="nav-number">1.1.</span> <span class="nav-text">Outline</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#expected-output"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">Expected Output:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#expected-output-1"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">Expected Output:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#expected-output-2"><span class="nav-number">1.1.0.3.</span> <span class="nav-text">Expected Output:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#expected-output-3"><span class="nav-number">1.1.0.4.</span> <span class="nav-text">Expected Output:</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">268</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="The training set is the data that is used to tell the neural network model that &#39;this is what a horse looks like&#39;, &#39;this is what a human looks like&#39; etc.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Horses or Humans with Validation">
+<meta property="og:url" content="https://zhangruochi.com/Horses-or-Humans-with-Validation/2019/05/23/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="The training set is the data that is used to tell the neural network model that &#39;this is what a horse looks like&#39;, &#39;this is what a human looks like&#39; etc.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Horses-or-Humans-with-Validation/2019/05/23/output_13_0.png">
+<meta property="og:image" content="https://zhangruochi.com/Horses-or-Humans-with-Validation/2019/05/23/output_31_1.png">
+<meta property="og:image" content="https://zhangruochi.com/Horses-or-Humans-with-Validation/2019/05/23/output_31_2.png">
+<meta property="og:image" content="https://zhangruochi.com/Horses-or-Humans-with-Validation/2019/05/23/output_31_3.png">
+<meta property="og:image" content="https://zhangruochi.com/Horses-or-Humans-with-Validation/2019/05/23/output_31_4.png">
+<meta property="og:image" content="https://zhangruochi.com/Horses-or-Humans-with-Validation/2019/05/23/output_31_5.png">
+<meta property="og:image" content="https://zhangruochi.com/Horses-or-Humans-with-Validation/2019/05/23/output_31_6.png">
+<meta property="og:image" content="https://zhangruochi.com/Horses-or-Humans-with-Validation/2019/05/23/output_31_7.png">
+<meta property="og:image" content="https://zhangruochi.com/Horses-or-Humans-with-Validation/2019/05/23/output_31_8.png">
+<meta property="og:image" content="https://zhangruochi.com/Horses-or-Humans-with-Validation/2019/05/23/output_31_9.png">
+<meta property="article:published_time" content="2019-05-23T08:35:12.000Z">
+<meta property="article:modified_time" content="2020-01-09T05:53:42.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Project">
+<meta property="article:tag" content="Computer Vision">
+<meta property="article:tag" content="Convolutional Neural Networks">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Horses-or-Humans-with-Validation/2019/05/23/output_13_0.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Horses-or-Humans-with-Validation/2019/05/23/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Horses or Humans with Validation | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Horses-or-Humans-with-Validation/2019/05/23/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Horses or Humans with Validation
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-05-23 16:35:12" itemprop="dateCreated datePublished" datetime="2019-05-23T16:35:12+08:00">2019-05-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-09 13:53:42" itemprop="dateModified" datetime="2020-01-09T13:53:42+08:00">2020-01-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Horses-or-Humans-with-Validation/2019/05/23/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Horses-or-Humans-with-Validation/2019/05/23/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">The training set is the data that is used to tell the neural network model that 'this is what a horse looks like', 'this is what a human looks like' etc.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">!wget --no-check-certificate \</span><br><span class="line">    https://storage.googleapis.com/laurencemoroney-blog.appspot.com/horse-<span class="keyword">or</span>-human.<span class="built_in">zip</span> \</span><br><span class="line">    -O /tmp/horse-<span class="keyword">or</span>-human.<span class="built_in">zip</span></span><br></pre></td></tr></table></figure>
+<pre><code>--2019-05-23 08:11:52--  https://storage.googleapis.com/laurencemoroney-blog.appspot.com/horse-or-human.zip
+Resolving storage.googleapis.com (storage.googleapis.com)... 108.177.125.128, 2404:6800:4008:c06::80
+Connecting to storage.googleapis.com (storage.googleapis.com)|108.177.125.128|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 149574867 (143M) [application/zip]
+Saving to: ‘/tmp/horse-or-human.zip’
+
+/tmp/horse-or-human 100%[===================&gt;] 142.65M  81.4MB/s    in 1.8s    
+
+2019-05-23 08:11:54 (81.4 MB/s) - ‘/tmp/horse-or-human.zip’ saved [149574867/149574867]</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">!wget --no-check-certificate \</span><br><span class="line">    https://storage.googleapis.com/laurencemoroney-blog.appspot.com/validation-horse-<span class="keyword">or</span>-human.<span class="built_in">zip</span> \</span><br><span class="line">    -O /tmp/validation-horse-<span class="keyword">or</span>-human.<span class="built_in">zip</span></span><br></pre></td></tr></table></figure>
+<pre><code>--2019-05-23 08:13:02--  https://storage.googleapis.com/laurencemoroney-blog.appspot.com/validation-horse-or-human.zip
+Resolving storage.googleapis.com (storage.googleapis.com)... 108.177.125.128, 2404:6800:4008:c06::80
+Connecting to storage.googleapis.com (storage.googleapis.com)|108.177.125.128|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 11480187 (11M) [application/zip]
+Saving to: ‘/tmp/validation-horse-or-human.zip’
+
+/tmp/validation-hor 100%[===================&gt;]  10.95M  --.-KB/s    in 0.1s    
+
+2019-05-23 08:13:03 (96.6 MB/s) - ‘/tmp/validation-horse-or-human.zip’ saved [11480187/11480187]</code></pre>
+<p>The following python code will use the OS library to use Operating System libraries, giving you access to the file system, and the zipfile library allowing you to unzip the data.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"></span><br><span class="line">local_zip = <span class="string">&#x27;/tmp/horse-or-human.zip&#x27;</span></span><br><span class="line">zip_ref = zipfile.ZipFile(local_zip, <span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">zip_ref.extractall(<span class="string">&#x27;/tmp/horse-or-human&#x27;</span>)</span><br><span class="line">local_zip = <span class="string">&#x27;/tmp/validation-horse-or-human.zip&#x27;</span></span><br><span class="line">zip_ref = zipfile.ZipFile(local_zip, <span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">zip_ref.extractall(<span class="string">&#x27;/tmp/validation-horse-or-human&#x27;</span>)</span><br><span class="line">zip_ref.close()</span><br></pre></td></tr></table></figure>
+<p>The contents of the .zip are extracted to the base directory <code>/tmp/horse-or-human</code>, which in turn each contain <code>horses</code> and <code>humans</code> subdirectories.</p>
+<p>In short: The training set is the data that is used to tell the neural network model that 'this is what a horse looks like', 'this is what a human looks like' etc.</p>
+<p>One thing to pay attention to in this sample: We do not explicitly label the images as horses or humans. If you remember with the handwriting example earlier, we had labelled 'this is a 1', 'this is a 7' etc. Later you'll see something called an ImageGenerator being used -- and this is coded to read images from subdirectories, and automatically label them from the name of that subdirectory. So, for example, you will have a 'training' directory containing a 'horses' directory and a 'humans' one. ImageGenerator will label the images appropriately for you, reducing a coding step.</p>
+<p>Let's define each of these directories:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Directory with our training horse pictures</span></span><br><span class="line">train_horse_dir = os.path.join(<span class="string">&#x27;/tmp/horse-or-human/horses&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Directory with our training human pictures</span></span><br><span class="line">train_human_dir = os.path.join(<span class="string">&#x27;/tmp/horse-or-human/humans&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Directory with our training horse pictures</span></span><br><span class="line">validation_horse_dir = os.path.join(<span class="string">&#x27;/tmp/validation-horse-or-human/horses&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Directory with our training human pictures</span></span><br><span class="line">validation_human_dir = os.path.join(<span class="string">&#x27;/tmp/validation-horse-or-human/humans&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>Now, let's see what the filenames look like in the <code>horses</code> and <code>humans</code> training directories:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">train_horse_names = os.listdir(train_horse_dir)</span><br><span class="line"><span class="built_in">print</span>(train_horse_names[:<span class="number">10</span>])</span><br><span class="line"></span><br><span class="line">train_human_names = os.listdir(train_human_dir)</span><br><span class="line"><span class="built_in">print</span>(train_human_names[:<span class="number">10</span>])</span><br><span class="line"></span><br><span class="line">validation_horse_hames = os.listdir(validation_horse_dir)</span><br><span class="line"><span class="built_in">print</span>(validation_horse_hames[:<span class="number">10</span>])</span><br><span class="line"></span><br><span class="line">validation_human_names = os.listdir(validation_human_dir)</span><br><span class="line"><span class="built_in">print</span>(validation_human_names[:<span class="number">10</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>[&#39;horse29-9.png&#39;, &#39;horse15-9.png&#39;, &#39;horse05-0.png&#39;, &#39;horse30-0.png&#39;, &#39;horse35-4.png&#39;, &#39;horse02-3.png&#39;, &#39;horse31-8.png&#39;, &#39;horse09-5.png&#39;, &#39;horse03-9.png&#39;, &#39;horse37-2.png&#39;]
+[&#39;human13-16.png&#39;, &#39;human08-24.png&#39;, &#39;human14-00.png&#39;, &#39;human16-16.png&#39;, &#39;human06-27.png&#39;, &#39;human04-17.png&#39;, &#39;human03-18.png&#39;, &#39;human16-00.png&#39;, &#39;human16-17.png&#39;, &#39;human09-24.png&#39;]
+[&#39;horse1-276.png&#39;, &#39;horse4-530.png&#39;, &#39;horse2-040.png&#39;, &#39;horse2-183.png&#39;, &#39;horse2-201.png&#39;, &#39;horse1-554.png&#39;, &#39;horse6-218.png&#39;, &#39;horse3-011.png&#39;, &#39;horse6-004.png&#39;, &#39;horse3-326.png&#39;]
+[&#39;valhuman02-13.png&#39;, &#39;valhuman01-23.png&#39;, &#39;valhuman03-24.png&#39;, &#39;valhuman01-07.png&#39;, &#39;valhuman02-14.png&#39;, &#39;valhuman05-08.png&#39;, &#39;valhuman03-12.png&#39;, &#39;valhuman05-27.png&#39;, &#39;valhuman04-10.png&#39;, &#39;valhuman05-11.png&#39;]</code></pre>
+<p>Let's find out the total number of horse and human images in the directories:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;total training horse images:&#x27;</span>, <span class="built_in">len</span>(os.listdir(train_horse_dir)))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;total training human images:&#x27;</span>, <span class="built_in">len</span>(os.listdir(train_human_dir)))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;total validation horse images:&#x27;</span>, <span class="built_in">len</span>(os.listdir(validation_horse_dir)))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;total validation human images:&#x27;</span>, <span class="built_in">len</span>(os.listdir(validation_human_dir)))</span><br></pre></td></tr></table></figure>
+<pre><code>total training horse images: 500
+total training human images: 527
+total validation horse images: 128
+total validation human images: 128</code></pre>
+<p>Now let's take a look at a few pictures to get a better sense of what they look like. First, configure the matplot parameters:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> matplotlib.image <span class="keyword">as</span> mpimg</span><br><span class="line"></span><br><span class="line"><span class="comment"># Parameters for our graph; we&#x27;ll output images in a 4x4 configuration</span></span><br><span class="line">nrows = <span class="number">4</span></span><br><span class="line">ncols = <span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Index for iterating over images</span></span><br><span class="line">pic_index = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>Now, display a batch of 8 horse and 8 human pictures. You can rerun the cell to see a fresh batch each time:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Set up matplotlib fig, and size it to fit 4x4 pics</span></span><br><span class="line">fig = plt.gcf()</span><br><span class="line">fig.set_size_inches(ncols * <span class="number">4</span>, nrows * <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">pic_index += <span class="number">8</span></span><br><span class="line">next_horse_pix = [os.path.join(train_horse_dir, fname) </span><br><span class="line">                <span class="keyword">for</span> fname <span class="keyword">in</span> train_horse_names[pic_index-<span class="number">8</span>:pic_index]]</span><br><span class="line">next_human_pix = [os.path.join(train_human_dir, fname) </span><br><span class="line">                <span class="keyword">for</span> fname <span class="keyword">in</span> train_human_names[pic_index-<span class="number">8</span>:pic_index]]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, img_path <span class="keyword">in</span> <span class="built_in">enumerate</span>(next_horse_pix+next_human_pix):</span><br><span class="line">  <span class="comment"># Set up subplot; subplot indices start at 1</span></span><br><span class="line">  sp = plt.subplot(nrows, ncols, i + <span class="number">1</span>)</span><br><span class="line">  sp.axis(<span class="string">&#x27;Off&#x27;</span>) <span class="comment"># Don&#x27;t show axes (or gridlines)</span></span><br><span class="line"></span><br><span class="line">  img = mpimg.imread(img_path)</span><br><span class="line">  plt.imshow(img)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_13_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<h2 id="building-a-small-model-from-scratch">Building a Small Model from Scratch</h2>
+<p>But before we continue, let's start defining the model:</p>
+<p>Step 1 will be to import tensorflow.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure>
+<p>We then add convolutional layers as in the previous example, and flatten the final result to feed into the densely connected layers.</p>
+<p>Finally we add the densely connected layers.</p>
+<p>Note that because we are facing a two-class classification problem, i.e. a <em>binary classification problem</em>, we will end our network with a <a target="_blank" rel="noopener" href="https://wikipedia.org/wiki/Sigmoid_function"><em>sigmoid</em> activation</a>, so that the output of our network will be a single scalar between 0 and 1, encoding the probability that the current image is class 1 (as opposed to class 0).</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">model = tf.keras.models.Sequential([</span><br><span class="line">    <span class="comment"># Note the input shape is the desired size of the image 300x300 with 3 bytes color</span></span><br><span class="line">    <span class="comment"># This is the first convolution</span></span><br><span class="line">    tf.keras.layers.Conv2D(<span class="number">16</span>, (<span class="number">3</span>,<span class="number">3</span>), activation=<span class="string">&#x27;relu&#x27;</span>, input_shape=(<span class="number">300</span>, <span class="number">300</span>, <span class="number">3</span>)),</span><br><span class="line">    tf.keras.layers.MaxPooling2D(<span class="number">2</span>, <span class="number">2</span>),</span><br><span class="line">    <span class="comment"># The second convolution</span></span><br><span class="line">    tf.keras.layers.Conv2D(<span class="number">32</span>, (<span class="number">3</span>,<span class="number">3</span>), activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    tf.keras.layers.MaxPooling2D(<span class="number">2</span>,<span class="number">2</span>),</span><br><span class="line">    <span class="comment"># The third convolution</span></span><br><span class="line">    tf.keras.layers.Conv2D(<span class="number">64</span>, (<span class="number">3</span>,<span class="number">3</span>), activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    tf.keras.layers.MaxPooling2D(<span class="number">2</span>,<span class="number">2</span>),</span><br><span class="line">    <span class="comment"># The fourth convolution</span></span><br><span class="line">    tf.keras.layers.Conv2D(<span class="number">64</span>, (<span class="number">3</span>,<span class="number">3</span>), activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    tf.keras.layers.MaxPooling2D(<span class="number">2</span>,<span class="number">2</span>),</span><br><span class="line">    <span class="comment"># The fifth convolution</span></span><br><span class="line">    tf.keras.layers.Conv2D(<span class="number">64</span>, (<span class="number">3</span>,<span class="number">3</span>), activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    tf.keras.layers.MaxPooling2D(<span class="number">2</span>,<span class="number">2</span>),</span><br><span class="line">    <span class="comment"># Flatten the results to feed into a DNN</span></span><br><span class="line">    tf.keras.layers.Flatten(),</span><br><span class="line">    <span class="comment"># 512 neuron hidden layer</span></span><br><span class="line">    tf.keras.layers.Dense(<span class="number">512</span>, activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    <span class="comment"># Only 1 output neuron. It will contain a value from 0-1 where 0 for 1 class (&#x27;horses&#x27;) and 1 for the other (&#x27;humans&#x27;)</span></span><br><span class="line">    tf.keras.layers.Dense(<span class="number">1</span>, activation=<span class="string">&#x27;sigmoid&#x27;</span>)</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+<pre><code>WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/tensorflow/python/ops/resource_variable_ops.py:435: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.</code></pre>
+<p>The model.summary() method call prints a summary of the NN</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model.summary()</span><br></pre></td></tr></table></figure>
+<pre><code>_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+conv2d (Conv2D)              (None, 298, 298, 16)      448       
+_________________________________________________________________
+max_pooling2d (MaxPooling2D) (None, 149, 149, 16)      0         
+_________________________________________________________________
+conv2d_1 (Conv2D)            (None, 147, 147, 32)      4640      
+_________________________________________________________________
+max_pooling2d_1 (MaxPooling2 (None, 73, 73, 32)        0         
+_________________________________________________________________
+conv2d_2 (Conv2D)            (None, 71, 71, 64)        18496     
+_________________________________________________________________
+max_pooling2d_2 (MaxPooling2 (None, 35, 35, 64)        0         
+_________________________________________________________________
+conv2d_3 (Conv2D)            (None, 33, 33, 64)        36928     
+_________________________________________________________________
+max_pooling2d_3 (MaxPooling2 (None, 16, 16, 64)        0         
+_________________________________________________________________
+conv2d_4 (Conv2D)            (None, 14, 14, 64)        36928     
+_________________________________________________________________
+max_pooling2d_4 (MaxPooling2 (None, 7, 7, 64)          0         
+_________________________________________________________________
+flatten (Flatten)            (None, 3136)              0         
+_________________________________________________________________
+dense (Dense)                (None, 512)               1606144   
+_________________________________________________________________
+dense_1 (Dense)              (None, 1)                 513       
+=================================================================
+Total params: 1,704,097
+Trainable params: 1,704,097
+Non-trainable params: 0
+_________________________________________________________________</code></pre>
+<p>The "output shape" column shows how the size of your feature map evolves in each successive layer. The convolution layers reduce the size of the feature maps by a bit due to padding, and each pooling layer halves the dimensions.</p>
+<p>Next, we'll configure the specifications for model training. We will train our model with the <code>binary_crossentropy</code> loss, because it's a binary classification problem and our final activation is a sigmoid. (For a refresher on loss metrics, see the <a target="_blank" rel="noopener" href="https://developers.google.com/machine-learning/crash-course/descending-into-ml/video-lecture">Machine Learning Crash Course</a>.) We will use the <code>rmsprop</code> optimizer with a learning rate of <code>0.001</code>. During training, we will want to monitor classification accuracy.</p>
+<p><strong>NOTE</strong>: In this case, using the <a target="_blank" rel="noopener" href="https://wikipedia.org/wiki/Stochastic_gradient_descent#RMSProp">RMSprop optimization algorithm</a> is preferable to <a target="_blank" rel="noopener" href="https://developers.google.com/machine-learning/glossary/#SGD">stochastic gradient descent</a> (SGD), because RMSprop automates learning-rate tuning for us. (Other optimizers, such as <a target="_blank" rel="noopener" href="https://wikipedia.org/wiki/Stochastic_gradient_descent#Adam">Adam</a> and <a target="_blank" rel="noopener" href="https://developers.google.com/machine-learning/glossary/#AdaGrad">Adagrad</a>, also automatically adapt the learning rate during training, and would work equally well here.)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow.keras.optimizers <span class="keyword">import</span> RMSprop</span><br><span class="line"></span><br><span class="line">model.<span class="built_in">compile</span>(loss=<span class="string">&#x27;binary_crossentropy&#x27;</span>,</span><br><span class="line">              optimizer=RMSprop(lr=<span class="number">0.001</span>),</span><br><span class="line">              metrics=[<span class="string">&#x27;acc&#x27;</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="data-preprocessing">Data Preprocessing</h3>
+<p>Let's set up data generators that will read pictures in our source folders, convert them to <code>float32</code> tensors, and feed them (with their labels) to our network. We'll have one generator for the training images and one for the validation images. Our generators will yield batches of images of size 300x300 and their labels (binary).</p>
+<p>As you may already know, data that goes into neural networks should usually be normalized in some way to make it more amenable to processing by the network. (It is uncommon to feed raw pixels into a convnet.) In our case, we will preprocess our images by normalizing the pixel values to be in the <code>[0, 1]</code> range (originally all values are in the <code>[0, 255]</code> range).</p>
+<p>In Keras this can be done via the <code>keras.preprocessing.image.ImageDataGenerator</code> class using the <code>rescale</code> parameter. This <code>ImageDataGenerator</code> class allows you to instantiate generators of augmented image batches (and their labels) via <code>.flow(data, labels)</code> or <code>.flow_from_directory(directory)</code>. These generators can then be used with the Keras model methods that accept data generators as inputs: <code>fit_generator</code>, <code>evaluate_generator</code>, and <code>predict_generator</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow.keras.preprocessing.image <span class="keyword">import</span> ImageDataGenerator</span><br><span class="line"></span><br><span class="line"><span class="comment"># All images will be rescaled by 1./255</span></span><br><span class="line">train_datagen = ImageDataGenerator(rescale=<span class="number">1</span>/<span class="number">255</span>)</span><br><span class="line">validation_datagen = ImageDataGenerator(rescale=<span class="number">1</span>/<span class="number">255</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Flow training images in batches of 128 using train_datagen generator</span></span><br><span class="line">train_generator = train_datagen.flow_from_directory(</span><br><span class="line">        <span class="string">&#x27;/tmp/horse-or-human/&#x27;</span>,  <span class="comment"># This is the source directory for training images</span></span><br><span class="line">        target_size=(<span class="number">300</span>, <span class="number">300</span>),  <span class="comment"># All images will be resized to 150x150</span></span><br><span class="line">        batch_size=<span class="number">128</span>,</span><br><span class="line">        <span class="comment"># Since we use binary_crossentropy loss, we need binary labels</span></span><br><span class="line">        class_mode=<span class="string">&#x27;binary&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Flow training images in batches of 128 using train_datagen generator</span></span><br><span class="line">validation_generator = validation_datagen.flow_from_directory(</span><br><span class="line">        <span class="string">&#x27;/tmp/validation-horse-or-human/&#x27;</span>,  <span class="comment"># This is the source directory for training images</span></span><br><span class="line">        target_size=(<span class="number">300</span>, <span class="number">300</span>),  <span class="comment"># All images will be resized to 150x150</span></span><br><span class="line">        batch_size=<span class="number">32</span>,</span><br><span class="line">        <span class="comment"># Since we use binary_crossentropy loss, we need binary labels</span></span><br><span class="line">        class_mode=<span class="string">&#x27;binary&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Found 1027 images belonging to 2 classes.
+Found 256 images belonging to 2 classes.</code></pre>
+<h3 id="training">Training</h3>
+<p>Let's train for 15 epochs -- this may take a few minutes to run.</p>
+<p>Do note the values per epoch.</p>
+<p>The Loss and Accuracy are a great indication of progress of training. It's making a guess as to the classification of the training data, and then measuring it against the known label, calculating the result. Accuracy is the portion of correct guesses.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">history = model.fit_generator(</span><br><span class="line">      train_generator,</span><br><span class="line">      steps_per_epoch=<span class="number">8</span>,  </span><br><span class="line">      epochs=<span class="number">15</span>,</span><br><span class="line">      verbose=<span class="number">1</span>,</span><br><span class="line">      validation_data = validation_generator,</span><br><span class="line">      validation_steps=<span class="number">8</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+Epoch 1/15
+8/8 [==============================] - 2s 216ms/step - loss: 0.6814 - acc: 0.5000
+9/9 [==============================] - 11s 1s/step - loss: 0.8579 - acc: 0.5268 - val_loss: 0.6814 - val_acc: 0.5000
+Epoch 2/15
+8/8 [==============================] - 2s 206ms/step - loss: 0.8800 - acc: 0.5000
+9/9 [==============================] - 9s 955ms/step - loss: 0.6284 - acc: 0.5881 - val_loss: 0.8800 - val_acc: 0.5000
+Epoch 3/15
+8/8 [==============================] - 2s 207ms/step - loss: 0.6334 - acc: 0.5781
+9/9 [==============================] - 8s 940ms/step - loss: 0.6655 - acc: 0.6602 - val_loss: 0.6334 - val_acc: 0.5781
+Epoch 4/15
+8/8 [==============================] - 2s 207ms/step - loss: 0.4119 - acc: 0.8711
+9/9 [==============================] - 8s 938ms/step - loss: 0.5446 - acc: 0.7790 - val_loss: 0.4119 - val_acc: 0.8711
+Epoch 5/15
+8/8 [==============================] - 2s 206ms/step - loss: 1.3072 - acc: 0.8125
+9/9 [==============================] - 9s 956ms/step - loss: 0.4118 - acc: 0.8189 - val_loss: 1.3072 - val_acc: 0.8125
+Epoch 6/15
+8/8 [==============================] - 2s 205ms/step - loss: 2.0815 - acc: 0.7852
+9/9 [==============================] - 9s 960ms/step - loss: 0.1871 - acc: 0.9309 - val_loss: 2.0815 - val_acc: 0.7852
+Epoch 7/15
+8/8 [==============================] - 2s 208ms/step - loss: 1.7291 - acc: 0.7539
+9/9 [==============================] - 9s 1s/step - loss: 0.6104 - acc: 0.8384 - val_loss: 1.7291 - val_acc: 0.7539
+Epoch 8/15
+8/8 [==============================] - 2s 211ms/step - loss: 1.3320 - acc: 0.8242
+9/9 [==============================] - 9s 956ms/step - loss: 0.1349 - acc: 0.9406 - val_loss: 1.3320 - val_acc: 0.8242
+Epoch 9/15
+8/8 [==============================] - 2s 205ms/step - loss: 1.7191 - acc: 0.7969
+9/9 [==============================] - 8s 942ms/step - loss: 0.1120 - acc: 0.9581 - val_loss: 1.7191 - val_acc: 0.7969
+Epoch 10/15
+8/8 [==============================] - 2s 201ms/step - loss: 0.3554 - acc: 0.9062
+9/9 [==============================] - 8s 938ms/step - loss: 0.0666 - acc: 0.9718 - val_loss: 0.3554 - val_acc: 0.9062
+Epoch 11/15
+8/8 [==============================] - 2s 205ms/step - loss: 1.1811 - acc: 0.8398
+9/9 [==============================] - 8s 941ms/step - loss: 0.1556 - acc: 0.9669 - val_loss: 1.1811 - val_acc: 0.8398
+Epoch 12/15
+8/8 [==============================] - 2s 204ms/step - loss: 1.2945 - acc: 0.8398
+9/9 [==============================] - 8s 938ms/step - loss: 0.0237 - acc: 0.9932 - val_loss: 1.2945 - val_acc: 0.8398
+Epoch 13/15
+8/8 [==============================] - 2s 203ms/step - loss: 1.0270 - acc: 0.8945
+9/9 [==============================] - 9s 969ms/step - loss: 0.0034 - acc: 1.0000 - val_loss: 1.0270 - val_acc: 0.8945
+Epoch 14/15
+8/8 [==============================] - 2s 203ms/step - loss: 0.8244 - acc: 0.7773
+9/9 [==============================] - 8s 940ms/step - loss: 0.5428 - acc: 0.9007 - val_loss: 0.8244 - val_acc: 0.7773
+Epoch 15/15
+8/8 [==============================] - 2s 207ms/step - loss: 1.0451 - acc: 0.8633
+9/9 [==============================] - 9s 946ms/step - loss: 0.0516 - acc: 0.9873 - val_loss: 1.0451 - val_acc: 0.8633</code></pre>
+<p>###Running the Model</p>
+<p>Let's now take a look at actually running a prediction using the model. This code will allow you to choose 1 or more files from your file system, it will then upload them, and run them through the model, giving an indication of whether the object is a horse or a human.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> google.colab <span class="keyword">import</span> files</span><br><span class="line"><span class="keyword">from</span> keras.preprocessing <span class="keyword">import</span> image</span><br><span class="line"></span><br><span class="line">uploaded = files.upload()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> fn <span class="keyword">in</span> uploaded.keys():</span><br><span class="line"> </span><br><span class="line">  <span class="comment"># predicting images</span></span><br><span class="line">  path = <span class="string">&#x27;/content/&#x27;</span> + fn</span><br><span class="line">  img = image.load_img(path, target_size=(<span class="number">300</span>, <span class="number">300</span>))</span><br><span class="line">  x = image.img_to_array(img)</span><br><span class="line">  x = np.expand_dims(x, axis=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">  images = np.vstack([x])</span><br><span class="line">  classes = model.predict(images, batch_size=<span class="number">10</span>)</span><br><span class="line">  <span class="built_in">print</span>(classes[<span class="number">0</span>])</span><br><span class="line">  <span class="keyword">if</span> classes[<span class="number">0</span>]&gt;<span class="number">0.5</span>:</span><br><span class="line">    <span class="built_in">print</span>(fn + <span class="string">&quot; is a human&quot;</span>)</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(fn + <span class="string">&quot; is a horse&quot;</span>)</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<input type="file" id="files-c0467943-dbfc-4f9b-b3f2-4f00403096db" name="files[]" multiple disabled />
+<output id="result-c0467943-dbfc-4f9b-b3f2-4f00403096db">
+Upload widget is only available when the cell has been executed in the current browser session. Please rerun this cell to enable.
+</output>
+<script src="/nbextensions/google.colab/files.js"></script>
+<pre><code>Saving zhenjianzhao.jpg to zhenjianzhao (3).jpg
+[0.]
+zhenjianzhao.jpg is a horse</code></pre>
+<h3 id="visualizing-intermediate-representations">Visualizing Intermediate Representations</h3>
+<p>To get a feel for what kind of features our convnet has learned, one fun thing to do is to visualize how an input gets transformed as it goes through the convnet.</p>
+<p>Let's pick a random image from the training set, and then generate a figure where each row is the output of a layer, and each image in the row is a specific filter in that output feature map. Rerun this cell to generate intermediate representations for a variety of training images.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras.preprocessing.image <span class="keyword">import</span> img_to_array, load_img</span><br><span class="line"></span><br><span class="line"><span class="comment"># Let&#x27;s define a new Model that will take an image as input, and will output</span></span><br><span class="line"><span class="comment"># intermediate representations for all layers in the previous model after</span></span><br><span class="line"><span class="comment"># the first.</span></span><br><span class="line">successive_outputs = [layer.output <span class="keyword">for</span> layer <span class="keyword">in</span> model.layers[<span class="number">1</span>:]]</span><br><span class="line"><span class="comment">#visualization_model = Model(img_input, successive_outputs)</span></span><br><span class="line">visualization_model = tf.keras.models.Model(inputs = model.<span class="built_in">input</span>, outputs = successive_outputs)</span><br><span class="line"><span class="comment"># Let&#x27;s prepare a random input image from the training set.</span></span><br><span class="line">horse_img_files = [os.path.join(train_horse_dir, f) <span class="keyword">for</span> f <span class="keyword">in</span> train_horse_names]</span><br><span class="line">human_img_files = [os.path.join(train_human_dir, f) <span class="keyword">for</span> f <span class="keyword">in</span> train_human_names]</span><br><span class="line">img_path = random.choice(horse_img_files + human_img_files)</span><br><span class="line"></span><br><span class="line">img = load_img(img_path, target_size=(<span class="number">300</span>, <span class="number">300</span>))  <span class="comment"># this is a PIL image</span></span><br><span class="line">x = img_to_array(img)  <span class="comment"># Numpy array with shape (150, 150, 3)</span></span><br><span class="line">x = x.reshape((<span class="number">1</span>,) + x.shape)  <span class="comment"># Numpy array with shape (1, 150, 150, 3)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Rescale by 1/255</span></span><br><span class="line">x /= <span class="number">255</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Let&#x27;s run our image through our network, thus obtaining all</span></span><br><span class="line"><span class="comment"># intermediate representations for this image.</span></span><br><span class="line">successive_feature_maps = visualization_model.predict(x)</span><br><span class="line"></span><br><span class="line"><span class="comment"># These are the names of the layers, so can have them as part of our plot</span></span><br><span class="line">layer_names = [layer.name <span class="keyword">for</span> layer <span class="keyword">in</span> model.layers]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Now let&#x27;s display our representations</span></span><br><span class="line"><span class="keyword">for</span> layer_name, feature_map <span class="keyword">in</span> <span class="built_in">zip</span>(layer_names, successive_feature_maps):</span><br><span class="line">  <span class="keyword">if</span> <span class="built_in">len</span>(feature_map.shape) == <span class="number">4</span>:</span><br><span class="line">    <span class="comment"># Just do this for the conv / maxpool layers, not the fully-connected layers</span></span><br><span class="line">    n_features = feature_map.shape[-<span class="number">1</span>]  <span class="comment"># number of features in feature map</span></span><br><span class="line">    <span class="comment"># The feature map has shape (1, size, size, n_features)</span></span><br><span class="line">    size = feature_map.shape[<span class="number">1</span>]</span><br><span class="line">    <span class="comment"># We will tile our images in this matrix</span></span><br><span class="line">    display_grid = np.zeros((size, size * n_features))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n_features):</span><br><span class="line">      <span class="comment"># Postprocess the feature to make it visually palatable</span></span><br><span class="line">      x = feature_map[<span class="number">0</span>, :, :, i]</span><br><span class="line">      x -= x.mean()</span><br><span class="line">      x /= x.std()</span><br><span class="line">      x *= <span class="number">64</span></span><br><span class="line">      x += <span class="number">128</span></span><br><span class="line">      x = np.clip(x, <span class="number">0</span>, <span class="number">255</span>).astype(<span class="string">&#x27;uint8&#x27;</span>)</span><br><span class="line">      <span class="comment"># We&#x27;ll tile each filter into this big horizontal grid</span></span><br><span class="line">      display_grid[:, i * size : (i + <span class="number">1</span>) * size] = x</span><br><span class="line">    <span class="comment"># Display the grid</span></span><br><span class="line">    scale = <span class="number">20.</span> / n_features</span><br><span class="line">    plt.figure(figsize=(scale * n_features, scale))</span><br><span class="line">    plt.title(layer_name)</span><br><span class="line">    plt.grid(<span class="literal">False</span>)</span><br><span class="line">    plt.imshow(display_grid, aspect=<span class="string">&#x27;auto&#x27;</span>, cmap=<span class="string">&#x27;viridis&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>/usr/local/lib/python3.6/dist-packages/ipykernel_launcher.py:43: RuntimeWarning: invalid value encountered in true_divide</code></pre>
+<figure>
+<img src="output_31_1.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_31_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_31_3.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_31_4.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_31_5.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_31_6.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_31_7.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_31_8.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_31_9.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p>As you can see we go from the raw pixels of the images to increasingly abstract and compact representations. The representations downstream start highlighting what the network pays attention to, and they show fewer and fewer features being "activated"; most are set to zero. This is called "sparsity." Representation sparsity is a key feature of deep learning.</p>
+<p>These representations carry increasingly less information about the original pixels of the image, but increasingly refined information about the class of the image. You can think of a convnet (or a deep network in general) as an information distillation pipeline.</p>
+<h2 id="clean-up">Clean Up</h2>
+<p>Before running the next exercise, run the following cell to terminate the kernel and free memory resources:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os, signal</span><br><span class="line">os.kill(os.getpid(), signal.SIGKILL)</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Project/" rel="tag"># Project</a>
+              <a href="/tags/Computer-Vision/" rel="tag"># Computer Vision</a>
+              <a href="/tags/Convolutional-Neural-Networks/" rel="tag"># Convolutional Neural Networks</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Exploring-how-Convolutions-and-Pooling-work/2019/05/23/" rel="prev" title="Exploring How Convolutions and Pooling work">
+      <i class="fa fa-chevron-left"></i> Exploring How Convolutions and Pooling work
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Sequential-Logic/2019/05/27/" rel="next" title="Sequential Logic">
+      Sequential Logic <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#building-a-small-model-from-scratch"><span class="nav-number">1.</span> <span class="nav-text">Building a Small Model from Scratch</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#data-preprocessing"><span class="nav-number">1.1.</span> <span class="nav-text">Data Preprocessing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#training"><span class="nav-number">1.2.</span> <span class="nav-text">Training</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#visualizing-intermediate-representations"><span class="nav-number">1.3.</span> <span class="nav-text">Visualizing Intermediate Representations</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#clean-up"><span class="nav-number">2.</span> <span class="nav-text">Clean Up</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">268</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Extract - Transform - Load (ETL)    ETL Pipeline   First, to perform the Extract process we use tfts.load. This handles everything from downloading the raw data to parsing and splitting it, giving us">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TensorFlow Data Service">
+<meta property="og:url" content="https://zhangruochi.com/TensorFlow-Data-Service/2020/02/17/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Extract - Transform - Load (ETL)    ETL Pipeline   First, to perform the Extract process we use tfts.load. This handles everything from downloading the raw data to parsing and splitting it, giving us">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/TensorFlow-Data-Service/2020/02/17/ETL.png">
+<meta property="og:image" content="https://zhangruochi.com/TensorFlow-Data-Service/2020/02/17/s3.png">
+<meta property="article:published_time" content="2020-02-17T15:58:32.000Z">
+<meta property="article:modified_time" content="2020-02-24T21:34:49.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Tensorflow">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/TensorFlow-Data-Service/2020/02/17/ETL.png">
+
+<link rel="canonical" href="https://zhangruochi.com/TensorFlow-Data-Service/2020/02/17/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>TensorFlow Data Service | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/TensorFlow-Data-Service/2020/02/17/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TensorFlow Data Service
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-02-17 23:58:32" itemprop="dateCreated datePublished" datetime="2020-02-17T23:58:32+08:00">2020-02-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-02-25 05:34:49" itemprop="dateModified" datetime="2020-02-25T05:34:49+08:00">2020-02-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/TensorFlow-Data-Service/2020/02/17/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/TensorFlow-Data-Service/2020/02/17/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="extract---transform---load-etl">Extract - Transform - Load (ETL)</h2>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="ETL.png" width = "80%" height="80%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+ETL Pipeline
+</div>
+</center>
+<p>First, to perform the Extract process we use tfts.load. This handles everything from downloading the raw data to parsing and splitting it, giving us a dataset. Next, we perform the Transform process. In this simple example, our transform process will just consist of shuffling the dataset. Finally, we Load one record by using the take(1) method. In this case, each record consists of an image and its corresponding label. After loading the record we proceed to plot the image and print its corresponding label.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># EXTRACT</span></span><br><span class="line">dataset = tfds.load(name=<span class="string">&quot;mnist&quot;</span>, split=<span class="string">&quot;train&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># TRANSFORM</span></span><br><span class="line">dataset.shuffle(<span class="number">100</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># LOAD</span></span><br><span class="line"><span class="keyword">for</span> data <span class="keyword">in</span> dataset.take(<span class="number">1</span>):</span><br><span class="line">    image = data[<span class="string">&quot;image&quot;</span>].numpy().squeeze()</span><br><span class="line">    label = data[<span class="string">&quot;label&quot;</span>].numpy()</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Label: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(label))</span><br><span class="line">    plt.imshow(image, cmap=plt.cm.binary)</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+<h2 id="us3-api-for-tensorflow-datasets.">US3 API for TensorFlow datasets.</h2>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="s3.png" width = "80%" height="80%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+S3 API
+</div>
+</center>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> tensorflow_datasets <span class="keyword">as</span> tfds</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\u2022 Using TensorFlow Version:&quot;</span>, tf.__version__)</span><br></pre></td></tr></table></figure>
+<p>Before using the new S3 API, we must first find out whether the MNIST dataset implements the new S3 API. In the cell below we indicate that we want to use version <code>3.*.*</code> of the MNIST dataset.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mnist_builder = tfds.builder(<span class="string">&quot;mnist:3.*.*&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(mnist_builder.version.implements(tfds.core.Experiment.S3))</span><br></pre></td></tr></table></figure>
+<p>We can see that the code above printed <code>True</code>, which means that version <code>3.*.*</code> of the MNIST dataset supports the new S3 API.</p>
+<p>Now, let's see how we can use the S3 API to download the MNIST dataset and specify the splits we want use. In the code below we download the <code>train</code> and <code>test</code> splits of the MNIST dataset and then we print their size. We will see that there are 60,000 records in the training set and 10,000 in the test set.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">train_ds, test_ds = tfds.load(<span class="string">&#x27;mnist:3.*.*&#x27;</span>, split=[<span class="string">&#x27;train&#x27;</span>, <span class="string">&#x27;test&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(<span class="built_in">list</span>(train_ds)))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(<span class="built_in">list</span>(test_ds)))</span><br></pre></td></tr></table></figure>
+<p>In the S3 API we can use strings to specify the slicing instructions. For example, in the cell below we will merge the training and test sets by passing the string <code>’train+test'</code> to the <code>split</code> argument.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">combined = tfds.load(<span class="string">&#x27;mnist:3.*.*&#x27;</span>, split=<span class="string">&#x27;train+test&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(<span class="built_in">list</span>(combined)))</span><br></pre></td></tr></table></figure>
+<p>We can also use Python style list slicers to specify the data we want. For example, we can specify that we want to take the first 10,000 records of the <code>train</code> split with the string <code>'train[:10000]'</code>, as shown below:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">first10k = tfds.load(<span class="string">&#x27;mnist:3.*.*&#x27;</span>, split=<span class="string">&#x27;train[:10000]&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(<span class="built_in">list</span>(first10k)))</span><br></pre></td></tr></table></figure>
+<p>The S3 API, also allows us to specify the percentage of the data we want to use. For example, we can select the first 20% of the training set with the string <code>'train[:20%]'</code>, as shown below:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">first20p = tfds.load(<span class="string">&#x27;mnist:3.*.*&#x27;</span>, split=<span class="string">&#x27;train[:20%]&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(<span class="built_in">list</span>(first20p)))</span><br></pre></td></tr></table></figure>
+<p>We can see that <code>first20p</code> contains 12,000 records, which is indeed 20% the total number of records in the training set. Recall that the training set contains 60,000 records.</p>
+<p>Because the slices are string-based we can use loops, like the ones shown below, to slice up the dataset and make some pretty complex splits. For example, the loops below create 10 complimentary validation and training sets (each loop returns a list with 5 data sets).</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val_ds = tfds.load(<span class="string">&#x27;mnist:3.*.*&#x27;</span>, split=[<span class="string">&#x27;train[&#123;&#125;%:&#123;&#125;%]&#x27;</span>.<span class="built_in">format</span>(k, k+<span class="number">20</span>) <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">100</span>, <span class="number">20</span>)])</span><br><span class="line"></span><br><span class="line">train_ds = tfds.load(<span class="string">&#x27;mnist:3.*.*&#x27;</span>, split=[<span class="string">&#x27;train[:&#123;&#125;%]+train[&#123;&#125;%:]&#x27;</span>.<span class="built_in">format</span>(k, k+<span class="number">20</span>) <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">100</span>, <span class="number">20</span>)])</span><br></pre></td></tr></table></figure>
+<p>The S3 API also allows us to compose new datasets by using pieces from different splits. For example, we can create a new dataset from the first 10% of the test set and the last 80% of the training set, as shown below.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">composed_ds = tfds.load(<span class="string">&#x27;mnist:3.*.*&#x27;</span>, split=<span class="string">&#x27;test[:10%]+train[-80%:]&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(<span class="built_in">list</span>(composed_ds)))</span><br></pre></td></tr></table></figure>
+<h1 id="pipeline-for-classifing-structured-data">Pipeline for Classifing Structured Data</h1>
+<h2 id="import-tensorflow-and-other-libraries">Import TensorFlow and Other Libraries</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> tensorflow.keras <span class="keyword">import</span> layers</span><br><span class="line"><span class="keyword">from</span> tensorflow <span class="keyword">import</span> feature_column</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> os <span class="keyword">import</span> getcwd</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br></pre></td></tr></table></figure>
+<h2 id="use-pandas-to-create-a-dataframe">Use Pandas to Create a Dataframe</h2>
+<p><a target="_blank" rel="noopener" href="https://pandas.pydata.org/">Pandas</a> is a Python library with many helpful utilities for loading and working with structured data. We will use Pandas to download the dataset and load it into a dataframe.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">filePath = <span class="string">f&quot;<span class="subst">&#123;getcwd()&#125;</span>/../tmp2/heart.csv&quot;</span></span><br><span class="line">dataframe = pd.read_csv(filePath)</span><br><span class="line">dataframe.head()</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+age
+</th>
+<th>
+sex
+</th>
+<th>
+cp
+</th>
+<th>
+trestbps
+</th>
+<th>
+chol
+</th>
+<th>
+fbs
+</th>
+<th>
+restecg
+</th>
+<th>
+thalach
+</th>
+<th>
+exang
+</th>
+<th>
+oldpeak
+</th>
+<th>
+slope
+</th>
+<th>
+ca
+</th>
+<th>
+thal
+</th>
+<th>
+target
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+63
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+145
+</td>
+<td>
+233
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+150
+</td>
+<td>
+0
+</td>
+<td>
+2.3
+</td>
+<td>
+3
+</td>
+<td>
+0
+</td>
+<td>
+fixed
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+67
+</td>
+<td>
+1
+</td>
+<td>
+4
+</td>
+<td>
+160
+</td>
+<td>
+286
+</td>
+<td>
+0
+</td>
+<td>
+2
+</td>
+<td>
+108
+</td>
+<td>
+1
+</td>
+<td>
+1.5
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+normal
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+67
+</td>
+<td>
+1
+</td>
+<td>
+4
+</td>
+<td>
+120
+</td>
+<td>
+229
+</td>
+<td>
+0
+</td>
+<td>
+2
+</td>
+<td>
+129
+</td>
+<td>
+1
+</td>
+<td>
+2.6
+</td>
+<td>
+2
+</td>
+<td>
+2
+</td>
+<td>
+reversible
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+37
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+130
+</td>
+<td>
+250
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+187
+</td>
+<td>
+0
+</td>
+<td>
+3.5
+</td>
+<td>
+3
+</td>
+<td>
+0
+</td>
+<td>
+normal
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+41
+</td>
+<td>
+0
+</td>
+<td>
+2
+</td>
+<td>
+130
+</td>
+<td>
+204
+</td>
+<td>
+0
+</td>
+<td>
+2
+</td>
+<td>
+172
+</td>
+<td>
+0
+</td>
+<td>
+1.4
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+normal
+</td>
+<td>
+0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="split-the-dataframe-into-train-validation-and-test-sets">Split the Dataframe Into Train, Validation, and Test Sets</h2>
+<p>The dataset we downloaded was a single CSV file. We will split this into train, validation, and test sets.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">train, test = train_test_split(dataframe, test_size=<span class="number">0.2</span>)</span><br><span class="line">train, val = train_test_split(train, test_size=<span class="number">0.2</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(train), <span class="string">&#x27;train examples&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(val), <span class="string">&#x27;validation examples&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(test), <span class="string">&#x27;test examples&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>193 train examples
+49 validation examples
+61 test examples</code></pre>
+<h2 id="create-an-input-pipeline-using-tf.data">Create an Input Pipeline Using <code>tf.data</code></h2>
+<p>Next, we will wrap the dataframes with <a target="_blank" rel="noopener" href="https://www.tensorflow.org/guide/datasets">tf.data</a>. This will enable us to use feature columns as a bridge to map from the columns in the Pandas dataframe to features used to train the model. If we were working with a very large CSV file (so large that it does not fit into memory), we would use tf.data to read it from disk directly.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># EXERCISE: A utility method to create a tf.data dataset from a Pandas Dataframe.</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">df_to_dataset</span>(<span class="params">dataframe, shuffle=<span class="literal">True</span>, batch_size=<span class="number">32</span></span>):</span></span><br><span class="line">    dataframe = dataframe.copy()</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Use Pandas dataframe&#x27;s pop method to get the list of targets.</span></span><br><span class="line">    labels = dataframe[<span class="string">&quot;target&quot;</span>].values</span><br><span class="line">    dataframe.drop(<span class="string">&quot;target&quot;</span>, axis = <span class="number">1</span>, inplace = <span class="literal">True</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Create a tf.data.Dataset from the dataframe and labels.</span></span><br><span class="line">    ds = tf.data.Dataset.from_tensor_slices((<span class="built_in">dict</span>(dataframe),labels))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> shuffle:</span><br><span class="line">        <span class="comment"># Shuffle dataset.</span></span><br><span class="line">        ds = ds.shuffle(<span class="number">3</span>)</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># Batch dataset with specified batch_size parameter.</span></span><br><span class="line">    ds = ds.batch(batch_size)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> ds</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">batch_size = <span class="number">5</span> <span class="comment"># A small batch sized is used for demonstration purposes</span></span><br><span class="line">train_ds = df_to_dataset(train, batch_size=batch_size)</span><br><span class="line">val_ds = df_to_dataset(val, shuffle=<span class="literal">False</span>, batch_size=batch_size)</span><br><span class="line">test_ds = df_to_dataset(test, shuffle=<span class="literal">False</span>, batch_size=batch_size)</span><br></pre></td></tr></table></figure>
+<h2 id="understand-the-input-pipeline">Understand the Input Pipeline</h2>
+<p>Now that we have created the input pipeline, let's call it to see the format of the data it returns. We have used a small batch size to keep the output readable.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> feature_batch, label_batch <span class="keyword">in</span> train_ds.take(<span class="number">1</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Every feature:&#x27;</span>, <span class="built_in">list</span>(feature_batch.keys()))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;A batch of ages:&#x27;</span>, feature_batch[<span class="string">&#x27;age&#x27;</span>])</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;A batch of targets:&#x27;</span>, label_batch )</span><br></pre></td></tr></table></figure>
+<pre><code>Every feature: [&#39;age&#39;, &#39;sex&#39;, &#39;cp&#39;, &#39;trestbps&#39;, &#39;chol&#39;, &#39;fbs&#39;, &#39;restecg&#39;, &#39;thalach&#39;, &#39;exang&#39;, &#39;oldpeak&#39;, &#39;slope&#39;, &#39;ca&#39;, &#39;thal&#39;]
+A batch of ages: tf.Tensor([51 63 64 58 57], shape=(5,), dtype=int32)
+A batch of targets: tf.Tensor([0 1 0 0 0], shape=(5,), dtype=int64)</code></pre>
+<p>We can see that the dataset returns a dictionary of column names (from the dataframe) that map to column values from rows in the dataframe.</p>
+<h2 id="create-several-types-of-feature-columns">Create Several Types of Feature Columns</h2>
+<p>TensorFlow provides many types of feature columns. In this section, we will create several types of feature columns, and demonstrate how they transform a column from the dataframe.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Try to demonstrate several types of feature columns by getting an example.</span></span><br><span class="line">example_batch = <span class="built_in">next</span>(<span class="built_in">iter</span>(train_ds))[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># A utility method to create a feature column and to transform a batch of data.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">demo</span>(<span class="params">feature_column</span>):</span></span><br><span class="line">    feature_layer = layers.DenseFeatures(feature_column, dtype=<span class="string">&#x27;float64&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(feature_layer(example_batch).numpy())</span><br></pre></td></tr></table></figure>
+<h3 id="numeric-columns">Numeric Columns</h3>
+<p>The output of a feature column becomes the input to the model (using the demo function defined above, we will be able to see exactly how each column from the dataframe is transformed). A <a target="_blank" rel="noopener" href="https://www.tensorflow.org/api_docs/python/tf/feature_column/numeric_column">numeric column</a> is the simplest type of column. It is used to represent real valued features.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># EXERCISE: Create a numeric feature column out of &#x27;age&#x27; and demo it.</span></span><br><span class="line">age = tf.feature_column.numeric_column(<span class="string">&quot;age&quot;</span>)</span><br><span class="line"></span><br><span class="line">demo(age)</span><br></pre></td></tr></table></figure>
+<pre><code>[[51.]
+ [58.]
+ [63.]
+ [64.]
+ [60.]]</code></pre>
+<p>In the heart disease dataset, most columns from the dataframe are numeric.</p>
+<h3 id="bucketized-columns">Bucketized Columns</h3>
+<p>Often, you don't want to feed a number directly into the model, but instead split its value into different categories based on numerical ranges. Consider raw data that represents a person's age. Instead of representing age as a numeric column, we could split the age into several buckets using a <a target="_blank" rel="noopener" href="https://www.tensorflow.org/api_docs/python/tf/feature_column/bucketized_column">bucketized column</a>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># EXERCISE: Create a bucketized feature column out of &#x27;age&#x27; with</span></span><br><span class="line"><span class="comment"># the following boundaries and demo it.</span></span><br><span class="line">boundaries = [<span class="number">18</span>, <span class="number">25</span>, <span class="number">30</span>, <span class="number">35</span>, <span class="number">40</span>, <span class="number">45</span>, <span class="number">50</span>, <span class="number">55</span>, <span class="number">60</span>, <span class="number">65</span>]</span><br><span class="line"></span><br><span class="line">age_buckets = tf.feature_column.bucketized_column(age, boundaries = boundaries)</span><br><span class="line"></span><br><span class="line">demo(age_buckets)</span><br></pre></td></tr></table></figure>
+<pre><code>[[0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0.]]</code></pre>
+<p>Notice the one-hot values above describe which age range each row matches.</p>
+<h3 id="categorical-columns">Categorical Columns</h3>
+<p>In this dataset, thal is represented as a string (e.g. 'fixed', 'normal', or 'reversible'). We cannot feed strings directly to a model. Instead, we must first map them to numeric values. The categorical vocabulary columns provide a way to represent strings as a one-hot vector (much like you have seen above with age buckets).</p>
+<p><strong>Note</strong>: You will probably see some warning messages when running some of the code cell below. These warnings have to do with software updates and should not cause any errors or prevent your code from running.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># EXERCISE: Create a categorical vocabulary column out of the</span></span><br><span class="line"><span class="comment"># above mentioned categories with the key specified as &#x27;thal&#x27;.</span></span><br><span class="line">thal = tf.feature_column.categorical_column_with_vocabulary_list(</span><br><span class="line">      <span class="string">&#x27;thal&#x27;</span>, [<span class="string">&#x27;fixed&#x27;</span>, <span class="string">&#x27;normal&#x27;</span>, <span class="string">&#x27;reversible&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># EXERCISE: Create an indicator column out of the created categorical column.</span></span><br><span class="line">thal_one_hot = tf.feature_column.indicator_column(thal)</span><br><span class="line"></span><br><span class="line">demo(thal_one_hot)</span><br></pre></td></tr></table></figure>
+<pre><code>[[0. 1. 0.]
+ [0. 1. 0.]
+ [0. 0. 1.]
+ [0. 0. 1.]
+ [0. 1. 0.]]</code></pre>
+<p>The vocabulary can be passed as a list using <a target="_blank" rel="noopener" href="https://www.tensorflow.org/api_docs/python/tf/feature_column/categorical_column_with_vocabulary_list">categorical_column_with_vocabulary_list</a>, or loaded from a file using <a target="_blank" rel="noopener" href="https://www.tensorflow.org/api_docs/python/tf/feature_column/categorical_column_with_vocabulary_file">categorical_column_with_vocabulary_file</a>.</p>
+<h3 id="embedding-columns">Embedding Columns</h3>
+<p>Suppose instead of having just a few possible strings, we have thousands (or more) values per category. For a number of reasons, as the number of categories grow large, it becomes infeasible to train a neural network using one-hot encodings. We can use an embedding column to overcome this limitation. Instead of representing the data as a one-hot vector of many dimensions, an <a target="_blank" rel="noopener" href="https://www.tensorflow.org/api_docs/python/tf/feature_column/embedding_column">embedding column</a> represents that data as a lower-dimensional, dense vector in which each cell can contain any number, not just 0 or 1. You can tune the size of the embedding with the <code>dimension</code> parameter.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># EXERCISE: Create an embedding column out of the categorical</span></span><br><span class="line"><span class="comment"># vocabulary you just created (thal). Set the size of the </span></span><br><span class="line"><span class="comment"># embedding to 8, by using the dimension parameter.</span></span><br><span class="line"></span><br><span class="line">thal_embedding = tf.feature_column.embedding_column(thal, dimension=<span class="number">8</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">demo(thal_embedding)</span><br></pre></td></tr></table></figure>
+<pre><code>[[-1.4254066e-01 -1.0374661e-01  3.4352791e-01 -3.3996427e-01
+  -3.2193713e-02 -1.8381193e-01 -1.8051244e-01  3.2638407e-01]
+ [-1.4254066e-01 -1.0374661e-01  3.4352791e-01 -3.3996427e-01
+  -3.2193713e-02 -1.8381193e-01 -1.8051244e-01  3.2638407e-01]
+ [-6.5549983e-05  2.7680036e-01  4.1849682e-01  5.3418136e-01
+  -1.6281548e-01  2.5406811e-01  8.8969752e-02  1.8004593e-01]
+ [-6.5549983e-05  2.7680036e-01  4.1849682e-01  5.3418136e-01
+  -1.6281548e-01  2.5406811e-01  8.8969752e-02  1.8004593e-01]
+ [-1.4254066e-01 -1.0374661e-01  3.4352791e-01 -3.3996427e-01
+  -3.2193713e-02 -1.8381193e-01 -1.8051244e-01  3.2638407e-01]]</code></pre>
+<h3 id="hashed-feature-columns">Hashed Feature Columns</h3>
+<p>Another way to represent a categorical column with a large number of values is to use a <a target="_blank" rel="noopener" href="https://www.tensorflow.org/api_docs/python/tf/feature_column/categorical_column_with_hash_bucket">categorical_column_with_hash_bucket</a>. This feature column calculates a hash value of the input, then selects one of the <code>hash_bucket_size</code> buckets to encode a string. When using this column, you do not need to provide the vocabulary, and you can choose to make the number of hash buckets significantly smaller than the number of actual categories to save space.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># EXERCISE: Create a hashed feature column with &#x27;thal&#x27; as the key and </span></span><br><span class="line"><span class="comment"># 1000 hash buckets.</span></span><br><span class="line">thal_hashed = tf.feature_column.categorical_column_with_hash_bucket(</span><br><span class="line">      <span class="string">&#x27;thal&#x27;</span>, hash_bucket_size=<span class="number">1000</span>)</span><br><span class="line"></span><br><span class="line">demo(feature_column.indicator_column(thal_hashed))</span><br></pre></td></tr></table></figure>
+<pre><code>[[0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]]</code></pre>
+<h3 id="crossed-feature-columns">Crossed Feature Columns</h3>
+<p>Combining features into a single feature, better known as <a target="_blank" rel="noopener" href="https://developers.google.com/machine-learning/glossary/#feature_cross">feature crosses</a>, enables a model to learn separate weights for each combination of features. Here, we will create a new feature that is the cross of age and thal. Note that <code>crossed_column</code> does not build the full table of all possible combinations (which could be very large). Instead, it is backed by a <code>hashed_column</code>, so you can choose how large the table is.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># EXERCISE: Create a crossed column using the bucketized column (age_buckets),</span></span><br><span class="line"><span class="comment"># the categorical vocabulary column (thal) previously created, and 1000 hash buckets.</span></span><br><span class="line">crossed_feature = tf.feature_column.crossed_column([age_buckets, thal], hash_bucket_size=<span class="number">1000</span>)</span><br><span class="line"></span><br><span class="line">demo(feature_column.indicator_column(crossed_feature))</span><br></pre></td></tr></table></figure>
+<pre><code>[[0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]]</code></pre>
+<h2 id="choose-which-columns-to-use">Choose Which Columns to Use</h2>
+<p>We have seen how to use several types of feature columns. Now we will use them to train a model. The goal of this exercise is to show you the complete code needed to work with feature columns. We have selected a few columns to train our model below arbitrarily.</p>
+<p>If your aim is to build an accurate model, try a larger dataset of your own, and think carefully about which features are the most meaningful to include, and how they should be represented.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dataframe.dtypes</span><br></pre></td></tr></table></figure>
+<pre><code>age           int64
+sex           int64
+cp            int64
+trestbps      int64
+chol          int64
+fbs           int64
+restecg       int64
+thalach       int64
+exang         int64
+oldpeak     float64
+slope         int64
+ca            int64
+thal         object
+target        int64
+dtype: object</code></pre>
+<p>You can use the above list of column datatypes to map the appropriate feature column to every column in the dataframe.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># EXERCISE: Fill in the missing code below</span></span><br><span class="line">feature_columns = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># Numeric Cols.</span></span><br><span class="line"><span class="comment"># Create a list of numeric columns. Use the following list of columns</span></span><br><span class="line"><span class="comment"># that have a numeric datatype: [&#x27;age&#x27;, &#x27;trestbps&#x27;, &#x27;chol&#x27;, &#x27;thalach&#x27;, &#x27;oldpeak&#x27;, &#x27;slope&#x27;, &#x27;ca&#x27;].</span></span><br><span class="line">numeric_columns = [<span class="string">&#x27;age&#x27;</span>, <span class="string">&#x27;trestbps&#x27;</span>, <span class="string">&#x27;chol&#x27;</span>, <span class="string">&#x27;thalach&#x27;</span>, <span class="string">&#x27;oldpeak&#x27;</span>, <span class="string">&#x27;slope&#x27;</span>, <span class="string">&#x27;ca&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> header <span class="keyword">in</span> numeric_columns:</span><br><span class="line">    <span class="comment"># Create a numeric feature column  out of the header.</span></span><br><span class="line">    numeric_feature_column = tf.feature_column.numeric_column(header)</span><br><span class="line">    </span><br><span class="line">    feature_columns.append(numeric_feature_column)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Bucketized Cols.</span></span><br><span class="line"><span class="comment"># Create a bucketized feature column out of the age column (numeric column)</span></span><br><span class="line"><span class="comment"># that you&#x27;ve already created. Use the following boundaries:</span></span><br><span class="line"><span class="comment"># [18, 25, 30, 35, 40, 45, 50, 55, 60, 65]</span></span><br><span class="line">age_buckets = tf.feature_column.bucketized_column(age, boundaries = [<span class="number">18</span>, <span class="number">25</span>, <span class="number">30</span>, <span class="number">35</span>, <span class="number">40</span>, <span class="number">45</span>, <span class="number">50</span>, <span class="number">55</span>, <span class="number">60</span>, <span class="number">65</span>] )</span><br><span class="line"></span><br><span class="line">feature_columns.append(age_buckets)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Indicator Cols.</span></span><br><span class="line"><span class="comment"># Create a categorical vocabulary column out of the categories</span></span><br><span class="line"><span class="comment"># [&#x27;fixed&#x27;, &#x27;normal&#x27;, &#x27;reversible&#x27;] with the key specified as &#x27;thal&#x27;.</span></span><br><span class="line">thal = feature_column.categorical_column_with_vocabulary_list(</span><br><span class="line">      <span class="string">&#x27;thal&#x27;</span>, [<span class="string">&#x27;fixed&#x27;</span>, <span class="string">&#x27;normal&#x27;</span>, <span class="string">&#x27;reversible&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create an indicator column out of the created thal categorical column</span></span><br><span class="line">thal_one_hot = feature_column.indicator_column(thal)</span><br><span class="line"></span><br><span class="line">feature_columns.append(thal_one_hot)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Embedding Cols.</span></span><br><span class="line"><span class="comment"># Create an embedding column out of the categorical vocabulary you</span></span><br><span class="line"><span class="comment"># just created (thal). Set the size of the embedding to 8, by using</span></span><br><span class="line"><span class="comment"># the dimension parameter.</span></span><br><span class="line">thal_embedding = tf.feature_column.embedding_column(thal, dimension=<span class="number">8</span>)</span><br><span class="line"></span><br><span class="line">feature_columns.append(thal_embedding)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Crossed Cols.</span></span><br><span class="line"><span class="comment"># Create a crossed column using the bucketized column (age_buckets),</span></span><br><span class="line"><span class="comment"># the categorical vocabulary column (thal) previously created, and 1000 hash buckets.</span></span><br><span class="line">crossed_feature = feature_column.crossed_column([age_buckets, thal], hash_bucket_size=<span class="number">1000</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create an indicator column out of the crossed column created above to one-hot encode it.</span></span><br><span class="line">crossed_feature = feature_column.indicator_column(crossed_feature)</span><br><span class="line"></span><br><span class="line">feature_columns.append(crossed_feature)</span><br></pre></td></tr></table></figure>
+<h3 id="create-a-feature-layer">Create a Feature Layer</h3>
+<p>Now that we have defined our feature columns, we will use a <a target="_blank" rel="noopener" href="https://www.tensorflow.org/versions/r2.0/api_docs/python/tf/keras/layers/DenseFeatures">DenseFeatures</a> layer to input them to our Keras model.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># EXERCISE: Create a Keras DenseFeatures layer and pass the feature_columns you just created.</span></span><br><span class="line">feature_layer = tf.keras.layers.DenseFeatures(feature_columns)</span><br></pre></td></tr></table></figure>
+<p>Earlier, we used a small batch size to demonstrate how feature columns worked. We create a new input pipeline with a larger batch size.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">batch_size = <span class="number">32</span></span><br><span class="line">train_ds = df_to_dataset(train, batch_size=batch_size)</span><br><span class="line">val_ds = df_to_dataset(val, shuffle=<span class="literal">False</span>, batch_size=batch_size)</span><br><span class="line">test_ds = df_to_dataset(test, shuffle=<span class="literal">False</span>, batch_size=batch_size)</span><br></pre></td></tr></table></figure>
+<h2 id="create-compile-and-train-the-model">Create, Compile, and Train the Model</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">model = tf.keras.Sequential([</span><br><span class="line">        feature_layer,</span><br><span class="line">        layers.Dense(<span class="number">128</span>, activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">        layers.Dense(<span class="number">128</span>, activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">        layers.Dense(<span class="number">1</span>, activation=<span class="string">&#x27;sigmoid&#x27;</span>)</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">model.<span class="built_in">compile</span>(optimizer=<span class="string">&#x27;adam&#x27;</span>,</span><br><span class="line">              loss=<span class="string">&#x27;binary_crossentropy&#x27;</span>,</span><br><span class="line">              metrics=[<span class="string">&#x27;accuracy&#x27;</span>])</span><br><span class="line"></span><br><span class="line">model.fit(train_ds,</span><br><span class="line">          validation_data=val_ds,</span><br><span class="line">          epochs=<span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>......
+7/7 [==============================] - 0s 45ms/step - loss: 0.2225 - accuracy: 0.8912 - val_loss: 0.6998 - val_accuracy: 0.6939
+Epoch 98/100
+7/7 [==============================] - 0s 55ms/step - loss: 0.2089 - accuracy: 0.9067 - val_loss: 0.6846 - val_accuracy: 0.7143
+Epoch 99/100
+7/7 [==============================] - 0s 44ms/step - loss: 0.2043 - accuracy: 0.8964 - val_loss: 0.7292 - val_accuracy: 0.7347
+Epoch 100/100
+7/7 [==============================] - 0s 55ms/step - loss: 0.2008 - accuracy: 0.9016 - val_loss: 0.7064 - val_accuracy: 0.7143
+
+
+
+
+
+&lt;tensorflow.python.keras.callbacks.History at 0x7f33184937b8&gt;</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">loss, accuracy = model.evaluate(test_ds)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Accuracy&quot;</span>, accuracy)</span><br></pre></td></tr></table></figure>
+<pre><code>2/2 [==============================] - 1s 329ms/step - loss: 0.5511 - accuracy: 0.8197
+Accuracy 0.8196721</code></pre>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Tensorflow/" rel="tag"># Tensorflow</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Use-Tensorflow-Lite-to-do-Inference-on-Raspberry-Pi/2020/02/17/" rel="prev" title="Use Tensorflow Lite to do Inference on Raspberry Pi">
+      <i class="fa fa-chevron-left"></i> Use Tensorflow Lite to do Inference on Raspberry Pi
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Tensorflow-input-pipeline/2020/02/20/" rel="next" title="Tensorflow input pipeline">
+      Tensorflow input pipeline <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#extract---transform---load-etl"><span class="nav-number">1.</span> <span class="nav-text">Extract - Transform - Load (ETL)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#us3-api-for-tensorflow-datasets."><span class="nav-number">2.</span> <span class="nav-text">US3 API for TensorFlow datasets.</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pipeline-for-classifing-structured-data"><span class="nav-number"></span> <span class="nav-text">Pipeline for Classifing Structured Data</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#import-tensorflow-and-other-libraries"><span class="nav-number">1.</span> <span class="nav-text">Import TensorFlow and Other Libraries</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#use-pandas-to-create-a-dataframe"><span class="nav-number">2.</span> <span class="nav-text">Use Pandas to Create a Dataframe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#split-the-dataframe-into-train-validation-and-test-sets"><span class="nav-number">3.</span> <span class="nav-text">Split the Dataframe Into Train, Validation, and Test Sets</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#create-an-input-pipeline-using-tf.data"><span class="nav-number">4.</span> <span class="nav-text">Create an Input Pipeline Using tf.data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#understand-the-input-pipeline"><span class="nav-number">5.</span> <span class="nav-text">Understand the Input Pipeline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#create-several-types-of-feature-columns"><span class="nav-number">6.</span> <span class="nav-text">Create Several Types of Feature Columns</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#numeric-columns"><span class="nav-number">6.1.</span> <span class="nav-text">Numeric Columns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bucketized-columns"><span class="nav-number">6.2.</span> <span class="nav-text">Bucketized Columns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#categorical-columns"><span class="nav-number">6.3.</span> <span class="nav-text">Categorical Columns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#embedding-columns"><span class="nav-number">6.4.</span> <span class="nav-text">Embedding Columns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hashed-feature-columns"><span class="nav-number">6.5.</span> <span class="nav-text">Hashed Feature Columns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crossed-feature-columns"><span class="nav-number">6.6.</span> <span class="nav-text">Crossed Feature Columns</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#choose-which-columns-to-use"><span class="nav-number">7.</span> <span class="nav-text">Choose Which Columns to Use</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#create-a-feature-layer"><span class="nav-number">7.1.</span> <span class="nav-text">Create a Feature Layer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#create-compile-and-train-the-model"><span class="nav-number">8.</span> <span class="nav-text">Create, Compile, and Train the Model</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">268</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

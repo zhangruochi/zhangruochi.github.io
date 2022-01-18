@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Assignment 4 - Average Reward Softmax Actor-Critic Welcome to your Course 3 Programming Assignment 4. In this assignment, you will implement Average Reward Softmax Actor-Critic in the Pendulum Swing-U">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Average Reward Softmax Actor-Critic">
+<meta property="og:url" content="https://zhangruochi.com/Average-Reward-Softmax-Actor-Critic/2020/10/16/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Assignment 4 - Average Reward Softmax Actor-Critic Welcome to your Course 3 Programming Assignment 4. In this assignment, you will implement Average Reward Softmax Actor-Critic in the Pendulum Swing-U">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Average-Reward-Softmax-Actor-Critic/2020/10/16/pendulum_env.png">
+<meta property="og:image" content="https://zhangruochi.com/Average-Reward-Softmax-Actor-Critic/2020/10/16/sensitivity_combined.png">
+<meta property="article:published_time" content="2020-10-16T07:06:08.000Z">
+<meta property="article:modified_time" content="2020-10-16T07:07:03.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Average-Reward-Softmax-Actor-Critic/2020/10/16/pendulum_env.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Average-Reward-Softmax-Actor-Critic/2020/10/16/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Average Reward Softmax Actor-Critic | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Average-Reward-Softmax-Actor-Critic/2020/10/16/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Average Reward Softmax Actor-Critic
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-10-16 15:06:08 / Modified: 15:07:03" itemprop="dateCreated datePublished" datetime="2020-10-16T15:06:08+08:00">2020-10-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Reinforcement-Learning/" itemprop="url" rel="index"><span itemprop="name">Reinforcement Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Average-Reward-Softmax-Actor-Critic/2020/10/16/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Average-Reward-Softmax-Actor-Critic/2020/10/16/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="assignment-4---average-reward-softmax-actor-critic">Assignment 4 - Average Reward Softmax Actor-Critic</h1>
+<p>Welcome to your Course 3 Programming Assignment 4. In this assignment, you will implement <strong>Average Reward Softmax Actor-Critic</strong> in the Pendulum Swing-Up problem that you have seen earlier in the lecture. Through this assignment you will get hands-on experience in implementing actor-critic methods on a continuing task.</p>
+<p><strong>In this assignment, you will:</strong> 1. Implement softmax actor-critic agent on a continuing task using the average reward formulation. 2. Understand how to parameterize the policy as a function to learn, in a discrete action environment. 3. Understand how to (approximately) sample the gradient of this objective to update the actor. 4. Understand how to update the critic using differential TD error.</p>
+<h2 id="pendulum-swing-up-environment">Pendulum Swing-Up Environment</h2>
+<p>In this assignment, we will be using a Pendulum environment, adapted from <a target="_blank" rel="noopener" href="http://www.incompleteideas.net/papers/SSR-98.pdf">Santamaría et al. (1998)</a>. This is also the same environment that we used in the lecture. The diagram below illustrates the environment.</p>
+<p><img src="pendulum_env.png" alt="Drawing" style="width: 400px;"/></p>
+<p>The environment consists of single pendulum that can swing 360 degrees. The pendulum is actuated by applying a torque on its pivot point. The goal is to get the pendulum to balance up-right from its resting position (hanging down at the bottom with no velocity) and maintain it as long as possible. The pendulum can move freely, subject only to gravity and the action applied by the agent.</p>
+<p>The state is 2-dimensional, which consists of the current angle <span class="math inline">\(\beta \in [-\pi, \pi]\)</span> (angle from the vertical upright position) and current angular velocity <span class="math inline">\(\dot{\beta} \in (-2\pi, 2\pi)\)</span>. The angular velocity is constrained in order to avoid damaging the pendulum system. If the angular velocity reaches this limit during simulation, the pendulum is reset to the resting position. The action is the angular acceleration, with discrete values <span class="math inline">\(a \in \{-1, 0, 1\}\)</span> applied to the pendulum. For more details on environment dynamics you can refer to the original paper.</p>
+<p>The goal is to swing-up the pendulum and maintain its upright angle. Hence, the reward is the negative absolute angle from the vertical position: <span class="math inline">\(R_{t} = -|\beta_{t}|\)</span></p>
+<p>Furthermore, since the goal is to reach and maintain a vertical position, there are no terminations nor episodes. Thus this problem can be formulated as a continuing task.</p>
+<p>Similar to the Mountain Car task, the action in this pendulum environment is not strong enough to move the pendulum directly to the desired position. The agent must learn to first move the pendulum away from its desired position and gain enough momentum to successfully swing-up the pendulum. And even after reaching the upright position the agent must learn to continually balance the pendulum in this unstable position.</p>
+<h2 id="packages">Packages</h2>
+<p>You will use the following packages in this assignment.</p>
+<ul>
+<li><a href="www.numpy.org">numpy</a> : Fundamental package for scientific computing with Python.</li>
+<li><a target="_blank" rel="noopener" href="http://matplotlib.org">matplotlib</a> : Library for plotting graphs in Python.</li>
+<li><a target="_blank" rel="noopener" href="http://www.jmlr.org/papers/v10/tanner09a.html">RL-Glue</a> : Library for reinforcement learning experiments.</li>
+<li><a target="_blank" rel="noopener" href="https://alexhagen.github.io/jdc/">jdc</a> : Jupyter magic that allows defining classes over multiple jupyter notebook cells.</li>
+<li><a target="_blank" rel="noopener" href="https://tqdm.github.io/">tqdm</a> : A package to display progress bar when running experiments</li>
+<li>plot_script : custom script to plot results</li>
+<li><a target="_blank" rel="noopener" href="http://incompleteideas.net/tiles/tiles3.html">tiles3</a> : A package that implements tile-coding.</li>
+<li>pendulum_env : Pendulum Swing-up Environment</li>
+</ul>
+<p><strong>Please do not import other libraries</strong> — this will break the autograder.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Do not modify this cell!</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Import necessary libraries</span></span><br><span class="line"><span class="comment"># DO NOT IMPORT OTHER LIBRARIES - This will break the autograder.</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> rl_glue <span class="keyword">import</span> RLGlue</span><br><span class="line"><span class="keyword">from</span> pendulum_env <span class="keyword">import</span> PendulumEnvironment</span><br><span class="line"><span class="keyword">from</span> agent <span class="keyword">import</span> BaseAgent</span><br><span class="line"><span class="keyword">import</span> plot_script</span><br><span class="line"><span class="keyword">import</span> tiles3 <span class="keyword">as</span> tc</span><br></pre></td></tr></table></figure>
+<h2 id="section-1-create-tile-coding-helper-function">Section 1: Create Tile Coding Helper Function</h2>
+<p>In this section, we are going to build a tile coding class for our agent that will make it easier to make calls to our tile coder.</p>
+<p>Tile-coding is introduced in Section 9.5.4 of the textbook as a way to create features that can both provide good generalization and discrimination. We have already used it in our last programming assignment as well.</p>
+<p>Similar to the last programming assignment, we are going to make a function specific for tile coding for our Pendulum Swing-up environment. We will also use the <a target="_blank" rel="noopener" href="http://incompleteideas.net/tiles/tiles3.html">Tiles3 library</a>.</p>
+<p>To get the tile coder working we need to:</p>
+<pre><code>1) create an index hash table using tc.IHT(), 
+2) scale the inputs for the tile coder based on number of tiles and range of values each input could take
+3) call tc.tileswrap to get active tiles back.</code></pre>
+<p>However, we need to make one small change to this tile coder. Note that in this environment the state space contains angle, which is between <span class="math inline">\([-\pi, \pi]\)</span>. If we tile-code this state space in the usual way, the agent may think the value of states corresponding to an angle of <span class="math inline">\(-\pi\)</span> is very different from angle of <span class="math inline">\(\pi\)</span> when in fact they are the same! To remedy this and allow generalization between angle <span class="math inline">\(= -\pi\)</span> and angle <span class="math inline">\(= \pi\)</span>, we need to use <strong>wrap tile coder</strong>.</p>
+<p>The usage of wrap tile coder is almost identical to the original tile coder, except that we also need to provide the <code>wrapwidth</code> argument for the dimension we want to wrap over (hence only for angle, and <code>None</code> for angular velocity). More details of wrap tile coder is also provided in <a target="_blank" rel="noopener" href="http://incompleteideas.net/tiles/tiles3.html">Tiles3 library</a>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -----------</span></span><br><span class="line"><span class="comment"># Graded Cell</span></span><br><span class="line"><span class="comment"># -----------</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PendulumTileCoder</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, iht_size=<span class="number">4096</span>, num_tilings=<span class="number">32</span>, num_tiles=<span class="number">8</span></span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Initializes the MountainCar Tile Coder</span></span><br><span class="line"><span class="string">        Initializers:</span></span><br><span class="line"><span class="string">        iht_size -- int, the size of the index hash table, typically a power of 2</span></span><br><span class="line"><span class="string">        num_tilings -- int, the number of tilings</span></span><br><span class="line"><span class="string">        num_tiles -- int, the number of tiles. Here both the width and height of the tiles are the same</span></span><br><span class="line"><span class="string">                            </span></span><br><span class="line"><span class="string">        Class Variables:</span></span><br><span class="line"><span class="string">        self.iht -- tc.IHT, the index hash table that the tile coder will use</span></span><br><span class="line"><span class="string">        self.num_tilings -- int, the number of tilings the tile coder will use</span></span><br><span class="line"><span class="string">        self.num_tiles -- int, the number of tiles the tile coder will use</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        </span><br><span class="line">        self.num_tilings = num_tilings</span><br><span class="line">        self.num_tiles = num_tiles </span><br><span class="line">        self.iht = tc.IHT(iht_size)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_tiles</span>(<span class="params">self, angle, ang_vel</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Takes in an angle and angular velocity from the pendulum environment</span></span><br><span class="line"><span class="string">        and returns a numpy array of active tiles.</span></span><br><span class="line"><span class="string">        </span></span><br><span class="line"><span class="string">        Arguments:</span></span><br><span class="line"><span class="string">        angle -- float, the angle of the pendulum between -np.pi and np.pi</span></span><br><span class="line"><span class="string">        ang_vel -- float, the angular velocity of the agent between -2*np.pi and 2*np.pi</span></span><br><span class="line"><span class="string">        </span></span><br><span class="line"><span class="string">        returns:</span></span><br><span class="line"><span class="string">        tiles -- np.array, active tiles</span></span><br><span class="line"><span class="string">        </span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">### Use the ranges above and scale the angle and angular velocity between [0, 1]</span></span><br><span class="line">        <span class="comment"># then multiply by the number of tiles so they are scaled between [0, self.num_tiles]</span></span><br><span class="line">        </span><br><span class="line">        angle_scaled = <span class="number">0</span></span><br><span class="line">        ang_vel_scaled = <span class="number">0</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># ----------------</span></span><br><span class="line">        <span class="comment"># your code here</span></span><br><span class="line">        angle_scaled = (angle + np.pi) / (np.pi + np.pi) * self.num_tiles</span><br><span class="line">        ang_vel_scaled = (ang_vel + <span class="number">2</span>*np.pi) / ( <span class="number">2</span>*np.pi + <span class="number">2</span>*np.pi) * self.num_tiles</span><br><span class="line">        <span class="comment"># ----------------</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Get tiles by calling tc.tileswrap method</span></span><br><span class="line">        <span class="comment"># wrapwidths specify which dimension to wrap over and its wrapwidth</span></span><br><span class="line">        tiles = tc.tileswrap(self.iht, self.num_tilings, [angle_scaled, ang_vel_scaled], wrapwidths=[self.num_tiles, <span class="literal">False</span>])</span><br><span class="line">                    </span><br><span class="line">        <span class="keyword">return</span> np.array(tiles)</span><br></pre></td></tr></table></figure>
+<p>Run the following code to verify <code>PendulumTilecoder</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -----------</span></span><br><span class="line"><span class="comment"># Tested Cell</span></span><br><span class="line"><span class="comment"># -----------</span></span><br><span class="line"><span class="comment"># The contents of the cell will be tested by the autograder.</span></span><br><span class="line"><span class="comment"># If they do not pass here, they will not pass there.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Test Code for PendulumTileCoder ##</span></span><br><span class="line"><span class="comment"># Your tile coder should also work for other num. tilings and num. tiles</span></span><br><span class="line">angles = np.linspace(-np.pi, np.pi, num=<span class="number">5</span>)</span><br><span class="line">vels = np.linspace(-<span class="number">2</span> * np.pi, <span class="number">2</span> * np.pi, num=<span class="number">5</span>)</span><br><span class="line">test_obs = <span class="built_in">list</span>(itertools.product(angles, vels))</span><br><span class="line"></span><br><span class="line">pdtc = PendulumTileCoder(iht_size=<span class="number">4096</span>, num_tilings=<span class="number">8</span>, num_tiles=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">result=[]</span><br><span class="line"><span class="keyword">for</span> obs <span class="keyword">in</span> test_obs:</span><br><span class="line">    angle, ang_vel = obs</span><br><span class="line">    tiles = pdtc.get_tiles(angle=angle, ang_vel=ang_vel)</span><br><span class="line">    result.append(tiles)</span><br><span class="line">    </span><br><span class="line">expected = np.array([</span><br><span class="line">    [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>],</span><br><span class="line">    [<span class="number">0</span>, <span class="number">1</span>, <span class="number">8</span>, <span class="number">3</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">6</span>, <span class="number">11</span>],</span><br><span class="line">    [<span class="number">12</span>, <span class="number">13</span>, <span class="number">8</span>, <span class="number">14</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">11</span>],</span><br><span class="line">    [<span class="number">12</span>, <span class="number">13</span>, <span class="number">16</span>, <span class="number">14</span>, <span class="number">17</span>, <span class="number">18</span>, <span class="number">15</span>, <span class="number">19</span>],</span><br><span class="line">    [<span class="number">20</span>, <span class="number">21</span>, <span class="number">16</span>, <span class="number">22</span>, <span class="number">17</span>, <span class="number">18</span>, <span class="number">23</span>, <span class="number">19</span>],</span><br><span class="line">    [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">24</span>, <span class="number">25</span>, <span class="number">26</span>, <span class="number">27</span>],</span><br><span class="line">    [<span class="number">0</span>, <span class="number">1</span>, <span class="number">8</span>, <span class="number">3</span>, <span class="number">28</span>, <span class="number">29</span>, <span class="number">26</span>, <span class="number">30</span>],</span><br><span class="line">    [<span class="number">12</span>, <span class="number">13</span>, <span class="number">8</span>, <span class="number">14</span>, <span class="number">28</span>, <span class="number">29</span>, <span class="number">31</span>, <span class="number">30</span>],</span><br><span class="line">    [<span class="number">12</span>, <span class="number">13</span>, <span class="number">16</span>, <span class="number">14</span>, <span class="number">32</span>, <span class="number">33</span>, <span class="number">31</span>, <span class="number">34</span>],</span><br><span class="line">    [<span class="number">20</span>, <span class="number">21</span>, <span class="number">16</span>, <span class="number">22</span>, <span class="number">32</span>, <span class="number">33</span>, <span class="number">35</span>, <span class="number">34</span>],</span><br><span class="line">    [<span class="number">36</span>, <span class="number">37</span>, <span class="number">38</span>, <span class="number">39</span>, <span class="number">24</span>, <span class="number">25</span>, <span class="number">26</span>, <span class="number">27</span>],</span><br><span class="line">    [<span class="number">36</span>, <span class="number">37</span>, <span class="number">40</span>, <span class="number">39</span>, <span class="number">28</span>, <span class="number">29</span>, <span class="number">26</span>, <span class="number">30</span>],</span><br><span class="line">    [<span class="number">41</span>, <span class="number">42</span>, <span class="number">40</span>, <span class="number">43</span>, <span class="number">28</span>, <span class="number">29</span>, <span class="number">31</span>, <span class="number">30</span>],</span><br><span class="line">    [<span class="number">41</span>, <span class="number">42</span>, <span class="number">44</span>, <span class="number">43</span>, <span class="number">32</span>, <span class="number">33</span>, <span class="number">31</span>, <span class="number">34</span>],</span><br><span class="line">    [<span class="number">45</span>, <span class="number">46</span>, <span class="number">44</span>, <span class="number">47</span>, <span class="number">32</span>, <span class="number">33</span>, <span class="number">35</span>, <span class="number">34</span>],</span><br><span class="line">    [<span class="number">36</span>, <span class="number">37</span>, <span class="number">38</span>, <span class="number">39</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>],</span><br><span class="line">    [<span class="number">36</span>, <span class="number">37</span>, <span class="number">40</span>, <span class="number">39</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">6</span>, <span class="number">11</span>],</span><br><span class="line">    [<span class="number">41</span>, <span class="number">42</span>, <span class="number">40</span>, <span class="number">43</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">11</span>],</span><br><span class="line">    [<span class="number">41</span>, <span class="number">42</span>, <span class="number">44</span>, <span class="number">43</span>, <span class="number">17</span>, <span class="number">18</span>, <span class="number">15</span>, <span class="number">19</span>],</span><br><span class="line">    [<span class="number">45</span>, <span class="number">46</span>, <span class="number">44</span>, <span class="number">47</span>, <span class="number">17</span>, <span class="number">18</span>, <span class="number">23</span>, <span class="number">19</span>],</span><br><span class="line">    [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>],</span><br><span class="line">    [<span class="number">0</span>, <span class="number">1</span>, <span class="number">8</span>, <span class="number">3</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">6</span>, <span class="number">11</span>],</span><br><span class="line">    [<span class="number">12</span>, <span class="number">13</span>, <span class="number">8</span>, <span class="number">14</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">11</span>],</span><br><span class="line">    [<span class="number">12</span>, <span class="number">13</span>, <span class="number">16</span>, <span class="number">14</span>, <span class="number">17</span>, <span class="number">18</span>, <span class="number">15</span>, <span class="number">19</span>],</span><br><span class="line">    [<span class="number">20</span>, <span class="number">21</span>, <span class="number">16</span>, <span class="number">22</span>, <span class="number">17</span>, <span class="number">18</span>, <span class="number">23</span>, <span class="number">19</span>],</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="keyword">assert</span> np.<span class="built_in">all</span>(expected == np.array(result))</span><br></pre></td></tr></table></figure>
+<h2 id="section-2-create-average-reward-softmax-actor-critic-agent">Section 2: Create Average Reward Softmax Actor-Critic Agent</h2>
+<p>Now that we implemented PendulumTileCoder let's create the agent that interacts with the environment. We will implement the same average reward Actor-Critic algorithm presented in the videos.</p>
+<p>This agent has two components: an Actor and a Critic. The Actor learns a parameterized policy while the Critic learns a state-value function. The environment has discrete actions; your Actor implementation will use a softmax policy with exponentiated action-preferences. The Actor learns with the sample-based estimate for the gradient of the average reward objective. The Critic learns using the average reward version of the semi-gradient TD(0) algorithm.</p>
+<p>In this section, you will be implementing <code>agent_policy</code>, <code>agent_start</code>, <code>agent_step</code>, and <code>agent_end</code>.</p>
+<h2 id="section-2-1-implement-helper-functions">Section 2-1: Implement Helper Functions</h2>
+<p>Let's first define a couple of useful helper functions.</p>
+<h2 id="section-2-1a-compute-softmax-probability">Section 2-1a: Compute Softmax Probability</h2>
+<p>In this part you will implement <code>compute_softmax_prob</code>.</p>
+<p>This function computes softmax probability for all actions, given actor weights <code>actor_w</code> and active tiles <code>tiles</code>. This function will be later used in <code>agent_policy</code> to sample appropriate action.</p>
+<p>First, recall how the softmax policy is represented from state-action preferences: <span class="math inline">\(\large \pi(a|s, \mathbf{\theta}) \doteq \frac{e^{h(s,a,\mathbf{\theta})}}{\sum_{b}e^{h(s,b,\mathbf{\theta})}}\)</span>.</p>
+<p><strong>state-action preference</strong> is defined as <span class="math inline">\(h(s,a, \mathbf{\theta}) \doteq \mathbf{\theta}^T \mathbf{x}_h(s,a)\)</span>.</p>
+<p>Given active tiles <code>tiles</code> for state <code>s</code>, state-action preference <span class="math inline">\(\mathbf{\theta}^T \mathbf{x}_h(s,a)\)</span> can be computed by <code>actor_w[a][tiles].sum()</code>.</p>
+<p>We will also use <strong>exp-normalize trick</strong>, in order to avoid possible numerical overflow. Consider the following:</p>
+<p><span class="math inline">\(\large \pi(a|s, \mathbf{\theta}) \doteq \frac{e^{h(s,a,\mathbf{\theta})}}{\sum_{b}e^{h(s,b,\mathbf{\theta})}} = \frac{e^{h(s,a,\mathbf{\theta}) - c} e^c}{\sum_{b}e^{h(s,b,\mathbf{\theta}) - c} e^c} = \frac{e^{h(s,a,\mathbf{\theta}) - c}}{\sum_{b}e^{h(s,b,\mathbf{\theta}) - c}}\)</span></p>
+<p><span class="math inline">\(\pi(\cdot|s, \mathbf{\theta})\)</span> is shift-invariant, and the policy remains the same when we subtract a constant <span class="math inline">\(c \in \mathbb{R}\)</span> from state-action preferences.</p>
+<p>Normally we use <span class="math inline">\(c = \max_b h(s,b, \mathbf{\theta})\)</span>, to prevent any overflow due to exponentiating large numbers.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -----------</span></span><br><span class="line"><span class="comment"># Graded Cell</span></span><br><span class="line"><span class="comment"># -----------</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute_softmax_prob</span>(<span class="params">actor_w, tiles</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Computes softmax probability for all actions</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">    actor_w - np.array, an array of actor weights</span></span><br><span class="line"><span class="string">    tiles - np.array, an array of active tiles</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    softmax_prob - np.array, an array of size equal to num. actions, and sums to 1.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># First compute the list of state-action preferences (1~2 lines)</span></span><br><span class="line">    <span class="comment"># state_action_preferences = ? (list of size 3)</span></span><br><span class="line">    state_action_preferences = []</span><br><span class="line">    <span class="comment"># ----------------</span></span><br><span class="line">    <span class="comment"># your code here</span></span><br><span class="line">    state_action_preferences = actor_w[:,tiles].<span class="built_in">sum</span>(axis = <span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># ----------------</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Set the constant c by finding the maximum of state-action preferences (use np.max) (1 line)</span></span><br><span class="line">    <span class="comment"># c = ? (float)</span></span><br><span class="line">    <span class="comment"># ----------------</span></span><br><span class="line">    <span class="comment"># your code here</span></span><br><span class="line">    c = np.<span class="built_in">max</span>(state_action_preferences)</span><br><span class="line">    <span class="comment"># ----------------</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Compute the numerator by subtracting c from state-action preferences and exponentiating it (use np.exp) (1 line)</span></span><br><span class="line">    <span class="comment"># numerator = ? (list of size 3)</span></span><br><span class="line">    <span class="comment"># ----------------</span></span><br><span class="line">    <span class="comment"># your code here</span></span><br><span class="line">    numerator = np.exp( state_action_preferences - c)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># ----------------</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Next compute the denominator by summing the values in the numerator (use np.sum) (1 line)</span></span><br><span class="line">    <span class="comment"># denominator = ? (float)</span></span><br><span class="line">    <span class="comment"># ----------------</span></span><br><span class="line">    <span class="comment"># your code here</span></span><br><span class="line">    denominator = np.<span class="built_in">sum</span>(numerator)</span><br><span class="line">    <span class="comment"># ----------------</span></span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Create a probability array by dividing each element in numerator array by denominator (1 line)</span></span><br><span class="line">    <span class="comment"># We will store this probability array in self.softmax_prob as it will be useful later when updating the Actor</span></span><br><span class="line">    <span class="comment"># softmax_prob = ? (list of size 3)</span></span><br><span class="line">    <span class="comment"># ----------------</span></span><br><span class="line">    <span class="comment"># your code here</span></span><br><span class="line">    softmax_prob = numerator / denominator</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># ----------------</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> softmax_prob</span><br></pre></td></tr></table></figure>
+<p>Run the following code to verify <code>compute_softmax_prob</code>.</p>
+<p>We will test the method by building a softmax policy from state-action preferences [-1,1,2].</p>
+<p>The sampling probability should then roughly match <span class="math inline">\([\frac{e^{-1}}{e^{-1}+e^1+e^2}, \frac{e^{1}}{e^{-1}+e^1+e^2}, \frac{e^2}{e^{-1}+e^1+e^2}] \approx\)</span> [0.0351, 0.2595, 0.7054]</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -----------</span></span><br><span class="line"><span class="comment"># Tested Cell</span></span><br><span class="line"><span class="comment"># -----------</span></span><br><span class="line"><span class="comment"># The contents of the cell will be tested by the autograder.</span></span><br><span class="line"><span class="comment"># If they do not pass here, they will not pass there.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># set tile-coder</span></span><br><span class="line">iht_size = <span class="number">4096</span></span><br><span class="line">num_tilings = <span class="number">8</span></span><br><span class="line">num_tiles = <span class="number">8</span></span><br><span class="line">test_tc = PendulumTileCoder(iht_size=iht_size, num_tilings=num_tilings, num_tiles=num_tiles)</span><br><span class="line"></span><br><span class="line">num_actions = <span class="number">3</span></span><br><span class="line">actions = <span class="built_in">list</span>(<span class="built_in">range</span>(num_actions))</span><br><span class="line">actor_w = np.zeros((<span class="built_in">len</span>(actions), iht_size))</span><br><span class="line"></span><br><span class="line"><span class="comment"># setting actor weights such that state-action preferences are always [-1, 1, 2]</span></span><br><span class="line">actor_w[<span class="number">0</span>] = -<span class="number">1.</span>/num_tilings</span><br><span class="line">actor_w[<span class="number">1</span>] = <span class="number">1.</span>/num_tilings</span><br><span class="line">actor_w[<span class="number">2</span>] = <span class="number">2.</span>/num_tilings</span><br><span class="line"></span><br><span class="line"><span class="comment"># obtain active_tiles from state</span></span><br><span class="line">state = [-np.pi, <span class="number">0.</span>]</span><br><span class="line">angle, ang_vel = state</span><br><span class="line">active_tiles = test_tc.get_tiles(angle, ang_vel)</span><br><span class="line"></span><br><span class="line"><span class="comment"># compute softmax probability</span></span><br><span class="line">softmax_prob = compute_softmax_prob(actor_w, active_tiles) </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;softmax probability: &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(softmax_prob))</span><br><span class="line"></span><br><span class="line"><span class="keyword">assert</span> np.allclose(softmax_prob, [<span class="number">0.03511903</span>, <span class="number">0.25949646</span>, <span class="number">0.70538451</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>softmax probability: [0.03511903 0.25949646 0.70538451]</code></pre>
+<h2 id="section-2-2-implement-agent-methods">Section 2-2: Implement Agent Methods</h2>
+<p>Let's first define methods that initialize the agent. <code>agent_init()</code> initializes all the variables that the agent will need.</p>
+<p>Now that we have implemented helper functions, let's create an agent. In this part, you will implement <code>agent_start()</code> and <code>agent_step()</code>. We do not need to implement <code>agent_end()</code> because there is no termination in our continuing task.</p>
+<p><code>compute_softmax_prob()</code> is used in <code>agent_policy()</code>, which in turn will be used in <code>agent_start()</code> and <code>agent_step()</code>. We have implemented <code>agent_policy()</code> for you.</p>
+<p>When performing updates to the Actor and Critic, recall their respective updates in the Actor-Critic algorithm video.</p>
+<p>We approximate <span class="math inline">\(q_\pi\)</span> in the Actor update using one-step bootstrapped return(<span class="math inline">\(R_{t+1} - \bar{R} + \hat{v}(S_{t+1}, \mathbf{w})\)</span>) subtracted by current state-value(<span class="math inline">\(\hat{v}(S_{t}, \mathbf{w})\)</span>), equivalent to TD error <span class="math inline">\(\delta\)</span>.</p>
+<p><span class="math inline">\(\delta_t = R_{t+1} - \bar{R} + \hat{v}(S_{t+1}, \mathbf{w}) - \hat{v}(S_{t}, \mathbf{w}) \hspace{6em} (1)\)</span></p>
+<p><strong>Average Reward update rule</strong>: <span class="math inline">\(\bar{R} \leftarrow \bar{R} + \alpha^{\bar{R}}\delta \hspace{4.3em} (2)\)</span></p>
+<p><strong>Critic weight update rule</strong>: <span class="math inline">\(\mathbf{w} \leftarrow \mathbf{w} + \alpha^{\mathbf{w}}\delta\nabla \hat{v}(s,\mathbf{w}) \hspace{2.5em} (3)\)</span></p>
+<p><strong>Actor weight update rule</strong>: <span class="math inline">\(\mathbf{\theta} \leftarrow \mathbf{\theta} + \alpha^{\mathbf{\theta}}\delta\nabla ln \pi(A|S,\mathbf{\theta}) \hspace{1.4em} (4)\)</span></p>
+<p>However, since we are using linear function approximation and parameterizing a softmax policy, the above update rule can be further simplified using:</p>
+<p><span class="math inline">\(\nabla \hat{v}(s,\mathbf{w}) = \mathbf{x}(s) \hspace{14.2em} (5)\)</span></p>
+<p><span class="math inline">\(\nabla ln \pi(A|S,\mathbf{\theta}) = \mathbf{x}_h(s,a) - \sum_b \pi(b|s, \mathbf{\theta})\mathbf{x}_h(s,b) \hspace{3.3em} (6)\)</span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -----------</span></span><br><span class="line"><span class="comment"># Graded Cell</span></span><br><span class="line"><span class="comment"># -----------</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ActorCriticSoftmaxAgent</span>(<span class="params">BaseAgent</span>):</span> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.rand_generator = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        self.actor_step_size = <span class="literal">None</span></span><br><span class="line">        self.critic_step_size = <span class="literal">None</span></span><br><span class="line">        self.avg_reward_step_size = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        self.tc = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        self.avg_reward = <span class="literal">None</span></span><br><span class="line">        self.critic_w = <span class="literal">None</span></span><br><span class="line">        self.actor_w = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        self.actions = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        self.softmax_prob = <span class="literal">None</span></span><br><span class="line">        self.prev_tiles = <span class="literal">None</span></span><br><span class="line">        self.last_action = <span class="literal">None</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">agent_init</span>(<span class="params">self, agent_info=&#123;&#125;</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;Setup for the agent called when the experiment first starts.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Set parameters needed to setup the semi-gradient TD(0) state aggregation agent.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Assume agent_info dict contains:</span></span><br><span class="line"><span class="string">        &#123;</span></span><br><span class="line"><span class="string">            &quot;iht_size&quot;: int</span></span><br><span class="line"><span class="string">            &quot;num_tilings&quot;: int,</span></span><br><span class="line"><span class="string">            &quot;num_tiles&quot;: int,</span></span><br><span class="line"><span class="string">            &quot;actor_step_size&quot;: float,</span></span><br><span class="line"><span class="string">            &quot;critic_step_size&quot;: float,</span></span><br><span class="line"><span class="string">            &quot;avg_reward_step_size&quot;: float,</span></span><br><span class="line"><span class="string">            &quot;num_actions&quot;: int,</span></span><br><span class="line"><span class="string">            &quot;seed&quot;: int</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># set random seed for each run</span></span><br><span class="line">        self.rand_generator = np.random.RandomState(agent_info.get(<span class="string">&quot;seed&quot;</span>)) </span><br><span class="line"></span><br><span class="line">        iht_size = agent_info.get(<span class="string">&quot;iht_size&quot;</span>)</span><br><span class="line">        num_tilings = agent_info.get(<span class="string">&quot;num_tilings&quot;</span>)</span><br><span class="line">        num_tiles = agent_info.get(<span class="string">&quot;num_tiles&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># initialize self.tc to the tile coder we created</span></span><br><span class="line">        self.tc = PendulumTileCoder(iht_size=iht_size, num_tilings=num_tilings, num_tiles=num_tiles)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># set step-size accordingly (we normally divide actor and critic step-size by num. tilings (p.217-218 of textbook))</span></span><br><span class="line">        self.actor_step_size = agent_info.get(<span class="string">&quot;actor_step_size&quot;</span>)/num_tilings</span><br><span class="line">        self.critic_step_size = agent_info.get(<span class="string">&quot;critic_step_size&quot;</span>)/num_tilings</span><br><span class="line">        self.avg_reward_step_size = agent_info.get(<span class="string">&quot;avg_reward_step_size&quot;</span>)</span><br><span class="line"></span><br><span class="line">        self.actions = <span class="built_in">list</span>(<span class="built_in">range</span>(agent_info.get(<span class="string">&quot;num_actions&quot;</span>)))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Set initial values of average reward, actor weights, and critic weights</span></span><br><span class="line">        <span class="comment"># We initialize actor weights to three times the iht_size. </span></span><br><span class="line">        <span class="comment"># Recall this is because we need to have one set of weights for each of the three actions.</span></span><br><span class="line">        self.avg_reward = <span class="number">0.0</span></span><br><span class="line">        self.actor_w = np.zeros((<span class="built_in">len</span>(self.actions), iht_size))</span><br><span class="line">        self.critic_w = np.zeros(iht_size)</span><br><span class="line"></span><br><span class="line">        self.softmax_prob = <span class="literal">None</span></span><br><span class="line">        self.prev_tiles = <span class="literal">None</span></span><br><span class="line">        self.last_action = <span class="literal">None</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">agent_policy</span>(<span class="params">self, active_tiles</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot; policy of the agent</span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            active_tiles (Numpy array): active tiles returned by tile coder</span></span><br><span class="line"><span class="string">            </span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">            The action selected according to the policy</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># compute softmax probability</span></span><br><span class="line">        softmax_prob = compute_softmax_prob(self.actor_w, active_tiles)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Sample action from the softmax probability array</span></span><br><span class="line">        <span class="comment"># self.rand_generator.choice() selects an element from the array with the specified probability</span></span><br><span class="line">        chosen_action = self.rand_generator.choice(self.actions, p=softmax_prob)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># save softmax_prob as it will be useful later when updating the Actor</span></span><br><span class="line">        self.softmax_prob = softmax_prob</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> chosen_action</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">agent_start</span>(<span class="params">self, state</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;The first method called when the experiment starts, called after</span></span><br><span class="line"><span class="string">        the environment starts.</span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            state (Numpy array): the state from the environment&#x27;s env_start function.</span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">            The first action the agent takes.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">        angle, ang_vel = state</span><br><span class="line"></span><br><span class="line">        <span class="comment">### Use self.tc to get active_tiles using angle and ang_vel (2 lines)</span></span><br><span class="line">        <span class="comment"># set current_action by calling self.agent_policy with active_tiles</span></span><br><span class="line">        <span class="comment"># active_tiles = ?</span></span><br><span class="line">        <span class="comment"># current_action = ?</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># ----------------</span></span><br><span class="line">        <span class="comment"># your code here</span></span><br><span class="line">        active_tiles = self.tc.get_tiles(angle, ang_vel)</span><br><span class="line">        current_action = self.agent_policy(active_tiles)</span><br><span class="line">        <span class="comment"># ----------------</span></span><br><span class="line"></span><br><span class="line">        self.last_action = current_action</span><br><span class="line">        self.prev_tiles = np.copy(active_tiles)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> self.last_action</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">agent_step</span>(<span class="params">self, reward, state</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;A step taken by the agent.</span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            reward (float): the reward received for taking the last action taken</span></span><br><span class="line"><span class="string">            state (Numpy array): the state from the environment&#x27;s step based on </span></span><br><span class="line"><span class="string">                                where the agent ended up after the</span></span><br><span class="line"><span class="string">                                last step.</span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">            The action the agent is taking.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">        angle, ang_vel = state</span><br><span class="line"></span><br><span class="line">        <span class="comment">### Use self.tc to get active_tiles using angle and ang_vel (1 line)</span></span><br><span class="line">        <span class="comment"># active_tiles = ?    </span></span><br><span class="line">        <span class="comment"># ----------------</span></span><br><span class="line">        <span class="comment"># your code here</span></span><br><span class="line">        </span><br><span class="line">        active_tiles = self.tc.get_tiles(angle, ang_vel)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># ----------------</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">### Compute delta using Equation (1) (1 line)</span></span><br><span class="line">        <span class="comment"># delta = ?</span></span><br><span class="line">        <span class="comment"># ----------------</span></span><br><span class="line">        <span class="comment"># your code here</span></span><br><span class="line">    </span><br><span class="line">        delta = reward - self.avg_reward + self.critic_w[active_tiles].<span class="built_in">sum</span>() - self.critic_w[self.last_action].<span class="built_in">sum</span>()</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># ----------------</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">### update average reward using Equation (2) (1 line)</span></span><br><span class="line">        <span class="comment"># self.avg_reward += ?</span></span><br><span class="line">        <span class="comment"># ----------------</span></span><br><span class="line">        <span class="comment"># your code here</span></span><br><span class="line">        self.avg_reward += self.avg_reward_step_size * delta</span><br><span class="line">        <span class="comment"># ----------------</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># update critic weights using Equation (3) and (5) (1 line)</span></span><br><span class="line">        <span class="comment"># self.critic_w[self.prev_tiles] += ?</span></span><br><span class="line">        <span class="comment"># ----------------</span></span><br><span class="line">        <span class="comment"># your code here</span></span><br><span class="line">        self.critic_w[self.prev_tiles] += self.critic_step_size * delta</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># ----------------</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># update actor weights using Equation (4) and (6)</span></span><br><span class="line">        <span class="comment"># We use self.softmax_prob saved from the previous timestep</span></span><br><span class="line">        <span class="comment"># We leave it as an exercise to verify that the code below corresponds to the equation.</span></span><br><span class="line">        <span class="keyword">for</span> a <span class="keyword">in</span> self.actions:</span><br><span class="line">            <span class="keyword">if</span> a == self.last_action:</span><br><span class="line">                self.actor_w[a][self.prev_tiles] += self.actor_step_size * delta * (<span class="number">1</span> - self.softmax_prob[a])</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                self.actor_w[a][self.prev_tiles] += self.actor_step_size * delta * (<span class="number">0</span> - self.softmax_prob[a])</span><br><span class="line"></span><br><span class="line">        <span class="comment">### set current_action by calling self.agent_policy with active_tiles (1 line)</span></span><br><span class="line">        <span class="comment"># current_action = ? </span></span><br><span class="line">        <span class="comment"># ----------------</span></span><br><span class="line">        <span class="comment"># your code here</span></span><br><span class="line">        current_action = self.agent_policy(active_tiles)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># ----------------</span></span><br><span class="line"></span><br><span class="line">        self.prev_tiles = active_tiles</span><br><span class="line">        self.last_action = current_action</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> self.last_action</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">agent_message</span>(<span class="params">self, message</span>):</span></span><br><span class="line">        <span class="keyword">if</span> message == <span class="string">&#x27;get avg reward&#x27;</span>:</span><br><span class="line">            <span class="keyword">return</span> self.avg_reward</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>Run the following code to verify <code>agent_start()</code>. Although there is randomness due to <code>self.rand_generator.choice()</code> in <code>agent_policy()</code>, we control the seed so your output should match the expected output.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -----------</span></span><br><span class="line"><span class="comment"># Tested Cell</span></span><br><span class="line"><span class="comment"># -----------</span></span><br><span class="line"><span class="comment"># The contents of the cell will be tested by the autograder.</span></span><br><span class="line"><span class="comment"># If they do not pass here, they will not pass there.</span></span><br><span class="line"></span><br><span class="line">agent_info = &#123;</span><br><span class="line">    <span class="string">&quot;iht_size&quot;</span>: <span class="number">4096</span>,</span><br><span class="line">    <span class="string">&quot;num_tilings&quot;</span>: <span class="number">8</span>,</span><br><span class="line">    <span class="string">&quot;num_tiles&quot;</span>: <span class="number">8</span>,</span><br><span class="line">    <span class="string">&quot;actor_step_size&quot;</span>: <span class="number">1e-1</span>,</span><br><span class="line">    <span class="string">&quot;critic_step_size&quot;</span>: <span class="number">1e-0</span>,</span><br><span class="line">    <span class="string">&quot;avg_reward_step_size&quot;</span>: <span class="number">1e-2</span>,</span><br><span class="line">    <span class="string">&quot;num_actions&quot;</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="string">&quot;seed&quot;</span>: <span class="number">99</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test_agent = ActorCriticSoftmaxAgent()</span><br><span class="line">test_agent.agent_init(agent_info)</span><br><span class="line"></span><br><span class="line">state = [-np.pi, <span class="number">0.</span>]</span><br><span class="line"></span><br><span class="line">test_agent.agent_start(state)</span><br><span class="line"></span><br><span class="line"><span class="keyword">assert</span> np.<span class="built_in">all</span>(test_agent.prev_tiles == [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>])</span><br><span class="line"><span class="keyword">assert</span> test_agent.last_action == <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;agent active_tiles: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(test_agent.prev_tiles))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;agent selected action: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(test_agent.last_action))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>agent active_tiles: [0 1 2 3 4 5 6 7]
+agent selected action: 2</code></pre>
+<p>Run the following code to verify <code>agent_step()</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -----------</span></span><br><span class="line"><span class="comment"># Tested Cell</span></span><br><span class="line"><span class="comment"># -----------</span></span><br><span class="line"><span class="comment"># The contents of the cell will be tested by the autograder.</span></span><br><span class="line"><span class="comment"># If they do not pass here, they will not pass there.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Make sure agent_start() and agent_policy() are working correctly first.</span></span><br><span class="line"><span class="comment"># agent_step() should work correctly for other arbitrary state transitions in addition to this test case.</span></span><br><span class="line"></span><br><span class="line">env_info = &#123;<span class="string">&quot;seed&quot;</span>: <span class="number">99</span>&#125;</span><br><span class="line">agent_info = &#123;</span><br><span class="line">    <span class="string">&quot;iht_size&quot;</span>: <span class="number">4096</span>,</span><br><span class="line">    <span class="string">&quot;num_tilings&quot;</span>: <span class="number">8</span>,</span><br><span class="line">    <span class="string">&quot;num_tiles&quot;</span>: <span class="number">8</span>,</span><br><span class="line">    <span class="string">&quot;actor_step_size&quot;</span>: <span class="number">1e-1</span>,</span><br><span class="line">    <span class="string">&quot;critic_step_size&quot;</span>: <span class="number">1e-0</span>,</span><br><span class="line">    <span class="string">&quot;avg_reward_step_size&quot;</span>: <span class="number">1e-2</span>,</span><br><span class="line">    <span class="string">&quot;num_actions&quot;</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="string">&quot;seed&quot;</span>: <span class="number">99</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">rl_glue = RLGlue(PendulumEnvironment, ActorCriticSoftmaxAgent)</span><br><span class="line">rl_glue.rl_init(agent_info, env_info)</span><br><span class="line"></span><br><span class="line"><span class="comment"># start env/agent</span></span><br><span class="line">rl_glue.rl_start()</span><br><span class="line">rl_glue.rl_step()</span><br><span class="line"></span><br><span class="line"><span class="comment"># simple alias</span></span><br><span class="line">agent = rl_glue.agent</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;agent next_action: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(agent.last_action))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;agent avg reward: &#123;&#125;\n&quot;</span>.<span class="built_in">format</span>(agent.avg_reward))</span><br><span class="line"></span><br><span class="line"><span class="keyword">assert</span> agent.last_action == <span class="number">1</span></span><br><span class="line"><span class="keyword">assert</span> agent.avg_reward == -<span class="number">0.03139092653589793</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;agent first 10 values of actor weights[0]: \n&#123;&#125;\n&quot;</span>.<span class="built_in">format</span>(agent.actor_w[<span class="number">0</span>][:<span class="number">10</span>]))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;agent first 10 values of actor weights[1]: \n&#123;&#125;\n&quot;</span>.<span class="built_in">format</span>(agent.actor_w[<span class="number">1</span>][:<span class="number">10</span>]))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;agent first 10 values of actor weights[2]: \n&#123;&#125;\n&quot;</span>.<span class="built_in">format</span>(agent.actor_w[<span class="number">2</span>][:<span class="number">10</span>]))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;agent first 10 values of critic weights: \n&#123;&#125;&quot;</span>.<span class="built_in">format</span>(agent.critic_w[:<span class="number">10</span>]))</span><br><span class="line"></span><br><span class="line"><span class="keyword">assert</span> np.allclose(agent.actor_w[<span class="number">0</span>][:<span class="number">10</span>], [<span class="number">0.01307955</span>, <span class="number">0.01307955</span>, <span class="number">0.01307955</span>, <span class="number">0.01307955</span>, <span class="number">0.01307955</span>, <span class="number">0.01307955</span>, <span class="number">0.01307955</span>, <span class="number">0.01307955</span>, <span class="number">0.</span>, <span class="number">0.</span>])</span><br><span class="line"><span class="keyword">assert</span> np.allclose(agent.actor_w[<span class="number">1</span>][:<span class="number">10</span>], [<span class="number">0.01307955</span>, <span class="number">0.01307955</span>, <span class="number">0.01307955</span>, <span class="number">0.01307955</span>, <span class="number">0.01307955</span>, <span class="number">0.01307955</span>, <span class="number">0.01307955</span>, <span class="number">0.01307955</span>, <span class="number">0.</span>, <span class="number">0.</span>])</span><br><span class="line"><span class="keyword">assert</span> np.allclose(agent.actor_w[<span class="number">2</span>][:<span class="number">10</span>], [-<span class="number">0.02615911</span>, -<span class="number">0.02615911</span>, -<span class="number">0.02615911</span>, -<span class="number">0.02615911</span>, -<span class="number">0.02615911</span>, -<span class="number">0.02615911</span>, -<span class="number">0.02615911</span>, -<span class="number">0.02615911</span>, <span class="number">0.</span>, <span class="number">0.</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">assert</span> np.allclose(agent.critic_w[:<span class="number">10</span>], [-<span class="number">0.39238658</span>, -<span class="number">0.39238658</span>, -<span class="number">0.39238658</span>, -<span class="number">0.39238658</span>, -<span class="number">0.39238658</span>, -<span class="number">0.39238658</span>, -<span class="number">0.39238658</span>, -<span class="number">0.39238658</span>, <span class="number">0.</span>, <span class="number">0.</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>agent next_action: 1
+agent avg reward: -0.03139092653589793
+
+agent first 10 values of actor weights[0]: 
+[0.01307955 0.01307955 0.01307955 0.01307955 0.01307955 0.01307955
+ 0.01307955 0.01307955 0.         0.        ]
+
+agent first 10 values of actor weights[1]: 
+[0.01307955 0.01307955 0.01307955 0.01307955 0.01307955 0.01307955
+ 0.01307955 0.01307955 0.         0.        ]
+
+agent first 10 values of actor weights[2]: 
+[-0.02615911 -0.02615911 -0.02615911 -0.02615911 -0.02615911 -0.02615911
+ -0.02615911 -0.02615911  0.          0.        ]
+
+agent first 10 values of critic weights: 
+[-0.39238658 -0.39238658 -0.39238658 -0.39238658 -0.39238658 -0.39238658
+ -0.39238658 -0.39238658  0.          0.        ]</code></pre>
+<h2 id="section-3-run-experiment">Section 3: Run Experiment</h2>
+<p>Now that we've implemented all the components of environment and agent, let's run an experiment! We want to see whether our agent is successful at learning the optimal policy of balancing the pendulum upright. We will plot total return over time, as well as the exponential average of the reward over time. We also do multiple runs in order to be confident about our results.</p>
+<p>The experiment/plot code is provided in the cell below.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ---------------</span></span><br><span class="line"><span class="comment"># Discussion Cell</span></span><br><span class="line"><span class="comment"># ---------------</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Define function to run experiment</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run_experiment</span>(<span class="params">environment, agent, environment_parameters, agent_parameters, experiment_parameters</span>):</span></span><br><span class="line"></span><br><span class="line">    rl_glue = RLGlue(environment, agent)</span><br><span class="line">            </span><br><span class="line">    <span class="comment"># sweep agent parameters</span></span><br><span class="line">    <span class="keyword">for</span> num_tilings <span class="keyword">in</span> agent_parameters[<span class="string">&#x27;num_tilings&#x27;</span>]:</span><br><span class="line">        <span class="keyword">for</span> num_tiles <span class="keyword">in</span> agent_parameters[<span class="string">&quot;num_tiles&quot;</span>]:</span><br><span class="line">            <span class="keyword">for</span> actor_ss <span class="keyword">in</span> agent_parameters[<span class="string">&quot;actor_step_size&quot;</span>]:</span><br><span class="line">                <span class="keyword">for</span> critic_ss <span class="keyword">in</span> agent_parameters[<span class="string">&quot;critic_step_size&quot;</span>]:</span><br><span class="line">                    <span class="keyword">for</span> avg_reward_ss <span class="keyword">in</span> agent_parameters[<span class="string">&quot;avg_reward_step_size&quot;</span>]:</span><br><span class="line">                        </span><br><span class="line">                        env_info = &#123;&#125;</span><br><span class="line">                        agent_info = &#123;<span class="string">&quot;num_tilings&quot;</span>: num_tilings,</span><br><span class="line">                                      <span class="string">&quot;num_tiles&quot;</span>: num_tiles,</span><br><span class="line">                                      <span class="string">&quot;actor_step_size&quot;</span>: actor_ss,</span><br><span class="line">                                      <span class="string">&quot;critic_step_size&quot;</span>: critic_ss,</span><br><span class="line">                                      <span class="string">&quot;avg_reward_step_size&quot;</span>: avg_reward_ss,</span><br><span class="line">                                      <span class="string">&quot;num_actions&quot;</span>: agent_parameters[<span class="string">&quot;num_actions&quot;</span>],</span><br><span class="line">                                      <span class="string">&quot;iht_size&quot;</span>: agent_parameters[<span class="string">&quot;iht_size&quot;</span>]&#125;            </span><br><span class="line">            </span><br><span class="line">                        <span class="comment"># results to save</span></span><br><span class="line">                        return_per_step = np.zeros((experiment_parameters[<span class="string">&quot;num_runs&quot;</span>], experiment_parameters[<span class="string">&quot;max_steps&quot;</span>]))</span><br><span class="line">                        exp_avg_reward_per_step = np.zeros((experiment_parameters[<span class="string">&quot;num_runs&quot;</span>], experiment_parameters[<span class="string">&quot;max_steps&quot;</span>]))</span><br><span class="line"></span><br><span class="line">                        <span class="comment"># using tqdm we visualize progress bars </span></span><br><span class="line">                        <span class="keyword">for</span> run <span class="keyword">in</span> tqdm(<span class="built_in">range</span>(<span class="number">1</span>, experiment_parameters[<span class="string">&quot;num_runs&quot;</span>]+<span class="number">1</span>)):</span><br><span class="line">                            env_info[<span class="string">&quot;seed&quot;</span>] = run</span><br><span class="line">                            agent_info[<span class="string">&quot;seed&quot;</span>] = run</span><br><span class="line">                </span><br><span class="line">                            rl_glue.rl_init(agent_info, env_info)</span><br><span class="line">                            rl_glue.rl_start()</span><br><span class="line"></span><br><span class="line">                            num_steps = <span class="number">0</span></span><br><span class="line">                            total_return = <span class="number">0.</span></span><br><span class="line">                            return_arr = []</span><br><span class="line"></span><br><span class="line">                            <span class="comment"># exponential average reward without initial bias</span></span><br><span class="line">                            exp_avg_reward = <span class="number">0.0</span></span><br><span class="line">                            exp_avg_reward_ss = <span class="number">0.01</span></span><br><span class="line">                            exp_avg_reward_normalizer = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">                            <span class="keyword">while</span> num_steps &lt; experiment_parameters[<span class="string">&#x27;max_steps&#x27;</span>]:</span><br><span class="line">                                num_steps += <span class="number">1</span></span><br><span class="line">                                </span><br><span class="line">                                rl_step_result = rl_glue.rl_step()</span><br><span class="line">                                </span><br><span class="line">                                reward = rl_step_result[<span class="number">0</span>]</span><br><span class="line">                                total_return += reward</span><br><span class="line">                                return_arr.append(reward)</span><br><span class="line">                                avg_reward = rl_glue.rl_agent_message(<span class="string">&quot;get avg reward&quot;</span>)</span><br><span class="line"></span><br><span class="line">                                exp_avg_reward_normalizer = exp_avg_reward_normalizer + exp_avg_reward_ss * (<span class="number">1</span> - exp_avg_reward_normalizer)</span><br><span class="line">                                ss = exp_avg_reward_ss / exp_avg_reward_normalizer</span><br><span class="line">                                exp_avg_reward += ss * (reward - exp_avg_reward)</span><br><span class="line">                                </span><br><span class="line">                                return_per_step[run-<span class="number">1</span>][num_steps-<span class="number">1</span>] = total_return</span><br><span class="line">                                exp_avg_reward_per_step[run-<span class="number">1</span>][num_steps-<span class="number">1</span>] = exp_avg_reward</span><br><span class="line">                                                        </span><br><span class="line">                        <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(<span class="string">&#x27;results&#x27;</span>):</span><br><span class="line">                            os.makedirs(<span class="string">&#x27;results&#x27;</span>)</span><br><span class="line">                </span><br><span class="line">                        save_name = <span class="string">&quot;ActorCriticSoftmax_tilings_&#123;&#125;_tiledim_&#123;&#125;_actor_ss_&#123;&#125;_critic_ss_&#123;&#125;_avg_reward_ss_&#123;&#125;&quot;</span>.<span class="built_in">format</span>(num_tilings, num_tiles, actor_ss, critic_ss, avg_reward_ss)</span><br><span class="line">                        total_return_filename = <span class="string">&quot;results/&#123;&#125;_total_return.npy&quot;</span>.<span class="built_in">format</span>(save_name)</span><br><span class="line">                        exp_avg_reward_filename = <span class="string">&quot;results/&#123;&#125;_exp_avg_reward.npy&quot;</span>.<span class="built_in">format</span>(save_name)</span><br><span class="line"></span><br><span class="line">                        np.save(total_return_filename, return_per_step)</span><br><span class="line">                        np.save(exp_avg_reward_filename, exp_avg_reward_per_step)</span><br><span class="line">                        </span><br></pre></td></tr></table></figure>
+<h2 id="section-3-1-run-experiment-with-32-tilings-size-8x8">Section 3-1: Run Experiment with 32 tilings, size 8x8</h2>
+<p>We will first test our implementation using 32 tilings, of size 8x8. We saw from the earlier assignment using tile-coding that many tilings promote fine discrimination, and broad tiles allows more generalization. We conducted a wide sweep of meta-parameters in order to find the best meta-parameters for our Pendulum Swing-up task.</p>
+<p>We swept over the following range of meta-parameters and the best meta-parameter is boldfaced below:</p>
+<p>actor step-size: <span class="math inline">\(\{\frac{2^{-6}}{32}, \frac{2^{-5}}{32}, \frac{2^{-4}}{32}, \frac{2^{-3}}{32}, \mathbf{\frac{2^{-2}}{32}}, \frac{2^{-1}}{32}, \frac{2^{0}}{32}, \frac{2^{1}}{32}\}\)</span></p>
+<p>critic step-size: <span class="math inline">\(\{\frac{2^{-4}}{32}, \frac{2^{-3}}{32}, \frac{2^{-2}}{32}, \frac{2^{-1}}{32}, \frac{2^{0}}{32}, \mathbf{\frac{2^{1}}{32}}, \frac{3}{32}, \frac{2^{2}}{32}\}\)</span></p>
+<p>avg reward step-size: <span class="math inline">\(\{2^{-11}, 2^{-10} , 2^{-9} , 2^{-8}, 2^{-7}, \mathbf{2^{-6}}, 2^{-5}, 2^{-4}, 2^{-3}, 2^{-2}\}\)</span></p>
+<p>We will do 50 runs using the above best meta-parameter setting to verify your agent. Note that running the experiment cell below will take <strong><em>approximately 5 min</em></strong>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ---------------</span></span><br><span class="line"><span class="comment"># Discussion Cell</span></span><br><span class="line"><span class="comment"># ---------------</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#### Run Experiment</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Experiment parameters</span></span><br><span class="line">experiment_parameters = &#123;</span><br><span class="line">    <span class="string">&quot;max_steps&quot;</span> : <span class="number">20000</span>,</span><br><span class="line">    <span class="string">&quot;num_runs&quot;</span> : <span class="number">50</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Environment parameters</span></span><br><span class="line">environment_parameters = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Agent parameters</span></span><br><span class="line"><span class="comment"># Each element is an array because we will be later sweeping over multiple values</span></span><br><span class="line"><span class="comment"># actor and critic step-sizes are divided by num. tilings inside the agent</span></span><br><span class="line">agent_parameters = &#123;</span><br><span class="line">    <span class="string">&quot;num_tilings&quot;</span>: [<span class="number">32</span>],</span><br><span class="line">    <span class="string">&quot;num_tiles&quot;</span>: [<span class="number">8</span>],</span><br><span class="line">    <span class="string">&quot;actor_step_size&quot;</span>: [<span class="number">2</span>**(-<span class="number">2</span>)],</span><br><span class="line">    <span class="string">&quot;critic_step_size&quot;</span>: [<span class="number">2</span>**<span class="number">1</span>],</span><br><span class="line">    <span class="string">&quot;avg_reward_step_size&quot;</span>: [<span class="number">2</span>**(-<span class="number">6</span>)],</span><br><span class="line">    <span class="string">&quot;num_actions&quot;</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="string">&quot;iht_size&quot;</span>: <span class="number">4096</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">current_env = PendulumEnvironment</span><br><span class="line">current_agent = ActorCriticSoftmaxAgent</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">run_experiment(current_env, current_agent, environment_parameters, agent_parameters, experiment_parameters)</span><br><span class="line">plot_script.plot_result(agent_parameters, <span class="string">&#x27;results&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>  0%|          | 0/50 [00:00&lt;?, ?it/s]</code></pre>
+<p>Run the following code to verify your experimental result.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ---------------</span></span><br><span class="line"><span class="comment"># Discussion Cell</span></span><br><span class="line"><span class="comment"># ---------------</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Test Code for experimental result ##</span></span><br><span class="line">filename = <span class="string">&#x27;ActorCriticSoftmax_tilings_32_tiledim_8_actor_ss_0.25_critic_ss_2_avg_reward_ss_0.015625_exp_avg_reward&#x27;</span></span><br><span class="line">agent_exp_avg_reward = np.load(<span class="string">&#x27;results/&#123;&#125;.npy&#x27;</span>.<span class="built_in">format</span>(filename), allow_pickle=<span class="literal">True</span>)</span><br><span class="line">result_med = np.median(agent_exp_avg_reward, axis=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">answer_range = np.load(<span class="string">&#x27;correct_npy/exp_avg_reward_answer_range.npy&#x27;</span>, allow_pickle=<span class="literal">True</span>)</span><br><span class="line">upper_bound = answer_range.item()[<span class="string">&#x27;upper-bound&#x27;</span>]</span><br><span class="line">lower_bound = answer_range.item()[<span class="string">&#x27;lower-bound&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># check if result is within answer range</span></span><br><span class="line">all_correct = np.<span class="built_in">all</span>(result_med &lt;= upper_bound) <span class="keyword">and</span> np.<span class="built_in">all</span>(result_med &gt;= lower_bound)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> all_correct:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Your experiment results are correct!&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Your experiment results does not match with ours. Please check if you have implemented all methods correctly.&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+<h2 id="section-3-2-performance-metric-and-meta-parameter-sweeps">Section 3-2: Performance Metric and Meta-Parameter Sweeps</h2>
+<h3 id="performance-metric">Performance Metric</h3>
+<p>To evaluate performance, we plotted both the return and exponentially weighted average reward over time.</p>
+<p>In the first plot, the return is negative because the reward is negative at every state except when the pendulum is in the upright position. As the policy improves over time, the agent accumulates less negative reward, and thus the return decreases slowly. Towards the end the slope is almost flat indicating the policy has stabilized to a good policy. When using this plot however, it can be difficult to distinguish whether it has learned an optimal policy. The near-optimal policy in this Pendulum Swing-up Environment is to maintain the pendulum in the upright position indefinitely, getting near 0 reward at each time step. We would have to examine the slope of the curve but it can be hard to compare the slope of different curves.</p>
+<p>The second plot using exponential average reward gives a better visualization. We can see that towards the end the value is near 0, indicating it is getting near 0 reward at each time step. Here, the exponentially weighted average reward shouldn't be confused with the agent’s internal estimate of the average reward. To be more specific, we used an exponentially weighted average of the actual reward without initial bias (Refer to Exercise 2.7 from the textbook (p.35) to read more about removing the initial bias). If we used sample averages instead, later rewards would have decreasing impact on the average and would not be able to represent the agent's performance with respect to its current policy effectively.</p>
+<p>It is easier to see whether the agent has learned a good policy in the second plot than the first plot. If the learned policy is optimal, the exponential average reward would be close to 0.</p>
+<p>Furthermore, how did we pick the best meta-parameter from the sweeps? A common method would be to pick the meta-parameter that results in the largest Area Under the Curve (AUC). However, this is not always what we want. We want to find a set of meta-parameters that learns a good final policy. When using AUC as the criteria, we may pick meta-parameters that allows the agent to learn fast but converge to a worse policy. In our case, we selected the meta-parameter setting that obtained the most exponential average reward over the last 5000 time steps.</p>
+<h3 id="parameter-sensitivity">Parameter Sensitivity</h3>
+<p>In addition to finding the best meta-parameters it is also equally important to plot <strong>parameter sensitivity curves</strong> to understand how our algorithm behaves.</p>
+<p>In our simulated Pendulum problem, we can extensively test our agent with different meta-parameter configurations but it would be quite expensive to do so in real life. Parameter sensitivity curves can provide us insight into how our algorithms might behave in general. It can help us identify a good range of each meta-parameters as well as how sensitive the performance is with respect to each meta-parameter.</p>
+<p>Here are the sensitivity curves for the three step-sizes we swept over:</p>
+<p><img src="sensitivity_combined.png" alt="Drawing" style="width: 1000px;"/></p>
+<p>On the y-axis we use the performance measure, which is the average of the exponential average reward over the 5000 time steps, averaged over 50 different runs. On the x-axis is the meta-parameter we are testing. For the given meta-parameter, the remaining meta-parameters are chosen such that it obtains the best performance.</p>
+<p>The curves are quite rounded, indicating the agent performs well for these wide range of values. It indicates that the agent is not too sensitive to these meta-parameters. Furthermore, looking at the y-axis values we can observe that average reward step-size is particularly less sensitive than actor step-size and critic step-size.</p>
+<p>But how do we know that we have sufficiently covered a wide range of meta-parameters? It is important that the best value is not on the edge but in the middle of the meta-parameter sweep range in these sensitivity curves. Otherwise this may indicate that there could be better meta-parameter values that we did not sweep over.</p>
+<h2 id="wrapping-up">Wrapping up</h2>
+<h3 id="congratulations-you-have-successfully-implemented-course-3-programming-assignment-4."><strong>Congratulations!</strong> You have successfully implemented Course 3 Programming Assignment 4.</h3>
+<p>You have implemented your own <strong>Average Reward Actor-Critic with Softmax Policy</strong> agent in the Pendulum Swing-up Environment. You implemented the environment based on information about the state/action space and transition dynamics. Furthermore, you have learned how to implement an agent in a continuing task using the average reward formulation. We parameterized the policy using softmax of action-preferences over discrete action spaces, and used Actor-Critic to learn the policy.</p>
+<p>To summarize, you have learned how to: 1. Implement softmax actor-critic agent on a continuing task using the average reward formulation. 2. Understand how to parameterize the policy as a function to learn, in a discrete action environment. 3. Understand how to (approximately) sample the gradient of this objective to update the actor. 4. Understand how to update the critic using differential TD error.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Function-Approximation-and-Control/2020/10/15/" rel="prev" title="Function Approximation and Control">
+      <i class="fa fa-chevron-left"></i> Function Approximation and Control
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Implement-your-agent/2020/10/19/" rel="next" title="Implement your agent">
+      Implement your agent <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#assignment-4---average-reward-softmax-actor-critic"><span class="nav-number">1.</span> <span class="nav-text">Assignment 4 - Average Reward Softmax Actor-Critic</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pendulum-swing-up-environment"><span class="nav-number">1.1.</span> <span class="nav-text">Pendulum Swing-Up Environment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#packages"><span class="nav-number">1.2.</span> <span class="nav-text">Packages</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-1-create-tile-coding-helper-function"><span class="nav-number">1.3.</span> <span class="nav-text">Section 1: Create Tile Coding Helper Function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-2-create-average-reward-softmax-actor-critic-agent"><span class="nav-number">1.4.</span> <span class="nav-text">Section 2: Create Average Reward Softmax Actor-Critic Agent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-2-1-implement-helper-functions"><span class="nav-number">1.5.</span> <span class="nav-text">Section 2-1: Implement Helper Functions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-2-1a-compute-softmax-probability"><span class="nav-number">1.6.</span> <span class="nav-text">Section 2-1a: Compute Softmax Probability</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-2-2-implement-agent-methods"><span class="nav-number">1.7.</span> <span class="nav-text">Section 2-2: Implement Agent Methods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-3-run-experiment"><span class="nav-number">1.8.</span> <span class="nav-text">Section 3: Run Experiment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-3-1-run-experiment-with-32-tilings-size-8x8"><span class="nav-number">1.9.</span> <span class="nav-text">Section 3-1: Run Experiment with 32 tilings, size 8x8</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-3-2-performance-metric-and-meta-parameter-sweeps"><span class="nav-number">1.10.</span> <span class="nav-text">Section 3-2: Performance Metric and Meta-Parameter Sweeps</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#performance-metric"><span class="nav-number">1.10.1.</span> <span class="nav-text">Performance Metric</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parameter-sensitivity"><span class="nav-number">1.10.2.</span> <span class="nav-text">Parameter Sensitivity</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wrapping-up"><span class="nav-number">1.11.</span> <span class="nav-text">Wrapping up</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#congratulations-you-have-successfully-implemented-course-3-programming-assignment-4."><span class="nav-number">1.11.1.</span> <span class="nav-text">Congratulations! You have successfully implemented Course 3 Programming Assignment 4.</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">268</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

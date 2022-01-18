@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Blockchain is a way of storing digital data. The data can literally be anything. For Bitcoin, it’s the transactions (logs of transfers of Bitcoin from one account to another), but it can even be files">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Develop a blockchain application from scratch in Python">
+<meta property="og:url" content="https://zhangruochi.com/Develop-a-blockchain-application-from-scratch-in-Python/2020/04/21/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Blockchain is a way of storing digital data. The data can literally be anything. For Bitcoin, it’s the transactions (logs of transfers of Bitcoin from one account to another), but it can even be files">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-20T16:37:03.000Z">
+<meta property="article:modified_time" content="2020-04-21T06:02:15.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhangruochi.com/Develop-a-blockchain-application-from-scratch-in-Python/2020/04/21/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Develop a blockchain application from scratch in Python | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Develop-a-blockchain-application-from-scratch-in-Python/2020/04/21/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Develop a blockchain application from scratch in Python
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-04-21 00:37:03 / Modified: 14:02:15" itemprop="dateCreated datePublished" datetime="2020-04-21T00:37:03+08:00">2020-04-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/" itemprop="url" rel="index"><span itemprop="name">Big Data Architecture</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/Blockchain/" itemprop="url" rel="index"><span itemprop="name">Blockchain</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Develop-a-blockchain-application-from-scratch-in-Python/2020/04/21/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Develop-a-blockchain-application-from-scratch-in-Python/2020/04/21/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Blockchain is a way of storing digital data. The data can literally be anything. For Bitcoin, it’s the transactions (logs of transfers of Bitcoin from one account to another), but it can even be files; it doesn’t matter. The data is stored in the form of blocks, which are linked (or chained) together using cryptographic hashes — hence the name “blockchain.”</p>
+<p>All of the magic lies in the way this data is stored and added to the blockchain. A blockchain is essentially a linked list that contains ordered data, with a few constraints such as:</p>
+<ul>
+<li>Blocks can’t be modified once added; in other words, it is append only.</li>
+<li>There are specific rules for appending data to it.</li>
+<li>Its architecture is distributed.</li>
+</ul>
+<p>Enforcing these constraints yields the following benefits:</p>
+<ul>
+<li>Immutability and durability of data</li>
+<li>No single point of control or failure</li>
+<li>A verifiable audit trail of the order in which data was added</li>
+</ul>
+<h3 id="store-transactions-into-blocks">Store transactions into blocks</h3>
+<p>We’ll be storing data in our blockchain in a format that’s widely used: JSON. Here’s what a post stored in blockchain will look like:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123; </span><br><span class="line">  <span class="string">&quot;author&quot;</span>: <span class="string">&quot;some_author_name&quot;</span>, </span><br><span class="line">  <span class="string">&quot;content&quot;</span>: <span class="string">&quot;Some thoughts that author wants to share&quot;</span>, </span><br><span class="line">  <span class="string">&quot;timestamp&quot;</span>: <span class="string">&quot;The time at which the content was created&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The generic term “data” is often replaced on the internet by the term “transactions.” So, just to avoid confusion and maintain consistency, we’ll be using the term “transaction” to refer to data in our example application.</p>
+<p>The transactions are packed into blocks. A block can contain one or many transactions. The blocks containing the transactions are generated frequently and added to the blockchain. Because there can be multiple blocks, each block should have a unique ID.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Block</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, index, transactions, timestamp</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Constructor for the `Block` class.</span></span><br><span class="line"><span class="string">        :param index: Unique ID of the block.</span></span><br><span class="line"><span class="string">        :param transactions: List of transactions.</span></span><br><span class="line"><span class="string">        :param timestamp: Time of generation of the block.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.index = index </span><br><span class="line">        self.transactions = transactions </span><br><span class="line">        self.timestamp = timestamp</span><br></pre></td></tr></table></figure>
+<h3 id="add-digital-fingerprints-to-the-blocks">Add digital fingerprints to the blocks</h3>
+<p>We’d like to prevent any kind of tampering in the data stored inside the block, and detection is the first step to that. To detect if the data in the block has been tampered with, you can use cryptographic hash functions.</p>
+<p>A hash function is a function that takes data of any size and produces data of a fixed size from it (a hash), which is generally used to identify the input. The characteristics of an ideal hash function are:</p>
+<ul>
+<li>It should be easy to compute.</li>
+<li>It should be deterministic, meaning the same data will always result in the same hash.</li>
+<li>It should be uniformly random, meaning even a single bit change in the data should change the hash significantly.</li>
+</ul>
+<p>The consequence of this is:</p>
+<ul>
+<li>It is virtually impossible to guess the input data given the hash. (The only way is to try all possible input combinations.)</li>
+<li>If you know both the input and the hash, you can simply pass the input through the hash function to verify the provided hash.</li>
+</ul>
+<p>This asymmetry of efforts that’s required to figure out the hash from an input (easy) vs. figuring out the input from a hash (almost impossible) is what blockchain leverages to obtain the desired characteristics.</p>
+<p>We’ll store the hash of the block in a field inside our Block object, and it will act like a digital fingerprint (or signature) of data contained in it:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> sha256</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute_hash</span>(<span class="params">block</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Returns the hash of the block instance by first converting it</span></span><br><span class="line"><span class="string">    into JSON string.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    block_string = json.dumps(self.__dict__, sort_keys=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">return</span> sha256(block_string.encode()).hexdigest()</span><br></pre></td></tr></table></figure>
+<p><strong>Note</strong>: In most cryptocurrencies, even the individual transactions in the block are hashed and then stored to form a hash tree (also known as a merkle tree). The root of the tree usually represents the hash of the block. It’s not a necessary requirement for the functioning of the blockchain, so we’re omitting it to keep things simple.</p>
+<h3 id="chain-the-blocks">Chain the blocks</h3>
+<p>Okay, we’ve now set up the blocks. The blockchain is supposed to be a collection of blocks. We can store all the blocks in the Python list (the equivalent of an array). But this is not sufficient, because what if someone intentionally replaces an old block with a new block in the collection? Creating a new block with altered transactions, computing the hash, and replacing it with any older block is no big deal in our current implementation.</p>
+<p>We need a way to make sure that any change in the previous blocks invalidates the entire chain. The Bitcoin way to do this is to create dependency among consecutive blocks by chaining them with the hash of the block immediately previous to them. By chaining here, we mean to include the hash of the previous block in the current block in a new field called previous_hash.</p>
+<p>Okay, if every block is linked to the previous block through the previous_hash field, what about the very first block? That block is called the genesis block and it can be generated either manually or through some unique logic. Let’s add the previous_hash field to the Block class and implement the initial structure of our Blockchain class.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> sha256</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Block</span>:</span></span><br><span class="line">    def__init__(self, index, transactions, timestamp, previous_hash):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Constructor for the `Block` class.</span></span><br><span class="line"><span class="string">        :param index:         Unique ID of the block.</span></span><br><span class="line"><span class="string">        :param transactions:  List of transactions.</span></span><br><span class="line"><span class="string">        :param timestamp:     Time of generation of the block.</span></span><br><span class="line"><span class="string">        :param previous_hash: Hash of the previous block in the chain which this block is part of.                                        </span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.index = index</span><br><span class="line">        self.transactions = transactions</span><br><span class="line">        self.timestamp = timestamp</span><br><span class="line">        self.previous_hash = previous_hash <span class="comment"># Adding the previous hash field</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">compute_hash</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns the hash of the block instance by first converting it</span></span><br><span class="line"><span class="string">        into JSON string.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        block_string = json.dumps(self.__dict__, sort_keys=<span class="literal">True</span>) <span class="comment"># The string equivalent also considers the previous_hash field now</span></span><br><span class="line">        <span class="keyword">return</span> sha256(block_string.encode()).hexdigest()</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Blockchain</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Constructor for the `Blockchain` class.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.chain = []</span><br><span class="line">        self.create_genesis_block()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">create_genesis_block</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        A function to generate genesis block and appends it to</span></span><br><span class="line"><span class="string">        the chain. The block has index 0, previous_hash as 0, and</span></span><br><span class="line"><span class="string">        a valid hash.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        genesis_block = Block(<span class="number">0</span>, [], time.time(), <span class="string">&quot;0&quot;</span>)</span><br><span class="line">        genesis_block.<span class="built_in">hash</span> = genesis_block.compute_hash()</span><br><span class="line">        self.chain.append(genesis_block)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">last_block</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        A quick pythonic way to retrieve the most recent block in the chain. Note that</span></span><br><span class="line"><span class="string">        the chain will always consist of at least one block (i.e., genesis block)</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self.chain[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<p>Now, if the content of any of the previous blocks changes: - The hash of that previous block would change. - This will lead to a mismatch with the previous_hash field in the next block. - Since the input data to compute the hash of any block also consists of the previous_hash field, the hash of the next block will also change.</p>
+<p>Ultimately, the entire chain following the replaced block is invalidated, and the only way to fix it is to recompute the entire chain.</p>
+<h3 id="implement-a-proof-of-work-algorithm">Implement a proof of work algorithm</h3>
+<p>There is one problem, though. If we change the previous block, the hashes of all the blocks that follow can be re-computed quite easily to create a different valid blockchain. To prevent this, we can exploit the asymmetry in efforts of hash functions that we discussed earlier to make the task of calculating the hash difficult and random. Here’s how we do this: Instead of accepting any hash for the block, we add some constraint to it. Let’s add a constraint that our hash should start with “n leading zeroes” where n can be any positive integer.</p>
+<p>We know that unless we change the data of the block, the hash is not going to change, and of course we don’t want to change existing data. So what do we do? Simple! We’ll add some dummy data that we can change. Let’s introduce a new field in our block called nonce. A nonce is a number that we can keep on changing until we get a hash that satisfies our constraint. The nonce satisfying the constraint serves as proof that some computation has been performed. This technique is a simplified version of the Hashcash algorithm used in Bitcoin. The number of zeroes specified in the constraint determines the difficulty of our proof of work algorithm (the greater the number of zeroes, the harder it is to figure out the nonce).</p>
+<p>Also, due to the asymmetry, proof of work is difficult to compute but very easy to verify once you figure out the nonce (you just have to run the hash function again):</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Blockchain</span>:</span></span><br><span class="line">    <span class="comment"># difficulty of PoW algorithm</span></span><br><span class="line">    difficulty = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Previous code contd..</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">proof_of_work</span>(<span class="params">self, block</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Function that tries different values of the nonce to get a hash</span></span><br><span class="line"><span class="string">        that satisfies our difficulty criteria.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        block.nonce = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        computed_hash = block.compute_hash()</span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> computed_hash.startswith(<span class="string">&#x27;0&#x27;</span> * Blockchain.difficulty):</span><br><span class="line">            block.nonce += <span class="number">1</span></span><br><span class="line">            computed_hash = block.compute_hash()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> computed_hash</span><br></pre></td></tr></table></figure>
+<p>Notice that there is no specific logic to figuring out the nonce quickly; it’s just brute force. The only definite improvement that you can make is to use hardware chips that are specially designed to compute the hash function in a smaller number of CPU instructions.</p>
+<h3 id="add-blocks-to-the-chain">Add blocks to the chain</h3>
+<p>To add a block to the chain, we’ll first have to verify that:</p>
+<ul>
+<li>The data has not been tampered with (the proof of work provided is correct).</li>
+<li>The order of transactions is preserved (the previous_hash field of the block to be added points to the hash of the latest block in our chain).</li>
+</ul>
+<p>Let’s see the code for adding blocks into the chain:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Blockchain</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Previous code contd..</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_block</span>(<span class="params">self, block, proof</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        A function that adds the block to the chain after verification.</span></span><br><span class="line"><span class="string">        Verification includes:</span></span><br><span class="line"><span class="string">        * Checking if the proof is valid.</span></span><br><span class="line"><span class="string">        * The previous_hash referred in the block and the hash of a latest block</span></span><br><span class="line"><span class="string">          in the chain match.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        previous_hash = self.last_block.<span class="built_in">hash</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> previous_hash != block.previous_hash:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> Blockchain.is_valid_proof(block, proof):</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">        block.<span class="built_in">hash</span> = proof</span><br><span class="line">        self.chain.append(block)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_valid_proof</span>(<span class="params">self, block, block_hash</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Check if block_hash is valid hash of block and satisfies</span></span><br><span class="line"><span class="string">        the difficulty criteria.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> (block_hash.startswith(<span class="string">&#x27;0&#x27;</span> * Blockchain.difficulty) <span class="keyword">and</span></span><br><span class="line">                block_hash == block.compute_hash())</span><br></pre></td></tr></table></figure>
+<h3 id="mining">Mining</h3>
+<p>The transactions will be initially stored as a pool of unconfirmed transactions. The process of putting the unconfirmed transactions in a block and computing proof of work is known as the mining of blocks. Once the nonce satisfying our constraints is figured out, we can say that a block has been mined and it can be put into the blockchain.</p>
+<p>In most of the cryptocurrencies (including Bitcoin), miners may be awarded some cryptocurrency as a reward for spending their computing power to compute a proof of work. Here’s what our mining function looks like:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Blockchain</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.unconfirmed_transactions = [] <span class="comment"># data yet to get into blockchain</span></span><br><span class="line">        self.chain = []</span><br><span class="line">        self.create_genesis_block()</span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Previous code contd...</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_new_transaction</span>(<span class="params">self, transaction</span>):</span></span><br><span class="line">        self.unconfirmed_transactions.append(transaction)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mine</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        This function serves as an interface to add the pending</span></span><br><span class="line"><span class="string">        transactions to the blockchain by adding them to the block</span></span><br><span class="line"><span class="string">        and figuring out proof of work.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.unconfirmed_transactions:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">        last_block = self.last_block</span><br><span class="line"></span><br><span class="line">        new_block = Block(index=last_block.index + <span class="number">1</span>,</span><br><span class="line">                          transactions=self.unconfirmed_transactions,</span><br><span class="line">                          timestamp=time.time(),</span><br><span class="line">                          previous_hash=last_block.<span class="built_in">hash</span>)</span><br><span class="line"></span><br><span class="line">        proof = self.proof_of_work(new_block)</span><br><span class="line">        self.add_block(new_block, proof)</span><br><span class="line">        self.unconfirmed_transactions = []</span><br><span class="line">        <span class="keyword">return</span> new_block.index</span><br></pre></td></tr></table></figure>
+<h3 id="combined-code">Combined Code</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> sha256</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Block</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, index, transactions, timestamp, previous_hash</span>):</span></span><br><span class="line">        self.index = index</span><br><span class="line">        self.transactions = transactions</span><br><span class="line">        self.timestamp = timestamp</span><br><span class="line">        self.previous_hash = previous_hash</span><br><span class="line">        self.nonce = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">compute_hash</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        A function that return the hash of the block contents.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        block_string = json.dumps(self.__dict__, sort_keys=<span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">return</span> sha256(block_string.encode()).hexdigest()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Blockchain</span>:</span></span><br><span class="line">    <span class="comment"># difficulty of our PoW algorithm</span></span><br><span class="line">    difficulty = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.unconfirmed_transactions = []</span><br><span class="line">        self.chain = []</span><br><span class="line">        self.create_genesis_block()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">create_genesis_block</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        A function to generate genesis block and appends it to</span></span><br><span class="line"><span class="string">        the chain. The block has index 0, previous_hash as 0, and</span></span><br><span class="line"><span class="string">        a valid hash.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        genesis_block = Block(<span class="number">0</span>, [], time.time(), <span class="string">&quot;0&quot;</span>)</span><br><span class="line">        genesis_block.<span class="built_in">hash</span> = genesis_block.compute_hash()</span><br><span class="line">        self.chain.append(genesis_block)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">last_block</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.chain[-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_block</span>(<span class="params">self, block, proof</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        A function that adds the block to the chain after verification.</span></span><br><span class="line"><span class="string">        Verification includes:</span></span><br><span class="line"><span class="string">        * Checking if the proof is valid.</span></span><br><span class="line"><span class="string">        * The previous_hash referred in the block and the hash of latest block</span></span><br><span class="line"><span class="string">          in the chain match.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        previous_hash = self.last_block.<span class="built_in">hash</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> previous_hash != block.previous_hash:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.is_valid_proof(block, proof):</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">        block.<span class="built_in">hash</span> = proof</span><br><span class="line">        self.chain.append(block)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_valid_proof</span>(<span class="params">self, block, block_hash</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Check if block_hash is valid hash of block and satisfies</span></span><br><span class="line"><span class="string">        the difficulty criteria.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> (block_hash.startswith(<span class="string">&#x27;0&#x27;</span> * Blockchain.difficulty) <span class="keyword">and</span></span><br><span class="line">                block_hash == block.compute_hash())</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">proof_of_work</span>(<span class="params">self, block</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Function that tries different values of nonce to get a hash</span></span><br><span class="line"><span class="string">        that satisfies our difficulty criteria.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        block.nonce = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        computed_hash = block.compute_hash()</span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> computed_hash.startswith(<span class="string">&#x27;0&#x27;</span> * Blockchain.difficulty):</span><br><span class="line">            block.nonce += <span class="number">1</span></span><br><span class="line">            computed_hash = block.compute_hash()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> computed_hash</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_new_transaction</span>(<span class="params">self, transaction</span>):</span></span><br><span class="line">        self.unconfirmed_transactions.append(transaction)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mine</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        This function serves as an interface to add the pending</span></span><br><span class="line"><span class="string">        transactions to the blockchain by adding them to the block</span></span><br><span class="line"><span class="string">        and figuring out Proof Of Work.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.unconfirmed_transactions:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        new_block = Block(index=last_block.index + <span class="number">1</span>,</span><br><span class="line">                          transactions=self.unconfirmed_transactions,</span><br><span class="line">                          timestamp=time.time(),</span><br><span class="line">                          previous_hash=self.last_block.<span class="built_in">hash</span>)</span><br><span class="line"></span><br><span class="line">        proof = self.proof_of_work(new_block)</span><br><span class="line">        self.add_block(new_block, proof)</span><br><span class="line"></span><br><span class="line">        self.unconfirmed_transactions = []</span><br><span class="line">        <span class="keyword">return</span> new_block.index</span><br></pre></td></tr></table></figure>
+<h3 id="create-interfaces">Create interfaces</h3>
+<p>Okay, now it’s time to create interfaces for our blockchain node to interact with the application we’re going to build. We’ll be using a popular Python microframework called Flask to create a REST API that interacts with and invokes various operations in our blockchain node. If you’ve worked with any web framework before, the code below shouldn’t be difficult to follow along.</p>
+<p>These REST endpoints can be used to play around with our blockchain by creating some transactions and then mining them.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line"><span class="comment"># Initialize flask application</span></span><br><span class="line">app =  Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Initialize a blockchain object.</span></span><br><span class="line">blockchain = Blockchain()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">### We need an endpoint for our application to submit a new transaction. This will be used by our application to add new data (posts) to the blockchain:</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Flask&#x27;s way of declaring end-points</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/new_transaction&#x27;</span>, methods=[<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">new_transaction</span>():</span></span><br><span class="line">    tx_data = request.get_json()</span><br><span class="line">    required_fields = [<span class="string">&quot;author&quot;</span>, <span class="string">&quot;content&quot;</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> field <span class="keyword">in</span> required_fields:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> tx_data.get(field):</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Invalid transaction data&quot;</span>, <span class="number">404</span></span><br><span class="line"></span><br><span class="line">    tx_data[<span class="string">&quot;timestamp&quot;</span>] = time.time()</span><br><span class="line"></span><br><span class="line">    blockchain.add_new_transaction(tx_data)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;Success&quot;</span>, <span class="number">201</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">### Here’s an endpoint to return the node’s copy of the chain. Our application will be using this endpoint to query all of the data to display:</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/chain&#x27;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_chain</span>():</span></span><br><span class="line">    chain_data = []</span><br><span class="line">    <span class="keyword">for</span> block <span class="keyword">in</span> blockchain.chain:</span><br><span class="line">        chain_data.append(block.__dict__)</span><br><span class="line">    <span class="keyword">return</span> json.dumps(&#123;<span class="string">&quot;length&quot;</span>: <span class="built_in">len</span>(chain_data),</span><br><span class="line">                       <span class="string">&quot;chain&quot;</span>: chain_data&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Here’s an endpoint to request the node to mine the unconfirmed transactions (if any). We’ll be using it to initiate a command to mine from our application itself:</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/mine&#x27;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mine_unconfirmed_transactions</span>():</span></span><br><span class="line">    result = blockchain.mine()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> result:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;No transactions to mine&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;Block #&#123;&#125; is mined.&quot;</span>.<span class="built_in">format</span>(result)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/pending_tx&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_pending_tx</span>():</span></span><br><span class="line">    <span class="keyword">return</span> json.dumps(blockchain.unconfirmed_transactions)</span><br></pre></td></tr></table></figure>
+<h3 id="establish-consensus-and-decentralization">Establish consensus and decentralization</h3>
+<p>Up to this point, the blockchain that we’ve implemented is meant to run on a single computer. Even though we’re linking block with hashes and applying the proof of work constraint, we still can’t trust a single entity (in our case, a single machine). We need the data to be distributed, we need multiple nodes maintaining the blockchain. So, to transition from a single node to a peer-to-peer network, let’s first create a mechanism to let a new node become aware of other peers in the network:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Contains the host addresses of other participating members of the network</span></span><br><span class="line">peers = <span class="built_in">set</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Endpoint to add new peers to the network</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/register_node&#x27;</span>, methods=[<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">register_new_peers</span>():</span></span><br><span class="line">    <span class="comment"># The host address to the peer node </span></span><br><span class="line">    node_address = request.get_json()[<span class="string">&quot;node_address&quot;</span>]</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> node_address:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Invalid data&quot;</span>, <span class="number">400</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Add the node to the peer list</span></span><br><span class="line">    peers.add(node_address)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Return the blockchain to the newly registered node so that it can sync</span></span><br><span class="line">    <span class="keyword">return</span> get_chain()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/register_with&#x27;</span>, methods=[<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">register_with_existing_node</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Internally calls the `register_node` endpoint to</span></span><br><span class="line"><span class="string">    register current node with the remote node specified in the</span></span><br><span class="line"><span class="string">    request, and sync the blockchain as well with the remote node.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    node_address = request.get_json()[<span class="string">&quot;node_address&quot;</span>]</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> node_address:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Invalid data&quot;</span>, <span class="number">400</span></span><br><span class="line"></span><br><span class="line">    data = &#123;<span class="string">&quot;node_address&quot;</span>: request.host_url&#125;</span><br><span class="line">    headers = &#123;<span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&quot;application/json&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Make a request to register with remote node and obtain information</span></span><br><span class="line">    response = requests.post(node_address + <span class="string">&quot;/register_node&quot;</span>,</span><br><span class="line">                             data=json.dumps(data), headers=headers)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> response.status_code == <span class="number">200</span>:</span><br><span class="line">        <span class="keyword">global</span> blockchain</span><br><span class="line">        <span class="keyword">global</span> peers</span><br><span class="line">        <span class="comment"># update chain and the peers</span></span><br><span class="line">        chain_dump = response.json()[<span class="string">&#x27;chain&#x27;</span>]</span><br><span class="line">        blockchain = create_chain_from_dump(chain_dump)</span><br><span class="line">        peers.update(response.json()[<span class="string">&#x27;peers&#x27;</span>])</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Registration successful&quot;</span>, <span class="number">200</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># if something goes wrong, pass it on to the API response</span></span><br><span class="line">        <span class="keyword">return</span> response.content, response.status_code</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_chain_from_dump</span>(<span class="params">chain_dump</span>):</span></span><br><span class="line">    blockchain = Blockchain()</span><br><span class="line">    <span class="keyword">for</span> idx, block_data <span class="keyword">in</span> <span class="built_in">enumerate</span>(chain_dump):</span><br><span class="line">        block = Block(block_data[<span class="string">&quot;index&quot;</span>],</span><br><span class="line">                      block_data[<span class="string">&quot;transactions&quot;</span>],</span><br><span class="line">                      block_data[<span class="string">&quot;timestamp&quot;</span>],</span><br><span class="line">                      block_data[<span class="string">&quot;previous_hash&quot;</span>])</span><br><span class="line">        proof = block_data[<span class="string">&#x27;hash&#x27;</span>]</span><br><span class="line">        <span class="keyword">if</span> idx &gt; <span class="number">0</span>:</span><br><span class="line">            added = blockchain.add_block(block, proof)</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> added:</span><br><span class="line">                <span class="keyword">raise</span> Exception(<span class="string">&quot;The chain dump is tampered!!&quot;</span>)</span><br><span class="line">        <span class="keyword">else</span>:  <span class="comment"># the block is a genesis block, no verification needed</span></span><br><span class="line">            blockchain.chain.append(block)</span><br><span class="line">    <span class="keyword">return</span> blockchain</span><br></pre></td></tr></table></figure>
+<p>A new node participating in the network can invoke the register_with_existing_node method (via the /register_with endpoint) to register with existing nodes in the network. This will help with the following:</p>
+<ul>
+<li>Asking the remote node to add a new peer to its list of known peers.</li>
+<li>Initializing the blockchain of the new node with that of the remote node.</li>
+<li>Resyncing the blockchain with the network if the node goes off-grid.</li>
+</ul>
+<p>However, there’s a problem with multiple nodes. Due to intentional manipulation or unintentional reasons (like network latency), the copy of chains of a few nodes can differ. In that case, the nodes need to agree upon some version of the chain to maintain the integrity of the entire system. In other words, we need to achieve consensus.</p>
+<p>A simple consensus algorithm could be to agree upon the longest valid chain when the chains of different participating nodes in the network appear to diverge. The rationale behind this approach is that the longest chain is a good estimate of the most amount of work done (remember proof of work is difficult to compute):</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Blockchain</span></span></span><br><span class="line"><span class="class">    &quot;&quot;&quot;</span></span><br><span class="line"><span class="class">    <span class="title">previous</span> <span class="title">code</span> <span class="title">continued</span>...</span></span><br><span class="line"><span class="class">    &quot;&quot;&quot;</span></span><br><span class="line"><span class="class">    <span class="title">def</span> <span class="title">check_chain_validity</span>(<span class="params">cls, chain</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        A helper method to check if the entire blockchain is valid.            </span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        result = <span class="literal">True</span></span><br><span class="line">        previous_hash = <span class="string">&quot;0&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Iterate through every block</span></span><br><span class="line">        <span class="keyword">for</span> block <span class="keyword">in</span> chain:</span><br><span class="line">            block_hash = block.<span class="built_in">hash</span></span><br><span class="line">            <span class="comment"># remove the hash field to recompute the hash again</span></span><br><span class="line">            <span class="comment"># using `compute_hash` method.</span></span><br><span class="line">            <span class="built_in">delattr</span>(block, <span class="string">&quot;hash&quot;</span>)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> cls.is_valid_proof(block, block.<span class="built_in">hash</span>) <span class="keyword">or</span> \</span><br><span class="line">                    previous_hash != block.previous_hash:</span><br><span class="line">                result = <span class="literal">False</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">            block.<span class="built_in">hash</span>, previous_hash = block_hash, block_hash</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">consensus</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Our simple consensus algorithm. If a longer valid chain is</span></span><br><span class="line"><span class="string">    found, our chain is replaced with it.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">global</span> blockchain</span><br><span class="line"></span><br><span class="line">    longest_chain = <span class="literal">None</span></span><br><span class="line">    current_len = <span class="built_in">len</span>(blockchain.chain)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> node <span class="keyword">in</span> peers:</span><br><span class="line">        response = requests.get(<span class="string">&#x27;&#123;&#125;/chain&#x27;</span>.<span class="built_in">format</span>(node))</span><br><span class="line">        length = response.json()[<span class="string">&#x27;length&#x27;</span>]</span><br><span class="line">        chain = response.json()[<span class="string">&#x27;chain&#x27;</span>]</span><br><span class="line">        <span class="keyword">if</span> length &gt; current_len <span class="keyword">and</span> blockchain.check_chain_validity(chain):</span><br><span class="line">              <span class="comment"># Longer valid chain found!</span></span><br><span class="line">            current_len = length</span><br><span class="line">            longest_chain = chain</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> longest_chain:</span><br><span class="line">        blockchain = longest_chain</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<p>Next, we need to develop a way for any node to announce to the network that it has mined a block so that everyone can update their blockchain and move on to mine other transactions. Other nodes can simply verify the proof of work and add the mined block to their respective chains (remember that verification is easy once the nonce is known):</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># endpoint to add a block mined by someone else to</span></span><br><span class="line"><span class="comment"># the node&#x27;s chain. The node first verifies the block</span></span><br><span class="line"><span class="comment"># and then adds it to the chain.</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/add_block&#x27;</span>, methods=[<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">verify_and_add_block</span>():</span></span><br><span class="line">    block_data = request.get_json()</span><br><span class="line">    block = Block(block_data[<span class="string">&quot;index&quot;</span>],</span><br><span class="line">                  block_data[<span class="string">&quot;transactions&quot;</span>],</span><br><span class="line">                  block_data[<span class="string">&quot;timestamp&quot;</span>],</span><br><span class="line">                  block_data[<span class="string">&quot;previous_hash&quot;</span>])</span><br><span class="line"></span><br><span class="line">    proof = block_data[<span class="string">&#x27;hash&#x27;</span>]</span><br><span class="line">    added = blockchain.add_block(block, proof)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> added:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;The block was discarded by the node&quot;</span>, <span class="number">400</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;Block added to the chain&quot;</span>, <span class="number">201</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">announce_new_block</span>(<span class="params">block</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    A function to announce to the network once a block has been mined.</span></span><br><span class="line"><span class="string">    Other blocks can simply verify the proof of work and add it to their</span></span><br><span class="line"><span class="string">    respective chains.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> peer <span class="keyword">in</span> peers:</span><br><span class="line">        url = <span class="string">&quot;&#123;&#125;add_block&quot;</span>.<span class="built_in">format</span>(peer)</span><br><span class="line">        requests.post(url, data=json.dumps(block.__dict__, sort_keys=<span class="literal">True</span>))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>The announce_new_block method should be called after every block is mined by the node so that peers can add it to their chains.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/mine&#x27;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mine_unconfirmed_transactions</span>():</span></span><br><span class="line">    result = blockchain.mine()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> result:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;No transactions to mine&quot;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># Making sure we have the longest chain before announcing to the network</span></span><br><span class="line">        chain_length = <span class="built_in">len</span>(blockchain.chain)</span><br><span class="line">        consensus()</span><br><span class="line">        <span class="keyword">if</span> chain_length == <span class="built_in">len</span>(blockchain.chain):</span><br><span class="line">            <span class="comment"># announce the recently mined block to the network</span></span><br><span class="line">            announce_new_block(blockchain.last_block)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Block #&#123;&#125; is mined.&quot;</span>.<span class="built_in">format</span>(blockchain.last_block.index)</span><br></pre></td></tr></table></figure>
+<h3 id="build-the-application">Build the application</h3>
+<p>Now, it’s time to start working on the interface of our application. We’ve used Jinja2 templating to render the web pages and some CSS to make things look nice.</p>
+<p>Our application needs to connect to a node in the blockchain network to fetch the data and also to submit new data. There can also be multiple nodes, as well.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> render_template, redirect, request</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> app <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line"><span class="comment"># Node in the blockchain network that our application will communicate with</span></span><br><span class="line"><span class="comment"># to fetch and add data.</span></span><br><span class="line">CONNECTED_NODE_ADDRESS = <span class="string">&quot;http://127.0.0.1:8000&quot;</span></span><br><span class="line"></span><br><span class="line">posts = []</span><br></pre></td></tr></table></figure>
+<p>The fetch_posts function gets the data from the node’s /chain endpoint, parses the data, and stores it locally.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fetch_posts</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Function to fetch the chain from a blockchain node, parse the</span></span><br><span class="line"><span class="string">    data, and store it locally.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    get_chain_address = <span class="string">&quot;&#123;&#125;/chain&quot;</span>.<span class="built_in">format</span>(CONNECTED_NODE_ADDRESS)</span><br><span class="line">    response = requests.get(get_chain_address)</span><br><span class="line">    <span class="keyword">if</span> response.status_code == <span class="number">200</span>:</span><br><span class="line">        content = []</span><br><span class="line">        chain = json.loads(response.content)</span><br><span class="line">        <span class="keyword">for</span> block <span class="keyword">in</span> chain[<span class="string">&quot;chain&quot;</span>]:</span><br><span class="line">            <span class="keyword">for</span> tx <span class="keyword">in</span> block[<span class="string">&quot;transactions&quot;</span>]:</span><br><span class="line">                tx[<span class="string">&quot;index&quot;</span>] = block[<span class="string">&quot;index&quot;</span>]</span><br><span class="line">                tx[<span class="string">&quot;hash&quot;</span>] = block[<span class="string">&quot;previous_hash&quot;</span>]</span><br><span class="line">                content.append(tx)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">global</span> posts</span><br><span class="line">        posts = <span class="built_in">sorted</span>(content,</span><br><span class="line">                       key=<span class="keyword">lambda</span> k: k[<span class="string">&#x27;timestamp&#x27;</span>],</span><br><span class="line">                       reverse=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>The application has an HTML form to take user input and then makes a POST request to a connected node to add the transaction into the unconfirmed transactions pool. The transaction is then mined by the network, and then finally fetched once we refresh our web page:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/submit&#x27;</span>, methods=[<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">submit_textarea</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Endpoint to create a new transaction via our application</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    post_content = request.form[<span class="string">&quot;content&quot;</span>]</span><br><span class="line">    author = request.form[<span class="string">&quot;author&quot;</span>]</span><br><span class="line"></span><br><span class="line">    post_object = &#123;</span><br><span class="line">        <span class="string">&#x27;author&#x27;</span>: author,</span><br><span class="line">        <span class="string">&#x27;content&#x27;</span>: post_content,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Submit a transaction</span></span><br><span class="line">    new_tx_address = <span class="string">&quot;&#123;&#125;/new_transaction&quot;</span>.<span class="built_in">format</span>(CONNECTED_NODE_ADDRESS)</span><br><span class="line"></span><br><span class="line">    requests.post(new_tx_address,</span><br><span class="line">                  json=post_object,</span><br><span class="line">                  headers=&#123;<span class="string">&#x27;Content-type&#x27;</span>: <span class="string">&#x27;application/json&#x27;</span>&#125;)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Return to the homepage</span></span><br><span class="line">    <span class="keyword">return</span> redirect(<span class="string">&#x27;/&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="reference">Reference</h1>
+<ul>
+<li>https://developer.ibm.com/tutorials/develop-a-blockchain-application-from-scratch-in-python/</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Cox-Proportional-Hazards-and-Random-Survival-Forests/2020/04/19/" rel="prev" title="Cox Proportional Hazards and Random Survival Forests">
+      <i class="fa fa-chevron-left"></i> Cox Proportional Hazards and Random Survival Forests
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Decision-Thinking-and-Data-Science-Process/2020/04/21/" rel="next" title="Decision Thinking and Data Science Process">
+      Decision Thinking and Data Science Process <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#store-transactions-into-blocks"><span class="nav-number">1.</span> <span class="nav-text">Store transactions into blocks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#add-digital-fingerprints-to-the-blocks"><span class="nav-number">2.</span> <span class="nav-text">Add digital fingerprints to the blocks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chain-the-blocks"><span class="nav-number">3.</span> <span class="nav-text">Chain the blocks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#implement-a-proof-of-work-algorithm"><span class="nav-number">4.</span> <span class="nav-text">Implement a proof of work algorithm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#add-blocks-to-the-chain"><span class="nav-number">5.</span> <span class="nav-text">Add blocks to the chain</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mining"><span class="nav-number">6.</span> <span class="nav-text">Mining</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#combined-code"><span class="nav-number">7.</span> <span class="nav-text">Combined Code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#create-interfaces"><span class="nav-number">8.</span> <span class="nav-text">Create interfaces</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#establish-consensus-and-decentralization"><span class="nav-number">9.</span> <span class="nav-text">Establish consensus and decentralization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#build-the-application"><span class="nav-number">10.</span> <span class="nav-text">Build the application</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number"></span> <span class="nav-text">Reference</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">268</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

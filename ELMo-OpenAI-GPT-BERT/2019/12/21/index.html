@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="The problems of RNN  Sequential computation inhibit parallelization No explicit modeling of long and short range We want to model hierarchy (RNNs seem wasteful)  ELMo ELMo means Embeddings from Langua">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ELMo,OpenAI GPT,BERT">
+<meta property="og:url" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="The problems of RNN  Sequential computation inhibit parallelization No explicit modeling of long and short range We want to model hierarchy (RNNs seem wasteful)  ELMo ELMo means Embeddings from Langua">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/elmo2.png">
+<meta property="og:image" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/elmo.png">
+<meta property="og:image" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/char_cnn.png">
+<meta property="og:image" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/elmo3.png">
+<meta property="og:image" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/openai.png">
+<meta property="og:image" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/openai2.png">
+<meta property="og:image" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/openai3.png">
+<meta property="og:image" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/bert.png">
+<meta property="og:image" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/bert2.png">
+<meta property="og:image" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/bert3.png">
+<meta property="og:image" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/bert4.png">
+<meta property="og:image" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/bert5.png">
+<meta property="og:image" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/bert6.png">
+<meta property="article:published_time" content="2019-12-21T14:31:19.000Z">
+<meta property="article:modified_time" content="2020-01-23T19:06:41.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="cs224n">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/elmo2.png">
+
+<link rel="canonical" href="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>ELMo,OpenAI GPT,BERT | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/ELMo-OpenAI-GPT-BERT/2019/12/21/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ELMo,OpenAI GPT,BERT
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-21 22:31:19" itemprop="dateCreated datePublished" datetime="2019-12-21T22:31:19+08:00">2019-12-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-24 03:06:41" itemprop="dateModified" datetime="2020-01-24T03:06:41+08:00">2020-01-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/ELMo-OpenAI-GPT-BERT/2019/12/21/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/ELMo-OpenAI-GPT-BERT/2019/12/21/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="the-problems-of-rnn">The problems of RNN</h2>
+<ol type="1">
+<li>Sequential computation inhibit parallelization</li>
+<li>No explicit modeling of long and short range</li>
+<li>We want to model hierarchy (RNNs seem wasteful)</li>
+</ol>
+<h2 id="elmo">ELMo</h2>
+<p>ELMo means <code>Embeddings from Language Models</code>. the original paper is from <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1802.05365">https://arxiv.org/abs/1802.05365</a></p>
+<ol type="1">
+<li>Breakout version of word token vectors or contextual word vectors</li>
+<li>Learn word token vectors using long contexts not context windows (here, whole sentence, could be longer)</li>
+<li>Learn a deep Bi-NLM and use all its layers in prediction</li>
+</ol>
+<h3 id="whats-elmos-secret">What’s ELMo’s secret?</h3>
+<p>ELMo gained its language understanding from being trained to predict the next word in a sequence of words - a task called <code>Language Modeling</code>. This is convenient because we have vast amounts of text data that such a model can learn from without needing labels.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="elmo2.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+char cnn embedding from ELMo
+</div>
+</center>
+<p>A step in the pre-training process of ELMo: Given “Let’s stick to” as input, predict the next most likely word – a language modeling task. When trained on a large dataset, the model starts to pick up on language patterns. It’s unlikely it’ll accurately guess the next word in this example. More realistically, after a word such as “hang”, it will assign a higher probability to a word like “out” (to spell “hang out”) than to “camera”.</p>
+<h3 id="bilstm-lm">bilstm LM</h3>
+<p>ELMo actually goes a step further and trains a bi-directional LSTM – so that its language model doesn’t only have a sense of the next word, but also the previous word.</p>
+<ol type="1">
+<li>前向LSTM结构: <span class="math display">\[p(t_1,t_2,...,t_N) = \prod^N_{k=1}p(t_k|t_1,t_2,...,t_{k-1})\]</span></li>
+<li>反向LSTM结构: <span class="math display">\[p(t_1,t_2,...,t_N) = \prod^N_{k=1}p(t_k|t_{k+1},t_{k+2},...,t_{N})\]</span></li>
+<li>最大似然函数: <span class="math display">\[\sum_{k=1}^N(logp(t_k|t_1,t_2,...,t_{k-1}) + logp(t_k|t_{k+1},t_{k+2},...,t_{N}))\]</span></li>
+<li>线性组合公式： <span class="math display">\[\textrm{ELMo}_k^{task} = E(R_k;\Theta^{task}) = \gamma^{task}\sum_{j=0}^L s_j^{task}h_{k,j}^{LM} \tag{1}\]</span></li>
+</ol>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="elmo.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+bilstm from ELMo
+</div>
+</center>
+<h3 id="char-cnn-embedding">Char cnn embedding</h3>
+<p>The input of elmo is char embedding, see the details from <a href="https://zhangruochi.com/Subword-Models/2019/12/19/">https://zhangruochi.com/Subword-Models/2019/12/19/</a></p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="char_cnn.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+char cnn embedding from ELMo
+</div>
+</center>
+<h2 id="how-to-use-elmo-when-after-pre-training">How to use ELMo when after pre-training</h2>
+<p>We can feed our input data to the pre-trained ELMo and get the representation of <code>dynamic word vectors</code>. And then we use them to our specific tasks.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="elmo3.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+ELMo used in a sequence tagger
+</div>
+</center>
+<h2 id="openai-transformer-pre-training-a-transformer-decoder-for-language-modeling">OpenAI Transformer: Pre-training a Transformer Decoder for Language Modeling</h2>
+<p>It turns out we don’t need an entire Transformer to adopt transfer learning and a fine-tunable language model for NLP tasks. We can do with just the decoder of the transformer. The decoder is a good choice because it’s a natural choice for language modeling (predicting the next word) since it’s built to <code>mask future tokens</code> – a valuable feature when it’s generating a translation word by word.</p>
+<p>The model stacked twelve decoder layers. Since there is no encoder in this set up, these decoder layers would not have the encoder-decoder attention sublayer that vanilla transformer decoder layers have. It would still have the self-attention layer, however (masked so it doesn’t peak at future tokens).</p>
+<p>With this structure, we can proceed to train the model on the same language modeling task: predict the next word using massive (unlabeled) datasets. Just, throw the text of 7,000 books at it and have it learn! Books are great for this sort of task since it allows the model to learn to associate related information even if they’re separated by a lot of text – something you don’t get for example, when you’re training with tweets, or articles.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="openai.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+
+</div>
+</center>
+<p><span class="math display">\[
+\begin{split}
+h_0 &amp; =UW_e+W_p \\
+h_l &amp; = transformer\_block(h_{l-1}) \\
+P(u) &amp; = softmax(h_n W_e^T)
+\end{split}
+\]</span></p>
+<p><span class="math inline">\(W_e\)</span> is the embedding matrix, <span class="math inline">\(W_p\)</span> is the positional embedding matrix(Note that it is different with classicial transformer)</p>
+<h3 id="fine-tuning-with-openai">Fine-Tuning with OpenAI</h3>
+<p>Now that the OpenAI transformer is pre-trained and its layers have been tuned to reasonably handle language, we can start using it for downstream tasks. Let’s first look at sentence classification (classify an email message as “spam” or “not spam”):</p>
+<p>If our input sequence is <span class="math inline">\(x_1,\cdots,x_m\)</span>, and the label is y. We can add a <code>softmax layer</code> to do classification and use the cross entrophy to calculate the loss.</p>
+<p><span class="math display">\[L_2(\mathcal{C})=\sum{x,y}logP(y|x^1,...,x^m)\]</span></p>
+<p>In general, we should update the parameters to minimize the <span class="math inline">\(L_2\)</span>, but we can use <code>Multi-task Learning</code> to get a more generalize model. Therefore we can get the max likelihood of <span class="math inline">\(L3\)</span></p>
+<p><span class="math display">\[L_3(\mathcal{C})=L_2(\mathcal{C})+\lambda \times L_1(\mathcal{C})\]</span></p>
+<p><span class="math inline">\(L_1\)</span> if the loss of previous language model.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="openai2.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+How to use a pre-trained OpenAI transformer to do sentence clasification
+</div>
+</center>
+<p>The OpenAI paper outlines a number of input transformations to handle the inputs for different types of tasks. The following image from the paper shows the structures of the models and input transformations to carry out different tasks.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="openai3.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+How to use a pre-trained OpenAI transformer to do different tasks
+</div>
+</center>
+<h2 id="bert-from-decoders-to-encoders">BERT: From Decoders to Encoders</h2>
+<p>The openAI transformer gave us a fine-tunable pre-trained model based on the Transformer. But something went missing in this transition from LSTMs to Transformers. ELMo’s language model was bi-directional, but the openAI transformer only trains a forward language model. Could we build a transformer-based model whose language model looks both forward and backwards (in the technical jargon – “is conditioned on both left and right context”)?</p>
+<h3 id="input">Input</h3>
+<p>The input representation of BERT is shown in the figure below. For example, the two sentences "my dog ​​is cute" and "he likes playing" are entered. I'll explain why two sentences are needed later. Here, the two sentences similar to GPT are used. First, a special Token <code>[CLS]</code> is added at the beginning of the first sentence, and a <code>[SEP]</code> is added after the cute to indicate the end of the first sentence. After ##ing, A <code>[SEP]</code> will be added later. Note that the word segmentation here will divide "playing" into "play" and "##ing" two tokens. This method of dividing words into more fine-grained Word Pieces was introduced in the previous machine translation section. This is a kind of Common methods to resolve unregistered words. Then perform 3 Embeddings on each Token: 1. Embedding of words; 2. Embedding of positions; 3. Embedding of segments.</p>
+<p>The word Embedding is familiar to everyone, and the position Embedding is similar to the word embedding, mapping a position (such as 2) into a low-dimensional dense vector. And Segment embedding has only two, either belong to the first sentence (segment) or belong to the second sentence. Segment Embedding of the same sentence is shared so that it can learn information belonging to different segments. For tasks such as sentiment classification, there is only one sentence, so the Segment id is always 0; for the Entailment task, the input is two sentences, so the Segment is 0 or 1.</p>
+<p>The BERT model requires a fixed sequence length, such as 128. If it is not enough, then padding in the back, otherwise it will intercept the excess Token, so as to ensure that the input is a fixed-length Token sequence. The first token is always special <code>[CLS]</code>. It does not have any semantics, so it will (must) encode the semantics of the entire sentence (other words).</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="bert.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Input of Bert/div&gt;
+</center>
+<h3 id="masked-language-model">Masked Language Model</h3>
+<p>Finding the right task to train a Transformer stack of encoders is a complex hurdle that BERT resolves by adopting a <code>masked language model</code> concept from earlier literature (where it’s called a Cloze task).</p>
+<p>Beyond masking 15% of the input, BERT also mixes things a bit in order to improve how the model later fine-tunes. Sometimes it randomly replaces a word with another word and asks the model to predict the correct word in that position.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="bert2.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+masked language model
+</div>
+</center>
+<h3 id="two-sentence-tasks">Two-sentence Tasks</h3>
+<p>If you look back up at the input transformations the OpenAI transformer does to handle different tasks, you’ll notice that some tasks require the model to say something intelligent about two sentences (e.g. are they simply paraphrased versions of each other? Given a wikipedia entry as input, and a question regarding that entry as another input, can we answer that question?).</p>
+<p>To make BERT better at handling relationships between multiple sentences, the pre-training process includes an additional task: Given two sentences (A and B), is B likely to be the sentence that follows A, or not?</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="bert3.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+The second task BERT is pre-trained on is a two-sentence classification task.
+</div>
+</center>
+<h3 id="task-specific-models">Task specific-Models</h3>
+<p>The BERT paper shows a number of ways to use BERT for different tasks.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="bert4.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+different ways to use BERT
+</div>
+</center>
+<ol type="1">
+<li>For common classification tasks, the input is a sequence, as shown in the upper right of the figure. All tokens belong to the same Segment (Id = 0). We use the last layer of the first special token <code>[CLS]</code> to connect it. Softmax is used for classification, and classified data is used for Fine-Tuning.</li>
+<li>For tasks such as similarity calculation that are input as two sequences, the process is shown in the upper left. The tokens of the two sequences correspond to different segments (Id = 0/1). We also use the last layer output of the first special token [CLS] to connect with softmax for classification, and then use the classification data for Fine-Tuning.</li>
+<li>The third type is a question-and-answer type question, such as the SQuAD v1.1 dataset. The input is a question and a long paragraph containing the answer (Paragraph), and the output finds the answer to the question in this paragraph.</li>
+<li>The forth type of task is sequence labeling, such as named entity recognition. The input is a sentence (Token sequence). Except for [CLS] and [SEP], there will be output tags at each moment. For example, B-PER indicates the beginning of a person's name.</li>
+</ol>
+<h3 id="bert-for-feature-extraction">BERT for feature extraction</h3>
+<p>The fine-tuning approach isn’t the only way to use BERT. Just like ELMo, you can use the pre-trained BERT to create contextualized word embeddings. Then you can feed these embeddings to your existing model – a process the paper shows yield results not far behind fine-tuning BERT on a task such as named-entity recognition.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="bert5.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Feature extraction
+</div>
+</center>
+<p>Which vector works best as a contextualized embedding? I would think it depends on the task. The paper examines six choices (Compared to the fine-tuned model which achieved a score of 96.4):</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="bert6.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Feature extraction
+</div>
+</center>
+<h2 id="reference">Reference</h2>
+<ol type="1">
+<li>http://fancyerii.github.io/2019/03/09/bert-theory/#词汇扩展</li>
+<li>https://zhuanlan.zhihu.com/p/63115885</li>
+<li>http://jalammar.github.io/illustrated-bert/</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/cs224n/" rel="tag"># cs224n</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Transformer/2019/12/20/" rel="prev" title="Transformer">
+      <i class="fa fa-chevron-left"></i> Transformer
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Face-Blindness-Saver/2019/12/25/" rel="next" title="Face Blindness Saver">
+      Face Blindness Saver <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#the-problems-of-rnn"><span class="nav-number">1.</span> <span class="nav-text">The problems of RNN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#elmo"><span class="nav-number">2.</span> <span class="nav-text">ELMo</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#whats-elmos-secret"><span class="nav-number">2.1.</span> <span class="nav-text">What’s ELMo’s secret?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bilstm-lm"><span class="nav-number">2.2.</span> <span class="nav-text">bilstm LM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#char-cnn-embedding"><span class="nav-number">2.3.</span> <span class="nav-text">Char cnn embedding</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how-to-use-elmo-when-after-pre-training"><span class="nav-number">3.</span> <span class="nav-text">How to use ELMo when after pre-training</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#openai-transformer-pre-training-a-transformer-decoder-for-language-modeling"><span class="nav-number">4.</span> <span class="nav-text">OpenAI Transformer: Pre-training a Transformer Decoder for Language Modeling</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fine-tuning-with-openai"><span class="nav-number">4.1.</span> <span class="nav-text">Fine-Tuning with OpenAI</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bert-from-decoders-to-encoders"><span class="nav-number">5.</span> <span class="nav-text">BERT: From Decoders to Encoders</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#input"><span class="nav-number">5.1.</span> <span class="nav-text">Input</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#masked-language-model"><span class="nav-number">5.2.</span> <span class="nav-text">Masked Language Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#two-sentence-tasks"><span class="nav-number">5.3.</span> <span class="nav-text">Two-sentence Tasks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#task-specific-models"><span class="nav-number">5.4.</span> <span class="nav-text">Task specific-Models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bert-for-feature-extraction"><span class="nav-number">5.5.</span> <span class="nav-text">BERT for feature extraction</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">6.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">268</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

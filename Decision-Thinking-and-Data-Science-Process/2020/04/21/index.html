@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Between design thinking and the above mentioned process models there are several 1:1 relationships between stages. The other relationships are generally straightforward to delineate. The design thinki">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Decision Thinking and Data Science Process">
+<meta property="og:url" content="https://zhangruochi.com/Decision-Thinking-and-Data-Science-Process/2020/04/21/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Between design thinking and the above mentioned process models there are several 1:1 relationships between stages. The other relationships are generally straightforward to delineate. The design thinki">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Decision-Thinking-and-Data-Science-Process/2020/04/21/1.png">
+<meta property="og:image" content="https://zhangruochi.com/Decision-Thinking-and-Data-Science-Process/2020/04/21/2.png">
+<meta property="article:published_time" content="2020-04-21T09:18:18.000Z">
+<meta property="article:modified_time" content="2020-04-21T21:40:13.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Decision-Thinking-and-Data-Science-Process/2020/04/21/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Decision-Thinking-and-Data-Science-Process/2020/04/21/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Decision Thinking and Data Science Process | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Decision-Thinking-and-Data-Science-Process/2020/04/21/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Decision Thinking and Data Science Process
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-21 17:18:18" itemprop="dateCreated datePublished" datetime="2020-04-21T17:18:18+08:00">2020-04-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-04-22 05:40:13" itemprop="dateModified" datetime="2020-04-22T05:40:13+08:00">2020-04-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI-Workflow/" itemprop="url" rel="index"><span itemprop="name">AI Workflow</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI-Workflow/Process-Model/" itemprop="url" rel="index"><span itemprop="name">Process Model</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Decision-Thinking-and-Data-Science-Process/2020/04/21/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Decision-Thinking-and-Data-Science-Process/2020/04/21/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Between design thinking and the above mentioned process models there are several 1:1 relationships between stages. The other relationships are generally straightforward to delineate. The design thinking process is consists of five stages and it has the distinct advantage of being applied outside of data science.</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="1.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Design Thinking
+</div>
+</center>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="2.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Process Models
+</div>
+</center>
+<p>It is the details that keep you flowing from one stage to the next, while iterating in ways that are business driven that makes the contents of this course new. Let’s use a simple example to illustrate the basic process.</p>
+<blockquote>
+<p>A friend of yours just opened a new Sherlock Holmes themed café. Her café is state-of-the-art complete with monitors built into the tables. The business is off to a good start, but she has gotten some feedback that the games could use improvement. She knows that good games keep the customers around a little longer. The games are a way to keep customers entertained while they drink coffee and buy food items. She has some games already, but wants your help to create a few more games to keep customers both informed and entertained.</p>
+</blockquote>
+<p>Being a data scientist you would not just sit down and create a game—you are, of course, going to create based on your initial investigation of the business scenario.</p>
+<h3 id="empathize">Empathize</h3>
+<p><strong>In this stage time is dedicated to understanding the business opportunities.</strong></p>
+<p>In this setting the frequency and duration of customer visits are going to be related to overall sales. The initial business opportunity here is How do you ensure new games drive revenue?. There are many other business opportunities, like what is the optimal menu for the customer-base and do seasonal variations of offerings help the business?, but lets focus on the initial one for this example. As part of this stage you would talk with your friend, her employees and some customers to do your best to fully understand the experience of the customer. The important thing here is to spend time on-site simulating the experience of a customer to obtain as genuine an understanding of the problem as possible. You may realize that most customers are there to work or most of them are just passing through. This domain knowledge is useful when making decisions like which new types of new games to create. After you have gathered your information and studied it you will generally articulate the business scenario using a scientific thought process—this means a statement that can be tested. The business opportunity should be stated in a way that minimizes the presence of confounding factors.</p>
+<p>There are logical follow-up questions to ask to fully understand the problem, but the next two stages are the more appropriate places to get into these details. Now that you understand the problem it is time to gather the data.</p>
+<p><strong>HINT</strong>: This is the stage where we gather all of the data and we make note of what would be ideal data.</p>
+<ol type="1">
+<li><p>The data here are mostly sales and customer profiles. There are two important aspects of the data that would be ideal:</p></li>
+<li><p>The data are at a transaction level (each purchase and its associated data are recorded) We can associate game usage with transactions.</p></li>
+</ol>
+<p>Fortunately for us this is a modern cafe so customers order and play games through the same interface. Additionally, they are incentivized to login to the system and generate a customer profile. In this stage we go through the process of gathering the raw data. This may involve querying a database, gathering files, web-scraping and other mechanisms. It is important to gather <strong>all of the relevant data</strong> in this stage, because access and quality of the data may force you to modify the business question. It is very difficult to assess the quality of data when it is not in hand. If possible effort should be made to collect even marginally related data.</p>
+<p>Lets assume that your initial investigation led you to understand that games that used quotations from the books in an interactive way were the most effective. So you have come up with the idea to develop a game that is built on a chatbot that has been trained to talk like Sherlock. This would involve Natural Language Processing (NLP) and we would need a corpus. As a start you might download The Adventures of Sherlock Holmes, by Arthur Conan Doyle from Project Gutenberg.</p>
+<p><strong>HINT</strong>: This is a live coding example and we suggest that you open a Jupyter notebook either locally or within Watson Studio so that you may annotate and expand on the example freely.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">text = requests.get(<span class="string">&#x27;https://www.gutenberg.org/files/1661/1661-0.txt&#x27;</span>).text</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;sherlock-holmes.txt&quot;</span>, <span class="string">&quot;w&quot;</span>) <span class="keyword">as</span> text_file:</span><br><span class="line">    text_file.write(text)</span><br></pre></td></tr></table></figure>
+<h3 id="define">Define</h3>
+<p><strong>This is the data wrangling stage</strong></p>
+<p>Given the data, an understanding of the business scenario and your gathered domain knowledge you will next perform your data cleaning and preliminary exploratory data analysis. To get to the point of preliminary investigation into the findings from the empathize stage it is frequently the case that we need to clean our data.</p>
+<p>This could involve parsing JSON, manipulating SQL queries, reading CSV, cleaning a corpus of text, sifting through images, and so much more. One common goal of this part of the process is the creation of one or more Pandas dataframes or NumPy arrays that will be used for initial exploratory data analysis (EDA).</p>
+<blockquote>
+<p>Exploratory data analysis (EDA) is the process of analyzing data sets to create summaries and visualizations of the data. These summaries and visualizations are then used to guide the use of the data for solving business challenges.</p>
+</blockquote>
+<p><strong>HINT</strong>: This is the stage where we perform the initial EDA</p>
+<p>Sometimes we need to perform a little EDA in order to determine how to best clean the data so these two steps are not necessarily distinct from each other. Visualization, basic hypothesis testing and simple feature engineering are among the most important tasks for EDA at this stage. An minimal example of a EDA plot is one where we look at the average number of words per sentence for the name mentions.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## read in the book        </span></span><br><span class="line">text = <span class="built_in">open</span>(<span class="string">&#x27;sherlock-holmes.txt&#x27;</span>, <span class="string">&#x27;r&#x27;</span>).read()</span><br><span class="line"></span><br><span class="line"><span class="comment">## do some basic parsing and cleaning of sentences</span></span><br><span class="line">stop_pattern = <span class="string">&#x27;\.|\?|\!&#x27;</span></span><br><span class="line">sentences = re.split(stop_pattern, text)</span><br><span class="line">sentences = [re.sub(<span class="string">&quot;\r|\n&quot;</span>,<span class="string">&quot; &quot;</span>,s.lower()) <span class="keyword">for</span> s <span class="keyword">in</span> sentences][<span class="number">3</span>:]</span><br><span class="line"></span><br><span class="line"><span class="comment">## extract a few features and create a pandas df</span></span><br><span class="line">has_sherlock =  [<span class="literal">True</span> <span class="keyword">if</span> re.search(<span class="string">&quot;sherlock|holmes&quot;</span>,s) <span class="keyword">else</span> <span class="literal">False</span> <span class="keyword">for</span> s <span class="keyword">in</span> sentences]</span><br><span class="line">has_watson = [<span class="literal">True</span> <span class="keyword">if</span> re.search(<span class="string">&quot;john|watson&quot;</span>,s) <span class="keyword">else</span> <span class="literal">False</span> <span class="keyword">for</span> s <span class="keyword">in</span> sentences]</span><br><span class="line">df = pd.DataFrame(&#123;<span class="string">&#x27;text&#x27;</span>:sentences,<span class="string">&#x27;has_sherlock&#x27;</span>:has_sherlock,<span class="string">&#x27;has_watson&#x27;</span>:has_watson&#125;)</span><br><span class="line">df[<span class="string">&#x27;num_words&#x27;</span>] = df[<span class="string">&#x27;text&#x27;</span>].apply(<span class="keyword">lambda</span> x: <span class="built_in">len</span>(x.split(<span class="string">&quot; &quot;</span>)))</span><br><span class="line"></span><br><span class="line"><span class="comment">## make eda plot</span></span><br><span class="line">fig = plt.figure(figsize=(<span class="number">8</span>,<span class="number">8</span>))</span><br><span class="line">ax1 = fig.add_subplot(<span class="number">111</span>)</span><br><span class="line"></span><br><span class="line">data1 = df[df[<span class="string">&#x27;has_sherlock&#x27;</span>]==<span class="literal">True</span>]</span><br><span class="line">data2 = df[df[<span class="string">&#x27;has_watson&#x27;</span>]==<span class="literal">True</span>]</span><br><span class="line"></span><br><span class="line">data = [df[df[col]==<span class="literal">True</span>][<span class="string">&#x27;num_words&#x27;</span>].values <span class="keyword">for</span> col <span class="keyword">in</span> [<span class="string">&#x27;has_sherlock&#x27;</span>,<span class="string">&#x27;has_watson&#x27;</span>]]</span><br><span class="line"></span><br><span class="line">pos = [<span class="number">1</span>,<span class="number">2</span>]</span><br><span class="line">ax1.violinplot(data, pos, points=<span class="number">40</span>, widths=<span class="number">0.5</span>,showextrema=<span class="literal">True</span>, showmedians=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">labels = [<span class="string">&#x27;Sherlock&#x27;</span>, <span class="string">&#x27;Watson&#x27;</span>]</span><br><span class="line">ax1.set_xticks(np.arange(<span class="number">1</span>, <span class="built_in">len</span>(labels) + <span class="number">1</span>))</span><br><span class="line">ax1.set_xticklabels(labels)</span><br><span class="line">ax1.set_xlim(<span class="number">0.25</span>, <span class="built_in">len</span>(labels) + <span class="number">0.75</span>)</span><br><span class="line">ax1.set_xlabel(<span class="string">&#x27;Feature&#x27;</span>)</span><br><span class="line">ax1.set_ylabel(<span class="string">&#x27;# Words&#x27;</span>)</span><br><span class="line">ax1.set_title(<span class="string">&quot;Words per sentence&quot;</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<h3 id="ideate">Ideate</h3>
+<p><strong>This is the stage where we modify our data and our features</strong></p>
+<p>Now that you have clean data the data processing must continue until you are ready to input your data into a model. This stage contains all of the possible data manipulations you might perform before modeling. Perhaps the data need to be log transformed, standardized, reduced in dimensionality, kernel transformed, engineered to contain more features or transformed in some other way.</p>
+<p>For our text data we would likely want to dig into the sentences themselves to make sure they fit the desired use case. If we were building a chatbot to engage with in a very Holmes manner then we would likely want to remove any sentences that were not said by Mr. Holmes, but his name was mentioned. If we were building a predictive model to determine which story a phrase would most likely have been generated, we would need to create a new column in our data frame representing the books themselves.</p>
+<p>When working with text data many models that we might consider prefer a numeric representation of the data. This may be occurrences, frequencies, or another transformation of the original data. It is in this stage that these types of transformations are readied or carried out. For example here we import the necessary transformers for usage in the next stage.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.feature_extraction.text <span class="keyword">import</span> CountVectorizer</span><br><span class="line"><span class="keyword">from</span> sklearn.feature_extraction.text <span class="keyword">import</span> TfidfTransformer</span><br><span class="line"><span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> Pipeline</span><br><span class="line"></span><br><span class="line"><span class="comment"># extract the data to be used in the model from the df</span></span><br><span class="line">labels = np.zeros(df.shape[<span class="number">0</span>])</span><br><span class="line">labels[(df[<span class="string">&#x27;has_sherlock&#x27;</span>] == <span class="literal">True</span>)] = <span class="number">1</span></span><br><span class="line">labels[(df[<span class="string">&#x27;has_watson&#x27;</span>] == <span class="literal">True</span>)] = <span class="number">2</span></span><br><span class="line">df[<span class="string">&#x27;labels&#x27;</span>] = labels</span><br><span class="line">df = df[df[<span class="string">&#x27;labels&#x27;</span>]!=<span class="number">0</span>]</span><br><span class="line">X = df[<span class="string">&#x27;text&#x27;</span>].values</span><br><span class="line">y = df[<span class="string">&#x27;labels&#x27;</span>].values</span><br></pre></td></tr></table></figure>
+<p>There are a lot of ways to prepare data for different models. In some case you will not know the best transformation or series of transformations until you have run the different models and made a comparison. The concept of pipelines is extremely useful for iterating over different permutations of transformers and models. The following topics will be covered in detail during Module 3.</p>
+<ul>
+<li>Unsupervised learning</li>
+<li>Feature engineering</li>
+<li>Dimension Reduction</li>
+<li>Simulation</li>
+<li>Missing value imputation</li>
+<li>Outlier detection</li>
+</ul>
+<p><strong>HINT</strong>: This is the stage where we enumerate the advantages and disadvantages of the possible modeling solutions</p>
+<p>Once the transformations are carried or staged as part of some pipeline it is a valuable exercise to document what you know about the process so far. The form that this most commonly takes is a table of possible modeling strategies complete with the advantages and disadvantages of each.</p>
+<h3 id="prototype">Prototype</h3>
+<p><strong>This is the modeling stage</strong></p>
+<p>The data have been cleaned, processed and staged (ideally in a pipeline) for modeling. The modeling (classic statistics and machine learning) is the bread and butter of data science. This is the stage where most data scientists want to spend the majority of their time. It is where you will interface with the most intriguing aspects of this discipline.</p>
+<p>To illustrate the process to the end shown below is a Support Vector Machine with Stochastic gradient decent as a model. The process involves the use of a train-test split and a pipeline because we want you to be exposed from the very beginning of this course with best practices. Given this example we also see that there can be considerable overlap between the ideate and prototype stages. The overlap exists because transformations of data are generally specific to models–as you will explore which model fits the situation best you will be modifying the transformations of your data.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> SGDClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"></span><br><span class="line"><span class="comment">## carry out the train test split</span></span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="number">0.33</span>, random_state=<span class="number">42</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> SGDClassifier</span><br><span class="line">text_clf = Pipeline([</span><br><span class="line">    (<span class="string">&#x27;vect&#x27;</span>, CountVectorizer()),</span><br><span class="line">    (<span class="string">&#x27;tfidf&#x27;</span>, TfidfTransformer()),</span><br><span class="line">    (<span class="string">&#x27;clf&#x27;</span>, SGDClassifier(loss=<span class="string">&#x27;hinge&#x27;</span>, penalty=<span class="string">&#x27;l2&#x27;</span>,</span><br><span class="line">                        alpha=<span class="number">1e-3</span>, random_state=<span class="number">42</span>,</span><br><span class="line">                        max_iter=<span class="number">5</span>, tol=<span class="literal">None</span>))</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment">## train a model</span></span><br><span class="line">text_clf.fit(X_train, y_train)</span><br></pre></td></tr></table></figure>
+<h3 id="testing">Testing</h3>
+<p><strong>This is the production, testing and feedback loop stage</strong></p>
+<p>The model works and there are evaluation metrics to provide insight into how well it works. However, the process does not end here. Perhaps the model runs, but it is not yet in production or maybe you want to try different models and/or transformers. Once in production you might want to run some tests to determine if it will handle load or if it will scale well as the data grows. A working model with an impressive f-score does not mean it will be effective in practice. This stage is dedicated to all of the considerations that come after the initial modeling is carried out.</p>
+<p>It is also the stage where you will determine how best to iterate. Design thinking like data science is an iterative process. Our model performed very well (see below), possibly because Dr. Holmes and Dr. Watson are described in very different ways in the stories, but it could be something else.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> metrics</span><br><span class="line"></span><br><span class="line"><span class="comment">## evaluate the model performance</span></span><br><span class="line">predicted = text_clf.predict(X_test)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(metrics.classification_report(y_test, predicted,</span><br><span class="line">      target_names=[<span class="string">&#x27;sherlock&#x27;</span>,<span class="string">&#x27;watson&#x27;</span>]))</span><br></pre></td></tr></table></figure>
+<p>As a scientist you always want to remain skeptical about your findings until you have multiple ways to corroborate them. You will also want to always be aware of the overall goal of why you are doing the work you are doing. This example is an interesting metaphor for what can happen as a data scientist. It is possible to go down a path that may only marginally be related to the central business question. Developing a game here is not unlike using a new model for deep-learning or incorporating a new technology into your workflow—it may be fun and it may to some degree help the business case, but you need to always ask yourself is this the best way for me or my team to address the business problem? The questions your ask here are going to guide how best to iterate on the entire workflow.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Develop-a-blockchain-application-from-scratch-in-Python/2020/04/21/" rel="prev" title="Develop a blockchain application from scratch in Python">
+      <i class="fa fa-chevron-left"></i> Develop a blockchain application from scratch in Python
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Empathize-Stage/2020/04/21/" rel="next" title="Empathize Stage">
+      Empathize Stage <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#empathize"><span class="nav-number">1.</span> <span class="nav-text">Empathize</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#define"><span class="nav-number">2.</span> <span class="nav-text">Define</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ideate"><span class="nav-number">3.</span> <span class="nav-text">Ideate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#prototype"><span class="nav-number">4.</span> <span class="nav-text">Prototype</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#testing"><span class="nav-number">5.</span> <span class="nav-text">Testing</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">268</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

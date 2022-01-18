@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Assignment 4: Question duplicates Welcome to the fourth assignment of course 3. In this assignment you will explore Siamese networks applied to natural language processing. You will further explore th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Question duplicates">
+<meta property="og:url" content="https://zhangruochi.com/Question-duplicates/2020/08/23/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Assignment 4: Question duplicates Welcome to the fourth assignment of course 3. In this assignment you will explore Siamese networks applied to natural language processing. You will further explore th">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-08-22T18:47:25.000Z">
+<meta property="article:modified_time" content="2020-08-22T18:47:47.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhangruochi.com/Question-duplicates/2020/08/23/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Question duplicates | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Question-duplicates/2020/08/23/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Question duplicates
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-08-23 02:47:25 / Modified: 02:47:47" itemprop="dateCreated datePublished" datetime="2020-08-23T02:47:25+08:00">2020-08-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Question-duplicates/2020/08/23/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Question-duplicates/2020/08/23/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="assignment-4-question-duplicates">Assignment 4: Question duplicates</h1>
+<p>Welcome to the fourth assignment of course 3. In this assignment you will explore Siamese networks applied to natural language processing. You will further explore the fundamentals of Trax and you will be able to implement a more complicated structure using it. By completing this assignment, you will learn how to implement models with different architectures.</p>
+<h2 id="outline">Outline</h2>
+<ul>
+<li><a href="#0">Overview</a></li>
+<li><a href="#1">Part 1: Importing the Data</a>
+<ul>
+<li><a href="#1.1">1.1 Loading in the data</a></li>
+<li><a href="#1.2">1.2 Converting a question to a tensor</a></li>
+<li><a href="#1.3">1.3 Understanding the iterator</a>
+<ul>
+<li><a href="#ex01">Exercise 01</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#2">Part 2: Defining the Siamese model</a>
+<ul>
+<li><a href="#2.1">2.1 Understanding Siamese Network</a>
+<ul>
+<li><a href="#ex02">Exercise 02</a></li>
+</ul></li>
+<li><a href="#2.2">2.2 Hard Negative Mining</a>
+<ul>
+<li><a href="#ex03">Exercise 03</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#3">Part 3: Training</a>
+<ul>
+<li><a href="#3.1">3.1 Training the model</a>
+<ul>
+<li><a href="#ex04">Exercise 04</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#4">Part 4: Evaluation</a>
+<ul>
+<li><a href="#4.1">4.1 Evaluating your siamese network</a></li>
+<li><a href="#4.2">4.2 Classify</a>
+<ul>
+<li><a href="#ex05">Exercise 05</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#5">Part 5: Testing with your own questions</a>
+<ul>
+<li><a href="#ex06">Exercise 06</a></li>
+</ul></li>
+<li><a href="#6">On Siamese networks</a></li>
+</ul>
+<p><a name='0'></a> ### Overview In this assignment, concretely you will:</p>
+<ul>
+<li>Learn about Siamese networks</li>
+<li>Understand how the triplet loss works</li>
+<li>Understand how to evaluate accuracy</li>
+<li>Use cosine similarity between the model's outputted vectors</li>
+<li>Use the data generator to get batches of questions</li>
+<li>Predict using your own model</li>
+</ul>
+<p>By now, you are familiar with trax and know how to make use of classes to define your model. We will start this homework by asking you to preprocess the data the same way you did in the previous assignments. After processing the data you will build a classifier that will allow you to identify whether to questions are the same or not. <img src = "meme.png" style="width:550px;height:300px;"/></p>
+<p>You will process the data first and then pad in a similar way you have done in the previous assignment. Your model will take in the two question embeddings, run them through an LSTM, and then compare the outputs of the two sub networks using cosine similarity. Before taking a deep dive into the model, start by importing the data set.</p>
+<p><a name='1'></a> # Part 1: Importing the Data <a name='1.1'></a> ### 1.1 Loading in the data</p>
+<p>You will be using the Quora question answer dataset to build a model that could identify similar questions. This is a useful task because you don't want to have several versions of the same question posted. Several times when teaching I end up responding to similar questions on piazza, or on other community forums. This data set has been labeled for you. Run the cell below to import some of the packages you will be using.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line"><span class="keyword">import</span> trax</span><br><span class="line"><span class="keyword">from</span> trax <span class="keyword">import</span> layers <span class="keyword">as</span> tl</span><br><span class="line"><span class="keyword">from</span> trax.supervised <span class="keyword">import</span> training</span><br><span class="line"><span class="keyword">from</span> trax.fastmath <span class="keyword">import</span> numpy <span class="keyword">as</span> fastnp</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> random <span class="keyword">as</span> rnd</span><br><span class="line"></span><br><span class="line"><span class="comment"># set random seeds</span></span><br><span class="line">trax.supervised.trainer_lib.init_random_number_generators(<span class="number">34</span>)</span><br><span class="line">rnd.seed(<span class="number">34</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>Notice that for this assignment Trax's numpy is referred to as <code>fastnp</code>, while regular numpy is referred to as <code>np</code>.</strong></p>
+<p>You will now load in the data set. We have done some preprocessing for you. If you have taken the deeplearning specialization, this is a slightly different training method than the one you have seen there. If you have not, then don't worry about it, we will explain everything.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">data = pd.read_csv(<span class="string">&quot;questions.csv&quot;</span>)</span><br><span class="line">N=<span class="built_in">len</span>(data)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Number of question pairs: &#x27;</span>, N)</span><br><span class="line">data.head()</span><br></pre></td></tr></table></figure>
+<pre><code>Number of question pairs:  404351</code></pre>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+id
+</th>
+<th>
+qid1
+</th>
+<th>
+qid2
+</th>
+<th>
+question1
+</th>
+<th>
+question2
+</th>
+<th>
+is_duplicate
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+What is the step by step guide to invest in sh...
+</td>
+<td>
+What is the step by step guide to invest in sh...
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+What is the story of Kohinoor (Koh-i-Noor) Dia...
+</td>
+<td>
+What would happen if the Indian government sto...
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+2
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+How can I increase the speed of my internet co...
+</td>
+<td>
+How can Internet speed be increased by hacking...
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+3
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+Why am I mentally very lonely? How can I solve...
+</td>
+<td>
+Find the remainder when [math]23^{24}[/math] i...
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+4
+</td>
+<td>
+9
+</td>
+<td>
+10
+</td>
+<td>
+Which one dissolve in water quikly sugar, salt...
+</td>
+<td>
+Which fish would survive in salt water?
+</td>
+<td>
+0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>We first split the data into a train and test set. The test set will be used later to evaluate our model.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">N_train = <span class="number">300000</span></span><br><span class="line">N_test  = <span class="number">10</span>*<span class="number">1024</span></span><br><span class="line">data_train = data[:N_train]</span><br><span class="line">data_test  = data[N_train:N_train+N_test]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Train set:&quot;</span>, <span class="built_in">len</span>(data_train), <span class="string">&quot;Test set:&quot;</span>, <span class="built_in">len</span>(data_test))</span><br><span class="line"><span class="keyword">del</span>(data) <span class="comment"># remove to free memory</span></span><br></pre></td></tr></table></figure>
+<pre><code>Train set: 300000 Test set: 10240</code></pre>
+<p>As explained in the lectures, we select only the question pairs that are duplicate to train the model. <br> We build two batches as input for the Siamese network and we assume that question <span class="math inline">\(q1_i\)</span> (question <span class="math inline">\(i\)</span> in the first batch) is a duplicate of <span class="math inline">\(q2_i\)</span> (question <span class="math inline">\(i\)</span> in the second batch), but all other questions in the second batch are not duplicates of <span class="math inline">\(q1_i\)</span>.<br />
+The test set uses the original pairs of questions and the status describing if the questions are duplicates.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">td_index = (data_train[<span class="string">&#x27;is_duplicate&#x27;</span>] == <span class="number">1</span>).to_numpy()</span><br><span class="line">td_index = [i <span class="keyword">for</span> i, x <span class="keyword">in</span> <span class="built_in">enumerate</span>(td_index) <span class="keyword">if</span> x] </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;number of duplicate questions: &#x27;</span>, <span class="built_in">len</span>(td_index))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;indexes of first ten duplicate questions:&#x27;</span>, td_index[:<span class="number">10</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>number of duplicate questions:  111486
+indexes of first ten duplicate questions: [5, 7, 11, 12, 13, 15, 16, 18, 20, 29]</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(data_train[<span class="string">&#x27;question1&#x27;</span>][<span class="number">5</span>])  <span class="comment">#  Example of question duplicates (first one in data)</span></span><br><span class="line"><span class="built_in">print</span>(data_train[<span class="string">&#x27;question2&#x27;</span>][<span class="number">5</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;is_duplicate: &#x27;</span>, data_train[<span class="string">&#x27;is_duplicate&#x27;</span>][<span class="number">5</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>Astrology: I am a Capricorn Sun Cap moon and cap rising...what does that say about me?
+I&#39;m a triple Capricorn (Sun, Moon and ascendant in Capricorn) What does this say about me?
+is_duplicate:  1</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Q1_train_words = np.array(data_train[<span class="string">&#x27;question1&#x27;</span>][td_index])</span><br><span class="line">Q2_train_words = np.array(data_train[<span class="string">&#x27;question2&#x27;</span>][td_index])</span><br><span class="line"></span><br><span class="line">Q1_test_words = np.array(data_test[<span class="string">&#x27;question1&#x27;</span>])</span><br><span class="line">Q2_test_words = np.array(data_test[<span class="string">&#x27;question2&#x27;</span>])</span><br><span class="line">y_test  = np.array(data_test[<span class="string">&#x27;is_duplicate&#x27;</span>])</span><br></pre></td></tr></table></figure>
+<p>Above, you have seen that you only took the duplicated questions for training our model. <br>You did so on purpose, because the data generator will produce batches <span class="math inline">\(([q1_1, q1_2, q1_3, ...]\)</span>, <span class="math inline">\([q2_1, q2_2,q2_3, ...])\)</span> where <span class="math inline">\(q1_i\)</span> and <span class="math inline">\(q2_k\)</span> are duplicate if and only if <span class="math inline">\(i = k\)</span>.</p>
+<p><br>Let's print to see what your data looks like.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;TRAINING QUESTIONS:\n&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Question 1: &#x27;</span>, Q1_train_words[<span class="number">0</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Question 2: &#x27;</span>, Q2_train_words[<span class="number">0</span>], <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Question 1: &#x27;</span>, Q1_train_words[<span class="number">5</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Question 2: &#x27;</span>, Q2_train_words[<span class="number">5</span>], <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;TESTING QUESTIONS:\n&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Question 1: &#x27;</span>, Q1_test_words[<span class="number">0</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Question 2: &#x27;</span>, Q2_test_words[<span class="number">0</span>], <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;is_duplicate =&#x27;</span>, y_test[<span class="number">0</span>], <span class="string">&#x27;\n&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>TRAINING QUESTIONS:
+
+Question 1:  Astrology: I am a Capricorn Sun Cap moon and cap rising...what does that say about me?
+Question 2:  I&#39;m a triple Capricorn (Sun, Moon and ascendant in Capricorn) What does this say about me? 
+
+Question 1:  What would a Trump presidency mean for current international master’s students on an F1 visa?
+Question 2:  How will a Trump presidency affect the students presently in US or planning to study in US? 
+
+TESTING QUESTIONS:
+
+Question 1:  How do I prepare for interviews for cse?
+Question 2:  What is the best way to prepare for cse? 
+
+is_duplicate = 0 </code></pre>
+<p>You will now encode each word of the selected duplicate pairs with an index. <br> Given a question, you can then just encode it as a list of numbers.</p>
+<p>First you tokenize the questions using <code>nltk.word_tokenize</code>. <br> You need a python default dictionary which later, during inference, assigns the values <span class="math inline">\(0\)</span> to all Out Of Vocabulary (OOV) words.<br> Then you encode each word of the selected duplicate pairs with an index. Given a question, you can then just encode it as a list of numbers.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#create arrays</span></span><br><span class="line">Q1_train = np.empty_like(Q1_train_words)</span><br><span class="line">Q2_train = np.empty_like(Q2_train_words)</span><br><span class="line"></span><br><span class="line">Q1_test = np.empty_like(Q1_test_words)</span><br><span class="line">Q2_test = np.empty_like(Q2_test_words)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Building the vocabulary with the train set         (this might take a minute)</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line">vocab = defaultdict(<span class="keyword">lambda</span>: <span class="number">0</span>)</span><br><span class="line">vocab[<span class="string">&#x27;&lt;PAD&gt;&#x27;</span>] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> idx <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(Q1_train_words)):</span><br><span class="line">    Q1_train[idx] = nltk.word_tokenize(Q1_train_words[idx])</span><br><span class="line">    Q2_train[idx] = nltk.word_tokenize(Q2_train_words[idx])</span><br><span class="line">    q = Q1_train[idx] + Q2_train[idx]</span><br><span class="line">    <span class="keyword">for</span> word <span class="keyword">in</span> q:</span><br><span class="line">        <span class="keyword">if</span> word <span class="keyword">not</span> <span class="keyword">in</span> vocab:</span><br><span class="line">            vocab[word] = <span class="built_in">len</span>(vocab) + <span class="number">1</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;The length of the vocabulary is: &#x27;</span>, <span class="built_in">len</span>(vocab))</span><br></pre></td></tr></table></figure>
+<pre><code>The length of the vocabulary is:  36268</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(vocab[<span class="string">&#x27;&lt;PAD&gt;&#x27;</span>])</span><br><span class="line"><span class="built_in">print</span>(vocab[<span class="string">&#x27;Astrology&#x27;</span>])</span><br><span class="line"><span class="built_in">print</span>(vocab[<span class="string">&#x27;Astronomy&#x27;</span>])  <span class="comment">#not in vocabulary, returns 0</span></span><br></pre></td></tr></table></figure>
+<pre><code>1
+2
+0</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> idx <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(Q1_test_words)): </span><br><span class="line">    Q1_test[idx] = nltk.word_tokenize(Q1_test_words[idx])</span><br><span class="line">    Q2_test[idx] = nltk.word_tokenize(Q2_test_words[idx])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Train set has reduced to: &#x27;</span>, <span class="built_in">len</span>(Q1_train) ) </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Test set length: &#x27;</span>, <span class="built_in">len</span>(Q1_test) ) </span><br></pre></td></tr></table></figure>
+<pre><code>Train set has reduced to:  111486
+Test set length:  10240</code></pre>
+<p><a name='1.2'></a> ### 1.2 Converting a question to a tensor</p>
+<p>You will now convert every question to a tensor, or an array of numbers, using your vocabulary built above.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Converting questions to array of integers</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(Q1_train)):</span><br><span class="line">    Q1_train[i] = [vocab[word] <span class="keyword">for</span> word <span class="keyword">in</span> Q1_train[i]]</span><br><span class="line">    Q2_train[i] = [vocab[word] <span class="keyword">for</span> word <span class="keyword">in</span> Q2_train[i]]</span><br><span class="line"></span><br><span class="line">        </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(Q1_test)):</span><br><span class="line">    Q1_test[i] = [vocab[word] <span class="keyword">for</span> word <span class="keyword">in</span> Q1_test[i]]</span><br><span class="line">    Q2_test[i] = [vocab[word] <span class="keyword">for</span> word <span class="keyword">in</span> Q2_test[i]]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;first question in the train set:\n&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(Q1_train_words[<span class="number">0</span>], <span class="string">&#x27;\n&#x27;</span>) </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;encoded version:&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(Q1_train[<span class="number">0</span>],<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;first question in the test set:\n&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(Q1_test_words[<span class="number">0</span>], <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;encoded version:&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(Q1_test[<span class="number">0</span>]) </span><br></pre></td></tr></table></figure>
+<pre><code>first question in the train set:
+
+Astrology: I am a Capricorn Sun Cap moon and cap rising...what does that say about me? 
+
+encoded version:
+[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21] 
+
+first question in the test set:
+
+How do I prepare for interviews for cse? 
+
+encoded version:
+[32, 38, 4, 107, 65, 1015, 65, 11509, 21]</code></pre>
+<p>You will now split your train set into a training/validation set so that you can use it to train and evaluate your Siamese model.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Splitting the data</span></span><br><span class="line">cut_off = <span class="built_in">int</span>(<span class="built_in">len</span>(Q1_train)*<span class="number">.8</span>)</span><br><span class="line">train_Q1, train_Q2 = Q1_train[:cut_off], Q2_train[:cut_off]</span><br><span class="line">val_Q1, val_Q2 = Q1_train[cut_off: ], Q2_train[cut_off:]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Number of duplicate questions: &#x27;</span>, <span class="built_in">len</span>(Q1_train))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;The length of the training set is:  &quot;</span>, <span class="built_in">len</span>(train_Q1))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;The length of the validation set is: &quot;</span>, <span class="built_in">len</span>(val_Q1))</span><br></pre></td></tr></table></figure>
+<pre><code>Number of duplicate questions:  111486
+The length of the training set is:   89188
+The length of the validation set is:  22298</code></pre>
+<p><a name='1.3'></a> ### 1.3 Understanding the iterator</p>
+<p>Most of the time in Natural Language Processing, and AI in general we use batches when training our data sets. If you were to use stochastic gradient descent with one example at a time, it will take you forever to build a model. In this example, we show you how you can build a data generator that takes in <span class="math inline">\(Q1\)</span> and <span class="math inline">\(Q2\)</span> and returns a batch of size <code>batch_size</code> in the following format <span class="math inline">\(([q1_1, q1_2, q1_3, ...]\)</span>, <span class="math inline">\([q2_1, q2_2,q2_3, ...])\)</span>. The tuple consists of two arrays and each array has <code>batch_size</code> questions. Again, <span class="math inline">\(q1_i\)</span> and <span class="math inline">\(q2_i\)</span> are duplicates, but they are not duplicates with any other elements in the batch.</p>
+<p><br></p>
+<p>The command <code>next(data_generator)</code>returns the next batch. This iterator returns the data in a format that you could directly use in your model when computing the feed-forward of your algorithm. This iterator returns a pair of arrays of questions.</p>
+<p><a name='ex01'></a> ### Exercise 01</p>
+<p><strong>Instructions:</strong><br />
+Implement the data generator below. Here are some things you will need.</p>
+<ul>
+<li>While true loop.</li>
+<li>if <code>index &gt;= len_Q1</code>, set the <code>idx</code> to <span class="math inline">\(0\)</span>.</li>
+<li>The generator should return shuffled batches of data. To achieve this without modifying the actual question lists, a list containing the indexes of the questions is created. This list can be shuffled and used to get random batches everytime the index is reset.</li>
+<li>Append elements of <span class="math inline">\(Q1\)</span> and <span class="math inline">\(Q2\)</span> to <code>input1</code> and <code>input2</code> respectively.</li>
+<li>if <code>len(input1) == batch_size</code>, determine <code>max_len</code> as the longest question in <code>input1</code> and <code>input2</code>. Ceil <code>max_len</code> to a power of <span class="math inline">\(2\)</span> (for computation purposes) using the following command: <code>max_len = 2**int(np.ceil(np.log2(max_len)))</code>.</li>
+<li>Pad every question by <code>vocab['&lt;PAD&gt;']</code> until you get the length <code>max_len</code>.</li>
+<li>Use yield to return <code>input1, input2</code>.</li>
+<li>Don't forget to reset <code>input1, input2</code> to empty arrays at the end (data generator resumes from where it last left).</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C1 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: data_generator</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">data_generator</span>(<span class="params">Q1, Q2, batch_size, pad=<span class="number">1</span>, shuffle=<span class="literal">True</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Generator function that yields batches of data</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        Q1 (list): List of transformed (to tensor) questions.</span></span><br><span class="line"><span class="string">        Q2 (list): List of transformed (to tensor) questions.</span></span><br><span class="line"><span class="string">        batch_size (int): Number of elements per batch.</span></span><br><span class="line"><span class="string">        pad (int, optional): Pad character from the vocab. Defaults to 1.</span></span><br><span class="line"><span class="string">        shuffle (bool, optional): If the batches should be randomnized or not. Defaults to True.</span></span><br><span class="line"><span class="string">    Yields:</span></span><br><span class="line"><span class="string">        tuple: Of the form (input1, input2) with types (numpy.ndarray, numpy.ndarray)</span></span><br><span class="line"><span class="string">        NOTE: input1: inputs to your model [q1a, q2a, q3a, ...] i.e. (q1a,q1b) are duplicates</span></span><br><span class="line"><span class="string">              input2: targets to your model [q1b, q2b,q3b, ...] i.e. (q1a,q2i) i!=a are not duplicates</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    input1 = []</span><br><span class="line">    input2 = []</span><br><span class="line">    idx = <span class="number">0</span></span><br><span class="line">    len_q = <span class="built_in">len</span>(Q1)</span><br><span class="line">    question_indexes = [*<span class="built_in">range</span>(len_q)]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> shuffle:</span><br><span class="line">        rnd.shuffle(question_indexes)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">if</span> idx &gt;= len_q:</span><br><span class="line">            <span class="comment"># if idx is greater than or equal to len_q, set idx accordingly </span></span><br><span class="line">            <span class="comment"># (Hint: look at the instructions above)</span></span><br><span class="line">            idx = <span class="number">0</span></span><br><span class="line">            <span class="comment"># shuffle to get random batches if shuffle is set to True</span></span><br><span class="line">            <span class="keyword">if</span> shuffle:</span><br><span class="line">                rnd.shuffle(question_indexes)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># get questions at the `question_indexes[idx]` position in Q1 and Q2</span></span><br><span class="line">        q1 = Q1[question_indexes[idx]]</span><br><span class="line">        q2 = Q2[question_indexes[idx]]</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># increment idx by 1</span></span><br><span class="line">        idx += <span class="number">1</span></span><br><span class="line">        <span class="comment"># append q1</span></span><br><span class="line">        input1.append(q1)</span><br><span class="line">        <span class="comment"># append q2</span></span><br><span class="line">        input2.append(q2)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(input1) == batch_size:</span><br><span class="line">            <span class="comment"># determine max_len as the longest question in input1 &amp; input 2</span></span><br><span class="line">            <span class="comment"># Hint: use the `max` function. </span></span><br><span class="line">            <span class="comment"># take max of input1 &amp; input2 and then max out of the two of them.</span></span><br><span class="line">            max_len = <span class="built_in">max</span>(<span class="built_in">max</span>([<span class="built_in">len</span>(_) <span class="keyword">for</span> _ <span class="keyword">in</span> input1]),<span class="built_in">max</span>([<span class="built_in">len</span>(_) <span class="keyword">for</span> _ <span class="keyword">in</span> input2]))</span><br><span class="line">            <span class="comment"># pad to power-of-2 (Hint: look at the instructions above)</span></span><br><span class="line">            max_len = <span class="number">2</span>**<span class="built_in">int</span>(np.ceil(np.log2(max_len)))</span><br><span class="line">            b1 = []</span><br><span class="line">            b2 = []</span><br><span class="line">            <span class="keyword">for</span> q1, q2 <span class="keyword">in</span> <span class="built_in">zip</span>(input1, input2):</span><br><span class="line">                <span class="comment"># add [pad] to q1 until it reaches max_len</span></span><br><span class="line">                q1 = q1 + [pad] * (max_len - <span class="built_in">len</span>(q1))</span><br><span class="line">                <span class="comment"># add [pad] to q2 until it reaches max_len</span></span><br><span class="line">                q2 = q2 + [pad] * (max_len - <span class="built_in">len</span>(q2))</span><br><span class="line">                <span class="comment"># append q1</span></span><br><span class="line">                b1.append(q1)</span><br><span class="line">                <span class="comment"># append q2</span></span><br><span class="line">                b2.append(q2)</span><br><span class="line">            <span class="comment"># use b1 and b2</span></span><br><span class="line">            <span class="keyword">yield</span> np.array(b1), np.array(b2)</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">            <span class="comment"># reset the batches</span></span><br><span class="line">            input1, input2 = [], []  <span class="comment"># reset the batches</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">batch_size = <span class="number">2</span></span><br><span class="line">res1, res2 = <span class="built_in">next</span>(data_generator(train_Q1, train_Q2, batch_size))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;First questions  : &quot;</span>,<span class="string">&#x27;\n&#x27;</span>, res1, <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Second questions : &quot;</span>,<span class="string">&#x27;\n&#x27;</span>, res2)</span><br></pre></td></tr></table></figure>
+<pre><code>First questions  :  
+ [[  30   87   78  134 2132 1981   28   78  594   21    1    1    1    1
+     1    1]
+ [  30   55   78 3541 1460   28   56  253   21    1    1    1    1    1
+     1    1]] 
+
+Second questions :  
+ [[  30  156   78  134 2132 9508   21    1    1    1    1    1    1    1
+     1    1]
+ [  30  156   78 3541 1460  131   56  253   21    1    1    1    1    1
+     1    1]]</code></pre>
+<p><strong>Note</strong>: The following expected output is valid only if you run the above test cell <strong><em>once</em></strong> (first time). The output will change on each execution.</p>
+<p>If you think your implementation is correct and it is not matching the output, make sure to restart the kernel and run all the cells from the top again.</p>
+<p><strong>Expected Output:</strong> <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">First questions  :  </span><br><span class="line"> [[  <span class="number">30</span>   <span class="number">87</span>   <span class="number">78</span>  <span class="number">134</span> <span class="number">2132</span> <span class="number">1981</span>   <span class="number">28</span>   <span class="number">78</span>  <span class="number">594</span>   <span class="number">21</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span></span><br><span class="line">     <span class="number">1</span>    <span class="number">1</span>]</span><br><span class="line"> [  <span class="number">30</span>   <span class="number">55</span>   <span class="number">78</span> <span class="number">3541</span> <span class="number">1460</span>   <span class="number">28</span>   <span class="number">56</span>  <span class="number">253</span>   <span class="number">21</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span></span><br><span class="line">     <span class="number">1</span>    <span class="number">1</span>]] </span><br><span class="line"></span><br><span class="line">Second questions :  </span><br><span class="line"> [[  <span class="number">30</span>  <span class="number">156</span>   <span class="number">78</span>  <span class="number">134</span> <span class="number">2132</span> <span class="number">9508</span>   <span class="number">21</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span></span><br><span class="line">     <span class="number">1</span>    <span class="number">1</span>]</span><br><span class="line"> [  <span class="number">30</span>  <span class="number">156</span>   <span class="number">78</span> <span class="number">3541</span> <span class="number">1460</span>  <span class="number">131</span>   <span class="number">56</span>  <span class="number">253</span>   <span class="number">21</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span>    <span class="number">1</span></span><br><span class="line">     <span class="number">1</span>    <span class="number">1</span>]]</span><br></pre></td></tr></table></figure> Now that you have your generator, you can just call it and it will return tensors which correspond to your questions in the Quora data set.<br>Now you can go ahead and start building your neural network.</p>
+<p><a name='2'></a> # Part 2: Defining the Siamese model</p>
+<p><a name='2.1'></a></p>
+<h3 id="understanding-siamese-network">2.1 Understanding Siamese Network</h3>
+<p>A Siamese network is a neural network which uses the same weights while working in tandem on two different input vectors to compute comparable output vectors.The Siamese network you are about to implement looks like this:</p>
+<p><img src = "siamese.png" style="width:600px;height:300px;"/></p>
+<p>You get the question embedding, run it through an LSTM layer, normalize <span class="math inline">\(v_1\)</span> and <span class="math inline">\(v_2\)</span>, and finally use a triplet loss (explained below) to get the corresponding cosine similarity for each pair of questions. As usual, you will start by importing the data set. The triplet loss makes use of a baseline (anchor) input that is compared to a positive (truthy) input and a negative (falsy) input. The distance from the baseline (anchor) input to the positive (truthy) input is minimized, and the distance from the baseline (anchor) input to the negative (falsy) input is maximized. In math equations, you are trying to maximize the following.</p>
+<p><span class="math display">\[\mathcal{L}(A, P, N)=\max \left(\|\mathrm{f}(A)-\mathrm{f}(P)\|^{2}-\|\mathrm{f}(A)-\mathrm{f}(N)\|^{2}+\alpha, 0\right)\]</span></p>
+<p><span class="math inline">\(A\)</span> is the anchor input, for example <span class="math inline">\(q1_1\)</span>, <span class="math inline">\(P\)</span> the duplicate input, for example, <span class="math inline">\(q2_1\)</span>, and <span class="math inline">\(N\)</span> the negative input (the non duplicate question), for example <span class="math inline">\(q2_2\)</span>.<br> <span class="math inline">\(\alpha\)</span> is a margin; you can think about it as a safety net, or by how much you want to push the duplicates from the non duplicates. <br></p>
+<p><a name='ex02'></a> ### Exercise 02</p>
+<p><strong>Instructions:</strong> Implement the <code>Siamese</code> function below. You should be using all the objects explained below.</p>
+<p>To implement this model, you will be using <code>trax</code>. Concretely, you will be using the following functions.</p>
+<ul>
+<li><code>tl.Serial</code>: Combinator that applies layers serially (by function composition) allows you set up the overall structure of the feedforward. <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.combinators.Serial">docs</a> / <a target="_blank" rel="noopener" href="https://github.com/google/trax/blob/1372b903bb66b0daccee19fd0b1fdf44f659330b/trax/layers/combinators.py#L26">source code</a>
+<ul>
+<li>You can pass in the layers as arguments to <code>Serial</code>, separated by commas.</li>
+<li>For example: <code>tl.Serial(tl.Embeddings(...), tl.Mean(...), tl.Dense(...), tl.LogSoftmax(...))</code></li>
+</ul></li>
+<li><code>tl.Embedding</code>: Maps discrete tokens to vectors. It will have shape (vocabulary length X dimension of output vectors). The dimension of output vectors (also called d_feature) is the number of elements in the word embedding. <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.core.Embedding">docs</a> / <a target="_blank" rel="noopener" href="https://github.com/google/trax/blob/1372b903bb66b0daccee19fd0b1fdf44f659330b/trax/layers/core.py#L113">source code</a>
+<ul>
+<li><code>tl.Embedding(vocab_size, d_feature)</code>.</li>
+<li><code>vocab_size</code> is the number of unique words in the given vocabulary.</li>
+<li><code>d_feature</code> is the number of elements in the word embedding (some choices for a word embedding size range from 150 to 300, for example).</li>
+</ul></li>
+<li><code>tl.LSTM</code> The LSTM layer. It leverages another Trax layer called <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.rnn.LSTMCell"><code>LSTMCell</code></a>. The number of units should be specified and should match the number of elements in the word embedding. <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.rnn.LSTM">docs</a> / <a target="_blank" rel="noopener" href="https://github.com/google/trax/blob/1372b903bb66b0daccee19fd0b1fdf44f659330b/trax/layers/rnn.py#L87">source code</a>
+<ul>
+<li><code>tl.LSTM(n_units)</code> Builds an LSTM layer of n_units.</li>
+</ul></li>
+<li><code>tl.Mean</code>: Computes the mean across a desired axis. Mean uses one tensor axis to form groups of values and replaces each group with the mean value of that group. <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.core.Mean">docs</a> / <a target="_blank" rel="noopener" href="https://github.com/google/trax/blob/1372b903bb66b0daccee19fd0b1fdf44f659330b/trax/layers/core.py#L276">source code</a>
+<ul>
+<li><code>tl.Mean(axis=1)</code> mean over columns.</li>
+</ul></li>
+<li><code>tl.Fn</code> Layer with no weights that applies the function f, which should be specified using a lambda syntax. <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.base.Fn">docs</a> / <a target="_blank" rel="noopener" href="https://github.com/google/trax/blob/70f5364dcaf6ec11aabbd918e5f5e4b0f5bfb995/trax/layers/base.py#L576">source doce</a>
+<ul>
+<li><span class="math inline">\(x\)</span> -&gt; This is used for cosine similarity.</li>
+<li><code>tl.Fn('Normalize', lambda x: normalize(x))</code> Returns a layer with no weights that applies the function <code>f</code></li>
+</ul></li>
+<li><code>tl.parallel</code>: It is a combinator layer (like <code>Serial</code>) that applies a list of layers in parallel to its inputs. <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.layers.html#trax.layers.combinators.Parallel">docs</a> / <a target="_blank" rel="noopener" href="https://github.com/google/trax/blob/37aba571a89a8ad86be76a569d0ec4a46bdd8642/trax/layers/combinators.py#L152">source code</a></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C2 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: Siamese</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Siamese</span>(<span class="params">vocab_size=<span class="built_in">len</span>(<span class="params">vocab</span>), d_model=<span class="number">128</span>, mode=<span class="string">&#x27;train&#x27;</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Returns a Siamese model.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        vocab_size (int, optional): Length of the vocabulary. Defaults to len(vocab).</span></span><br><span class="line"><span class="string">        d_model (int, optional): Depth of the model. Defaults to 128.</span></span><br><span class="line"><span class="string">        mode (str, optional): &#x27;train&#x27;, &#x27;eval&#x27; or &#x27;predict&#x27;, predict mode is for fast inference. Defaults to &#x27;train&#x27;.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        trax.layers.combinators.Parallel: A Siamese model. </span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">normalize</span>(<span class="params">x</span>):</span>  <span class="comment"># normalizes the vectors to have L2 norm 1</span></span><br><span class="line">        <span class="keyword">return</span> x / fastnp.sqrt(fastnp.<span class="built_in">sum</span>(x * x, axis=-<span class="number">1</span>, keepdims=<span class="literal">True</span>))</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    q_processor = tl.Serial(  <span class="comment"># Processor will run on Q1 and Q2.</span></span><br><span class="line">        tl.Embedding(vocab_size, d_model), <span class="comment"># Embedding layer</span></span><br><span class="line">        tl.LSTM(d_model), <span class="comment"># LSTM layer</span></span><br><span class="line">        tl.Mean(axis=<span class="number">1</span>), <span class="comment"># Mean over columns</span></span><br><span class="line">        tl.Fn(<span class="string">&#x27;Normalize&#x27;</span>, <span class="keyword">lambda</span> x: normalize(x))  <span class="comment"># Apply normalize function</span></span><br><span class="line">    )  <span class="comment"># Returns one vector of shape [batch_size, d_model].</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Run on Q1 and Q2 in parallel.</span></span><br><span class="line">    model = tl.Parallel(q_processor, q_processor)</span><br><span class="line">    <span class="keyword">return</span> model</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>Setup the Siamese network model</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># check your model</span></span><br><span class="line">model = Siamese()</span><br><span class="line"><span class="built_in">print</span>(model)</span><br></pre></td></tr></table></figure>
+<pre><code>Parallel_in2_out2[
+  Serial[
+    Embedding_41699_128
+    LSTM_128
+    Mean
+    Normalize
+  ]
+  Serial[
+    Embedding_41699_128
+    LSTM_128
+    Mean
+    Normalize
+  ]
+]</code></pre>
+<p><strong>Expected output:</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Parallel_in2_out2[</span><br><span class="line">  Serial[</span><br><span class="line">    Embedding_41699_128</span><br><span class="line">    LSTM_128</span><br><span class="line">    Mean</span><br><span class="line">    Normalize</span><br><span class="line">  ]</span><br><span class="line">  Serial[</span><br><span class="line">    Embedding_41699_128</span><br><span class="line">    LSTM_128</span><br><span class="line">    Mean</span><br><span class="line">    Normalize</span><br><span class="line">  ]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p><a name='2.2'></a></p>
+<h3 id="hard-negative-mining">2.2 Hard Negative Mining</h3>
+<p>You will now implement the <code>TripletLoss</code>.<br> As explained in the lecture, loss is composed of two terms. One term utilizes the mean of all the non duplicates, the second utilizes the <em>closest negative</em>. Our loss expression is then:</p>
+<p><span class="math display">\[\begin{align}
+ \mathcal{Loss_1(A,P,N)} &amp;=\max \left( -cos(A,P)  + mean_{neg} +\alpha, 0\right) \\
+ \mathcal{Loss_2(A,P,N)} &amp;=\max \left( -cos(A,P)  + closest_{neg} +\alpha, 0\right) \\
+\mathcal{Loss(A,P,N)} &amp;= mean(Loss_1 + Loss_2) \\
+\end{align}\]</span></p>
+<p>Further, two sets of instructions are provided. The first set provides a brief description of the task. If that set proves insufficient, a more detailed set can be displayed.</p>
+<p><a name='ex03'></a> ### Exercise 03</p>
+<p><strong>Instructions (Brief):</strong> Here is a list of things you should do: <br></p>
+<ul>
+<li>As this will be run inside trax, use <code>fastnp.xyz</code> when using any <code>xyz</code> numpy function</li>
+<li>Use <code>fastnp.dot</code> to calculate the similarity matrix <span class="math inline">\(v_1v_2^T\)</span> of dimension <code>batch_size</code> x <code>batch_size</code></li>
+<li>Take the score of the duplicates on the diagonal <code>fastnp.diagonal</code></li>
+<li>Use the <code>trax</code> functions <code>fastnp.eye</code> and <code>fastnp.maximum</code> for the identity matrix and the maximum.</li>
+</ul>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>More Detailed Instructions </b></font>
+</summary>
+<p>We'll describe the algorithm using a detailed example. Below, V1, V2 are the output of the normalization blocks in our model. Here we will use a batch_size of 4 and a d_model of 3. As explained in lecture, the inputs, Q1, Q2 are arranged so that corresponding inputs are duplicates while non-corresponding entries are not. The outputs will have the same pattern. <img src = "C3_W4_triploss1.png" style="width:1021px;height:229px;"/> This testcase arranges the outputs, v1,v2, to highlight different scenarios. Here, the first two outputs V1[0], V2[0] match exactly - so the model is generating the same vector for Q1[0] and Q2[0] inputs. The second outputs differ, circled in orange, we set, V2[1] is set to match V2[<strong>2</strong>], simulating a model which is generating very poor results. V1[3] and V2[3] match exactly again while V1[4] and V2[4] are set to be exactly wrong - 180 degrees from each other, circled in blue.</p>
+<p>The first step is to compute the cosine similarity matrix or <code>score</code> in the code. As explained in lecture, this is <span class="math display">\[V_1 V_2^T\]</span> This is generated with <code>fastnp.dot</code>. <img src = "C3_W4_triploss2.png" style="width:959px;height:236px;"/> The clever arrangement of inputs creates the data needed for positive <em>and</em> negative examples without having to run all pair-wise combinations. Because Q1[n] is a duplicate of only Q2[n], other combinations are explicitly created negative examples or <em>Hard Negative</em> examples. The matrix multiplication efficiently produces the cosine similarity of all positive/negative combinations as shown above on the left side of the diagram. 'Positive' are the results of duplicate examples and 'negative' are the results of explicitly created negative examples. The results for our test case are as expected, V1[0]V2[0] match producing '1' while our other 'positive' cases (in green) don't match well, as was arranged. The V2[2] was set to match V1[3] producing a poor match at <code>score[2,2]</code> and an undesired 'negative' case of a '1' shown in grey.</p>
+<p>With the similarity matrix (<code>score</code>) we can begin to implement the loss equations. First, we can extract <span class="math display">\[cos(A,P)\]</span> by utilizing <code>fastnp.diagonal</code>. The goal is to grab all the green entries in the diagram above. This is <code>positive</code> in the code.</p>
+<p>Next, we will create the <em>closest_negative</em>. This is the nonduplicate entry in V2 that is closest (has largest cosine similarity) to an entry in V1. Each row, n, of <code>score</code> represents all comparisons of the results of Q1[n] vs Q2[x] within a batch. A specific example in our testcase is row <code>score[2,:]</code>. It has the cosine similarity of V1[2] and V2[x]. The <em>closest_negative</em>, as was arranged, is V2[2] which has a score of 1. This is the maximum value of the 'negative' entries (blue entries in the diagram).</p>
+<p>To implement this, we need to pick the maximum entry on a row of <code>score</code>, ignoring the 'positive'/green entries. To avoid selecting the 'positive'/green entries, we can make them larger negative numbers. Multiply <code>fastnp.eye(batch_size)</code> with 2.0 and subtract it out of <code>scores</code>. The result is <code>negative_without_positive</code>. Now we can use <code>fastnp.max</code>, row by row (axis=1), to select the maximum which is <code>closest_negative</code>.</p>
+<p>Next, we'll create <em>mean_negative</em>. As the name suggests, this is the mean of all the 'negative'/blue values in <code>score</code> on a row by row basis. We can use <code>fastnp.eye(batch_size)</code> and a constant, this time to create a mask with zeros on the diagonal. Element-wise multiply this with <code>score</code> to get just the 'negative values. This is <code>negative_zero_on_duplicate</code> in the code. Compute the mean by using <code>fastnp.sum</code> on <code>negative_zero_on_duplicate</code> for <code>axis=1</code> and divide it by <code>(batch_size - 1)</code> . This is <code>mean_negative</code>.</p>
+<p>Now, we can compute loss using the two equations above and <code>fastnp.maximum</code>. This will form <code>triplet_loss1</code> and <code>triplet_loss2</code>.</p>
+<p><code>triple_loss</code> is the <code>fastnp.mean</code> of the sum of the two individual losses.</p>
+<p>Once you have this code matching the expected results, you can clip out the section between ### START CODE HERE and ### END CODE HERE it out and insert it into TripletLoss below.</p>
+<p>&lt;&gt;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C3 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: TripletLossFn</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TripletLossFn</span>(<span class="params">v1, v2, margin=<span class="number">0.25</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Custom Loss function.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        v1 (numpy.ndarray): Array with dimension (batch_size, model_dimension) associated to Q1.</span></span><br><span class="line"><span class="string">        v2 (numpy.ndarray): Array with dimension (batch_size, model_dimension) associated to Q2.</span></span><br><span class="line"><span class="string">        margin (float, optional): Desired margin. Defaults to 0.25.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        jax.interpreters.xla.DeviceArray: Triplet Loss.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># use fastnp to take the dot product of the two batches (don&#x27;t forget to transpose the second argument)</span></span><br><span class="line">    scores = fastnp.dot(v1,v2.T)  <span class="comment"># pairwise cosine sim</span></span><br><span class="line">    <span class="comment"># calculate new batch size</span></span><br><span class="line">    batch_size = <span class="built_in">len</span>(scores)</span><br><span class="line">    <span class="comment"># use fastnp to grab all postive `diagonal` entries in `scores`</span></span><br><span class="line">    positive = fastnp.diagonal(scores)  <span class="comment"># the positive ones (duplicates)</span></span><br><span class="line">    <span class="comment"># multiply `fastnp.eye(batch_size)` with 2.0 and subtract it out of `scores`</span></span><br><span class="line">    negative_without_positive = scores - fastnp.eye(batch_size) * <span class="number">2.0</span> </span><br><span class="line">    <span class="comment"># take the row by row `max` of `negative_without_positive`. </span></span><br><span class="line">    <span class="comment"># Hint: negative_without_positive.max(axis = [?])  </span></span><br><span class="line">    closest_negative = negative_without_positive.<span class="built_in">max</span>(axis = <span class="number">1</span>)</span><br><span class="line">    <span class="comment"># subtract `fastnp.eye(batch_size)` out of 1.0 and do element-wise multiplication with `scores`</span></span><br><span class="line">    negative_zero_on_duplicate = (<span class="number">1.0</span> - fastnp.eye(batch_size)) * scores</span><br><span class="line">    <span class="comment"># use `fastnp.sum` on `negative_zero_on_duplicate` for `axis=1` and divide it by `(batch_size - 1)` </span></span><br><span class="line">    mean_negative = fastnp.<span class="built_in">sum</span>(negative_zero_on_duplicate, axis=<span class="number">1</span>) / (batch_size - <span class="number">1</span>)</span><br><span class="line">    <span class="comment"># compute `fastnp.maximum` among 0.0 and `A`</span></span><br><span class="line">    <span class="comment"># A = subtract `positive` from `margin` and add `closest_negative` </span></span><br><span class="line">    triplet_loss1 = fastnp.maximum(margin - positive + closest_negative, <span class="number">0</span> )</span><br><span class="line">    <span class="comment"># compute `fastnp.maximum` among 0.0 and `B`</span></span><br><span class="line">    <span class="comment"># B = subtract `positive` from `margin` and add `mean_negative`</span></span><br><span class="line">    triplet_loss2 = fastnp.maximum(margin - positive + mean_negative, <span class="number">0</span> )</span><br><span class="line">    <span class="comment"># add the two losses together and take the `fastnp.mean` of it</span></span><br><span class="line">    triplet_loss = fastnp.mean(triplet_loss1 + triplet_loss2)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> triplet_loss</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v1 = np.array([[<span class="number">0.26726124</span>, <span class="number">0.53452248</span>, <span class="number">0.80178373</span>],[<span class="number">0.5178918</span> , <span class="number">0.57543534</span>, <span class="number">0.63297887</span>]])</span><br><span class="line">v2 = np.array([[ <span class="number">0.26726124</span>,  <span class="number">0.53452248</span>,  <span class="number">0.80178373</span>],[-<span class="number">0.5178918</span> , -<span class="number">0.57543534</span>, -<span class="number">0.63297887</span>]])</span><br><span class="line">TripletLossFn(v2,v1)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Triplet Loss:&quot;</span>, TripletLossFn(v2,v1))</span><br></pre></td></tr></table></figure>
+<pre><code>Triplet Loss: 0.5</code></pre>
+<p><strong>Expected Output:</strong> <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Triplet Loss: <span class="number">0.5</span></span><br><span class="line">```   </span><br><span class="line"></span><br><span class="line">To make a layer out of a function with no trainable variables, use `tl.Fn`.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```<span class="function">python</span></span><br><span class="line"><span class="function">from functools <span class="keyword">import</span> partial</span></span><br><span class="line"><span class="function">def <span class="title">TripletLoss</span><span class="params">(margin=<span class="number">0.25</span>)</span>:</span></span><br><span class="line"><span class="function">    triplet_loss_fn =</span> <span class="built_in">partial</span>(TripletLossFn, margin=margin)</span><br><span class="line">    <span class="keyword">return</span> tl.<span class="built_in">Fn</span>(<span class="string">&#x27;TripletLoss&#x27;</span>, triplet_loss_fn)</span><br></pre></td></tr></table></figure></p>
+<p><a name='3'></a></p>
+<h1 id="part-3-training">Part 3: Training</h1>
+<p>Now you are going to train your model. As usual, you have to define the cost function and the optimizer. You also have to feed in the built model. Before, going into the training, we will use a special data set up. We will define the inputs using the data generator we built above. The lambda function acts as a seed to remember the last batch that was given. Run the cell below to get the question pairs inputs.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">batch_size = <span class="number">256</span></span><br><span class="line">train_generator = data_generator(train_Q1, train_Q2, batch_size, vocab[<span class="string">&#x27;&lt;PAD&gt;&#x27;</span>])</span><br><span class="line">val_generator = data_generator(val_Q1, val_Q2, batch_size, vocab[<span class="string">&#x27;&lt;PAD&gt;&#x27;</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;train_Q1.shape &#x27;</span>, train_Q1.shape)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;val_Q1.shape   &#x27;</span>, val_Q1.shape)</span><br></pre></td></tr></table></figure>
+<pre><code>train_Q1.shape  (89188,)
+val_Q1.shape    (22298,)</code></pre>
+<p><a name='3.1'></a></p>
+<h3 id="training-the-model">3.1 Training the model</h3>
+<p>You will now write a function that takes in your model and trains it. To train your model you have to decide how many times you want to iterate over the entire data set; each iteration is defined as an <code>epoch</code>. For each epoch, you have to go over all the data, using your training iterator.</p>
+<p><a name='ex04'></a> ### Exercise 04</p>
+<p><strong>Instructions:</strong> Implement the <code>train_model</code> below to train the neural network above. Here is a list of things you should do, as already shown in lecture 7:</p>
+<ul>
+<li>Create <code>TrainTask</code> and <code>EvalTask</code></li>
+<li>Create the training loop <code>trax.supervised.training.Loop</code></li>
+<li>Pass in the following depending on the context (train_task or eval_task):
+<ul>
+<li><code>labeled_data=generator</code></li>
+<li><code>metrics=[TripletLoss()]</code>,</li>
+<li><code>loss_layer=TripletLoss()</code></li>
+<li><code>optimizer=trax.optimizers.Adam</code> with learning rate of 0.01</li>
+<li><code>lr_schedule=lr_schedule</code>,</li>
+<li><code>output_dir=output_dir</code></li>
+</ul></li>
+</ul>
+<p>You will be using your triplet loss function with Adam optimizer. Please read the <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.optimizers.html?highlight=adam#trax.optimizers.adam.Adam">trax</a> documentation to get a full understanding.</p>
+<p>This function should return a <code>training.Loop</code> object. To read more about this check the <a target="_blank" rel="noopener" href="https://trax-ml.readthedocs.io/en/latest/trax.supervised.html?highlight=loop#trax.supervised.training.Loop">docs</a>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">lr_schedule = trax.lr.warmup_and_rsqrt_decay(<span class="number">400</span>, <span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># UNQ_C4 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: train_model</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train_model</span>(<span class="params">Siamese, TripletLoss, lr_schedule, train_generator=train_generator, val_generator=val_generator, output_dir=<span class="string">&#x27;model/&#x27;</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Training the Siamese Model</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        Siamese (function): Function that returns the Siamese model.</span></span><br><span class="line"><span class="string">        TripletLoss (function): Function that defines the TripletLoss loss function.</span></span><br><span class="line"><span class="string">        lr_schedule (function): Trax multifactor schedule function.</span></span><br><span class="line"><span class="string">        train_generator (generator, optional): Training generator. Defaults to train_generator.</span></span><br><span class="line"><span class="string">        val_generator (generator, optional): Validation generator. Defaults to val_generator.</span></span><br><span class="line"><span class="string">        output_dir (str, optional): Path to save model to. Defaults to &#x27;model/&#x27;.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        trax.supervised.training.Loop: Training loop for the model.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    output_dir = os.path.expanduser(output_dir)</span><br><span class="line"></span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line"></span><br><span class="line">    train_task = training.TrainTask(</span><br><span class="line">        labeled_data=train_generator,       <span class="comment"># Use generator (train)</span></span><br><span class="line">        loss_layer=TripletLoss(),         <span class="comment"># Use triplet loss. Don&#x27;t forget to instantiate this object</span></span><br><span class="line">        optimizer=trax.optimizers.Adam(learning_rate = <span class="number">0.01</span>),          <span class="comment"># Don&#x27;t forget to add the learning rate parameter</span></span><br><span class="line">        lr_schedule=lr_schedule, <span class="comment"># Use Trax multifactor schedule function</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    eval_task = training.EvalTask(</span><br><span class="line">        labeled_data=val_generator,       <span class="comment"># Use generator (val)</span></span><br><span class="line">        metrics=[TripletLoss()],          <span class="comment"># Use triplet loss. Don&#x27;t forget to instantiate this object</span></span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line"></span><br><span class="line">    training_loop = training.Loop(Siamese(),</span><br><span class="line">                                  train_task,</span><br><span class="line">                                  eval_task=eval_task,</span><br><span class="line">                                  output_dir=output_dir)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> training_loop</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">train_steps = <span class="number">5</span></span><br><span class="line">training_loop = train_model(Siamese, TripletLoss, lr_schedule)</span><br><span class="line">training_loop.run(train_steps)</span><br></pre></td></tr></table></figure>
+<pre><code>Step      1: train TripletLoss |  0.49954823
+Step      1: eval  TripletLoss |  0.49950948</code></pre>
+<p>The model was only trained for 5 steps due to the constraints of this environment. For the rest of the assignment you will be using a pretrained model but now you should understand how the training can be done using Trax.</p>
+<p><a name='4'></a></p>
+<h1 id="part-4-evaluation">Part 4: Evaluation</h1>
+<p><a name='4.1'></a></p>
+<h3 id="evaluating-your-siamese-network">4.1 Evaluating your siamese network</h3>
+<p>In this section you will learn how to evaluate a Siamese network. You will first start by loading a pretrained model and then you will use it to predict.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Loading in the saved model</span></span><br><span class="line">model = Siamese()</span><br><span class="line">model.init_from_file(<span class="string">&#x27;model.pkl.gz&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><a name='4.2'></a> ### 4.2 Classify To determine the accuracy of the model, we will utilize the test set that was configured earlier. While in training we used only positive examples, the test data, Q1_test, Q2_test and y_test, is setup as pairs of questions, some of which are duplicates some are not. This routine will run all the test question pairs through the model, compute the cosine simlarity of each pair, threshold it and compare the result to y_test - the correct response from the data set. The results are accumulated to produce an accuracy.</p>
+<p><a name='ex05'></a> ### Exercise 05</p>
+<p><strong>Instructions</strong><br />
+- Loop through the incoming data in batch_size chunks - Use the data generator to load q1, q2 a batch at a time. <strong>Don't forget to set shuffle=False!</strong> - copy a batch_size chunk of y into y_test - compute v1, v2 using the model - for each element of the batch - compute the cos similarity of each pair of entries, v1[j],v2[j] - determine if d &gt; threshold - increment accuracy if that result matches the expected results (y_test[j]) - compute the final accuracy and return</p>
+<p>Due to some limitations of this environment, running classify multiple times may result in the kernel failing. If that happens <em>Restart Kernal &amp; clear output</em> and then run from the top. During development, consider using a smaller set of data to reduce the number of calls to model().</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C5 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: classify</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">classify</span>(<span class="params">test_Q1, test_Q2, y, threshold, model, vocab, data_generator=data_generator, batch_size=<span class="number">64</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Function to test the accuracy of the model.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        test_Q1 (numpy.ndarray): Array of Q1 questions.</span></span><br><span class="line"><span class="string">        test_Q2 (numpy.ndarray): Array of Q2 questions.</span></span><br><span class="line"><span class="string">        y (numpy.ndarray): Array of actual target.</span></span><br><span class="line"><span class="string">        threshold (float): Desired threshold.</span></span><br><span class="line"><span class="string">        model (trax.layers.combinators.Parallel): The Siamese model.</span></span><br><span class="line"><span class="string">        vocab (collections.defaultdict): The vocabulary used.</span></span><br><span class="line"><span class="string">        data_generator (function): Data generator function. Defaults to data_generator.</span></span><br><span class="line"><span class="string">        batch_size (int, optional): Size of the batches. Defaults to 64.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        float: Accuracy of the model.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    accuracy = <span class="number">0</span></span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(test_Q1), batch_size):</span><br><span class="line">        <span class="comment"># Call the data generator (built in Ex 01) with shuffle=False using next()</span></span><br><span class="line">        <span class="comment"># use batch size chuncks of questions as Q1 &amp; Q2 arguments of the data generator. e.g x[i:i + batch_size]</span></span><br><span class="line">        <span class="comment"># Hint: use `vocab[&#x27;&lt;PAD&gt;&#x27;]` for the `pad` argument of the data generator</span></span><br><span class="line">        q1, q2 = <span class="built_in">next</span>(data_generator(test_Q1[i: i + batch_size], test_Q2[i: i+batch_size], batch_size, pad=vocab[<span class="string">&#x27;&lt;PAD&gt;&#x27;</span>], shuffle=<span class="literal">False</span>))</span><br><span class="line">        </span><br><span class="line"><span class="comment">#         print(q1.shape)</span></span><br><span class="line"><span class="comment">#         print(q2.shape)</span></span><br><span class="line"><span class="comment">#         (512, 64)</span></span><br><span class="line"><span class="comment">#         (512, 64)</span></span><br><span class="line">        <span class="comment"># use batch size chuncks of actual output targets (same syntax as example above)</span></span><br><span class="line">        y_test = y[i: i + batch_size]</span><br><span class="line">        <span class="comment"># Call the model</span></span><br><span class="line">        v1, v2 = model((q1,q2))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(batch_size):</span><br><span class="line">            <span class="comment"># take dot product to compute cos similarity of each pair of entries, v1[j], v2[j]</span></span><br><span class="line">            <span class="comment"># don&#x27;t forget to transpose the second argument</span></span><br><span class="line">            d = fastnp.dot(v1[j],v2[j].T)</span><br><span class="line">            <span class="comment"># is d greater than the threshold?</span></span><br><span class="line">            res = d &gt; threshold</span><br><span class="line">            <span class="comment"># increment accurancy if y_test is equal `res`</span></span><br><span class="line">            accuracy += (y_test[j] == res)</span><br><span class="line">    <span class="comment"># compute accuracy using accuracy and total length of test questions</span></span><br><span class="line">    accuracy = accuracy / <span class="built_in">len</span>(test_Q1)</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> accuracy</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># this takes around 1 minute</span></span><br><span class="line">accuracy = classify(Q1_test,Q2_test, y_test, <span class="number">0.7</span>, model, vocab, batch_size = <span class="number">512</span>) </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Accuracy&quot;</span>, accuracy)</span><br></pre></td></tr></table></figure>
+<pre><code>Accuracy 0.69091797</code></pre>
+<p><strong>Expected Result</strong><br />
+Accuracy ~0.69</p>
+<p><a name='5'></a></p>
+<h1 id="part-5-testing-with-your-own-questions">Part 5: Testing with your own questions</h1>
+<p>In this section you will test the model with your own questions. You will write a function <code>predict</code> which takes two questions as input and returns <span class="math inline">\(1\)</span> or <span class="math inline">\(0\)</span> depending on whether the question pair is a duplicate or not.</p>
+<p>But first, we build a reverse vocabulary that allows to map encoded questions back to words:</p>
+<p>Write a function <code>predict</code>that takes in two questions, the model, and the vocabulary and returns whether the questions are duplicates (<span class="math inline">\(1\)</span>) or not duplicates (<span class="math inline">\(0\)</span>) given a similarity threshold.</p>
+<p><a name='ex06'></a> ### Exercise 06</p>
+<p><strong>Instructions:</strong> - Tokenize your question using <code>nltk.word_tokenize</code> - Create Q1,Q2 by encoding your questions as a list of numbers using vocab - pad Q1,Q2 with next(data_generator([Q1], [Q2],1,vocab['<PAD>'])) - use model() to create v1, v2 - compute the cosine similarity (dot product) of v1, v2 - compute res by comparing d to the threshold</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C6 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="comment"># GRADED FUNCTION: predict</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">predict</span>(<span class="params">question1, question2, threshold, model, vocab, data_generator=data_generator, verbose=<span class="literal">False</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Function for predicting if two questions are duplicates.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        question1 (str): First question.</span></span><br><span class="line"><span class="string">        question2 (str): Second question.</span></span><br><span class="line"><span class="string">        threshold (float): Desired threshold.</span></span><br><span class="line"><span class="string">        model (trax.layers.combinators.Parallel): The Siamese model.</span></span><br><span class="line"><span class="string">        vocab (collections.defaultdict): The vocabulary used.</span></span><br><span class="line"><span class="string">        data_generator (function): Data generator function. Defaults to data_generator.</span></span><br><span class="line"><span class="string">        verbose (bool, optional): If the results should be printed out. Defaults to False.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        bool: True if the questions are duplicates, False otherwise.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment">### START CODE HERE (Replace instances of &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    <span class="comment"># use `nltk` word tokenize function to tokenize</span></span><br><span class="line">    q1 = nltk.word_tokenize(question1)  <span class="comment"># tokenize</span></span><br><span class="line">    q2 = nltk.word_tokenize(question2)  <span class="comment"># tokenize</span></span><br><span class="line">    Q1, Q2 = [], []</span><br><span class="line">    <span class="keyword">for</span> word <span class="keyword">in</span> q1:  <span class="comment"># encode q1</span></span><br><span class="line">        <span class="comment"># increment by checking the &#x27;word&#x27; index in `vocab`</span></span><br><span class="line">        Q1 += [vocab[word]]</span><br><span class="line">    <span class="keyword">for</span> word <span class="keyword">in</span> q2:  <span class="comment"># encode q2</span></span><br><span class="line">        <span class="comment"># increment by checking the &#x27;word&#x27; index in `vocab`</span></span><br><span class="line">        Q2 += [vocab[word]]</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># Call the data generator (built in Ex 01) using next()</span></span><br><span class="line">    <span class="comment"># pass [Q1] &amp; [Q2] as Q1 &amp; Q2 arguments of the data generator. Set batch size as 1</span></span><br><span class="line">    <span class="comment"># Hint: use `vocab[&#x27;&lt;PAD&gt;&#x27;]` for the `pad` argument of the data generator</span></span><br><span class="line">    Q1, Q2 = <span class="built_in">next</span>(data_generator([Q1], [Q2], <span class="number">1</span>, vocab[<span class="string">&#x27;&lt;PAD&gt;&#x27;</span>]))</span><br><span class="line">    <span class="comment"># Call the model</span></span><br><span class="line">    v1, v2 = model((Q1,Q2))</span><br><span class="line">    <span class="comment"># take dot product to compute cos similarity of each pair of entries, v1, v2</span></span><br><span class="line">    <span class="comment"># don&#x27;t forget to transpose the second argument</span></span><br><span class="line">    d = fastnp.dot(v1, v2.T)</span><br><span class="line">    <span class="comment"># is d greater than the threshold?</span></span><br><span class="line">    res = d &gt; threshold</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(verbose):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Q1  = &quot;</span>, Q1, <span class="string">&quot;\nQ2  = &quot;</span>, Q2)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;d   = &quot;</span>, d)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;res = &quot;</span>, res)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Feel free to try with your own questions</span></span><br><span class="line">question1 = <span class="string">&quot;When will I see you?&quot;</span></span><br><span class="line">question2 = <span class="string">&quot;When can I see you again?&quot;</span></span><br><span class="line"><span class="comment"># 1 means it is duplicated, 0 otherwise</span></span><br><span class="line">predict(question1 , question2, <span class="number">0.7</span>, model, vocab, verbose = <span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Q1  =  [[585  76   4  46  53  21   1   1]] 
+Q2  =  [[ 585   33    4   46   53 7280   21    1]]
+d   =  [[0.8811324]]
+res =  [[ True]]
+
+
+
+
+
+DeviceArray([[ True]], dtype=bool)</code></pre>
+<h5 id="expected-output">Expected Output</h5>
+<p>If input is: <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">question1 = <span class="string">&quot;When will I see you?&quot;</span></span><br><span class="line">question2 = <span class="string">&quot;When can I see you again?&quot;</span></span><br></pre></td></tr></table></figure></p>
+<p>Output is (d may vary a bit): <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Q1  =  [[<span class="number">585</span>  <span class="number">76</span>   <span class="number">4</span>  <span class="number">46</span>  <span class="number">53</span>  <span class="number">21</span>   <span class="number">1</span>   <span class="number">1</span>]] </span><br><span class="line">Q2  =  [[ <span class="number">585</span>   <span class="number">33</span>    <span class="number">4</span>   <span class="number">46</span>   <span class="number">53</span> <span class="number">7280</span>   <span class="number">21</span>    <span class="number">1</span>]]</span><br><span class="line">d   =  <span class="number">0.88113236</span></span><br><span class="line">res =  True</span><br><span class="line">True</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Feel free to try with your own questions</span></span><br><span class="line">question1 = <span class="string">&quot;Do they enjoy eating the dessert?&quot;</span></span><br><span class="line">question2 = <span class="string">&quot;Do they like hiking in the desert?&quot;</span></span><br><span class="line"><span class="comment"># 1 means it is duplicated, 0 otherwise</span></span><br><span class="line">predict(question1 , question2, <span class="number">0.7</span>, model, vocab, verbose=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Q1  =  [[  443  1145  3159  1169    78 29017    21     1]] 
+Q2  =  [[  443  1145    60 15302    28    78  7431    21]]
+d   =  [[0.477536]]
+res =  [[False]]
+
+
+
+
+
+DeviceArray([[False]], dtype=bool)</code></pre>
+<h5 id="expected-output-1">Expected output</h5>
+<p>If input is: <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">question1 = <span class="string">&quot;Do they enjoy eating the dessert?&quot;</span></span><br><span class="line">question2 = <span class="string">&quot;Do they like hiking in the desert?&quot;</span></span><br></pre></td></tr></table></figure></p>
+<p>Output (d may vary a bit):</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Q1  =  [[  <span class="number">443</span>  <span class="number">1145</span>  <span class="number">3159</span>  <span class="number">1169</span>    <span class="number">78</span> <span class="number">29017</span>    <span class="number">21</span>     <span class="number">1</span>]] </span><br><span class="line">Q2  =  [[  <span class="number">443</span>  <span class="number">1145</span>    <span class="number">60</span> <span class="number">15302</span>    <span class="number">28</span>    <span class="number">78</span>  <span class="number">7431</span>    <span class="number">21</span>]]</span><br><span class="line">d   =  <span class="number">0.477536</span></span><br><span class="line">res =  False</span><br><span class="line">False</span><br></pre></td></tr></table></figure>
+<p>You can see that the Siamese network is capable of catching complicated structures. Concretely it can identify question duplicates although the questions do not have many words in common.</p>
+<p><a name='6'></a></p>
+<h3 id="on-siamese-networks"><span style="color:blue"> On Siamese networks </span></h3>
+<p>Siamese networks are important and useful. Many times there are several questions that are already asked in quora, or other platforms and you can use Siamese networks to avoid question duplicates.</p>
+<p>Congratulations, you have now built a powerful system that can recognize question duplicates. In the next course we will use transformers for machine translation, summarization, question answering, and chatbots.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Named-Entity-Recognition-NER/2020/08/23/" rel="prev" title="Named Entity Recognition (NER)">
+      <i class="fa fa-chevron-left"></i> Named Entity Recognition (NER)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Bandits-and-Exploration-Exploitation/2020/09/03/" rel="next" title="Bandits and Exploration/Exploitation">
+      Bandits and Exploration/Exploitation <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#assignment-4-question-duplicates"><span class="nav-number">1.</span> <span class="nav-text">Assignment 4: Question duplicates</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#outline"><span class="nav-number">1.1.</span> <span class="nav-text">Outline</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#understanding-siamese-network"><span class="nav-number">1.1.1.</span> <span class="nav-text">2.1 Understanding Siamese Network</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hard-negative-mining"><span class="nav-number">1.1.2.</span> <span class="nav-text">2.2 Hard Negative Mining</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#part-3-training"><span class="nav-number">2.</span> <span class="nav-text">Part 3: Training</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#training-the-model"><span class="nav-number">2.0.1.</span> <span class="nav-text">3.1 Training the model</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#part-4-evaluation"><span class="nav-number">3.</span> <span class="nav-text">Part 4: Evaluation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#evaluating-your-siamese-network"><span class="nav-number">3.0.1.</span> <span class="nav-text">4.1 Evaluating your siamese network</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#part-5-testing-with-your-own-questions"><span class="nav-number">4.</span> <span class="nav-text">Part 5: Testing with your own questions</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#expected-output"><span class="nav-number">4.0.0.0.1.</span> <span class="nav-text">Expected Output</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#expected-output-1"><span class="nav-number">4.0.0.0.2.</span> <span class="nav-text">Expected output</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#on-siamese-networks"><span class="nav-number">4.0.1.</span> <span class="nav-text"> On Siamese networks </span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">268</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

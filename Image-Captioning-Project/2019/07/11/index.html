@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="In this project you will define and train an image-to-caption model, that can produce descriptions for real world images!">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Image Captioning Project">
+<meta property="og:url" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="In this project you will define and train an image-to-caption model, that can produce descriptions for real world images!">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/encoder_decoder.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/inceptionv3.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_20_0.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/encoder_decoder_explained.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/flatten_help.jpg">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_60_1.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_61_1.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_61_3.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_61_5.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_61_7.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_61_9.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_61_11.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_61_13.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_61_15.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_61_17.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_61_19.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_63_2.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_64_2.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_65_2.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_66_2.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_67_2.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_68_2.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_69_2.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_70_2.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_71_2.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_72_2.png">
+<meta property="og:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/output_73_2.png">
+<meta property="article:published_time" content="2019-07-10T19:49:56.000Z">
+<meta property="article:modified_time" content="2020-01-09T08:31:32.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="Project">
+<meta property="article:tag" content="Computer Vision">
+<meta property="article:tag" content="Transfer Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/encoder_decoder.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Image Captioning Project | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Image-Captioning-Project/2019/07/11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Image Captioning Project
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-07-11 03:49:56" itemprop="dateCreated datePublished" datetime="2019-07-11T03:49:56+08:00">2019-07-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-09 16:31:32" itemprop="dateModified" datetime="2020-01-09T16:31:32+08:00">2020-01-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Image-Captioning-Project/2019/07/11/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Image-Captioning-Project/2019/07/11/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">In this project you will define and train an image-to-caption model, that can produce descriptions for real world images!</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="image-captioning-final-project">Image Captioning Final Project</h1>
+<p>In this final project you will define and train an image-to-caption model, that can produce descriptions for real world images!</p>
+<p><img src="encoder_decoder.png" style="width:70%"></p>
+<p>Model architecture: CNN encoder and RNN decoder. (https://research.googleblog.com/2014/11/a-picture-is-worth-thousand-coherent.html)</p>
+<h1 id="import-stuff">Import stuff</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">sys.path.append(<span class="string">&quot;..&quot;</span>)</span><br><span class="line"><span class="keyword">import</span> grading</span><br><span class="line"><span class="keyword">import</span> download_utils</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">download_utils.link_all_keras_resources()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> tensorflow.contrib <span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">%matplotlib inline</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">L = keras.layers</span><br><span class="line">K = keras.backend</span><br><span class="line"><span class="keyword">import</span> utils</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> choice</span><br><span class="line"><span class="keyword">import</span> grading_utils</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> keras_utils <span class="keyword">import</span> reset_tf_session</span><br><span class="line"><span class="keyword">import</span> tqdm_utils</span><br></pre></td></tr></table></figure>
+<pre><code>Using TensorFlow backend.</code></pre>
+<h1 id="prepare-the-storage-for-model-checkpoints">Prepare the storage for model checkpoints</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Leave USE_GOOGLE_DRIVE = False if you&#x27;re running locally!</span></span><br><span class="line"><span class="comment"># We recommend to set USE_GOOGLE_DRIVE = True in Google Colab!</span></span><br><span class="line"><span class="comment"># If set to True, we will mount Google Drive, so that you can restore your checkpoint </span></span><br><span class="line"><span class="comment"># and continue trainig even if your previous Colab session dies.</span></span><br><span class="line"><span class="comment"># If set to True, follow on-screen instructions to access Google Drive (you must have a Google account).</span></span><br><span class="line">USE_GOOGLE_DRIVE = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mount_google_drive</span>():</span></span><br><span class="line">    <span class="keyword">from</span> google.colab <span class="keyword">import</span> drive</span><br><span class="line">    mount_directory = <span class="string">&quot;/content/gdrive&quot;</span></span><br><span class="line">    drive.mount(mount_directory)</span><br><span class="line">    drive_root = mount_directory + <span class="string">&quot;/&quot;</span> + <span class="built_in">list</span>(<span class="built_in">filter</span>(<span class="keyword">lambda</span> x: x[<span class="number">0</span>] != <span class="string">&#x27;.&#x27;</span>, os.listdir(mount_directory)))[<span class="number">0</span>] + <span class="string">&quot;/colab&quot;</span></span><br><span class="line">    <span class="keyword">return</span> drive_root</span><br><span class="line"></span><br><span class="line">CHECKPOINT_ROOT = <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">if</span> USE_GOOGLE_DRIVE:</span><br><span class="line">    CHECKPOINT_ROOT = mount_google_drive() + <span class="string">&quot;/&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_checkpoint_path</span>(<span class="params">epoch=<span class="literal">None</span></span>):</span></span><br><span class="line">    <span class="keyword">if</span> epoch <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span> os.path.abspath(CHECKPOINT_ROOT + <span class="string">&quot;weights&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> os.path.abspath(CHECKPOINT_ROOT + <span class="string">&quot;weights_&#123;&#125;&quot;</span>.<span class="built_in">format</span>(epoch))</span><br><span class="line">      </span><br><span class="line"><span class="comment"># example of checkpoint dir</span></span><br><span class="line"><span class="built_in">print</span>(get_checkpoint_path(<span class="number">10</span>))</span><br></pre></td></tr></table></figure>
+<pre><code>/root/intro-to-dl/week6/weights_10</code></pre>
+<h1 id="fill-in-your-coursera-token-and-email">Fill in your Coursera token and email</h1>
+<p>To successfully submit your answers to our grader, please fill in your Coursera submission token and email</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grader = grading.Grader(assignment_key=<span class="string">&quot;NEDBg6CgEee8nQ6uE8a7OA&quot;</span>, </span><br><span class="line">                        all_parts=[<span class="string">&quot;19Wpv&quot;</span>, <span class="string">&quot;uJh73&quot;</span>, <span class="string">&quot;yiJkt&quot;</span>, <span class="string">&quot;rbpnH&quot;</span>, <span class="string">&quot;E2OIL&quot;</span>, <span class="string">&quot;YJR7z&quot;</span>])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># token expires every 30 min</span></span><br><span class="line">COURSERA_TOKEN = <span class="string">&quot;&quot;</span></span><br><span class="line">COURSERA_EMAIL = <span class="string">&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+<h1 id="download-data">Download data</h1>
+<p>Takes 10 hours and 20 GB. We've downloaded necessary files for you.</p>
+<p>Relevant links (just in case): - train images http://msvocds.blob.core.windows.net/coco2014/train2014.zip - validation images http://msvocds.blob.core.windows.net/coco2014/val2014.zip - captions for both train and validation http://msvocds.blob.core.windows.net/annotations-1-0-3/captions_train-val2014.zip</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># we downloaded them for you, just link them here</span></span><br><span class="line">download_utils.link_week_6_resources()</span><br></pre></td></tr></table></figure>
+<h1 id="extract-image-features">Extract image features</h1>
+<p>We will use pre-trained InceptionV3 model for CNN encoder (https://research.googleblog.com/2016/03/train-your-own-image-classifier-with.html) and extract its last hidden layer as an embedding:</p>
+<p><img src="inceptionv3.png" style="width:70%"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IMG_SIZE = <span class="number">299</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># we take the last hidden layer of IncetionV3 as an image embedding</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_cnn_encoder</span>():</span></span><br><span class="line">    K.set_learning_phase(<span class="literal">False</span>)</span><br><span class="line">    model = keras.applications.InceptionV3(include_top=<span class="literal">False</span>)</span><br><span class="line">    preprocess_for_model = keras.applications.inception_v3.preprocess_input</span><br><span class="line"></span><br><span class="line">    model = keras.models.Model(model.inputs, keras.layers.GlobalAveragePooling2D()(model.output))</span><br><span class="line">    <span class="keyword">return</span> model, preprocess_for_model</span><br></pre></td></tr></table></figure>
+<p>Features extraction takes too much time on CPU: - Takes 16 minutes on GPU. - 25x slower (InceptionV3) on CPU and takes 7 hours. - 10x slower (MobileNet) on CPU and takes 3 hours.</p>
+<p>So we've done it for you with the following code: <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># load pre-trained model</span></span><br><span class="line">reset_tf_session()</span><br><span class="line">encoder, preprocess_for_model = get_cnn_encoder()</span><br><span class="line"></span><br><span class="line"><span class="comment"># extract train features</span></span><br><span class="line">train_img_embeds, train_img_fns = utils.apply_model(</span><br><span class="line">    <span class="string">&quot;train2014.zip&quot;</span>, encoder, preprocess_for_model, input_shape=(IMG_SIZE, IMG_SIZE))</span><br><span class="line">utils.save_pickle(train_img_embeds, <span class="string">&quot;train_img_embeds.pickle&quot;</span>)</span><br><span class="line">utils.save_pickle(train_img_fns, <span class="string">&quot;train_img_fns.pickle&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># extract validation features</span></span><br><span class="line">val_img_embeds, val_img_fns = utils.apply_model(</span><br><span class="line">    <span class="string">&quot;val2014.zip&quot;</span>, encoder, preprocess_for_model, input_shape=(IMG_SIZE, IMG_SIZE))</span><br><span class="line">utils.save_pickle(val_img_embeds, <span class="string">&quot;val_img_embeds.pickle&quot;</span>)</span><br><span class="line">utils.save_pickle(val_img_fns, <span class="string">&quot;val_img_fns.pickle&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># sample images for learners</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sample_zip</span>(<span class="params">fn_in, fn_out, rate=<span class="number">0.01</span>, seed=<span class="number">42</span></span>):</span></span><br><span class="line">    np.random.seed(seed)</span><br><span class="line">    <span class="keyword">with</span> zipfile.ZipFile(fn_in) <span class="keyword">as</span> fin, zipfile.ZipFile(fn_out, <span class="string">&quot;w&quot;</span>) <span class="keyword">as</span> fout:</span><br><span class="line">        sampled = <span class="built_in">filter</span>(<span class="keyword">lambda</span> _: np.random.rand() &lt; rate, fin.filelist)</span><br><span class="line">        <span class="keyword">for</span> zInfo <span class="keyword">in</span> sampled:</span><br><span class="line">            fout.writestr(zInfo, fin.read(zInfo))</span><br><span class="line">            </span><br><span class="line">sample_zip(<span class="string">&quot;train2014.zip&quot;</span>, <span class="string">&quot;train2014_sample.zip&quot;</span>)</span><br><span class="line">sample_zip(<span class="string">&quot;val2014.zip&quot;</span>, <span class="string">&quot;val2014_sample.zip&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># load prepared embeddings</span></span><br><span class="line">train_img_embeds = utils.read_pickle(<span class="string">&quot;train_img_embeds.pickle&quot;</span>)</span><br><span class="line">train_img_fns = utils.read_pickle(<span class="string">&quot;train_img_fns.pickle&quot;</span>)</span><br><span class="line">val_img_embeds = utils.read_pickle(<span class="string">&quot;val_img_embeds.pickle&quot;</span>)</span><br><span class="line">val_img_fns = utils.read_pickle(<span class="string">&quot;val_img_fns.pickle&quot;</span>)</span><br><span class="line"><span class="comment"># check shapes</span></span><br><span class="line"><span class="built_in">print</span>(train_img_embeds.shape, <span class="built_in">len</span>(train_img_fns))</span><br><span class="line"><span class="built_in">print</span>(val_img_embeds.shape, <span class="built_in">len</span>(val_img_fns))</span><br></pre></td></tr></table></figure>
+<pre><code>(82783, 2048) 82783
+(40504, 2048) 40504</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># check prepared samples of images</span></span><br><span class="line"><span class="built_in">list</span>(<span class="built_in">filter</span>(<span class="keyword">lambda</span> x: x.endswith(<span class="string">&quot;_sample.zip&quot;</span>), os.listdir(<span class="string">&quot;.&quot;</span>)))</span><br></pre></td></tr></table></figure>
+<pre><code>[&#39;val2014_sample.zip&#39;, &#39;train2014_sample.zip&#39;]</code></pre>
+<h1 id="extract-captions-for-images">Extract captions for images</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># extract captions from zip</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_captions_for_fns</span>(<span class="params">fns, zip_fn, zip_json_path</span>):</span></span><br><span class="line">    zf = zipfile.ZipFile(zip_fn)</span><br><span class="line">    j = json.loads(zf.read(zip_json_path).decode(<span class="string">&quot;utf8&quot;</span>))</span><br><span class="line">    id_to_fn = &#123;img[<span class="string">&quot;id&quot;</span>]: img[<span class="string">&quot;file_name&quot;</span>] <span class="keyword">for</span> img <span class="keyword">in</span> j[<span class="string">&quot;images&quot;</span>]&#125;</span><br><span class="line">    fn_to_caps = defaultdict(<span class="built_in">list</span>)</span><br><span class="line">    <span class="keyword">for</span> cap <span class="keyword">in</span> j[<span class="string">&#x27;annotations&#x27;</span>]:</span><br><span class="line">        fn_to_caps[id_to_fn[cap[<span class="string">&#x27;image_id&#x27;</span>]]].append(cap[<span class="string">&#x27;caption&#x27;</span>])</span><br><span class="line">    fn_to_caps = <span class="built_in">dict</span>(fn_to_caps)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">list</span>(<span class="built_in">map</span>(<span class="keyword">lambda</span> x: fn_to_caps[x], fns))</span><br><span class="line">    </span><br><span class="line">train_captions = get_captions_for_fns(train_img_fns, <span class="string">&quot;captions_train-val2014.zip&quot;</span>, </span><br><span class="line">                                      <span class="string">&quot;annotations/captions_train2014.json&quot;</span>)</span><br><span class="line"></span><br><span class="line">val_captions = get_captions_for_fns(val_img_fns, <span class="string">&quot;captions_train-val2014.zip&quot;</span>, </span><br><span class="line">                                      <span class="string">&quot;annotations/captions_val2014.json&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># check shape</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(train_img_fns), <span class="built_in">len</span>(train_captions))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(val_img_fns), <span class="built_in">len</span>(val_captions))</span><br></pre></td></tr></table></figure>
+<pre><code>82783 82783
+40504 40504</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># look at training example (each has 5 captions)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_trainig_example</span>(<span class="params">train_img_fns, train_captions, example_idx=<span class="number">0</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    You can change example_idx and see different images</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    zf = zipfile.ZipFile(<span class="string">&quot;train2014_sample.zip&quot;</span>)</span><br><span class="line">    captions_by_file = <span class="built_in">dict</span>(<span class="built_in">zip</span>(train_img_fns, train_captions))</span><br><span class="line">    all_files = <span class="built_in">set</span>(train_img_fns)</span><br><span class="line">    found_files = <span class="built_in">list</span>(<span class="built_in">filter</span>(<span class="keyword">lambda</span> x: x.filename.rsplit(<span class="string">&quot;/&quot;</span>)[-<span class="number">1</span>] <span class="keyword">in</span> all_files, zf.filelist))</span><br><span class="line">    example = found_files[example_idx]</span><br><span class="line">    img = utils.decode_image_from_buf(zf.read(example))</span><br><span class="line">    plt.imshow(utils.image_center_crop(img))</span><br><span class="line">    plt.title(<span class="string">&quot;\n&quot;</span>.join(captions_by_file[example.filename.rsplit(<span class="string">&quot;/&quot;</span>)[-<span class="number">1</span>]]))</span><br><span class="line">    plt.show()</span><br><span class="line">    </span><br><span class="line">show_trainig_example(train_img_fns, train_captions, example_idx=<span class="number">142</span>)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_20_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<h1 id="prepare-captions-for-training">Prepare captions for training</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># preview captions data</span></span><br><span class="line">train_captions[:<span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+<pre><code>[[&#39;A long dirt road going through a forest.&#39;,
+  &#39;A SCENE OF WATER AND A PATH WAY&#39;,
+  &#39;A sandy path surrounded by trees leads to a beach.&#39;,
+  &#39;Ocean view through a dirt road surrounded by a forested area. &#39;,
+  &#39;dirt path leading beneath barren trees to open plains&#39;],
+ [&#39;A group of zebra standing next to each other.&#39;,
+  &#39;This is an image of of zebras drinking&#39;,
+  &#39;ZEBRAS AND BIRDS SHARING THE SAME WATERING HOLE&#39;,
+  &#39;Zebras that are bent over and drinking water together.&#39;,
+  &#39;a number of zebras drinking water near one another&#39;]]</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> reduce</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># special tokens</span></span><br><span class="line">PAD = <span class="string">&quot;#PAD#&quot;</span></span><br><span class="line">UNK = <span class="string">&quot;#UNK#&quot;</span></span><br><span class="line">START = <span class="string">&quot;#START#&quot;</span></span><br><span class="line">END = <span class="string">&quot;#END#&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># split sentence into tokens (split into lowercased words)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">split_sentence</span>(<span class="params">sentence</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">list</span>(<span class="built_in">filter</span>(<span class="keyword">lambda</span> x: <span class="built_in">len</span>(x) &gt; <span class="number">0</span>, re.split(<span class="string">&#x27;\W+&#x27;</span>, sentence.lower())))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_vocabulary</span>(<span class="params">train_captions</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Return &#123;token: index&#125; for all train tokens (words) that occur 5 times or more, </span></span><br><span class="line"><span class="string">        `index` should be from 0 to N, where N is a number of unique tokens in the resulting dictionary.</span></span><br><span class="line"><span class="string">    Use `split_sentence` function to split sentence into tokens.</span></span><br><span class="line"><span class="string">    Also, add PAD (for batch padding), UNK (unknown, out of vocabulary), </span></span><br><span class="line"><span class="string">        START (start of sentence) and END (end of sentence) tokens into the vocabulary.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    counter = Counter()</span><br><span class="line">    <span class="keyword">for</span> captions <span class="keyword">in</span> train_captions:</span><br><span class="line">        <span class="keyword">for</span> sentence <span class="keyword">in</span> captions:</span><br><span class="line">            counter.update(split_sentence(sentence))</span><br><span class="line">    vocab = &#123;item <span class="keyword">for</span> item,count <span class="keyword">in</span> counter.items() <span class="keyword">if</span> count &gt;= <span class="number">5</span>&#125;</span><br><span class="line">    vocab = vocab.union(&#123;PAD,UNK,START,END&#125;)</span><br><span class="line">    <span class="keyword">return</span> &#123;token: index <span class="keyword">for</span> index, token <span class="keyword">in</span> <span class="built_in">enumerate</span>(<span class="built_in">sorted</span>(vocab))&#125;</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">caption_tokens_to_indices</span>(<span class="params">captions, vocab</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    `captions` argument is an array of arrays:</span></span><br><span class="line"><span class="string">    [</span></span><br><span class="line"><span class="string">        [</span></span><br><span class="line"><span class="string">            &quot;image1 caption1&quot;,</span></span><br><span class="line"><span class="string">            &quot;image1 caption2&quot;,</span></span><br><span class="line"><span class="string">            ...</span></span><br><span class="line"><span class="string">        ],</span></span><br><span class="line"><span class="string">        [</span></span><br><span class="line"><span class="string">            &quot;image2 caption1&quot;,</span></span><br><span class="line"><span class="string">            &quot;image2 caption2&quot;,</span></span><br><span class="line"><span class="string">            ...</span></span><br><span class="line"><span class="string">        ],</span></span><br><span class="line"><span class="string">        ...</span></span><br><span class="line"><span class="string">    ]</span></span><br><span class="line"><span class="string">    Use `split_sentence` function to split sentence into tokens.</span></span><br><span class="line"><span class="string">    Replace all tokens with vocabulary indices, use UNK for unknown words (out of vocabulary).</span></span><br><span class="line"><span class="string">    Add START and END tokens to start and end of each sentence respectively.</span></span><br><span class="line"><span class="string">    For the example above you should produce the following:</span></span><br><span class="line"><span class="string">    [</span></span><br><span class="line"><span class="string">        [</span></span><br><span class="line"><span class="string">            [vocab[START], vocab[&quot;image1&quot;], vocab[&quot;caption1&quot;], vocab[END]],</span></span><br><span class="line"><span class="string">            [vocab[START], vocab[&quot;image1&quot;], vocab[&quot;caption2&quot;], vocab[END]],</span></span><br><span class="line"><span class="string">            ...</span></span><br><span class="line"><span class="string">        ],</span></span><br><span class="line"><span class="string">        ...</span></span><br><span class="line"><span class="string">    ]</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    res = []</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> img_captions <span class="keyword">in</span> captions:</span><br><span class="line">        img_indx_cations = []</span><br><span class="line">        <span class="keyword">for</span> sentence <span class="keyword">in</span> img_captions:</span><br><span class="line">            indx_sentence = [vocab[START]] + [vocab.get(token,vocab[UNK]) <span class="keyword">for</span> token <span class="keyword">in</span> split_sentence(sentence)] + [vocab[END]]</span><br><span class="line">            img_indx_cations.append(indx_sentence)</span><br><span class="line">        res.append(img_indx_cations)</span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># prepare vocabulary</span></span><br><span class="line"></span><br><span class="line">vocab = generate_vocabulary(train_captions)</span><br><span class="line">vocab_inverse = &#123;idx: w <span class="keyword">for</span> w, idx <span class="keyword">in</span> vocab.items()&#125;</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(vocab))</span><br></pre></td></tr></table></figure>
+<pre><code>8769</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># replace tokens with indices</span></span><br><span class="line">train_captions_indexed = caption_tokens_to_indices(train_captions, vocab)</span><br><span class="line">val_captions_indexed = caption_tokens_to_indices(val_captions, vocab)</span><br></pre></td></tr></table></figure>
+<p>Captions have different length, but we need to batch them, that's why we will add PAD tokens so that all sentences have an equal length.</p>
+<p>We will crunch LSTM through all the tokens, but we will ignore padding tokens during loss calculation.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># we will use this during training</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">batch_captions_to_matrix</span>(<span class="params">batch_captions, pad_idx, max_len=<span class="literal">None</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    `batch_captions` is an array of arrays:</span></span><br><span class="line"><span class="string">    [</span></span><br><span class="line"><span class="string">        [vocab[START], ..., vocab[END]],</span></span><br><span class="line"><span class="string">        [vocab[START], ..., vocab[END]],</span></span><br><span class="line"><span class="string">        ...</span></span><br><span class="line"><span class="string">    ]</span></span><br><span class="line"><span class="string">    Put vocabulary indexed captions into np.array of shape (len(batch_captions), columns),</span></span><br><span class="line"><span class="string">        where &quot;columns&quot; is max(map(len, batch_captions)) when max_len is None</span></span><br><span class="line"><span class="string">        and &quot;columns&quot; = min(max_len, max(map(len, batch_captions))) otherwise.</span></span><br><span class="line"><span class="string">    Add padding with pad_idx where necessary.</span></span><br><span class="line"><span class="string">    Input example: [[1, 2, 3], [4, 5]]</span></span><br><span class="line"><span class="string">    Output example: np.array([[1, 2, 3], [4, 5, pad_idx]]) if max_len=None</span></span><br><span class="line"><span class="string">    Output example: np.array([[1, 2], [4, 5]]) if max_len=2</span></span><br><span class="line"><span class="string">    Output example: np.array([[1, 2, 3], [4, 5, pad_idx]]) if max_len=100</span></span><br><span class="line"><span class="string">    Try to use numpy, we need this function to be fast!</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    cap_max = <span class="built_in">max</span>(<span class="built_in">map</span>(<span class="built_in">len</span>,batch_captions))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> max_len:</span><br><span class="line">        max_len = cap_max</span><br><span class="line">    <span class="keyword">elif</span> max_len &lt; cap_max:</span><br><span class="line">        max_len = max_len</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        max_len = cap_max</span><br><span class="line">    </span><br><span class="line">    matrix = np.empty([<span class="built_in">len</span>(batch_captions),max_len])</span><br><span class="line">    matrix.fill(pad_idx)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> index,line <span class="keyword">in</span> <span class="built_in">enumerate</span>(batch_captions):</span><br><span class="line">        matrix[index,:<span class="built_in">len</span>(line)] = line[<span class="number">0</span>:max_len]</span><br><span class="line">        matrix[index,<span class="built_in">len</span>(line):] = pad_idx</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">return</span> matrix</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## GRADED PART, DO NOT CHANGE!</span></span><br><span class="line"><span class="comment"># Vocabulary creation</span></span><br><span class="line">grader.set_answer(<span class="string">&quot;19Wpv&quot;</span>, grading_utils.test_vocab(vocab, PAD, UNK, START, END))</span><br><span class="line"><span class="comment"># Captions indexing</span></span><br><span class="line">grader.set_answer(<span class="string">&quot;uJh73&quot;</span>, grading_utils.test_captions_indexing(train_captions_indexed, vocab, UNK))</span><br><span class="line"><span class="comment"># Captions batching</span></span><br><span class="line">grader.set_answer(<span class="string">&quot;yiJkt&quot;</span>, grading_utils.test_captions_batching(batch_captions_to_matrix))</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># you can make submission with answers so far to check yourself at this stage</span></span><br><span class="line">grader.submit(COURSERA_EMAIL, COURSERA_TOKEN)</span><br></pre></td></tr></table></figure>
+<pre><code>Submitted to Coursera platform. See results on assignment page!</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># make sure you use correct argument in caption_tokens_to_indices</span></span><br><span class="line"><span class="keyword">assert</span> <span class="built_in">len</span>(caption_tokens_to_indices(train_captions[:<span class="number">10</span>], vocab)) == <span class="number">10</span></span><br><span class="line"><span class="keyword">assert</span> <span class="built_in">len</span>(caption_tokens_to_indices(train_captions[:<span class="number">5</span>], vocab)) == <span class="number">5</span></span><br></pre></td></tr></table></figure>
+<h1 id="training">Training</h1>
+<h2 id="define-architecture">Define architecture</h2>
+<p>Since our problem is to generate image captions, RNN text generator should be conditioned on image. The idea is to use image features as an initial state for RNN instead of zeros.</p>
+<p>Remember that you should transform image feature vector to RNN hidden state size by fully-connected layer and then pass it to RNN.</p>
+<p>During training we will feed ground truth tokens into the lstm to get predictions of next tokens.</p>
+<p>Notice that we don't need to feed last token (END) as input (http://cs.stanford.edu/people/karpathy/):</p>
+<p><img src="encoder_decoder_explained.png" style="width:50%"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">IMG_EMBED_SIZE = train_img_embeds.shape[<span class="number">1</span>]</span><br><span class="line">IMG_EMBED_BOTTLENECK = <span class="number">120</span></span><br><span class="line">WORD_EMBED_SIZE = <span class="number">100</span></span><br><span class="line">LSTM_UNITS = <span class="number">300</span></span><br><span class="line">LOGIT_BOTTLENECK = <span class="number">120</span></span><br><span class="line">pad_idx = vocab[PAD]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IMG_EMBED_SIZE,pad_idx,LOGIT_BOTTLENECK</span><br></pre></td></tr></table></figure>
+<pre><code>(2048, 1, 120)</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># remember to reset your graph if you want to start building it from scratch!</span></span><br><span class="line">s = reset_tf_session()</span><br><span class="line">tf.set_random_seed(<span class="number">42</span>)</span><br></pre></td></tr></table></figure>
+<p>Here we define decoder graph.</p>
+<p>We use Keras layers where possible because we can use them in functional style with weights reuse like this: <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dense_layer = L.Dense(<span class="number">42</span>, input_shape=(<span class="literal">None</span>, <span class="number">100</span>) activation=<span class="string">&#x27;relu&#x27;</span>)</span><br><span class="line">a = tf.placeholder(<span class="string">&#x27;float32&#x27;</span>, [<span class="literal">None</span>, <span class="number">100</span>])</span><br><span class="line">b = tf.placeholder(<span class="string">&#x27;float32&#x27;</span>, [<span class="literal">None</span>, <span class="number">100</span>])</span><br><span class="line">dense_layer(a)  <span class="comment"># that&#x27;s how we applied dense layer!</span></span><br><span class="line">dense_layer(b)  <span class="comment"># and again</span></span><br></pre></td></tr></table></figure></p>
+<p>Here's a figure to help you with flattening in decoder: <img src="flatten_help.jpg" style="width:80%"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">decoder</span>:</span></span><br><span class="line">    <span class="comment"># [batch_size, IMG_EMBED_SIZE] of CNN image features</span></span><br><span class="line">    img_embeds = tf.placeholder(<span class="string">&#x27;float32&#x27;</span>, [<span class="literal">None</span>, IMG_EMBED_SIZE])</span><br><span class="line">    <span class="comment"># [batch_size, time steps] of word ids</span></span><br><span class="line">    sentences = tf.placeholder(<span class="string">&#x27;int32&#x27;</span>, [<span class="literal">None</span>, <span class="literal">None</span>])</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># we use bottleneck here to reduce the number of parameters</span></span><br><span class="line">    <span class="comment"># image embedding -&gt; bottleneck</span></span><br><span class="line">    img_embed_to_bottleneck = L.Dense(IMG_EMBED_BOTTLENECK, </span><br><span class="line">                                      input_shape=(<span class="literal">None</span>, IMG_EMBED_SIZE), </span><br><span class="line">                                      activation=<span class="string">&#x27;elu&#x27;</span>)</span><br><span class="line">    <span class="comment"># image embedding bottleneck -&gt; lstm initial state</span></span><br><span class="line">    img_embed_bottleneck_to_h0 = L.Dense(LSTM_UNITS,</span><br><span class="line">                                         input_shape=(<span class="literal">None</span>, IMG_EMBED_BOTTLENECK),</span><br><span class="line">                                         activation=<span class="string">&#x27;elu&#x27;</span>)</span><br><span class="line">    <span class="comment"># word -&gt; embedding</span></span><br><span class="line">    word_embed = L.Embedding(<span class="built_in">len</span>(vocab), WORD_EMBED_SIZE)</span><br><span class="line">    <span class="comment"># lstm cell (from tensorflow)</span></span><br><span class="line">    lstm = tf.nn.rnn_cell.LSTMCell(LSTM_UNITS)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># we use bottleneck here to reduce model complexity</span></span><br><span class="line">    <span class="comment"># lstm output -&gt; logits bottleneck</span></span><br><span class="line">    token_logits_bottleneck = L.Dense(LOGIT_BOTTLENECK, </span><br><span class="line">                                      input_shape=(<span class="literal">None</span>, LSTM_UNITS),</span><br><span class="line">                                      activation=<span class="string">&quot;elu&quot;</span>)</span><br><span class="line">    <span class="comment"># logits bottleneck -&gt; logits for next token prediction</span></span><br><span class="line">    token_logits = L.Dense(<span class="built_in">len</span>(vocab),</span><br><span class="line">                           input_shape=(<span class="literal">None</span>, LOGIT_BOTTLENECK))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># initial lstm cell state of shape (None, LSTM_UNITS),</span></span><br><span class="line">    <span class="comment"># we need to condition it on `img_embeds` placeholder.</span></span><br><span class="line">    c0 = h0 = img_embed_bottleneck_to_h0(img_embed_to_bottleneck(img_embeds))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># embed all tokens but the last for lstm input,</span></span><br><span class="line">    <span class="comment"># remember that L.Embedding is callable,</span></span><br><span class="line">    <span class="comment"># use `sentences` placeholder as input.</span></span><br><span class="line">    word_embeds = word_embed(sentences[:,:-<span class="number">1</span>])</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># during training we use ground truth tokens `word_embeds` as context for next token prediction.</span></span><br><span class="line">    <span class="comment"># that means that we know all the inputs for our lstm and can get </span></span><br><span class="line">    <span class="comment"># all the hidden states with one tensorflow operation (tf.nn.dynamic_rnn).</span></span><br><span class="line">    <span class="comment"># `hidden_states` has a shape of [batch_size, time steps, LSTM_UNITS].</span></span><br><span class="line">    hidden_states, _ = tf.nn.dynamic_rnn(lstm, word_embeds,</span><br><span class="line">                                         initial_state=tf.nn.rnn_cell.LSTMStateTuple(c0, h0))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># now we need to calculate token logits for all the hidden states</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># first, we reshape `hidden_states` to [-1, LSTM_UNITS]</span></span><br><span class="line">    flat_hidden_states = tf.reshape(hidden_states, [-<span class="number">1</span>, LSTM_UNITS])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># then, we calculate logits for next tokens using `token_logits_bottleneck` and `token_logits` layers</span></span><br><span class="line">    flat_token_logits = token_logits(token_logits_bottleneck(flat_hidden_states))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># then, we flatten the ground truth token ids.</span></span><br><span class="line">    <span class="comment"># remember, that we predict next tokens for each time step,</span></span><br><span class="line">    <span class="comment"># use `sentences` placeholder.</span></span><br><span class="line">    flat_ground_truth = tf.reshape(sentences[:, <span class="number">1</span>:], [-<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># we need to know where we have real tokens (not padding) in `flat_ground_truth`,</span></span><br><span class="line">    <span class="comment"># we don&#x27;t want to propagate the loss for padded output tokens,</span></span><br><span class="line">    <span class="comment"># fill `flat_loss_mask` with 1.0 for real tokens (not pad_idx) and 0.0 otherwise.</span></span><br><span class="line">    flat_loss_mask = tf.not_equal(flat_ground_truth, pad_idx)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># compute cross-entropy between `flat_ground_truth` and `flat_token_logits` predicted by lstm</span></span><br><span class="line">    xent = tf.nn.sparse_softmax_cross_entropy_with_logits(</span><br><span class="line">        labels=flat_ground_truth, </span><br><span class="line">        logits=flat_token_logits</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># compute average `xent` over tokens with nonzero `flat_loss_mask`.</span></span><br><span class="line">    <span class="comment"># we don&#x27;t want to account misclassification of PAD tokens, because that doesn&#x27;t make sense,</span></span><br><span class="line">    <span class="comment"># we have PAD tokens for batching purposes only!</span></span><br><span class="line">    loss = tf.reduce_mean(tf.boolean_mask(xent, flat_loss_mask))</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># define optimizer operation to minimize the loss</span></span><br><span class="line">optimizer = tf.train.AdamOptimizer(learning_rate=<span class="number">0.001</span>)</span><br><span class="line">train_step = optimizer.minimize(decoder.loss)</span><br><span class="line"></span><br><span class="line"><span class="comment"># will be used to save/load network weights.</span></span><br><span class="line"><span class="comment"># you need to reset your default graph and define it in the same way to be able to load the saved weights!</span></span><br><span class="line">saver = tf.train.Saver()</span><br><span class="line"></span><br><span class="line"><span class="comment"># intialize all variables</span></span><br><span class="line">s.run(tf.global_variables_initializer())</span><br></pre></td></tr></table></figure>
+<pre><code>/usr/local/lib/python3.5/dist-packages/tensorflow/python/ops/gradients_impl.py:93: UserWarning: Converting sparse IndexedSlices to a dense Tensor of unknown shape. This may consume a large amount of memory.
+  &quot;Converting sparse IndexedSlices to a dense Tensor of unknown shape. &quot;</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## GRADED PART, DO NOT CHANGE!</span></span><br><span class="line"><span class="comment"># Decoder shapes test</span></span><br><span class="line">grader.set_answer(<span class="string">&quot;rbpnH&quot;</span>, grading_utils.test_decoder_shapes(decoder, IMG_EMBED_SIZE, vocab, s))</span><br><span class="line"><span class="comment"># Decoder random loss test</span></span><br><span class="line">grader.set_answer(<span class="string">&quot;E2OIL&quot;</span>, grading_utils.test_random_decoder_loss(decoder, IMG_EMBED_SIZE, vocab, s))</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># you can make submission with answers so far to check yourself at this stage</span></span><br><span class="line">grader.submit(COURSERA_EMAIL, COURSERA_TOKEN)</span><br></pre></td></tr></table></figure>
+<pre><code>Submitted to Coursera platform. See results on assignment page!</code></pre>
+<h2 id="training-loop">Training loop</h2>
+<p>Evaluate train and validation metrics through training and log them. Ensure that loss decreases.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">train_captions_indexed = np.array(train_captions_indexed)</span><br><span class="line">val_captions_indexed = np.array(val_captions_indexed)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># generate batch via random sampling of images and captions for them,</span></span><br><span class="line"><span class="comment"># we use `max_len` parameter to control the length of the captions (truncating long captions)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_batch</span>(<span class="params">images_embeddings, indexed_captions, batch_size, max_len=<span class="literal">None</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    `images_embeddings` is a np.array of shape [number of images, IMG_EMBED_SIZE].</span></span><br><span class="line"><span class="string">    `indexed_captions` holds 5 vocabulary indexed captions for each image:</span></span><br><span class="line"><span class="string">    [</span></span><br><span class="line"><span class="string">        [</span></span><br><span class="line"><span class="string">            [vocab[START], vocab[&quot;image1&quot;], vocab[&quot;caption1&quot;], vocab[END]],</span></span><br><span class="line"><span class="string">            [vocab[START], vocab[&quot;image1&quot;], vocab[&quot;caption2&quot;], vocab[END]],</span></span><br><span class="line"><span class="string">            ...</span></span><br><span class="line"><span class="string">        ],</span></span><br><span class="line"><span class="string">        ...</span></span><br><span class="line"><span class="string">    ]</span></span><br><span class="line"><span class="string">    Generate a random batch of size `batch_size`.</span></span><br><span class="line"><span class="string">    Take random images and choose one random caption for each image.</span></span><br><span class="line"><span class="string">    Remember to use `batch_captions_to_matrix` for padding and respect `max_len` parameter.</span></span><br><span class="line"><span class="string">    Return feed dict &#123;decoder.img_embeds: ..., decoder.sentences: ...&#125;.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    indexs = [random.randint(<span class="number">0</span>,<span class="built_in">len</span>(images_embeddings)-<span class="number">1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(batch_size)]</span><br><span class="line">    batch_image_embeddings = images_embeddings[indexs]</span><br><span class="line">    batch_captions = [caption[np.random.randint(<span class="number">5</span>)] <span class="keyword">for</span> caption <span class="keyword">in</span> indexed_captions[indexs]]</span><br><span class="line">    </span><br><span class="line">    batch_captions_matrix = batch_captions_to_matrix(batch_captions,pad_idx, max_len)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> &#123;decoder.img_embeds: batch_image_embeddings, </span><br><span class="line">            decoder.sentences: batch_captions_matrix&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">batch_size = <span class="number">64</span></span><br><span class="line">n_epochs = <span class="number">12</span></span><br><span class="line">n_batches_per_epoch = <span class="number">1000</span></span><br><span class="line">n_validation_batches = <span class="number">100</span>  <span class="comment"># how many batches are used for validation after each epoch</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># you can load trained weights here</span></span><br><span class="line"><span class="comment"># uncomment the next line if you need to load weights</span></span><br><span class="line"><span class="comment"># saver.restore(s, get_checkpoint_path(epoch=4))</span></span><br></pre></td></tr></table></figure>
+<p>Look at the training and validation loss, they should be decreasing!</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">train_img_embeds.shape,train_captions_indexed.shape</span><br></pre></td></tr></table></figure>
+<pre><code>((82783, 2048), (82783,))</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># actual training loop</span></span><br><span class="line">MAX_LEN = <span class="number">20</span>  <span class="comment"># truncate long captions to speed up training</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># to make training reproducible</span></span><br><span class="line">np.random.seed(<span class="number">42</span>)</span><br><span class="line">random.seed(<span class="number">42</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(n_epochs):</span><br><span class="line">    </span><br><span class="line">    train_loss = <span class="number">0</span></span><br><span class="line">    pbar = tqdm_utils.tqdm_notebook_failsafe(<span class="built_in">range</span>(n_batches_per_epoch))</span><br><span class="line">    counter = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> pbar:</span><br><span class="line">        train_loss += s.run([decoder.loss, train_step], </span><br><span class="line">                            generate_batch(train_img_embeds, </span><br><span class="line">                                           train_captions_indexed, </span><br><span class="line">                                           batch_size, </span><br><span class="line">                                           MAX_LEN))[<span class="number">0</span>]</span><br><span class="line">        counter += <span class="number">1</span></span><br><span class="line">        pbar.set_description(<span class="string">&quot;Training loss: %f&quot;</span> % (train_loss / counter))</span><br><span class="line">        </span><br><span class="line">    train_loss /= n_batches_per_epoch</span><br><span class="line">    </span><br><span class="line">    val_loss = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n_validation_batches):</span><br><span class="line">        val_loss += s.run(decoder.loss, generate_batch(val_img_embeds,</span><br><span class="line">                                                       val_captions_indexed, </span><br><span class="line">                                                       batch_size, </span><br><span class="line">                                                       MAX_LEN))</span><br><span class="line">    val_loss /= n_validation_batches</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Epoch: &#123;&#125;, train loss: &#123;&#125;, val loss: &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(epoch, train_loss, val_loss))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># save weights after finishing epoch</span></span><br><span class="line">    saver.save(s, get_checkpoint_path(epoch))</span><br><span class="line">    </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Finished!&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>HBox(children=(IntProgress(value=0, max=1000), HTML(value=&#39;&#39;)))
+
+
+
+
+Epoch: 0, train loss: 3.0007614777088167, val loss: 2.9724034023284913
+
+
+
+HBox(children=(IntProgress(value=0, max=1000), HTML(value=&#39;&#39;)))
+
+
+
+Epoch: 1, train loss: 2.8531791372299193, val loss: 2.9006982970237734
+
+
+
+HBox(children=(IntProgress(value=0, max=1000), HTML(value=&#39;&#39;)))
+
+
+
+Epoch: 2, train loss: 2.7954050121307374, val loss: 2.8111998438835144
+
+
+
+HBox(children=(IntProgress(value=0, max=1000), HTML(value=&#39;&#39;)))
+
+
+
+Epoch: 3, train loss: 2.730731366157532, val loss: 2.750483591556549
+
+
+
+HBox(children=(IntProgress(value=0, max=1000), HTML(value=&#39;&#39;)))
+
+
+
+Epoch: 4, train loss: 2.6690069699287413, val loss: 2.749560286998749
+
+
+
+HBox(children=(IntProgress(value=0, max=1000), HTML(value=&#39;&#39;)))
+
+
+
+Epoch: 5, train loss: 2.633123325586319, val loss: 2.7148624300956725
+
+
+
+HBox(children=(IntProgress(value=0, max=1000), HTML(value=&#39;&#39;)))
+
+
+
+Epoch: 6, train loss: 2.5939396080970765, val loss: 2.6811715364456177
+
+
+
+HBox(children=(IntProgress(value=0, max=1000), HTML(value=&#39;&#39;)))
+
+
+
+Epoch: 7, train loss: 2.574599018335342, val loss: 2.6403690791130066
+
+
+
+HBox(children=(IntProgress(value=0, max=1000), HTML(value=&#39;&#39;)))
+
+
+
+Epoch: 8, train loss: 2.546513616323471, val loss: 2.627152864933014
+
+
+
+HBox(children=(IntProgress(value=0, max=1000), HTML(value=&#39;&#39;)))
+
+
+
+Epoch: 9, train loss: 2.5285718023777006, val loss: 2.6443107414245604
+
+
+
+HBox(children=(IntProgress(value=0, max=1000), HTML(value=&#39;&#39;)))
+
+
+
+Epoch: 10, train loss: 2.4949201991558074, val loss: 2.6084690499305725
+
+
+
+HBox(children=(IntProgress(value=0, max=1000), HTML(value=&#39;&#39;)))
+
+
+
+Epoch: 11, train loss: 2.478545124053955, val loss: 2.594680278301239
+Finished!</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## GRADED PART, DO NOT CHANGE!</span></span><br><span class="line"><span class="comment"># Validation loss</span></span><br><span class="line">grader.set_answer(<span class="string">&quot;YJR7z&quot;</span>, grading_utils.test_validation_loss(</span><br><span class="line">    decoder, s, generate_batch, val_img_embeds, val_captions_indexed))</span><br></pre></td></tr></table></figure>
+<pre><code>HBox(children=(IntProgress(value=0, max=1000), HTML(value=&#39;&#39;)))</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># you can make submission with answers so far to check yourself at this stage</span></span><br><span class="line">grader.submit(COURSERA_EMAIL, COURSERA_TOKEN)</span><br></pre></td></tr></table></figure>
+<pre><code>Submitted to Coursera platform. See results on assignment page!</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># check that it&#x27;s learnt something, outputs accuracy of next word prediction (should be around 0.5)</span></span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> accuracy_score, log_loss</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decode_sentence</span>(<span class="params">sentence_indices</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot; &quot;</span>.join(<span class="built_in">list</span>(<span class="built_in">map</span>(vocab_inverse.get, sentence_indices)))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check_after_training</span>(<span class="params">n_examples</span>):</span></span><br><span class="line">    fd = generate_batch(train_img_embeds, train_captions_indexed, batch_size)</span><br><span class="line">    logits = decoder.flat_token_logits.<span class="built_in">eval</span>(fd)</span><br><span class="line">    truth = decoder.flat_ground_truth.<span class="built_in">eval</span>(fd)</span><br><span class="line">    mask = decoder.flat_loss_mask.<span class="built_in">eval</span>(fd).astype(<span class="built_in">bool</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Loss:&quot;</span>, decoder.loss.<span class="built_in">eval</span>(fd))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Accuracy:&quot;</span>, accuracy_score(logits.argmax(axis=<span class="number">1</span>)[mask], truth[mask]))</span><br><span class="line">    <span class="keyword">for</span> example_idx <span class="keyword">in</span> <span class="built_in">range</span>(n_examples):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Example&quot;</span>, example_idx)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Predicted:&quot;</span>, decode_sentence(logits.argmax(axis=<span class="number">1</span>).reshape((batch_size, -<span class="number">1</span>))[example_idx]))</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Truth:&quot;</span>, decode_sentence(truth.reshape((batch_size, -<span class="number">1</span>))[example_idx]))</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;&quot;</span>)</span><br><span class="line"></span><br><span class="line">check_after_training(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Loss: 2.37412
+Accuracy: 0.501388888889
+Example 0
+Predicted: a person flying flying a kite in a building of people #END# #END# #END# #END# #END# #END# #END# #END# #END# #END#
+Truth: a child is flying a kite near a group of buildings #END# #PAD# #PAD# #PAD# #PAD# #PAD# #PAD# #PAD# #PAD# #PAD#
+
+Example 1
+Predicted: a person of a doing a skateboard in down ramp of a ramp #END# #END# #END# #END# #END# #END# #END# #END#
+Truth: a closeup of someone on a skateboard riding the edge of a ramp #END# #PAD# #PAD# #PAD# #PAD# #PAD# #PAD# #PAD#
+
+Example 2
+Predicted: a bed with a bed and a on furniture #END# a wall #END# #END# #END# #END# #END# #END# #END# #END# #END#
+Truth: a bedroom with aqua walls and cutouts of rain on the wall #END# #PAD# #PAD# #PAD# #PAD# #PAD# #PAD# #PAD# #PAD#</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># save last graph weights to file!</span></span><br><span class="line">saver.save(s, get_checkpoint_path())</span><br></pre></td></tr></table></figure>
+<pre><code>&#39;/root/intro-to-dl/week6/weights&#39;</code></pre>
+<h1 id="applying-model">Applying model</h1>
+<p>Here we construct a graph for our final model.</p>
+<p>It will work as follows: - take an image as an input and embed it - condition lstm on that embedding - predict the next token given a START input token - use predicted token as an input at next time step - iterate until you predict an END token</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">final_model</span>:</span></span><br><span class="line">    <span class="comment"># CNN encoder</span></span><br><span class="line">    encoder, preprocess_for_model = get_cnn_encoder()</span><br><span class="line">    saver.restore(s, get_checkpoint_path())  <span class="comment"># keras applications corrupt our graph, so we restore trained weights</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># containers for current lstm state</span></span><br><span class="line">    lstm_c = tf.Variable(tf.zeros([<span class="number">1</span>, LSTM_UNITS]), name=<span class="string">&quot;cell&quot;</span>)</span><br><span class="line">    lstm_h = tf.Variable(tf.zeros([<span class="number">1</span>, LSTM_UNITS]), name=<span class="string">&quot;hidden&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># input images</span></span><br><span class="line">    input_images = tf.placeholder(<span class="string">&#x27;float32&#x27;</span>, [<span class="number">1</span>, IMG_SIZE, IMG_SIZE, <span class="number">3</span>], name=<span class="string">&#x27;images&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># get image embeddings</span></span><br><span class="line">    img_embeds = encoder(input_images)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># initialize lstm state conditioned on image</span></span><br><span class="line">    init_c = init_h = decoder.img_embed_bottleneck_to_h0(decoder.img_embed_to_bottleneck(img_embeds))</span><br><span class="line">    init_lstm = tf.assign(lstm_c, init_c), tf.assign(lstm_h, init_h)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># current word index</span></span><br><span class="line">    current_word = tf.placeholder(<span class="string">&#x27;int32&#x27;</span>, [<span class="number">1</span>], name=<span class="string">&#x27;current_input&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># embedding for current word</span></span><br><span class="line">    word_embed = decoder.word_embed(current_word)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># apply lstm cell, get new lstm states</span></span><br><span class="line">    new_c, new_h = decoder.lstm(word_embed, tf.nn.rnn_cell.LSTMStateTuple(lstm_c, lstm_h))[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># compute logits for next token</span></span><br><span class="line">    new_logits = decoder.token_logits(decoder.token_logits_bottleneck(new_h))</span><br><span class="line">    <span class="comment"># compute probabilities for next token</span></span><br><span class="line">    new_probs = tf.nn.softmax(new_logits)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># `one_step` outputs probabilities of next token and updates lstm hidden state</span></span><br><span class="line">    one_step = new_probs, tf.assign(lstm_c, new_c), tf.assign(lstm_h, new_h)</span><br></pre></td></tr></table></figure>
+<pre><code>INFO:tensorflow:Restoring parameters from /root/intro-to-dl/week6/weights</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># look at how temperature works for probability distributions</span></span><br><span class="line"><span class="comment"># for high temperature we have more uniform distribution</span></span><br><span class="line">_ = np.array([<span class="number">0.5</span>, <span class="number">0.4</span>, <span class="number">0.1</span>])</span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> [<span class="number">0.01</span>, <span class="number">0.1</span>, <span class="number">1</span>, <span class="number">10</span>, <span class="number">100</span>]:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot; &quot;</span>.join(<span class="built_in">map</span>(<span class="built_in">str</span>, _**(<span class="number">1</span>/t) / np.<span class="built_in">sum</span>(_**(<span class="number">1</span>/t)))), <span class="string">&quot;with temperature&quot;</span>, t)</span><br></pre></td></tr></table></figure>
+<pre><code>0.999999999796 2.03703597592e-10 1.26765059997e-70 with temperature 0.01
+0.903037043325 0.0969628642039 9.24709932365e-08 with temperature 0.1
+0.5 0.4 0.1 with temperature 1
+0.353447726392 0.345648113606 0.300904160002 with temperature 10
+0.335367280481 0.334619764349 0.33001295517 with temperature 100</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># this is an actual prediction loop</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_caption</span>(<span class="params">image, t=<span class="number">1</span>, sample=<span class="literal">False</span>, max_len=<span class="number">20</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Generate caption for given image.</span></span><br><span class="line"><span class="string">    if `sample` is True, we will sample next token from predicted probability distribution.</span></span><br><span class="line"><span class="string">    `t` is a temperature during that sampling,</span></span><br><span class="line"><span class="string">        higher `t` causes more uniform-like distribution = more chaos.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># condition lstm on the image</span></span><br><span class="line">    s.run(final_model.init_lstm, </span><br><span class="line">          &#123;final_model.input_images: [image]&#125;)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># current caption</span></span><br><span class="line">    <span class="comment"># start with only START token</span></span><br><span class="line">    caption = [vocab[START]]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(max_len):</span><br><span class="line">        next_word_probs = s.run(final_model.one_step, </span><br><span class="line">                                &#123;final_model.current_word: [caption[-<span class="number">1</span>]]&#125;)[<span class="number">0</span>]</span><br><span class="line">        next_word_probs = next_word_probs.ravel()</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># apply temperature</span></span><br><span class="line">        next_word_probs = next_word_probs**(<span class="number">1</span>/t) / np.<span class="built_in">sum</span>(next_word_probs**(<span class="number">1</span>/t))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> sample:</span><br><span class="line">            next_word = np.random.choice(<span class="built_in">range</span>(<span class="built_in">len</span>(vocab)), p=next_word_probs)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            next_word = np.argmax(next_word_probs)</span><br><span class="line"></span><br><span class="line">        caption.append(next_word)</span><br><span class="line">        <span class="keyword">if</span> next_word == vocab[END]:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">       </span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">list</span>(<span class="built_in">map</span>(vocab_inverse.get, caption))</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># look at validation prediction example</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">apply_model_to_image_raw_bytes</span>(<span class="params">raw</span>):</span></span><br><span class="line">    img = utils.decode_image_from_buf(raw)</span><br><span class="line">    fig = plt.figure(figsize=(<span class="number">7</span>, <span class="number">7</span>))</span><br><span class="line">    plt.grid(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line">    plt.axis(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line">    plt.imshow(img)</span><br><span class="line">    img = utils.crop_and_preprocess(img, (IMG_SIZE, IMG_SIZE), final_model.preprocess_for_model)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27; &#x27;</span>.join(generate_caption(img)[<span class="number">1</span>:-<span class="number">1</span>]))</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_valid_example</span>(<span class="params">val_img_fns, example_idx=<span class="number">0</span></span>):</span></span><br><span class="line">    zf = zipfile.ZipFile(<span class="string">&quot;val2014_sample.zip&quot;</span>)</span><br><span class="line">    all_files = <span class="built_in">set</span>(val_img_fns)</span><br><span class="line">    found_files = <span class="built_in">list</span>(<span class="built_in">filter</span>(<span class="keyword">lambda</span> x: x.filename.rsplit(<span class="string">&quot;/&quot;</span>)[-<span class="number">1</span>] <span class="keyword">in</span> all_files, zf.filelist))</span><br><span class="line">    example = found_files[example_idx]</span><br><span class="line">    apply_model_to_image_raw_bytes(zf.read(example))</span><br><span class="line">    </span><br><span class="line">show_valid_example(val_img_fns, example_idx=<span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>a baseball player is swinging his bat at a ball</code></pre>
+<figure>
+<img src="output_60_1.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sample more images from validation</span></span><br><span class="line"><span class="keyword">for</span> idx <span class="keyword">in</span> np.random.choice(<span class="built_in">range</span>(<span class="built_in">len</span>(zipfile.ZipFile(<span class="string">&quot;val2014_sample.zip&quot;</span>).filelist) - <span class="number">1</span>), <span class="number">10</span>):</span><br><span class="line">    show_valid_example(val_img_fns, example_idx=idx)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>a bear is sitting on a rock in the water</code></pre>
+<figure>
+<img src="output_61_1.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>a train is parked on the tracks near a fence</code></pre>
+<figure>
+<img src="output_61_3.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>a group of people standing around a man in a room</code></pre>
+<figure>
+<img src="output_61_5.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>a young boy in a red shirt and a white shirt and a white shirt and a white shirt</code></pre>
+<figure>
+<img src="output_61_7.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>a city with many boats and a building</code></pre>
+<figure>
+<img src="output_61_9.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>a baseball player is swinging at a ball</code></pre>
+<figure>
+<img src="output_61_11.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>a baby elephant standing in a field with a tree in the background</code></pre>
+<figure>
+<img src="output_61_13.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>a group of cars driving down a street</code></pre>
+<figure>
+<img src="output_61_15.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>a bus is driving down the street with a bus</code></pre>
+<figure>
+<img src="output_61_17.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>a woman sitting at a table with a laptop</code></pre>
+<figure>
+<img src="output_61_19.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p>You can download any image from the Internet and appply your model to it!</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">download_utils.download_file(</span><br><span class="line">    <span class="string">&quot;https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1562794330534&amp;di=1e83ed1d91d6b45c6cc1faa4f144dce1&amp;imgtype=0&amp;src=http%3A%2F%2Fs6.sinaimg.cn%2Fmiddle%2F4c271807gabeaf405af25%26690&quot;</span>,</span><br><span class="line">    <span class="string">&quot;dora1.jpg&quot;</span></span><br><span class="line">)</span><br><span class="line">apply_model_to_image_raw_bytes(<span class="built_in">open</span>(<span class="string">&quot;dora1.jpg&quot;</span>, <span class="string">&quot;rb&quot;</span>).read())</span><br></pre></td></tr></table></figure>
+<pre><code>HBox(children=(IntProgress(value=0, max=21799), HTML(value=&#39;&#39;)))
+
+
+
+a man holding a cell phone in front of a store</code></pre>
+<figure>
+<img src="output_63_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">download_utils.download_file(</span><br><span class="line">    <span class="string">&quot;https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1562794426849&amp;di=fd0de4f3f602675fdbb2ae6b557a789a&amp;imgtype=jpg&amp;src=http%3A%2F%2Fwww.gaoxiaoa.cn%2Fuploads%2F2018%2F07%2F20%2Fy0rwjpcuuor2210.jpg&quot;</span>,</span><br><span class="line">    <span class="string">&quot;dora2.jpg&quot;</span></span><br><span class="line">)</span><br><span class="line">apply_model_to_image_raw_bytes(<span class="built_in">open</span>(<span class="string">&quot;dora2.jpg&quot;</span>, <span class="string">&quot;rb&quot;</span>).read())</span><br></pre></td></tr></table></figure>
+<pre><code>HBox(children=(IntProgress(value=0, max=23592), HTML(value=&#39;&#39;)))
+
+
+
+a man holding a pair of scissors in a store</code></pre>
+<figure>
+<img src="output_64_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">download_utils.download_file(</span><br><span class="line">    <span class="string">&quot;https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1562794563144&amp;di=2bc884423f1df82010cd5339f31950ed&amp;imgtype=0&amp;src=http%3A%2F%2Fi.gtimg.cn%2Fqqlive%2Fimg%2Fjpgcache%2Ffiles%2Fqqvideo%2Fhori%2F4%2F4h2fv8pu7lmkmp2.jpg&quot;</span>,</span><br><span class="line">    <span class="string">&quot;dora2.jpg&quot;</span></span><br><span class="line">)</span><br><span class="line">apply_model_to_image_raw_bytes(<span class="built_in">open</span>(<span class="string">&quot;dora2.jpg&quot;</span>, <span class="string">&quot;rb&quot;</span>).read())</span><br></pre></td></tr></table></figure>
+<pre><code>HBox(children=(IntProgress(value=0, max=31865), HTML(value=&#39;&#39;)))
+
+
+
+a person holding a kite in a parking lot</code></pre>
+<figure>
+<img src="output_65_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">download_utils.download_file(</span><br><span class="line">    <span class="string">&quot;https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1562794944314&amp;di=f8e405f3cef51839e36119df6bee30da&amp;imgtype=0&amp;src=http%3A%2F%2Fphotocdn.sohu.com%2F20160118%2Fmp55134365_1453120177203_10.jpeg&quot;</span>,</span><br><span class="line">    <span class="string">&quot;li.jpg&quot;</span></span><br><span class="line">)</span><br><span class="line">apply_model_to_image_raw_bytes(<span class="built_in">open</span>(<span class="string">&quot;li.jpg&quot;</span>, <span class="string">&quot;rb&quot;</span>).read())</span><br></pre></td></tr></table></figure>
+<pre><code>HBox(children=(IntProgress(value=0, max=56360), HTML(value=&#39;&#39;)))
+
+
+
+a man in a white shirt and a white shirt and a white shirt and a white shirt</code></pre>
+<figure>
+<img src="output_66_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">download_utils.download_file(</span><br><span class="line">    <span class="string">&quot;https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1562795102654&amp;di=6e991c1996a6cb8c3875c737270400ba&amp;imgtype=0&amp;src=http%3A%2F%2Fhnrb.hinews.cn%2Fresfile%2F2016-03-01%2F015%2F1860655_hnrbtp1_1456751616813_b.jpg&quot;</span>,</span><br><span class="line">    <span class="string">&quot;li2.jpg&quot;</span></span><br><span class="line">)</span><br><span class="line">apply_model_to_image_raw_bytes(<span class="built_in">open</span>(<span class="string">&quot;li2.jpg&quot;</span>, <span class="string">&quot;rb&quot;</span>).read())</span><br></pre></td></tr></table></figure>
+<pre><code>HBox(children=(IntProgress(value=0, max=20262), HTML(value=&#39;&#39;)))
+
+
+
+a man in a suit and tie standing in front of a microphone</code></pre>
+<figure>
+<img src="output_67_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">download_utils.download_file(</span><br><span class="line">    <span class="string">&quot;https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1562797334376&amp;di=74df4bee2022d1b0519a759e9e6ec12d&amp;imgtype=0&amp;src=http%3A%2F%2Fn.sinaimg.cn%2Fent%2Ftransform%2F20170703%2FYGH3-fyhskrq1913341.jpg&quot;</span>,</span><br><span class="line">    <span class="string">&quot;test.jpg&quot;</span></span><br><span class="line">)</span><br><span class="line">apply_model_to_image_raw_bytes(<span class="built_in">open</span>(<span class="string">&quot;test.jpg&quot;</span>, <span class="string">&quot;rb&quot;</span>).read())</span><br></pre></td></tr></table></figure>
+<pre><code>HBox(children=(IntProgress(value=0, max=24164), HTML(value=&#39;&#39;)))
+
+
+
+a man in a white shirt and tie standing next to a man</code></pre>
+<figure>
+<img src="output_68_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">download_utils.download_file(</span><br><span class="line">    <span class="string">&quot;https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1562797392119&amp;di=81c23cda7dbc08fa561a561dd806473e&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.hinews.cn%2Fpic%2F0%2F16%2F62%2F10%2F16621075_026693.jpg&quot;</span>,</span><br><span class="line">    <span class="string">&quot;test2.jpg&quot;</span></span><br><span class="line">)</span><br><span class="line">apply_model_to_image_raw_bytes(<span class="built_in">open</span>(<span class="string">&quot;test2.jpg&quot;</span>, <span class="string">&quot;rb&quot;</span>).read())</span><br></pre></td></tr></table></figure>
+<pre><code>HBox(children=(IntProgress(value=0, max=29384), HTML(value=&#39;&#39;)))
+
+
+
+a giraffe is eating from a white plate</code></pre>
+<figure>
+<img src="output_69_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">download_utils.download_file(</span><br><span class="line">    <span class="string">&quot;https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1562797392118&amp;di=1848b6cb90b57b0fde208794abf22aa2&amp;imgtype=0&amp;src=http%3A%2F%2Fi0.sinaimg.cn%2Fdy%2Fcr%2F2014%2F0716%2F4150211456.jpg&quot;</span>,</span><br><span class="line">    <span class="string">&quot;test3.jpg&quot;</span></span><br><span class="line">)</span><br><span class="line">apply_model_to_image_raw_bytes(<span class="built_in">open</span>(<span class="string">&quot;test3.jpg&quot;</span>, <span class="string">&quot;rb&quot;</span>).read())</span><br></pre></td></tr></table></figure>
+<pre><code>HBox(children=(IntProgress(value=0, max=97353), HTML(value=&#39;&#39;)))
+
+
+
+a man is standing next to a statue of a statue</code></pre>
+<figure>
+<img src="output_70_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">download_utils.download_file(</span><br><span class="line">    <span class="string">&quot;https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1562797392116&amp;di=e68eb448b9247779f4624e10e9bf8b95&amp;imgtype=0&amp;src=http%3A%2F%2Fi0.hexunimg.cn%2F2016-08-22%2F185638157.jpg&quot;</span>,</span><br><span class="line">    <span class="string">&quot;test4.jpg&quot;</span></span><br><span class="line">)</span><br><span class="line">apply_model_to_image_raw_bytes(<span class="built_in">open</span>(<span class="string">&quot;test4.jpg&quot;</span>, <span class="string">&quot;rb&quot;</span>).read())</span><br></pre></td></tr></table></figure>
+<pre><code>HBox(children=(IntProgress(value=0, max=18206), HTML(value=&#39;&#39;)))
+
+
+
+a woman in a black jacket and a woman standing next to a woman</code></pre>
+<figure>
+<img src="output_71_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">download_utils.download_file(</span><br><span class="line">    <span class="string">&quot;https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1562797392116&amp;di=580a384f03823c0503be39144bfdd85b&amp;imgtype=0&amp;src=http%3A%2F%2Fn.sinaimg.cn%2Fent%2Ftransform%2F20161207%2FzAUH-fxyipxf7913222.jpg&quot;</span>,</span><br><span class="line">    <span class="string">&quot;test5.jpg&quot;</span></span><br><span class="line">)</span><br><span class="line">apply_model_to_image_raw_bytes(<span class="built_in">open</span>(<span class="string">&quot;test5.jpg&quot;</span>, <span class="string">&quot;rb&quot;</span>).read())</span><br></pre></td></tr></table></figure>
+<pre><code>HBox(children=(IntProgress(value=0, max=40295), HTML(value=&#39;&#39;)))
+
+
+
+a man and woman standing in a field with a kite</code></pre>
+<figure>
+<img src="output_72_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">download_utils.download_file(</span><br><span class="line">    <span class="string">&quot;https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1562797392116&amp;di=665cab330fb52ec6883f1398ec2c167c&amp;imgtype=0&amp;src=http%3A%2F%2Fgb.cri.cn%2Fmmsource%2Fimages%2F2015%2F05%2F25%2Fex20150525008.jpg&quot;</span>,</span><br><span class="line">    <span class="string">&quot;test6.jpg&quot;</span></span><br><span class="line">)</span><br><span class="line">apply_model_to_image_raw_bytes(<span class="built_in">open</span>(<span class="string">&quot;test6.jpg&quot;</span>, <span class="string">&quot;rb&quot;</span>).read())</span><br></pre></td></tr></table></figure>
+<pre><code>HBox(children=(IntProgress(value=0, max=33113), HTML(value=&#39;&#39;)))
+
+
+
+a man in a suit and tie standing in front of a building</code></pre>
+<figure>
+<img src="output_73_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p>Now it's time to find 10 examples where your model works good and 10 examples where it fails!</p>
+<p>You can use images from validation set as follows: <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show_valid_example(val_img_fns, example_idx=...)</span><br></pre></td></tr></table></figure></p>
+<p>You can use images from the Internet as follows: <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">! wget ...</span><br><span class="line">apply_model_to_image_raw_bytes(<span class="built_in">open</span>(<span class="string">&quot;...&quot;</span>, <span class="string">&quot;rb&quot;</span>).read())</span><br></pre></td></tr></table></figure></p>
+<p>If you use these functions, the output will be embedded into your notebook and will be visible during peer review!</p>
+<p>When you're done, download your noteboook using "File" -&gt; "Download as" -&gt; "Notebook" and prepare that file for peer review!</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">### YOUR EXAMPLES HERE ###</span></span><br></pre></td></tr></table></figure>
+<p>That's it!</p>
+<p>Congratulations, you've trained your image captioning model and now can produce captions for any picture from the Internet!</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+              <a href="/tags/Project/" rel="tag"># Project</a>
+              <a href="/tags/Computer-Vision/" rel="tag"># Computer Vision</a>
+              <a href="/tags/Transfer-Learning/" rel="tag"># Transfer Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Docker-Command-Cheatsheet/2019/07/11/" rel="prev" title="Docker Command Cheatsheet">
+      <i class="fa fa-chevron-left"></i> Docker Command Cheatsheet
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Autoencoders-Project/2019/07/11/" rel="next" title="Autoencoders Project">
+      Autoencoders Project <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#image-captioning-final-project"><span class="nav-number">1.</span> <span class="nav-text">Image Captioning Final Project</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#import-stuff"><span class="nav-number">2.</span> <span class="nav-text">Import stuff</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prepare-the-storage-for-model-checkpoints"><span class="nav-number">3.</span> <span class="nav-text">Prepare the storage for model checkpoints</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fill-in-your-coursera-token-and-email"><span class="nav-number">4.</span> <span class="nav-text">Fill in your Coursera token and email</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#download-data"><span class="nav-number">5.</span> <span class="nav-text">Download data</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#extract-image-features"><span class="nav-number">6.</span> <span class="nav-text">Extract image features</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#extract-captions-for-images"><span class="nav-number">7.</span> <span class="nav-text">Extract captions for images</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prepare-captions-for-training"><span class="nav-number">8.</span> <span class="nav-text">Prepare captions for training</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#training"><span class="nav-number">9.</span> <span class="nav-text">Training</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#define-architecture"><span class="nav-number">9.1.</span> <span class="nav-text">Define architecture</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#training-loop"><span class="nav-number">9.2.</span> <span class="nav-text">Training loop</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#applying-model"><span class="nav-number">10.</span> <span class="nav-text">Applying model</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">268</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
