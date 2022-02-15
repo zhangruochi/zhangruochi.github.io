@@ -188,6 +188,142 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/InfoGAN-Interpretable-Representation-Learning-by-Information-Maximizing-Generative-Adversarial-Nets/2022/02/15/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/InfoGAN-Interpretable-Representation-Learning-by-Information-Maximizing-Generative-Adversarial-Nets/2022/02/15/" class="post-title-link" itemprop="url">InfoGAN - Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-15 18:14:44 / Modified: 18:16:25" itemprop="dateCreated datePublished" datetime="2022-02-15T18:14:44+08:00">2022-02-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper-Note/" itemprop="url" rel="index"><span itemprop="name">Paper Note</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper-Note/GANs/" itemprop="url" rel="index"><span itemprop="name">GANs</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/InfoGAN-Interpretable-Representation-Learning-by-Information-Maximizing-Generative-Adversarial-Nets/2022/02/15/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/InfoGAN-Interpretable-Representation-Learning-by-Information-Maximizing-Generative-Adversarial-Nets/2022/02/15/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="infogan-interpretable-representation-learning-by-information-maximizing-generative-adversarial-nets">InfoGAN: Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets</h1>
+<p>Category: Article Created: February 8, 2022 7:26 PM Status: Open URL: https://arxiv.org/pdf/1606.03657.pdf Updated: February 15, 2022 6:12 PM</p>
+<h1 id="highlights">Highlights</h1>
+<ol type="1">
+<li>Adversarial Network that is able to learn disentangled representations in a completely unsupervised manner.</li>
+<li>In this paper, we present a simple modification to the generative adversarial network objective that encourages it to learn interpretable and meaningful representations.</li>
+</ol>
+<h1 id="contents">Contents</h1>
+<h2 id="mutual-information"><strong>Mutual Information</strong></h2>
+<ol type="1">
+<li>In information theory, mutual information between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> , <span class="math inline">\(I(X,Y)\)</span>, measures the “amount of information” learned from knowledge of random variable <span class="math inline">\(Y\)</span> about the other random variable <span class="math inline">\(X\)</span>.</li>
+<li>The mutual information can be expressed as the difference of two entropy terms:</li>
+</ol>
+<p><span class="math display">\[
+I(X ; Y)=H(X)-H(X \mid Y)=H(Y)-H(Y \mid X)
+\]</span></p>
+<ol type="1">
+<li>This definition has an intuitive interpretation: <span class="math inline">\(I(X,Y)\)</span> is the reduction of uncertainty in <span class="math inline">\(X\)</span> when <span class="math inline">\(Y\)</span> is observed. If <span class="math inline">\(X\)</span> and are independent, then <span class="math inline">\(I(X,Y) = 0\)</span>, because knowing one variable reveals nothing about the other.</li>
+</ol>
+<h2 id="mutual-information-for-inducing-latent-codes"><strong>Mutual Information for Inducing Latent Codes</strong></h2>
+<ul>
+<li><span class="math inline">\(z\)</span> : which is treated as source of incompressible noise;</li>
+<li><span class="math inline">\(c\)</span> : which we will call the latent code and will target the salient structured semantic features of the data distribution. ****</li>
+</ul>
+<ol type="1">
+<li>we provide the generator network with both the incompressible noise z and the latent code <span class="math inline">\(c\)</span>, so the form of the generator becomes <span class="math inline">\(G(z,c)\)</span>.</li>
+<li>we propose an information-theoretic regularization: there should be high mutual information between latent codes <span class="math inline">\(c\)</span> and generator distribution <span class="math inline">\(G(z,c)\)</span>. Thus <span class="math inline">\(I(c, G(z,c))\)</span> should be high.</li>
+</ol>
+<h2 id="variational-mutual-information-maximization"><strong>Variational Mutual Information Maximization</strong></h2>
+<p>Hence, InfoGAN is defined as the following minimax game with a variational regularization of mutual information</p>
+<p><span class="math display">\[
+\min _{G, Q} \max _{D} V_{\text {InfoGAN }}(D, G, Q)=V(D, G)-\lambda L_{I}(G, Q)
+\]</span></p>
+<p>In practice, the mutual information term <span class="math inline">\(I(c, G(z,c))\)</span> is hard to maximize directly as it requires access to the posterior <span class="math inline">\(P(x|z)\)</span>. Fortunately we can obtain a lower bound of it by defining an auxiliary distribution <span class="math inline">\(Q(c|x)\)</span> to approximate <span class="math inline">\(P(c|x)\)</span>.</p>
+<p><span class="math display">\[
+\begin{aligned}I(c ; G(z, c)) &amp;=H(c)-H(c \mid G(z, c)) \\&amp;=\mathbb{E}_{x \sim G(z, c)}\left[\mathbb{E}_{c^{\prime} \sim P(c \mid x)}\left[\log P\left(c^{\prime} \mid x\right)\right]\right]+H(c) \\&amp;=\mathbb{E}_{x \sim G(z, c)}[\underbrace{D_{\mathrm{KL}}(P(\cdot \mid x) \| Q(\cdot \mid x))}_{\geq 0}+\mathbb{E}_{c^{\prime} \sim P(c \mid x)}\left[\log Q\left(c^{\prime} \mid x\right)\right]]+H(c) \\&amp; \geq \mathbb{E}_{x \sim G(z, c)}\left[\mathbb{E}_{c^{\prime} \sim P(c \mid x)}\left[\log Q\left(c^{\prime} \mid x\right)\right]\right]+H(c)\end{aligned}
+\]</span></p>
+<p>In practice, we parametrize the auxiliary distribution <span class="math inline">\(Q\)</span> as a neural network. In most experiments, <span class="math inline">\(Q\)</span> and <span class="math inline">\(D\)</span> share all convolutional layers and there is one final fully connected layer to output parameters for the conditional distribution <span class="math inline">\(Q(c|x)\)</span>, which means InfoGAN only adds a negligible computation cost to GAN.</p>
+<figure>
+<img src="InfoGAN%20Interpretable%20Representation%20Learning%20by%20I%20aa9381e375364dbc875607bf2bd33c42/Screen_Shot_2022-02-09_at_01.26.19.png" alt="Screen Shot 2022-02-09 at 01.26.19.png" /><figcaption aria-hidden="true">Screen Shot 2022-02-09 at 01.26.19.png</figcaption>
+</figure>
+<h2 id="code">Code</h2>
+<ul>
+<li>reference from <a target="_blank" rel="noopener" href="https://github.com/eriklindernoren/PyTorch-GAN/blob/master/implementations/infogan/infogan.py">https://github.com/eriklindernoren/PyTorch-GAN/blob/master/implementations/infogan/infogan.py</a></li>
+</ul>
+<h3 id="generator">Generator</h3>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Generator</span>(<span class="title">nn</span>.<span class="title">Module</span>):</span></span><br><span class="line"><span class="class">    <span class="title">def</span> <span class="title">__init__</span>(<span class="title">self</span>):</span></span><br><span class="line"><span class="class">        <span class="title">super</span>(<span class="title">Generator</span>, <span class="title">self</span>).<span class="title">__init__</span>()</span></span><br><span class="line"><span class="class">        <span class="title">input_dim</span> </span>= opt.latent_dim + opt.n_classes + opt.code_dim</span><br><span class="line"></span><br><span class="line">        self.init_size = opt.img_size <span class="comment">// 4  # Initial size before upsampling</span></span><br><span class="line">        self.l1 = nn.Sequential(nn.Linear(input_dim, <span class="number">128</span> * self.init_size ** <span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">        self.conv_blocks = nn.Sequential(</span><br><span class="line">            nn.BatchNorm2d(<span class="number">128</span>),</span><br><span class="line">            nn.Upsample(scale_factor=<span class="number">2</span>),</span><br><span class="line">            nn.Conv2d(<span class="number">128</span>, <span class="number">128</span>, <span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>),</span><br><span class="line">            nn.BatchNorm2d(<span class="number">128</span>, <span class="number">0.8</span>),</span><br><span class="line">            nn.LeakyReLU(<span class="number">0.2</span>, inplace=True),</span><br><span class="line">            nn.Upsample(scale_factor=<span class="number">2</span>),</span><br><span class="line">            nn.Conv2d(<span class="number">128</span>, <span class="number">64</span>, <span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>),</span><br><span class="line">            nn.BatchNorm2d(<span class="number">64</span>, <span class="number">0.8</span>),</span><br><span class="line">            nn.LeakyReLU(<span class="number">0.2</span>, inplace=True),</span><br><span class="line">            nn.Conv2d(<span class="number">64</span>, opt.channels, <span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>),</span><br><span class="line">            nn.Tanh(),</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    def forward(self, noise, labels, code):</span><br><span class="line">        gen_input = torch.cat((noise, labels, code), -<span class="number">1</span>)</span><br><span class="line">        out = self.l1(gen_input)</span><br><span class="line">        out = out.view(out.shape[<span class="number">0</span>], <span class="number">128</span>, self.init_size, self.init_size)</span><br><span class="line">        img = self.conv_blocks(out)</span><br><span class="line">        <span class="keyword">return</span> img</span><br></pre></td></tr></table></figure>
+<h3 id="discriminator">Discriminator</h3>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Discriminator</span>(<span class="title">nn</span>.<span class="title">Module</span>):</span></span><br><span class="line"><span class="class">    <span class="title">def</span> <span class="title">__init__</span>(<span class="title">self</span>):</span></span><br><span class="line"><span class="class">        <span class="title">super</span>(<span class="title">Discriminator</span>, <span class="title">self</span>).<span class="title">__init__</span>()</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">        <span class="title">def</span> <span class="title">discriminator_block</span>(<span class="title">in_filters</span>, <span class="title">out_filters</span>, <span class="title">bn</span></span>=True):</span><br><span class="line">            <span class="string">&quot;&quot;</span><span class="string">&quot;Returns layers of each discriminator block&quot;</span><span class="string">&quot;&quot;</span></span><br><span class="line">            block = [nn.Conv2d(in_filters, out_filters, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>), nn.LeakyReLU(<span class="number">0.2</span>, inplace=True), nn.Dropout2d(<span class="number">0.25</span>)]</span><br><span class="line">            <span class="keyword">if</span> bn:</span><br><span class="line">                block.append(nn.BatchNorm2d(out_filters, <span class="number">0.8</span>))</span><br><span class="line">            <span class="keyword">return</span> block</span><br><span class="line"></span><br><span class="line">        self.conv_blocks = nn.Sequential(</span><br><span class="line">            *discriminator_block(opt.channels, <span class="number">16</span>, bn=False),</span><br><span class="line">            *discriminator_block(<span class="number">16</span>, <span class="number">32</span>),</span><br><span class="line">            *discriminator_block(<span class="number">32</span>, <span class="number">64</span>),</span><br><span class="line">            *discriminator_block(<span class="number">64</span>, <span class="number">128</span>),</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        # The height and width <span class="keyword">of</span> downsampled image</span><br><span class="line">        ds_size = opt.img_size <span class="comment">// 2 ** 4</span></span><br><span class="line"></span><br><span class="line">        # Output layers</span><br><span class="line">        self.adv_layer = nn.Sequential(nn.Linear(<span class="number">128</span> * ds_size ** <span class="number">2</span>, <span class="number">1</span>))</span><br><span class="line">        self.aux_layer = nn.Sequential(nn.Linear(<span class="number">128</span> * ds_size ** <span class="number">2</span>, opt.n_classes), nn.Softmax())</span><br><span class="line">        self.latent_layer = nn.Sequential(nn.Linear(<span class="number">128</span> * ds_size ** <span class="number">2</span>, opt.code_dim))</span><br><span class="line"></span><br><span class="line">    def forward(self, img):</span><br><span class="line">        out = self.conv_blocks(img)</span><br><span class="line">        out = out.view(out.shape[<span class="number">0</span>], -<span class="number">1</span>)</span><br><span class="line">        validity = self.adv_layer(out)</span><br><span class="line">        label = self.aux_layer(out)</span><br><span class="line">        latent_code = self.latent_layer(out)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> validity, label, latent_code</span><br></pre></td></tr></table></figure>
+<h3 id="training">Training</h3>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(opt.n_epochs):</span><br><span class="line">    <span class="keyword">for</span> i, (imgs, labels) <span class="keyword">in</span> enumerate(dataloader):</span><br><span class="line"></span><br><span class="line">        ......</span><br><span class="line"></span><br><span class="line">        # -----------------</span><br><span class="line">        #  Train Generator</span><br><span class="line">        # -----------------</span><br><span class="line"></span><br><span class="line">        ......</span><br><span class="line"></span><br><span class="line">        # ---------------------</span><br><span class="line">        #  Train Discriminator</span><br><span class="line">        # ---------------------</span><br><span class="line"></span><br><span class="line">        ......</span><br><span class="line"></span><br><span class="line">        # ------------------</span><br><span class="line">        # Information Loss</span><br><span class="line">        # ------------------</span><br><span class="line"></span><br><span class="line">        optimizer_info.zero_grad()</span><br><span class="line"></span><br><span class="line">        # Sample labels</span><br><span class="line">        sampled_labels = np.random.randint(<span class="number">0</span>, opt.n_classes, batch_size)</span><br><span class="line"></span><br><span class="line">        # Ground truth labels</span><br><span class="line">        gt_labels = Variable(LongTensor(sampled_labels), requires_grad=False)</span><br><span class="line"></span><br><span class="line">        # Sample noise, labels and code <span class="keyword">as</span> generator input</span><br><span class="line">        z = Variable(FloatTensor(np.random.normal(<span class="number">0</span>, <span class="number">1</span>, (batch_size, opt.latent_dim))))</span><br><span class="line">        label_input = to_categorical(sampled_labels, num_columns=opt.n_classes)</span><br><span class="line">        code_input = Variable(FloatTensor(np.random.uniform(-<span class="number">1</span>, <span class="number">1</span>, (batch_size, opt.code_dim))))</span><br><span class="line"></span><br><span class="line">        gen_imgs = generator(z, label_input, code_input)</span><br><span class="line">        _, pred_label, pred_code = discriminator(gen_imgs)</span><br><span class="line"></span><br><span class="line">        info_loss = lambda_cat * categorical_loss(pred_label, gt_labels) + lambda_con * continuous_loss(</span><br><span class="line">            pred_code, code_input</span><br><span class="line">        )</span><br><span class="line">       ......</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Image-to-Image-Translation-with-Conditional-Adversarial-Networks/2022/02/15/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1127,105 +1263,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ruochi Zhang">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="RUOCHI.AI">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/CS224W-Colab-1/2021/01/22/" class="post-title-link" itemprop="url">CS224W - Colab 1</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-01-22 16:39:10" itemprop="dateCreated datePublished" datetime="2021-01-22T16:39:10+08:00">2021-01-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-31 15:04:09" itemprop="dateModified" datetime="2021-12-31T15:04:09+08:00">2021-12-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Artificial-Intelligence/Graph-Neural-Network/" itemprop="url" rel="index"><span itemprop="name">Graph Neural Network</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/CS224W-Colab-1/2021/01/22/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/CS224W-Colab-1/2021/01/22/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>CS224W - Colab 1 Homework</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/CS224W-Colab-1/2021/01/22/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1295,7 +1332,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">218</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1442,61 +1479,6 @@
   
 
   
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-          load: ['[tex]/mhchem'],
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-          packages: {'[+]': ['mhchem']},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
-</script>
-
-    
 
   
 
