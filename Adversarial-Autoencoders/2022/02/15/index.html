@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Adversarial Autoencoders  Category: Article Created: January 25, 2022 4:01 PM Status: Open URL: https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;1511.05644 Updated: January 29, 2022 11:39 AM  Highlights  We propose a general ap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Adversarial Autoencoders">
+<meta property="og:url" content="https://zhangruochi.com/Adversarial-Autoencoders/2022/02/15/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Adversarial Autoencoders  Category: Article Created: January 25, 2022 4:01 PM Status: Open URL: https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;1511.05644 Updated: January 29, 2022 11:39 AM  Highlights  We propose a general ap">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Adversarial-Autoencoders/2022/02/15/Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-25_at_17.38.06.png">
+<meta property="og:image" content="https://zhangruochi.com/Adversarial-Autoencoders/2022/02/15/Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-25_at_18.19.24.png">
+<meta property="og:image" content="https://zhangruochi.com/Adversarial-Autoencoders/2022/02/15/Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-25_at_18.16.23.png">
+<meta property="og:image" content="https://zhangruochi.com/Adversarial-Autoencoders/2022/02/15/Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-25_at_18.16.53.png">
+<meta property="og:image" content="https://zhangruochi.com/Adversarial-Autoencoders/2022/02/15/Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-27_at_19.30.02.png">
+<meta property="og:image" content="https://zhangruochi.com/Adversarial-Autoencoders/2022/02/15/Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-27_at_19.32.51.png">
+<meta property="og:image" content="https://zhangruochi.com/Adversarial-Autoencoders/2022/02/15/Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-27_at_19.36.20.png">
+<meta property="og:image" content="https://zhangruochi.com/Adversarial-Autoencoders/2022/02/15/Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-27_at_19.51.29.png">
+<meta property="og:image" content="https://zhangruochi.com/Adversarial-Autoencoders/2022/02/15/Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-27_at_20.00.32.png">
+<meta property="article:published_time" content="2022-02-15T10:37:58.000Z">
+<meta property="article:modified_time" content="2022-02-15T10:43:02.526Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Adversarial-Autoencoders/2022/02/15/Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-25_at_17.38.06.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Adversarial-Autoencoders/2022/02/15/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Adversarial Autoencoders | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Adversarial-Autoencoders/2022/02/15/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Adversarial Autoencoders
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-15 18:37:58 / Modified: 18:43:02" itemprop="dateCreated datePublished" datetime="2022-02-15T18:37:58+08:00">2022-02-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper-Note/" itemprop="url" rel="index"><span itemprop="name">Paper Note</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper-Note/GANs/" itemprop="url" rel="index"><span itemprop="name">GANs</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Adversarial-Autoencoders/2022/02/15/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Adversarial-Autoencoders/2022/02/15/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="adversarial-autoencoders">Adversarial Autoencoders</h1>
+<ul>
+<li>Category: Article</li>
+<li>Created: January 25, 2022 4:01 PM</li>
+<li>Status: Open</li>
+<li>URL: https://arxiv.org/abs/1511.05644</li>
+<li>Updated: January 29, 2022 11:39 AM</li>
+</ul>
+<h1 id="highlights">Highlights</h1>
+<ol type="1">
+<li>We propose a general approach, called an adversarial autoencoder (AAE) that can turn an autoencoder into a generative model.</li>
+<li>An autoencoder is trained with dual objectives – a traditional <strong>reconstruction error criterion</strong>, and <strong>an adversarial training criterion.</strong></li>
+</ol>
+<h1 id="methods">Methods</h1>
+<p>The adversarial autoencoder is an autoencoder that is regularized by matching the aggregated posterior, <span class="math inline">\(q(z)\)</span>, to an arbitrary prior, <span class="math inline">\(p(z)\)</span>. In order to do so, an adversarial network is attached on top of the hidden code vector of the autoencoder as illustrated in Figure 1. It is the adversarial network that guides <span class="math inline">\(q(z)\)</span> to match <span class="math inline">\(p(z)\)</span>. The autoencoder, meanwhile, attempts to minimize the reconstruction error. The generator of the adversarial network is also the encoder of the autoencoder <span class="math inline">\(q(z|x)\)</span>. The encoder ensures the aggregated posterior distribution can fool the discriminative adversarial network into thinking that the hidden code <span class="math inline">\(q(z)\)</span> comes from the true prior distribution <span class="math inline">\(p(z)\)</span>.</p>
+<span id="more"></span>
+<figure>
+<img src="Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-25_at_17.38.06.png" alt="Screen Shot 2022-01-25 at 17.38.06.png" /><figcaption aria-hidden="true">Screen Shot 2022-01-25 at 17.38.06.png</figcaption>
+</figure>
+<h3 id="training">Training</h3>
+<p>Both, the adversarial network and the autoencoder are trained jointly with SGD in two phases – the <strong><em>reconstruction</em> phase</strong> and the <em>regularization</em> phase – executed on each mini-batch. In the reconstruction phase, the autoencoder updates the encoder and the decoder to minimize the reconstruction error of the inputs. In the <strong>regularization phase</strong>, the adversarial network first updates its discriminative network to tell apart the true samples (generated using the prior) from the generated samples (the hidden codes computed by the autoencoder). The adversarial network then updates its generator (which is also the encoder of the autoencoder) to confuse the discriminative network.</p>
+<h2 id="incorporating-label-information-in-the-adversarial-regularization"><strong>Incorporating Label Information in the Adversarial Regularization</strong></h2>
+<p>In the scenarios where data is labeled, we can incorporate the label information in the adversarial training stage to better shape the distribution of the hidden code.</p>
+<p>We now aim to force each mode of the mixture of Gaussian distribution to represent a single label of MNIST.</p>
+<figure>
+<img src="Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-25_at_18.19.24.png" alt="Screen Shot 2022-01-25 at 18.19.24.png" /><figcaption aria-hidden="true">Screen Shot 2022-01-25 at 18.19.24.png</figcaption>
+</figure>
+<p>Regularizing the hidden code by providing a one-hot vector to the discriminative network. The one-hot vector has an extra label for training points with unknown classes.</p>
+<figure>
+<img src="Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-25_at_18.16.23.png" alt="Screen Shot 2022-01-25 at 18.16.23.png" /><figcaption aria-hidden="true">Screen Shot 2022-01-25 at 18.16.23.png</figcaption>
+</figure>
+<figure>
+<img src="Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-25_at_18.16.53.png" alt="Screen Shot 2022-01-25 at 18.16.53.png" /><figcaption aria-hidden="true">Screen Shot 2022-01-25 at 18.16.53.png</figcaption>
+</figure>
+<ul>
+<li>B is valina AAE.</li>
+<li>A is AAE incorporated with label information</li>
+</ul>
+<h2 id="supervised-adversarial-autoencoders"><strong>Supervised Adversarial Autoencoders</strong></h2>
+<p>In order to incorporate the label information, we alter the network architecture to provide a one-hot vector encoding of the label to the decoder. The decoder utilizes both the one-hot vector identifying the label and the hidden code <span class="math inline">\(z\)</span> to reconstruct the image. This architecture forces the network to retain all information independent of the label in the hidden code <span class="math inline">\(z\)</span>.</p>
+<figure>
+<img src="Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-27_at_19.30.02.png" alt="Disentangling the label information from the hidden code by providing the one-hot vector to the generative model. The hidden code in this case learns to represent the style of the image." /><figcaption aria-hidden="true">Disentangling the label information from the hidden code by providing the one-hot vector to the generative model. The hidden code in this case learns to represent the style of the image.</figcaption>
+</figure>
+<p>Disentangling the label information from the hidden code by providing the one-hot vector to the generative model. The hidden code in this case learns to represent the style of the image.</p>
+<figure>
+<img src="Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-27_at_19.32.51.png" alt="Each row presents reconstructed images in which the hidden code z is fixed to a particular value but the label is systematically explored." /><figcaption aria-hidden="true">Each row presents reconstructed images in which the hidden code z is fixed to a particular value but the label is systematically explored.</figcaption>
+</figure>
+<p>Each row presents reconstructed images in which the hidden code z is fixed to a particular value but the label is systematically explored.</p>
+<h2 id="semi-supervised-adversarial-autoencoders"><strong>Semi-Supervised Adversarial Autoencoders</strong></h2>
+<ul>
+<li><p>we now use the adversarial autoencoder to develop models for semi-supervised learning that exploit the generative description of the unlabeled data to improve the classification performance that would be obtained by using only the labeled data.</p></li>
+<li><p>we assume the data is generated by a latent class variable y that comes from a Categorical distribution as well as a continuous latent variable z that comes from a Gaussian distribution:</p>
+<p><span class="math inline">\(p(y) = Cat(y)\)</span></p>
+<p><span class="math inline">\(p(z) = N(z | 0, I)\)</span></p></li>
+<li><p>Semi-Supervised AAE: the top adversarial network imposes a Categorical distribution on the label representation and the bottom adversarial network imposes a Gaussian distribution on the style representation. <span class="math inline">\(q(y|x)\)</span> is trained on the labeled data in the semi-supervised settings.</p></li>
+</ul>
+<figure>
+<img src="Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-27_at_19.36.20.png" alt="Screen Shot 2022-01-27 at 19.36.20.png" /><figcaption aria-hidden="true">Screen Shot 2022-01-27 at 19.36.20.png</figcaption>
+</figure>
+<h2 id="unsupervised-clustering-with-adversarial-autoencoders"><strong>Unsupervised Clustering with Adversarial Autoencoders</strong></h2>
+<ul>
+<li>the adversarial autoencoder can disentangle discrete class variables from the continuous latent style variables in a purely unsupervised fashion.</li>
+<li>with the difference that we remove the semi- supervised classification stage and thus no longer train the network on any labeled mini-batch.</li>
+<li>Another difference is that the inference network <span class="math inline">\(q(y|x)\)</span> predicts a one-hot vector whose dimension is the number of categories that we wish the data to be clustered into.</li>
+</ul>
+<figure>
+<img src="Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-27_at_19.51.29.png" alt="Screen Shot 2022-01-27 at 19.51.29.png" /><figcaption aria-hidden="true">Screen Shot 2022-01-27 at 19.51.29.png</figcaption>
+</figure>
+<h2 id="dimensionality-reduction-with-adversarial-autoencoders"><strong>Dimensionality Reduction with Adversarial Autoencoders</strong></h2>
+<p>Dimensionality reduction with adversarial autoencoders: There are two separate adversarial networks that impose Categorical and Gaussian distribution on the latent representation. The final <span class="math inline">\(n\)</span> dimensional representation is constructed by first mapping the one-hot label representation to an <span class="math inline">\(n\)</span> dimensional cluster head representation and then adding the result to an n dimensional style representation. ****</p>
+<figure>
+<img src="Adversarial%20Autoencoders%207e5e783f1a2144f8b128163f2365e0f5/Screen_Shot_2022-01-27_at_20.00.32.png" alt="Screen Shot 2022-01-27 at 20.00.32.png" /><figcaption aria-hidden="true">Screen Shot 2022-01-27 at 20.00.32.png</figcaption>
+</figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/DRAW-A-Recurrent-Neural-Network-For-Image-Generation/2022/02/15/" rel="prev" title="DRAW - A Recurrent Neural Network For Image Generation">
+      <i class="fa fa-chevron-left"></i> DRAW - A Recurrent Neural Network For Image Generation
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#adversarial-autoencoders"><span class="nav-number">1.</span> <span class="nav-text">Adversarial Autoencoders</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#highlights"><span class="nav-number">2.</span> <span class="nav-text">Highlights</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#methods"><span class="nav-number">3.</span> <span class="nav-text">Methods</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#training"><span class="nav-number">3.0.1.</span> <span class="nav-text">Training</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#incorporating-label-information-in-the-adversarial-regularization"><span class="nav-number">3.1.</span> <span class="nav-text">Incorporating Label Information in the Adversarial Regularization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#supervised-adversarial-autoencoders"><span class="nav-number">3.2.</span> <span class="nav-text">Supervised Adversarial Autoencoders</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#semi-supervised-adversarial-autoencoders"><span class="nav-number">3.3.</span> <span class="nav-text">Semi-Supervised Adversarial Autoencoders</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#unsupervised-clustering-with-adversarial-autoencoders"><span class="nav-number">3.4.</span> <span class="nav-text">Unsupervised Clustering with Adversarial Autoencoders</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dimensionality-reduction-with-adversarial-autoencoders"><span class="nav-number">3.5.</span> <span class="nav-text">Dimensionality Reduction with Adversarial Autoencoders</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">221</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
