@@ -213,7 +213,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-02-15 14:04:20 / Modified: 14:05:54" itemprop="dateCreated datePublished" datetime="2022-02-15T14:04:20+08:00">2022-02-15</time>
+              <time title="Created: 2022-02-15 14:04:20 / Modified: 14:13:31" itemprop="dateCreated datePublished" datetime="2022-02-15T14:04:20+08:00">2022-02-15</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -221,7 +221,11 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Papers/" itemprop="url" rel="index"><span itemprop="name">Papers</span></a>
+                  <a href="/categories/Paper-Note/" itemprop="url" rel="index"><span itemprop="name">Paper Note</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper-Note/CV/" itemprop="url" rel="index"><span itemprop="name">CV</span></a>
                 </span>
             </span>
 
@@ -263,22 +267,14 @@
 <li>The author <em>develop an</em> asymmetric <em>encoder-decoder architecture, with an encoder that operates only on the visible subset of patches (without mask tokens), along with a lightweight decoder that reconstructs the original image from the latent representation and mask tokens.</em></li>
 <li>The author <em>find that masking a high proportion of the input image,</em> e.g<em>., <strong>75%</strong>, yields a nontrivial and meaningful self-supervisory task.</em></li>
 </ol>
-<h1 id="methods">Methods</h1>
-<ol type="1">
-<li><strong>Masking.</strong> Following ViT, we divide an image into regular non-overlapping patches. Then we sample a subset of patches and mask (<em>i.e</em>., remove) the remaining ones.</li>
-<li><strong>MAE encoder.</strong> Our encoder is a ViT but applied only on <em>visible, unmasked patches</em>. Just as in a standard ViT, our encoder embeds patches by a linear projection with added positional embeddings, and then processes the resulting set via a series of Transformer blocks.</li>
-<li><strong>MAE decoder.</strong> The input to the MAE decoder is the full set of tokens consisting of (i) encoded visible patches, and (ii) mask tokens. <strong>Each mask token is a shared</strong>, learned vector that indicates the presence of a missing patch to be predicted. We add positional embeddings to all tokens in this full set.</li>
-<li><strong>Reconstruction target.</strong> Our MAE reconstructs the input by predicting the <em>pixel</em> values for each masked patch.</li>
-</ol>
-<figure>
-<img src="Screen_Shot_2022-02-15_at_13.57.01.png" alt="Screen Shot 2022-02-15 at 13.57.01.png" /><figcaption aria-hidden="true">Screen Shot 2022-02-15 at 13.57.01.png</figcaption>
-</figure>
-<h1 id="conclusion">Conclusion</h1>
-<ol type="1">
-<li>In this study, we observe on ImageNet and in transfer learning that an autoencoder—a simple self-supervised method similar to techniques in NLP—provides scalable benefits.</li>
-<li>Self- supervised learning in vision may now be embarking on a similar trajectory as in NLP.</li>
-</ol>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/Masked-Autoencoders-Are-Scalable-Vision-Learners/2022/02/15/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -320,17 +316,27 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2022-01-18 17:04:06 / Modified: 17:07:01" itemprop="dateCreated datePublished" datetime="2022-01-18T17:04:06+08:00">2022-01-18</time>
+              <time title="Created: 2022-01-18 17:04:06" itemprop="dateCreated datePublished" datetime="2022-01-18T17:04:06+08:00">2022-01-18</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-15 14:13:20" itemprop="dateModified" datetime="2022-02-15T14:13:20+08:00">2022-02-15</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Papers/" itemprop="url" rel="index"><span itemprop="name">Papers</span></a>
+                  <a href="/categories/Paper-Note/" itemprop="url" rel="index"><span itemprop="name">Paper Note</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper-Note/Management/" itemprop="url" rel="index"><span itemprop="name">Management</span></a>
                 </span>
             </span>
 
@@ -372,42 +378,21 @@
 <li>CS is an increasingly broad and diverse field. It combines aspects of mathematical reasoning, engineering methodology, and the empirical approaches of the scientific method.</li>
 <li>CS is an expanding sphere, where the core of the field (Theory, Operating Systems, etc.) continues to grow in depth, while the field keeps expanding into neighboring application areas.</li>
 </ol>
-<h1 id="content">Content</h1>
+<h1 id="methods">Methods</h1>
 <h2 id="research-in-computer-science-at-google"><strong>Research in Computer Science at Google</strong></h2>
 <ol type="1">
 <li>The goal of research at Google is to bring significant, practical benefits to our users, and to do so rapidly, within a few years at most.</li>
 <li>Sometimes, research at Google operates in entirely new spaces, but most frequently, the goals are major advances in areas where the bar is already high, but there is still potential for new methods.</li>
 <li>Because of the time-frame and effort involved, Google’s approach to research is iterative and usually involves writing production, or near-production, code from day one. Elaborate research prototypes are rarely created, since their development delays the launch of improved end-user services. Typically, a single team iteratively explores fundamental research ideas, develops and maintains the software, and helps operate the resulting Google services – all driven by real-world experience and concrete data.</li>
 </ol>
-<h3 id="implications-of-googles-mission-and-capabilities"><strong>Implications of Google’s Mission and Capabilities</strong></h3>
-<p>Google’s mission “To organize the world’s information and make it universally accessible and useful”</p>
-<p>Google’s entire organization is focused on rapid innovation, and three aspects of Google’s technology and business model support this:</p>
-<ol type="1">
-<li>By providing a rich set of computing abstractions and powerful processors, storage, and networking capabilities in our data centers, Google has been able to gain economies of scale and to sidestep some of the complexity of heterogeneous computing environments.</li>
-<li>The services-based delivery model brings significant benefits to research and development. Additionally, the services model, particularly one where there is significant consumer engagement, facilitates empirical research.</li>
-<li>Finally, Google has been able to hire a talented team across the entire engineering operation.</li>
-</ol>
-<h3 id="hybrid-research-at-google"><strong>Hybrid Research at Google</strong></h3>
-<ol type="1">
-<li>Google blurs the line between research and engineering activities and encourage teams to pursue the right balance of each, knowing that this balance varies greatly.</li>
-<li>Even in areas where there is a much higher proportion of research to engineering, the “Research Team” google have established is not as formally separate from engineering activities as those in other organizations.</li>
-<li>For long term research, Google just try hard to “factorize” it into shorter-term, measurable components.</li>
-<li>This approach benefits from the mainly evolutionary nature of CS research, where great results are usually the composition of many discrete steps. If the discrete steps required large leaps in vastly different directions, we admit that our primarily hill-climbing-based approach might fail.</li>
-<li>Hybrid research model thus defined as:
-<ul>
-<li>Aims to generate scientific and engineering advances in fields of import to Google.</li>
-<li>Factorize longer projects (perhaps with very challenging goals) into discrete, achievable steps.</li>
-<li>Maximally leverage our cloud computing models and large user base to support in vivo research.</li>
-<li>Allow for the maximal amount of organizational flexibility so that we can support both projects that require some room to grow unfettered by current constraints, as well as projects that require close integration with existing products.</li>
-<li>we emphasize knowledge dissemination using a flexible collection of different approaches.</li>
-</ul></li>
-</ol>
-<h1 id="conclusion">Conclusion</h1>
-<ol type="1">
-<li>By coupling research and development, our goal is to minimize or even eliminate the traditional technology transfer process. Most of our projects involve people working with a given technology from the research stage through to the product stage. This close collaboration and integration furthermore ensures the reality of the problems being investigated: research is conducted on real systems and with real users. Our flexible organization also provides diverse opportunities for our employees and has positive implications on our innovation culture and hiring ability.</li>
-<li>We have chosen to organize Computer Science research differently at Google by maximally connecting research and development. This yields not only innovative research results and new technologies, but also valuable new capabilities for the company. Our hybrid approach to research enables us to conduct experiments at a scale that is generally unprecedented for research projects, resulting in stronger research results that can have a wider academic and commercial impact.</li>
-</ol>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/Google%E2%80%99s-Hybrid-Approach-to-Research/2022/01/18/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -449,17 +434,27 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2022-01-18 16:43:18 / Modified: 16:59:15" itemprop="dateCreated datePublished" datetime="2022-01-18T16:43:18+08:00">2022-01-18</time>
+              <time title="Created: 2022-01-18 16:43:18" itemprop="dateCreated datePublished" datetime="2022-01-18T16:43:18+08:00">2022-01-18</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-15 14:13:05" itemprop="dateModified" datetime="2022-02-15T14:13:05+08:00">2022-02-15</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Papers/" itemprop="url" rel="index"><span itemprop="name">Papers</span></a>
+                  <a href="/categories/Paper-Note/" itemprop="url" rel="index"><span itemprop="name">Paper Note</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper-Note/MLOps/" itemprop="url" rel="index"><span itemprop="name">MLOps</span></a>
                 </span>
             </span>
 
@@ -516,120 +511,14 @@
 <ol type="1">
 <li>This paper does not offer novel ML algorithms, but instead seeks to increase the community’s awareness of the difficult tradeoffs that must be considered in practice over the long term.</li>
 </ol>
-<h1 id="contents">Contents</h1>
-<h2 id="complex-models-erode-boundaries"><strong>Complex Models Erode Boundaries</strong></h2>
-<p>Traditional software engineering practice has shown that strong abstraction boundaries using encapsulation and modular design help create maintainable code. However, it is difficult to enforce strict abstraction boundaries for machine learning systems by prescribing specific intended behavior.</p>
-<p>ML is required in exactly those cases when the <strong>desired behavior cannot be effectively expressed in software logic without dependency on external data</strong>. The real world does not fit into tidy encapsulation.</p>
-<h3 id="entanglement">Entanglement</h3>
-<ol type="1">
-<li>Machine learning systems mix signals together, entangling them and making isolation of improvements impossible.</li>
-<li>The authors refer to this here as the CACE principle: <strong>Changing Anything Changes Everything</strong>.</li>
-<li>One possible mitigation strategy is to isolate models and serve ensembles. But relying on the combination creates a strong entanglement: improving an individual component model may actually make the system accuracy worse</li>
-</ol>
-<h3 id="correction-cascades."><strong>Correction Cascades.</strong></h3>
-<ol type="1">
-<li>Correction model has created a new system dependency on <span class="math inline">\(m_a\)</span>, making it significantly more expensive to analyze improvements to that model in the future.</li>
-<li>A correction cascade can create an improvement deadlock, as improving the accuracy of any individual component actually leads to system-level detriments.</li>
-</ol>
-<h3 id="undeclared-consumers"><strong>Undeclared Consumers</strong></h3>
-<ol type="1">
-<li>Without access controls, some of these consumers may be <em>undeclared</em>, silently using the output of a given model as an input to another system. In more classical software engineering, these issues are referred to as <strong>visibility debt.</strong></li>
-<li>In practice, this tight coupling can radically increase the cost and difficulty of making any changes to ma at all, even if they are improvements.</li>
-</ol>
-<h2 id="data-dependencies-cost-more-than-code-dependencies"><strong>Data Dependencies Cost More than Code Dependencies</strong></h2>
-<h3 id="unstable-data-dependencies"><strong>Unstable Data Dependencies</strong></h3>
-<ol type="1">
-<li>Some input signals are <em>unstable</em>, meaning that they qualitatively or quantitatively change behavior over time.</li>
-<li>One common mitigation strategy for unstable data dependencies is to create a <strong><em>versioned copy</em></strong> of a given signal.</li>
-</ol>
-<h3 id="underutilized-data-dependencies"><strong>Underutilized Data Dependencies</strong></h3>
-<ol type="1">
-<li>Underutilized data dependencies are input signals that provide little incremental modeling benefit. These can make an ML system unnecessarily vulnerable to change, sometimes catastrophically so, even though they could be removed with no detriment.</li>
-<li>Underutilized data dependencies can creep into a model in several ways.
-<ul>
-<li><strong>Legacy Features.</strong> The most common case is that a feature <span class="math inline">\(F\)</span> is included in a model early in its development. Over time, <span class="math inline">\(F\)</span> is made redundant by new features but this goes undetected.</li>
-<li><strong>Bundled Features.</strong> Sometimes, a group of features is evaluated and found to be beneficial. Because of deadline pressures or similar effects, all the features in the bundle are added to the model together, possibly including features that add little or no value.</li>
-<li><span class="math inline">\(\epsilon\)</span>-<strong>Features.</strong> As machine learning researchers, it is tempting to improve model accuracy even when the accuracy gain is very small or when the complexity overhead might be high.</li>
-<li><strong>Correlated Features.</strong> Often two features are strongly correlated, but one is more directly causal. Many ML methods have difficulty detecting this and credit the two features equally, or may even pick the non-causal one. This results in brittleness if world behavior later changes the correlations.</li>
-</ul></li>
-</ol>
-<h3 id="static-analysis-of-data-dependencies"><strong>Static Analysis of Data Dependencies</strong></h3>
-<ol type="1">
-<li>Tools for static analysis of data dependencies are far less common, but are essential for error checking, tracking down consumers, and enforcing migration and updates.</li>
-</ol>
-<h2 id="feedback-loops">Feedback Loops</h2>
-<p>One of the key features of live ML systems is that they often end up influencing their own behavior if they update over time. This leads to a form of <em>analysis debt</em>, in which it is difficult to predict the behavior of a given model before it is released.</p>
-<h3 id="direct-feedback-loops"><strong>Direct Feedback Loops</strong></h3>
-<p>A model may directly influence the selection of its own future training data.</p>
-<h3 id="hidden-feedback-loops"><strong>Hidden Feedback Loops</strong></h3>
-<p>A more difficult case is <em>hidden</em> feedback loops, in which two systems influence each other indirectly through the world.</p>
-<h2 id="ml-system-anti-patterns"><strong>ML-System Anti-Patterns</strong></h2>
-<h3 id="glue-code"><strong>Glue Code</strong></h3>
-<ol type="1">
-<li>ML researchers tend to develop general purpose solutions as self-contained packages.</li>
-<li>Glue code is costly in the long term because it tends to freeze a system to the peculiarities of a specific package</li>
-<li>In this way, using a generic package can <em>inhibit</em> improvements, because it makes it harder to take advantage of domain-specific properties or to tweak the objective function to achieve a domain-specific goal.</li>
-</ol>
-<h3 id="pipeline-jungles"><strong>Pipeline Jungles</strong></h3>
-<ol type="1">
-<li>As a special case of glue code, <em>pipeline jungles</em> often appear in data preparation. These can evolve organically, as new signals are identified and new information sources added incrementally.</li>
-<li>Without care, the resulting system for preparing data in an ML-friendly format may become a jungle of scrapes, joins, and sampling steps, often with intermediate files output.</li>
-</ol>
-<p>Glue code and pipeline jungles are symptomatic of integration issues that may have a root cause in overly separated “research” and “engineering” roles. When ML packages are developed in an ivory tower setting, the result may appear like black boxes to the teams that employ them in practice. A hybrid research approach where engineers and researchers are embedded together on the same teams (and indeed, are often the same people) can help reduce this source of friction significantly.</p>
-<h3 id="dead-experimental-codepaths."><strong>Dead Experimental Codepaths.</strong></h3>
-<ol type="1">
-<li>It becomes increasingly attractive in the short term to perform experiments with alternative methods by implementing experimental codepaths as conditional branches within the main production code.</li>
-<li>For any individual change, the cost of experimenting in this manner is relatively low—none of the surrounding infrastructure needs to be reworked. However, over time, these accumulated codepaths can create a growing debt due to the increasing difficulties of maintaining backward compatibility and an exponential increase in cyclomatic complexity.</li>
-</ol>
-<h3 id="abstraction-debt"><strong>Abstraction Debt</strong></h3>
-<p>There is a distinct lack of strong abstractions to support ML systems.</p>
-<h3 id="common-smells"><strong>Common Smells</strong></h3>
-<ol type="1">
-<li>Plain-Old-Data Type Smell. ****</li>
-<li>Multiple-Language Smell.</li>
-<li>Prototype Smell.</li>
-</ol>
-<h2 id="configuration-debt"><strong>Configuration Debt</strong></h2>
-<ol type="1">
-<li>Another potentially surprising area where debt can accumulate is in the configuration of machine learning systems.</li>
-<li>The Authors have observed that both researchers and engineers may treat configuration (and extension of configuration) as an afterthought.</li>
-</ol>
-<h2 id="dealing-with-changes-in-the-external-world"><strong>Dealing with Changes in the External World</strong></h2>
-<p>One of the things that makes ML systems so fascinating is that they often interact directly with the external world. Experience has shown that the external world is rarely stable.</p>
-<h3 id="fixed-thresholds-in-dynamic-systems."><strong>Fixed Thresholds in Dynamic Systems.</strong></h3>
-<ol type="1">
-<li>It is often necessary to pick a <em>decision threshold</em> for a given model to perform some action.</li>
-<li>However, such thresholds are often manually set. Thus if a model updates on new data, the old manually set threshold may be invalid.</li>
-</ol>
-<h3 id="monitoring-and-testing"><strong>Monitoring and Testing</strong></h3>
-<ol type="1">
-<li>Prediction Bias: In a system that is working as intended, it should usually be the case that the distribution of predicted labels is equal to the distribution of observed labels.</li>
-<li>Action Limits: It can be useful to set and enforce action limits as a sanity check.</li>
-<li>Up-Stream Producers: These up-stream processes should be thoroughly monitored, tested, and routinely meet a service level objective that takes the downstream ML system needs into account.</li>
-</ol>
-<h2 id="other-areas-of-ml-related-debt"><strong>Other Areas of ML-related Debt</strong></h2>
-<ol type="1">
-<li>Data Testing Debt ****</li>
-<li>Reproducibility Debt ****</li>
-<li>Process Management Debt ****</li>
-<li>Cultural Debt</li>
-</ol>
-<h1 id="conclusions"><strong>Conclusions</strong></h1>
-<p>Technical debt is a useful metaphor, but it unfortunately does not provide a strict metric that can be tracked over time. A team is still able to move quickly is not in itself evidence of low debt or good practices, since the full cost of debt becomes apparent only over time.</p>
-<p>A few useful questions to consider are:</p>
-<ol type="1">
-<li>How easily can an entirely new algorithmic approach be tested at full scale?</li>
-<li>What is the transitive closure of all data dependencies?</li>
-<li>How precisely can the impact of a new change to the system be measured?</li>
-<li>Does improving one model or signal degrade others?</li>
-<li>How quickly can new members of the team be brought up to speed?</li>
-</ol>
-<h1 id="personal-thoughts">Personal thoughts</h1>
-<ol type="1">
-<li>The reason why a machine learning system has more hidden debt is that it has not only the technical debt that traditional software has, but also the technical debt associated with machine learning.</li>
-<li>Hidden debts of machine learning system includes boundary erosion, entanglement, hidden feedback loops, undeclared consumers, data dependencies, configuration issues, changes in the external world, and a variety of system-level anti-patterns.</li>
-</ol>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/Hidden-Technical-Debt-in-Machine-Learning-Systems/2022/01/18/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1389,7 +1278,7 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">45</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
