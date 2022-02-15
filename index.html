@@ -188,6 +188,115 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Masked-Autoencoders-Are-Scalable-Vision-Learners/2022/02/15/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/Masked-Autoencoders-Are-Scalable-Vision-Learners/2022/02/15/" class="post-title-link" itemprop="url">Masked Autoencoders Are Scalable Vision Learners</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-15 14:04:20 / Modified: 14:05:54" itemprop="dateCreated datePublished" datetime="2022-02-15T14:04:20+08:00">2022-02-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Papers/" itemprop="url" rel="index"><span itemprop="name">Papers</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Masked-Autoencoders-Are-Scalable-Vision-Learners/2022/02/15/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Masked-Autoencoders-Are-Scalable-Vision-Learners/2022/02/15/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <ul>
+<li>Category: Article</li>
+<li>Created: February 15, 2022 12:16 PM</li>
+<li>Status: Open</li>
+<li>URL: https://arxiv.org/pdf/2111.06377.pdf</li>
+<li>Updated: February 15, 2022 2:03 PM</li>
+</ul>
+<h1 id="highlights">Highlights</h1>
+<ol type="1">
+<li><em>This paper shows that masked autoencoders (MAE) are scalable self-supervised learners for computer vision.</em></li>
+<li>The author <em>develop an</em> asymmetric <em>encoder-decoder architecture, with an encoder that operates only on the visible subset of patches (without mask tokens), along with a lightweight decoder that reconstructs the original image from the latent representation and mask tokens.</em></li>
+<li>The author <em>find that masking a high proportion of the input image,</em> e.g<em>., <strong>75%</strong>, yields a nontrivial and meaningful self-supervisory task.</em></li>
+</ol>
+<h1 id="methods">Methods</h1>
+<ol type="1">
+<li><strong>Masking.</strong> Following ViT, we divide an image into regular non-overlapping patches. Then we sample a subset of patches and mask (<em>i.e</em>., remove) the remaining ones.</li>
+<li><strong>MAE encoder.</strong> Our encoder is a ViT but applied only on <em>visible, unmasked patches</em>. Just as in a standard ViT, our encoder embeds patches by a linear projection with added positional embeddings, and then processes the resulting set via a series of Transformer blocks.</li>
+<li><strong>MAE decoder.</strong> The input to the MAE decoder is the full set of tokens consisting of (i) encoded visible patches, and (ii) mask tokens. <strong>Each mask token is a shared</strong>, learned vector that indicates the presence of a missing patch to be predicted. We add positional embeddings to all tokens in this full set.</li>
+<li><strong>Reconstruction target.</strong> Our MAE reconstructs the input by predicting the <em>pixel</em> values for each masked patch.</li>
+</ol>
+<figure>
+<img src="Screen_Shot_2022-02-15_at_13.57.01.png" alt="Screen Shot 2022-02-15 at 13.57.01.png" /><figcaption aria-hidden="true">Screen Shot 2022-02-15 at 13.57.01.png</figcaption>
+</figure>
+<h1 id="conclusion">Conclusion</h1>
+<ol type="1">
+<li>In this study, we observe on ImageNet and in transfer learning that an autoencoder—a simple self-supervised method similar to techniques in NLP—provides scalable benefits.</li>
+<li>Self- supervised learning in vision may now be embarking on a similar trajectory as in NLP.</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Google%E2%80%99s-Hybrid-Approach-to-Research/2022/01/18/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1109,7 +1218,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Using-RL-to-Solve-Blackjack/2020/09/17/">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Transformer-Summarizer/2020/09/27/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -1123,7 +1232,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/Using-RL-to-Solve-Blackjack/2020/09/17/" class="post-title-link" itemprop="url">Using RL to Solve Blackjack</a>
+            <a href="/Transformer-Summarizer/2020/09/27/" class="post-title-link" itemprop="url">Transformer Summarizer</a>
         </h2>
 
         <div class="post-meta">
@@ -1133,14 +1242,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-09-17 17:44:04" itemprop="dateCreated datePublished" datetime="2020-09-17T17:44:04+08:00">2020-09-17</time>
+              <time title="Created: 2020-09-27 15:23:13" itemprop="dateCreated datePublished" datetime="2020-09-27T15:23:13+08:00">2020-09-27</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-31 18:04:17" itemprop="dateModified" datetime="2021-12-31T18:04:17+08:00">2021-12-31</time>
+                <time title="Modified: 2022-01-18 15:40:06" itemprop="dateModified" datetime="2022-01-18T15:40:06+08:00">2022-01-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1152,7 +1261,7 @@
                 </span>
                   , 
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Artificial-Intelligence/Reinforcement-Learning/" itemprop="url" rel="index"><span itemprop="name">Reinforcement Learning</span></a>
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
                 </span>
             </span>
 
@@ -1165,8 +1274,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/Using-RL-to-Solve-Blackjack/2020/09/17/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/Using-RL-to-Solve-Blackjack/2020/09/17/" itemprop="commentCount"></span>
+    <a title="valine" href="/Transformer-Summarizer/2020/09/27/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Transformer-Summarizer/2020/09/27/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -1181,109 +1290,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>强化学习——MC(蒙特卡洛)玩21点扑克游戏</p>
+          <p>Transformer Summarizer</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/Using-RL-to-Solve-Blackjack/2020/09/17/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Generalized-Policy-Iteration/2020/09/10/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ruochi Zhang">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="RUOCHI.AI">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/Generalized-Policy-Iteration/2020/09/10/" class="post-title-link" itemprop="url">Generalized Policy Iteration</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-09-10 14:26:25" itemprop="dateCreated datePublished" datetime="2020-09-10T14:26:25+08:00">2020-09-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-31 15:48:52" itemprop="dateModified" datetime="2021-12-31T15:48:52+08:00">2021-12-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Artificial-Intelligence/Reinforcement-Learning/" itemprop="url" rel="index"><span itemprop="name">Reinforcement Learning</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/Generalized-Policy-Iteration/2020/09/10/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/Generalized-Policy-Iteration/2020/09/10/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Generalized Policy Iteration</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/Generalized-Policy-Iteration/2020/09/10/">
+              <a class="btn" href="/Transformer-Summarizer/2020/09/27/">
                 Read more &raquo;
               </a>
             </div>
@@ -1372,7 +1382,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">212</span>
+          <span class="site-state-item-count">215</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
