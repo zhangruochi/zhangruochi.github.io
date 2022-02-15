@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="This is a practice of word vectors">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Operations on word vectors - Debiasing">
+<meta property="og:url" content="https://zhangruochi.com/Operations-on-word-vectors-Debiasing/2019/03/28/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="This is a practice of word vectors">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Operations-on-word-vectors-Debiasing/2019/03/28/images/cosine_sim.png">
+<meta property="og:image" content="https://zhangruochi.com/Operations-on-word-vectors-Debiasing/2019/03/28/images/neutral.png">
+<meta property="og:image" content="https://zhangruochi.com/Operations-on-word-vectors-Debiasing/2019/03/28/images/equalize10.png">
+<meta property="article:published_time" content="2019-03-28T11:33:39.000Z">
+<meta property="article:modified_time" content="2019-07-05T10:30:26.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="Sequence Models">
+<meta property="article:tag" content="Project">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Operations-on-word-vectors-Debiasing/2019/03/28/images/cosine_sim.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Operations-on-word-vectors-Debiasing/2019/03/28/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Operations on word vectors - Debiasing | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Operations-on-word-vectors-Debiasing/2019/03/28/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Operations on word vectors - Debiasing
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-03-28 19:33:39" itemprop="dateCreated datePublished" datetime="2019-03-28T19:33:39+08:00">2019-03-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-07-05 18:30:26" itemprop="dateModified" datetime="2019-07-05T18:30:26+08:00">2019-07-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Operations-on-word-vectors-Debiasing/2019/03/28/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Operations-on-word-vectors-Debiasing/2019/03/28/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">This is a practice of word vectors</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="operations-on-word-vectors">Operations on word vectors</h1>
+<p>Welcome to your first assignment of this week!</p>
+<p>Because word embeddings are very computionally expensive to train, most ML practitioners will load a pre-trained set of embeddings.</p>
+<p><strong>After this assignment you will be able to:</strong></p>
+<ul>
+<li>Load pre-trained word vectors, and measure similarity using cosine similarity</li>
+<li>Use word embeddings to solve word analogy problems such as Man is to Woman as King is to ______.</li>
+<li>Modify word embeddings to reduce their gender bias</li>
+</ul>
+<p>Let's get started! Run the following cell to load the packages you will need.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> w2v_utils <span class="keyword">import</span> *</span><br></pre></td></tr></table></figure>
+<pre><code>Using TensorFlow backend.</code></pre>
+<p>Next, lets load the word vectors. For this assignment, we will use 50-dimensional GloVe vectors to represent words. Run the following cell to load the <code>word_to_vec_map</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">words, word_to_vec_map = read_glove_vecs(<span class="string">&#x27;../../readonly/glove.6B.50d.txt&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>You've loaded: - <code>words</code>: set of words in the vocabulary. - <code>word_to_vec_map</code>: dictionary mapping words to their GloVe vector representation.</p>
+<p>You've seen that one-hot vectors do not do a good job cpaturing what words are similar. GloVe vectors provide much more useful information about the meaning of individual words. Lets now see how you can use GloVe vectors to decide how similar two words are.</p>
+<h1 id="cosine-similarity">1 - Cosine similarity</h1>
+<p>To measure how similar two words are, we need a way to measure the degree of similarity between two embedding vectors for the two words. Given two vectors <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span>, cosine similarity is defined as follows:</p>
+<p><span class="math display">\[\text{CosineSimilarity(u, v)} = \frac {u . v} {||u||_2 ||v||_2} = cos(\theta) \tag{1}\]</span></p>
+<p>where <span class="math inline">\(u.v\)</span> is the dot product (or inner product) of two vectors, <span class="math inline">\(||u||_2\)</span> is the norm (or length) of the vector <span class="math inline">\(u\)</span>, and <span class="math inline">\(\theta\)</span> is the angle between <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span>. This similarity depends on the angle between <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span>. If <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> are very similar, their cosine similarity will be close to 1; if they are dissimilar, the cosine similarity will take a smaller value.</p>
+<img src="images/cosine_sim.png" style="width:800px;height:250px;">
+<caption>
+<center>
+<strong>Figure 1</strong>: The cosine of the angle between two vectors is a measure of how similar they are
+</center>
+</caption>
+<p><strong>Exercise</strong>: Implement the function <code>cosine_similarity()</code> to evaluate similarity between word vectors.</p>
+<p><strong>Reminder</strong>: The norm of <span class="math inline">\(u\)</span> is defined as $ ||u||_2 = $</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GRADED FUNCTION: cosine_similarity</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cosine_similarity</span>(<span class="params">u, v</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Cosine similarity reflects the degree of similariy between u and v</span></span><br><span class="line"><span class="string">        </span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">        u -- a word vector of shape (n,)          </span></span><br><span class="line"><span class="string">        v -- a word vector of shape (n,)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        cosine_similarity -- the cosine similarity between u and v defined by the formula above.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    distance = <span class="number">0.0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE ###</span></span><br><span class="line">    <span class="comment"># Compute the dot product between u and v (≈1 line)</span></span><br><span class="line">    dot = np.dot(u,v)</span><br><span class="line">    <span class="comment"># Compute the L2 norm of u (≈1 line)</span></span><br><span class="line">    norm_u = np.sqrt(np.<span class="built_in">sum</span>(u ** <span class="number">2</span>))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Compute the L2 norm of v (≈1 line)</span></span><br><span class="line">    norm_v = np.linalg.norm(v)</span><br><span class="line">    <span class="comment"># Compute the cosine similarity defined by formula (1) (≈1 line)</span></span><br><span class="line">    cosine_similarity = dot / (norm_u * norm_v)</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> cosine_similarity</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">father = word_to_vec_map[<span class="string">&quot;father&quot;</span>]</span><br><span class="line">mother = word_to_vec_map[<span class="string">&quot;mother&quot;</span>]</span><br><span class="line">ball = word_to_vec_map[<span class="string">&quot;ball&quot;</span>]</span><br><span class="line">crocodile = word_to_vec_map[<span class="string">&quot;crocodile&quot;</span>]</span><br><span class="line">france = word_to_vec_map[<span class="string">&quot;france&quot;</span>]</span><br><span class="line">italy = word_to_vec_map[<span class="string">&quot;italy&quot;</span>]</span><br><span class="line">paris = word_to_vec_map[<span class="string">&quot;paris&quot;</span>]</span><br><span class="line">rome = word_to_vec_map[<span class="string">&quot;rome&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;cosine_similarity(father, mother) = &quot;</span>, cosine_similarity(father, mother))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;cosine_similarity(ball, crocodile) = &quot;</span>,cosine_similarity(ball, crocodile))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;cosine_similarity(france - paris, rome - italy) = &quot;</span>,cosine_similarity(france - paris, rome - italy))</span><br></pre></td></tr></table></figure>
+<pre><code>cosine_similarity(father, mother) =  0.890903844289
+cosine_similarity(ball, crocodile) =  0.274392462614
+cosine_similarity(france - paris, rome - italy) =  -0.675147930817</code></pre>
+<p><strong>Expected Output</strong>:</p>
+<table>
+<tr>
+<td>
+<strong>cosine_similarity(father, mother)</strong> =
+</td>
+<td>
+0.890903844289
+</td>
+</tr>
+<pre><code>&lt;tr&gt;
+    &lt;td&gt;
+        **cosine_similarity(ball, crocodile)** =
+    &lt;/td&gt;
+    &lt;td&gt;
+     0.274392462614
+    &lt;/td&gt;
+&lt;/tr&gt;
+    &lt;tr&gt;
+    &lt;td&gt;
+        **cosine_similarity(france - paris, rome - italy)** =
+    &lt;/td&gt;
+    &lt;td&gt;
+     -0.675147930817
+    &lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+</table>
+<p>After you get the correct expected output, please feel free to modify the inputs and measure the cosine similarity between other pairs of words! Playing around the cosine similarity of other inputs will give you a better sense of how word vectors behave.</p>
+<h2 id="word-analogy-task">2 - Word analogy task</h2>
+<p>In the word analogy task, we complete the sentence <font color='brown'>"<em>a</em> is to <em>b</em> as <em>c</em> is to <strong>____</strong>"</font>. An example is <font color='brown'> '<em>man</em> is to <em>woman</em> as <em>king</em> is to <em>queen</em>' </font>. In detail, we are trying to find a word <em>d</em>, such that the associated word vectors <span class="math inline">\(e_a, e_b, e_c, e_d\)</span> are related in the following manner: <span class="math inline">\(e_b - e_a \approx e_d - e_c\)</span>. We will measure the similarity between <span class="math inline">\(e_b - e_a\)</span> and <span class="math inline">\(e_d - e_c\)</span> using cosine similarity.</p>
+<p><strong>Exercise</strong>: Complete the code below to be able to perform word analogies!</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GRADED FUNCTION: complete_analogy</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">complete_analogy</span>(<span class="params">word_a, word_b, word_c, word_to_vec_map</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Performs the word analogy task as explained above: a is to b as c is to ____. </span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    word_a -- a word, string</span></span><br><span class="line"><span class="string">    word_b -- a word, string</span></span><br><span class="line"><span class="string">    word_c -- a word, string</span></span><br><span class="line"><span class="string">    word_to_vec_map -- dictionary that maps words to their corresponding vectors. </span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    best_word --  the word such that v_b - v_a is close to v_best_word - v_c, as measured by cosine similarity</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># convert words to lower case</span></span><br><span class="line">    word_a, word_b, word_c = word_a.lower(), word_b.lower(), word_c.lower()</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE ###</span></span><br><span class="line">    <span class="comment"># Get the word embeddings v_a, v_b and v_c (≈1-3 lines)</span></span><br><span class="line">    e_a, e_b, e_c = word_to_vec_map[word_a],word_to_vec_map[word_b],word_to_vec_map[word_c]</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    words = word_to_vec_map.keys()</span><br><span class="line">    max_cosine_sim = -<span class="number">100</span>              <span class="comment"># Initialize max_cosine_sim to a large negative number</span></span><br><span class="line">    best_word = <span class="literal">None</span>                  <span class="comment"># Initialize best_word with None, it will help keep track of the word to output</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># loop over the whole word vector set</span></span><br><span class="line">    <span class="keyword">for</span> w <span class="keyword">in</span> words:        </span><br><span class="line">        <span class="comment"># to avoid best_word being one of the input words, pass on them.</span></span><br><span class="line">        <span class="keyword">if</span> w <span class="keyword">in</span> [word_a, word_b, word_c] :</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">### START CODE HERE ###</span></span><br><span class="line">        <span class="comment"># Compute cosine similarity between the vector (e_b - e_a) and the vector ((w&#x27;s vector representation) - e_c)  (≈1 line)</span></span><br><span class="line">        cosine_sim = cosine_similarity(e_b - e_a, word_to_vec_map[w] - e_c)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># If the cosine_sim is more than the max_cosine_sim seen so far,</span></span><br><span class="line">            <span class="comment"># then: set the new max_cosine_sim to the current cosine_sim and the best_word to the current word (≈3 lines)</span></span><br><span class="line">        <span class="keyword">if</span> cosine_sim &gt; max_cosine_sim:</span><br><span class="line">            max_cosine_sim = cosine_sim</span><br><span class="line">            best_word = w</span><br><span class="line">        <span class="comment">### END CODE HERE ###</span></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">return</span> best_word</span><br></pre></td></tr></table></figure>
+<p>Run the cell below to test your code, this may take 1-2 minutes.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">triads_to_try = [(<span class="string">&#x27;italy&#x27;</span>, <span class="string">&#x27;italian&#x27;</span>, <span class="string">&#x27;spain&#x27;</span>), (<span class="string">&#x27;india&#x27;</span>, <span class="string">&#x27;delhi&#x27;</span>, <span class="string">&#x27;japan&#x27;</span>), (<span class="string">&#x27;man&#x27;</span>, <span class="string">&#x27;woman&#x27;</span>, <span class="string">&#x27;boy&#x27;</span>), (<span class="string">&#x27;small&#x27;</span>, <span class="string">&#x27;smaller&#x27;</span>, <span class="string">&#x27;large&#x27;</span>)]</span><br><span class="line"><span class="keyword">for</span> triad <span class="keyword">in</span> triads_to_try:</span><br><span class="line">    <span class="built_in">print</span> (<span class="string">&#x27;&#123;&#125; -&gt; &#123;&#125; :: &#123;&#125; -&gt; &#123;&#125;&#x27;</span>.<span class="built_in">format</span>( *triad, complete_analogy(*triad,word_to_vec_map)))</span><br></pre></td></tr></table></figure>
+<pre><code>italy -&gt; italian :: spain -&gt; spanish
+india -&gt; delhi :: japan -&gt; tokyo
+man -&gt; woman :: boy -&gt; girl
+small -&gt; smaller :: large -&gt; larger</code></pre>
+<p><strong>Expected Output</strong>:</p>
+<table>
+<tr>
+<td>
+<strong>italy -&gt; italian</strong> ::
+</td>
+<td>
+spain -&gt; spanish
+</td>
+</tr>
+<pre><code>&lt;tr&gt;
+    &lt;td&gt;
+        **india -&gt; delhi** ::
+    &lt;/td&gt;
+    &lt;td&gt;
+     japan -&gt; tokyo
+    &lt;/td&gt;
+&lt;/tr&gt;
+    &lt;tr&gt;
+    &lt;td&gt;
+        **man -&gt; woman ** ::
+    &lt;/td&gt;
+    &lt;td&gt;
+     boy -&gt; girl
+    &lt;/td&gt;
+&lt;/tr&gt;
+    &lt;tr&gt;
+    &lt;td&gt;
+        **small -&gt; smaller ** ::
+    &lt;/td&gt;
+    &lt;td&gt;
+     large -&gt; larger
+    &lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+</table>
+<p>Once you get the correct expected output, please feel free to modify the input cells above to test your own analogies. Try to find some other analogy pairs that do work, but also find some where the algorithm doesn't give the right answer: For example, you can try small-&gt;smaller as big-&gt;?.</p>
+<h3 id="congratulations">Congratulations!</h3>
+<p>You've come to the end of this assignment. Here are the main points you should remember:</p>
+<ul>
+<li>Cosine similarity a good way to compare similarity between pairs of word vectors. (Though L2 distance works too.)</li>
+<li>For NLP applications, using a pre-trained set of word vectors from the internet is often a good way to get started.</li>
+</ul>
+<p>Even though you have finished the graded portions, we recommend you take a look too at the rest of this notebook.</p>
+<p>Congratulations on finishing the graded portions of this notebook!</p>
+<h2 id="debiasing-word-vectors-optionalungraded">3 - Debiasing word vectors (OPTIONAL/UNGRADED)</h2>
+<p>In the following exercise, you will examine gender biases that can be reflected in a word embedding, and explore algorithms for reducing the bias. In addition to learning about the topic of debiasing, this exercise will also help hone your intuition about what word vectors are doing. This section involves a bit of linear algebra, though you can probably complete it even without being expert in linear algebra, and we encourage you to give it a shot. This portion of the notebook is optional and is not graded.</p>
+<p>Lets first see how the GloVe word embeddings relate to gender. You will first compute a vector <span class="math inline">\(g = e_{woman}-e_{man}\)</span>, where <span class="math inline">\(e_{woman}\)</span> represents the word vector corresponding to the word <em>woman</em>, and <span class="math inline">\(e_{man}\)</span> corresponds to the word vector corresponding to the word <em>man</em>. The resulting vector <span class="math inline">\(g\)</span> roughly encodes the concept of "gender". (You might get a more accurate representation if you compute <span class="math inline">\(g_1 = e_{mother}-e_{father}\)</span>, <span class="math inline">\(g_2 = e_{girl}-e_{boy}\)</span>, etc. and average over them. But just using <span class="math inline">\(e_{woman}-e_{man}\)</span> will give good enough results for now.)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g = word_to_vec_map[<span class="string">&#x27;woman&#x27;</span>] - word_to_vec_map[<span class="string">&#x27;man&#x27;</span>]</span><br><span class="line"><span class="built_in">print</span>(g)</span><br></pre></td></tr></table></figure>
+<pre><code>[-0.087144    0.2182     -0.40986    -0.03922    -0.1032      0.94165
+ -0.06042     0.32988     0.46144    -0.35962     0.31102    -0.86824
+  0.96006     0.01073     0.24337     0.08193    -1.02722    -0.21122
+  0.695044   -0.00222     0.29106     0.5053     -0.099454    0.40445
+  0.30181     0.1355     -0.0606     -0.07131    -0.19245    -0.06115
+ -0.3204      0.07165    -0.13337    -0.25068714 -0.14293    -0.224957
+ -0.149       0.048882    0.12191    -0.27362    -0.165476   -0.20426
+  0.54376    -0.271425   -0.10245    -0.32108     0.2516     -0.33455
+ -0.04371     0.01258   ]</code></pre>
+<p>Now, you will consider the cosine similarity of different words with <span class="math inline">\(g\)</span>. Consider what a positive value of similarity means vs a negative cosine similarity.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span> (<span class="string">&#x27;List of names and their similarities with constructed vector:&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># girls and boys name</span></span><br><span class="line">name_list = [<span class="string">&#x27;john&#x27;</span>, <span class="string">&#x27;marie&#x27;</span>, <span class="string">&#x27;sophie&#x27;</span>, <span class="string">&#x27;ronaldo&#x27;</span>, <span class="string">&#x27;priya&#x27;</span>, <span class="string">&#x27;rahul&#x27;</span>, <span class="string">&#x27;danielle&#x27;</span>, <span class="string">&#x27;reza&#x27;</span>, <span class="string">&#x27;katy&#x27;</span>, <span class="string">&#x27;yasmin&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> w <span class="keyword">in</span> name_list:</span><br><span class="line">    <span class="built_in">print</span> (w, cosine_similarity(word_to_vec_map[w], g))</span><br></pre></td></tr></table></figure>
+<pre><code>List of names and their similarities with constructed vector:
+john -0.23163356146
+marie 0.315597935396
+sophie 0.318687898594
+ronaldo -0.312447968503
+priya 0.17632041839
+rahul -0.169154710392
+danielle 0.243932992163
+reza -0.079304296722
+katy 0.283106865957
+yasmin 0.233138577679</code></pre>
+<p>As you can see, female first names tend to have a positive cosine similarity with our constructed vector <span class="math inline">\(g\)</span>, while male first names tend to have a negative cosine similarity. This is not suprising, and the result seems acceptable.</p>
+<p>But let's try with some other words.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Other words and their similarities:&#x27;</span>)</span><br><span class="line">word_list = [<span class="string">&#x27;lipstick&#x27;</span>, <span class="string">&#x27;guns&#x27;</span>, <span class="string">&#x27;science&#x27;</span>, <span class="string">&#x27;arts&#x27;</span>, <span class="string">&#x27;literature&#x27;</span>, <span class="string">&#x27;warrior&#x27;</span>,<span class="string">&#x27;doctor&#x27;</span>, <span class="string">&#x27;tree&#x27;</span>, <span class="string">&#x27;receptionist&#x27;</span>, </span><br><span class="line">             <span class="string">&#x27;technology&#x27;</span>,  <span class="string">&#x27;fashion&#x27;</span>, <span class="string">&#x27;teacher&#x27;</span>, <span class="string">&#x27;engineer&#x27;</span>, <span class="string">&#x27;pilot&#x27;</span>, <span class="string">&#x27;computer&#x27;</span>, <span class="string">&#x27;singer&#x27;</span>]</span><br><span class="line"><span class="keyword">for</span> w <span class="keyword">in</span> word_list:</span><br><span class="line">    <span class="built_in">print</span> (w, cosine_similarity(word_to_vec_map[w], g))</span><br></pre></td></tr></table></figure>
+<pre><code>Other words and their similarities:
+lipstick 0.276919162564
+guns -0.18884855679
+science -0.0608290654093
+arts 0.00818931238588
+literature 0.0647250443346
+warrior -0.209201646411
+doctor 0.118952894109
+tree -0.0708939917548
+receptionist 0.330779417506
+technology -0.131937324476
+fashion 0.0356389462577
+teacher 0.179209234318
+engineer -0.0803928049452
+pilot 0.00107644989919
+computer -0.103303588739
+singer 0.185005181365</code></pre>
+<p>Do you notice anything surprising? It is astonishing how these results reflect certain unhealthy gender stereotypes. For example, "computer" is closer to "man" while "literature" is closer to "woman". Ouch!</p>
+<p>We'll see below how to reduce the bias of these vectors, using an algorithm due to <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1607.06520">Boliukbasi et al., 2016</a>. Note that some word pairs such as "actor"/"actress" or "grandmother"/"grandfather" should remain gender specific, while other words such as "receptionist" or "technology" should be neutralized, i.e. not be gender-related. You will have to treat these two type of words differently when debiasing.</p>
+<h3 id="neutralize-bias-for-non-gender-specific-words">3.1 - Neutralize bias for non-gender specific words</h3>
+<p>The figure below should help you visualize what neutralizing does. If you're using a 50-dimensional word embedding, the 50 dimensional space can be split into two parts: The bias-direction <span class="math inline">\(g\)</span>, and the remaining 49 dimensions, which we'll call <span class="math inline">\(g_{\perp}\)</span>. In linear algebra, we say that the 49 dimensional <span class="math inline">\(g_{\perp}\)</span> is perpendicular (or "othogonal") to <span class="math inline">\(g\)</span>, meaning it is at 90 degrees to <span class="math inline">\(g\)</span>. The neutralization step takes a vector such as <span class="math inline">\(e_{receptionist}\)</span> and zeros out the component in the direction of <span class="math inline">\(g\)</span>, giving us <span class="math inline">\(e_{receptionist}^{debiased}\)</span>.</p>
+<p>Even though <span class="math inline">\(g_{\perp}\)</span> is 49 dimensional, given the limitations of what we can draw on a screen, we illustrate it using a 1 dimensional axis below.</p>
+<img src="images/neutral.png" style="width:800px;height:300px;">
+<caption>
+<center>
+<strong>Figure 2</strong>: The word vector for "receptionist" represented before and after applying the neutralize operation.
+</center>
+</caption>
+<p><strong>Exercise</strong>: Implement <code>neutralize()</code> to remove the bias of words such as "receptionist" or "scientist". Given an input embedding <span class="math inline">\(e\)</span>, you can use the following formulas to compute <span class="math inline">\(e^{debiased}\)</span>:</p>
+<p><span class="math display">\[e^{bias\_component} = \frac{e \cdot g}{||g||_2^2} * g\tag{2}\]</span> <span class="math display">\[e^{debiased} = e - e^{bias\_component}\tag{3}\]</span></p>
+<p>If you are an expert in linear algebra, you may recognize <span class="math inline">\(e^{bias\_component}\)</span> as the projection of <span class="math inline">\(e\)</span> onto the direction <span class="math inline">\(g\)</span>. If you're not an expert in linear algebra, don't worry about this.</p>
+<!-- 
+**Reminder**: a vector $u$ can be split into two parts: its projection over a vector-axis $v_B$ and its projection over the axis orthogonal to $v$:
+$$u = u_B + u_{\perp}$$
+where : $u_B = $ and $ u_{\perp} = u - u_B $
+!-->
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">neutralize</span>(<span class="params">word, g, word_to_vec_map</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Removes the bias of &quot;word&quot; by projecting it on the space orthogonal to the bias axis. </span></span><br><span class="line"><span class="string">    This function ensures that gender neutral words are zero in the gender subspace.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">        word -- string indicating the word to debias</span></span><br><span class="line"><span class="string">        g -- numpy-array of shape (50,), corresponding to the bias axis (such as gender)</span></span><br><span class="line"><span class="string">        word_to_vec_map -- dictionary mapping words to their corresponding vectors.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        e_debiased -- neutralized word vector representation of the input &quot;word&quot;</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE ###</span></span><br><span class="line">    <span class="comment"># Select word vector representation of &quot;word&quot;. Use word_to_vec_map. (≈ 1 line)</span></span><br><span class="line">    e = word_to_vec_map[word]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Compute e_biascomponent using the formula give above. (≈ 1 line)</span></span><br><span class="line">    e_biascomponent = np.dot(e, g) / np.linalg.norm(g) * g</span><br><span class="line"> </span><br><span class="line">    <span class="comment"># Neutralize e by substracting e_biascomponent from it </span></span><br><span class="line">    <span class="comment"># e_debiased should be equal to its orthogonal projection. (≈ 1 line)</span></span><br><span class="line">    e_debiased = e - e_biascomponent</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> e_debiased</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">e = <span class="string">&quot;receptionist&quot;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;cosine similarity between &quot;</span> + e + <span class="string">&quot; and g, before neutralizing: &quot;</span>, cosine_similarity(word_to_vec_map[<span class="string">&quot;receptionist&quot;</span>], g))</span><br><span class="line"></span><br><span class="line">e_debiased = neutralize(<span class="string">&quot;receptionist&quot;</span>, g, word_to_vec_map)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;cosine similarity between &quot;</span> + e + <span class="string">&quot; and g, after neutralizing: &quot;</span>, cosine_similarity(e_debiased, g))</span><br></pre></td></tr></table></figure>
+<pre><code>cosine similarity between receptionist and g, before neutralizing:  0.330779417506
+cosine similarity between receptionist and g, after neutralizing:  -0.48975521526</code></pre>
+<p><strong>Expected Output</strong>: The second result is essentially 0, up to numerical roundof (on the order of <span class="math inline">\(10^{-17}\)</span>).</p>
+<table>
+<tr>
+<td>
+<strong>cosine similarity between receptionist and g, before neutralizing:</strong> :
+</td>
+<td>
+0.330779417506
+</td>
+</tr>
+<pre><code>&lt;tr&gt;
+    &lt;td&gt;
+        **cosine similarity between receptionist and g, after neutralizing:** :
+    &lt;/td&gt;
+    &lt;td&gt;
+     -3.26732746085e-17
+&lt;/tr&gt;</code></pre>
+</table>
+<h3 id="equalization-algorithm-for-gender-specific-words">3.2 - Equalization algorithm for gender-specific words</h3>
+<p>Next, lets see how debiasing can also be applied to word pairs such as "actress" and "actor." Equalization is applied to pairs of words that you might want to have differ only through the gender property. As a concrete example, suppose that "actress" is closer to "babysit" than "actor." By applying neutralizing to "babysit" we can reduce the gender-stereotype associated with babysitting. But this still does not guarantee that "actor" and "actress" are equidistant from "babysit." The equalization algorithm takes care of this.</p>
+<p>The key idea behind equalization is to make sure that a particular pair of words are equi-distant from the 49-dimensional <span class="math inline">\(g_\perp\)</span>. The equalization step also ensures that the two equalized steps are now the same distance from <span class="math inline">\(e_{receptionist}^{debiased}\)</span>, or from any other work that has been neutralized. In pictures, this is how equalization works:</p>
+<p><img src="images/equalize10.png" style="width:800px;height:400px;"></p>
+<p>The derivation of the linear algebra to do this is a bit more complex. (See Bolukbasi et al., 2016 for details.) But the key equations are:</p>
+<p><span class="math display">\[ \mu = \frac{e_{w1} + e_{w2}}{2}\tag{4}\]</span></p>
+<p><span class="math display">\[ \mu_{B} = \frac {\mu \cdot \text{bias_axis}}{||\text{bias_axis}||_2^2} *\text{bias_axis}
+\tag{5}\]</span></p>
+<p><span class="math display">\[\mu_{\perp} = \mu - \mu_{B} \tag{6}\]</span></p>
+<p><span class="math display">\[ e_{w1B} = \frac {e_{w1} \cdot \text{bias_axis}}{||\text{bias_axis}||_2^2} *\text{bias_axis}
+\tag{7}\]</span> <span class="math display">\[ e_{w2B} = \frac {e_{w2} \cdot \text{bias_axis}}{||\text{bias_axis}||_2^2} *\text{bias_axis}
+\tag{8}\]</span></p>
+<p><span class="math display">\[e_{w1B}^{corrected} = \sqrt{ |{1 - ||\mu_{\perp} ||^2_2} |} * \frac{e_{\text{w1B}} - \mu_B} {|(e_{w1} - \mu_{\perp}) - \mu_B)|} \tag{9}\]</span></p>
+<p><span class="math display">\[e_{w2B}^{corrected} = \sqrt{ |{1 - ||\mu_{\perp} ||^2_2} |} * \frac{e_{\text{w2B}} - \mu_B} {|(e_{w2} - \mu_{\perp}) - \mu_B)|} \tag{10}\]</span></p>
+<p><span class="math display">\[e_1 = e_{w1B}^{corrected} + \mu_{\perp} \tag{11}\]</span> <span class="math display">\[e_2 = e_{w2B}^{corrected} + \mu_{\perp} \tag{12}\]</span></p>
+<p><strong>Exercise</strong>: Implement the function below. Use the equations above to get the final equalized version of the pair of words. Good luck!</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">equalize</span>(<span class="params">pair, bias_axis, word_to_vec_map</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Debias gender specific words by following the equalize method described in the figure above.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    pair -- pair of strings of gender specific words to debias, e.g. (&quot;actress&quot;, &quot;actor&quot;) </span></span><br><span class="line"><span class="string">    bias_axis -- numpy-array of shape (50,), vector corresponding to the bias axis, e.g. gender</span></span><br><span class="line"><span class="string">    word_to_vec_map -- dictionary mapping words to their corresponding vectors</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns</span></span><br><span class="line"><span class="string">    e_1 -- word vector corresponding to the first word</span></span><br><span class="line"><span class="string">    e_2 -- word vector corresponding to the second word</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE ###</span></span><br><span class="line">    <span class="comment"># Step 1: Select word vector representation of &quot;word&quot;. Use word_to_vec_map. (≈ 2 lines)</span></span><br><span class="line">    w1, w2 = <span class="literal">None</span></span><br><span class="line">    e_w1, e_w2 = <span class="literal">None</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 2: Compute the mean of e_w1 and e_w2 (≈ 1 line)</span></span><br><span class="line">    mu = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Step 3: Compute the projections of mu over the bias axis and the orthogonal axis (≈ 2 lines)</span></span><br><span class="line">    mu_B = <span class="literal">None</span></span><br><span class="line">    mu_orth = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Step 4: Use equations (7) and (8) to compute e_w1B and e_w2B (≈2 lines)</span></span><br><span class="line">    e_w1B = <span class="literal">None</span></span><br><span class="line">    e_w2B = <span class="literal">None</span></span><br><span class="line">        </span><br><span class="line">    <span class="comment"># Step 5: Adjust the Bias part of e_w1B and e_w2B using the formulas (9) and (10) given above (≈2 lines)</span></span><br><span class="line">    corrected_e_w1B = <span class="literal">None</span></span><br><span class="line">    corrected_e_w2B = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Step 6: Debias by equalizing e1 and e2 to the sum of their corrected projections (≈2 lines)</span></span><br><span class="line">    e1 = <span class="literal">None</span></span><br><span class="line">    e2 = <span class="literal">None</span></span><br><span class="line">                                                                </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> e1, e2</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;cosine similarities before equalizing:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;cosine_similarity(word_to_vec_map[\&quot;man\&quot;], gender) = &quot;</span>, cosine_similarity(word_to_vec_map[<span class="string">&quot;man&quot;</span>], g))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;cosine_similarity(word_to_vec_map[\&quot;woman\&quot;], gender) = &quot;</span>, cosine_similarity(word_to_vec_map[<span class="string">&quot;woman&quot;</span>], g))</span><br><span class="line"><span class="built_in">print</span>()</span><br><span class="line">e1, e2 = equalize((<span class="string">&quot;man&quot;</span>, <span class="string">&quot;woman&quot;</span>), g, word_to_vec_map)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;cosine similarities after equalizing:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;cosine_similarity(e1, gender) = &quot;</span>, cosine_similarity(e1, g))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;cosine_similarity(e2, gender) = &quot;</span>, cosine_similarity(e2, g))</span><br></pre></td></tr></table></figure>
+<p><strong>Expected Output</strong>:</p>
+cosine similarities before equalizing:
+<table>
+<tr>
+<td>
+<strong>cosine_similarity(word_to_vec_map["man"], gender)</strong> =
+</td>
+<td>
+-0.117110957653
+</td>
+</tr>
+<pre><code>&lt;tr&gt;
+    &lt;td&gt;
+        **cosine_similarity(word_to_vec_map[&quot;woman&quot;], gender)** =
+    &lt;/td&gt;
+    &lt;td&gt;
+     0.356666188463
+    &lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+</table>
+cosine similarities after equalizing:
+<table>
+<tr>
+<td>
+<strong>cosine_similarity(u1, gender)</strong> =
+</td>
+<td>
+-0.700436428931
+</td>
+</tr>
+<pre><code>&lt;tr&gt;
+    &lt;td&gt;
+        **cosine_similarity(u2, gender)** =
+    &lt;/td&gt;
+    &lt;td&gt;
+     0.700436428931
+    &lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+</table>
+<p>Please feel free to play with the input words in the cell above, to apply equalization to other pairs of words.</p>
+<p>These debiasing algorithms are very helpful for reducing bias, but are not perfect and do not eliminate all traces of bias. For example, one weakness of this implementation was that the bias direction <span class="math inline">\(g\)</span> was defined using only the pair of words <em>woman</em> and <em>man</em>. As discussed earlier, if <span class="math inline">\(g\)</span> were defined by computing <span class="math inline">\(g_1 = e_{woman} - e_{man}\)</span>; <span class="math inline">\(g_2 = e_{mother} - e_{father}\)</span>; <span class="math inline">\(g_3 = e_{girl} - e_{boy}\)</span>; and so on and averaging over them, you would obtain a better estimate of the "gender" dimension in the 50 dimensional word embedding space. Feel free to play with such variants as well.</p>
+<h3 id="congratulations-1">Congratulations</h3>
+<p>You have come to the end of this notebook, and have seen a lot of the ways that word vectors can be used as well as modified.</p>
+<p>Congratulations on finishing this notebook!</p>
+<p><strong>References</strong>: - The debiasing algorithm is from Bolukbasi et al., 2016, <a target="_blank" rel="noopener" href="https://papers.nips.cc/paper/6228-man-is-to-computer-programmer-as-woman-is-to-homemaker-debiasing-word-embeddings.pdf">Man is to Computer Programmer as Woman is to Homemaker? Debiasing Word Embeddings</a> - The GloVe word embeddings were due to Jeffrey Pennington, Richard Socher, and Christopher D. Manning. (https://nlp.stanford.edu/projects/glove/)</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+              <a href="/tags/Sequence-Models/" rel="tag"># Sequence Models</a>
+              <a href="/tags/Project/" rel="tag"># Project</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Improvise-a-Jazz-Solo-with-an-LSTM-Network/2019/03/28/" rel="prev" title="Improvise a Jazz Solo with an LSTM Network">
+      <i class="fa fa-chevron-left"></i> Improvise a Jazz Solo with an LSTM Network
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Neural-Machine-Translation-with-Attention/2019/03/29/" rel="next" title="Neural Machine Translation with Attention">
+      Neural Machine Translation with Attention <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#operations-on-word-vectors"><span class="nav-number">1.</span> <span class="nav-text">Operations on word vectors</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cosine-similarity"><span class="nav-number">2.</span> <span class="nav-text">1 - Cosine similarity</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#word-analogy-task"><span class="nav-number">2.1.</span> <span class="nav-text">2 - Word analogy task</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#congratulations"><span class="nav-number">2.1.1.</span> <span class="nav-text">Congratulations!</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#debiasing-word-vectors-optionalungraded"><span class="nav-number">2.2.</span> <span class="nav-text">3 - Debiasing word vectors (OPTIONAL&#x2F;UNGRADED)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#neutralize-bias-for-non-gender-specific-words"><span class="nav-number">2.2.1.</span> <span class="nav-text">3.1 - Neutralize bias for non-gender specific words</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#equalization-algorithm-for-gender-specific-words"><span class="nav-number">2.2.2.</span> <span class="nav-text">3.2 - Equalization algorithm for gender-specific words</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#congratulations-1"><span class="nav-number">2.2.3.</span> <span class="nav-text">Congratulations</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

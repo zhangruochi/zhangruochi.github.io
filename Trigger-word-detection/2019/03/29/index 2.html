@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="applying deep learning to speech recognition">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Trigger word detection">
+<meta property="og:url" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="applying deep learning to speech recognition">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/images/sound.png">
+<meta property="og:image" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/images/output_9_0.png">
+<meta property="og:image" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/images/spectrogram.png">
+<meta property="og:image" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/images/label_diagram.png">
+<meta property="og:image" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/images/output_33_1.png">
+<meta property="og:image" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/images/ones_reference.png">
+<meta property="og:image" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/output_37_1.png">
+<meta property="og:image" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/images/train_reference.png">
+<meta property="og:image" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/output_44_1.png">
+<meta property="og:image" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/images/train_label.png">
+<meta property="og:image" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/images/model.png">
+<meta property="og:image" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/images/output_78_0.png">
+<meta property="og:image" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/images/output_79_0.png">
+<meta property="article:published_time" content="2019-03-29T09:41:51.000Z">
+<meta property="article:modified_time" content="2020-01-20T13:01:31.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Sequence Models">
+<meta property="article:tag" content="Project">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Trigger-word-detection/2019/03/29/images/sound.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Trigger-word-detection/2019/03/29/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Trigger word detection | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Trigger-word-detection/2019/03/29/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Trigger word detection
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-03-29 17:41:51" itemprop="dateCreated datePublished" datetime="2019-03-29T17:41:51+08:00">2019-03-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-20 21:01:31" itemprop="dateModified" datetime="2020-01-20T21:01:31+08:00">2020-01-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Trigger-word-detection/2019/03/29/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Trigger-word-detection/2019/03/29/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">applying deep learning to speech recognition</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="trigger-word-detection">Trigger Word Detection</h2>
+<p>Welcome to the final programming assignment of this specialization!</p>
+<p>In this week's videos, you learned about applying deep learning to speech recognition. In this assignment, you will construct a speech dataset and implement an algorithm for trigger word detection (sometimes also called keyword detection, or wakeword detection). Trigger word detection is the technology that allows devices like Amazon Alexa, Google Home, Apple Siri, and Baidu DuerOS to wake up upon hearing a certain word.</p>
+<p>For this exercise, our trigger word will be "Activate." Every time it hears you say "activate," it will make a "chiming" sound. By the end of this assignment, you will be able to record a clip of yourself talking, and have the algorithm trigger a chime when it detects you saying "activate."</p>
+<p>After completing this assignment, perhaps you can also extend it to run on your laptop so that every time you say "activate" it starts up your favorite app, or turns on a network connected lamp in your house, or triggers some other event?</p>
+<p><img src="images/sound.png" style="width:1000px;height:150px;"></p>
+<p>In this assignment you will learn to: - Structure a speech recognition project - Synthesize and process audio recordings to create train/dev datasets - Train a trigger word detection model and make predictions</p>
+<p>Lets get started! Run the following cell to load the package you are going to use.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> pydub <span class="keyword">import</span> AudioSegment</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> io</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"><span class="keyword">import</span> IPython</span><br><span class="line"><span class="keyword">from</span> td_utils <span class="keyword">import</span> *</span><br><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
+<h1 id="data-synthesis-creating-a-speech-dataset">1 - Data synthesis: Creating a speech dataset</h1>
+<p>Let's start by building a dataset for your trigger word detection algorithm. A speech dataset should ideally be as close as possible to the application you will want to run it on. In this case, you'd like to detect the word "activate" in working environments (library, home, offices, open-spaces ...). You thus need to create recordings with a mix of positive words ("activate") and negative words (random words other than activate) on different background sounds. Let's see how you can create such a dataset.</p>
+<h2 id="listening-to-the-data">1.1 - Listening to the data</h2>
+<p>One of your friends is helping you out on this project, and they've gone to libraries, cafes, restaurants, homes and offices all around the region to record background noises, as well as snippets of audio of people saying positive/negative words. This dataset includes people speaking in a variety of accents.</p>
+<p>In the raw_data directory, you can find a subset of the raw audio files of the positive words, negative words, and background noise. You will use these audio files to synthesize a dataset to train the model. The "activate" directory contains positive examples of people saying the word "activate". The "negatives" directory contains negative examples of people saying random words other than "activate". There is one word per audio recording. The "backgrounds" directory contains 10 second clips of background noise in different environments.</p>
+<p>Run the cells below to listen to some examples.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPython.display.Audio(<span class="string">&quot;./raw_data/activates/1.wav&quot;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPython.display.Audio(<span class="string">&quot;./raw_data/negatives/4.wav&quot;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPython.display.Audio(<span class="string">&quot;./raw_data/backgrounds/1.wav&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>You will use these three type of recordings (positives/negatives/backgrounds) to create a labelled dataset.</p>
+<h2 id="from-audio-recordings-to-spectrograms">1.2 - From audio recordings to spectrograms</h2>
+<p>What really is an audio recording? A microphone records little variations in air pressure over time, and it is these little variations in air pressure that your ear also perceives as sound. You can think of an audio recording is a long list of numbers measuring the little air pressure changes detected by the microphone. We will use audio sampled at 44100 Hz (or 44100 Hertz). This means the microphone gives us 44100 numbers per second. Thus, a 10 second audio clip is represented by 441000 numbers (= <span class="math inline">\(10 \times 44100\)</span>).</p>
+<p>It is quite difficult to figure out from this "raw" representation of audio whether the word "activate" was said. In order to help your sequence model more easily learn to detect triggerwords, we will compute a <em>spectrogram</em> of the audio. The spectrogram tells us how much different frequencies are present in an audio clip at a moment in time.</p>
+<p>(If you've ever taken an advanced class on signal processing or on Fourier transforms, a spectrogram is computed by sliding a window over the raw audio signal, and calculates the most active frequencies in each window using a Fourier transform. If you don't understand the previous sentence, don't worry about it.)</p>
+<p>Lets see an example.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPython.display.Audio(<span class="string">&quot;audio_examples/example_train.wav&quot;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x = graph_spectrogram(<span class="string">&quot;audio_examples/example_train.wav&quot;</span>)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="images/output_9_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x</span><br></pre></td></tr></table></figure>
+<pre><code>array([[  9.20850313e-08,   4.94545058e-01,   9.88447548e+01, ...,
+          2.30894224e-03,   4.91766839e-02,   3.50139219e-01],
+       [  1.80512628e-07,   1.00418722e+00,   1.18114390e+02, ...,
+          3.28274988e-02,   1.63775223e-01,   2.46378304e-01],
+       [  1.69854057e-07,   9.54327257e-01,   1.84377595e+02, ...,
+          3.10392369e-01,   1.30484879e+00,   8.80165188e-01],
+       ..., 
+       [  2.16098310e-07,   5.44274404e-05,   2.88564585e-05, ...,
+          1.51337049e-04,   1.92541456e-05,   4.46536973e-05],
+       [  2.25828769e-07,   1.96743381e-05,   3.15255813e-05, ...,
+          3.30137333e-04,   4.54464074e-05,   2.49749955e-05],
+       [  1.14628741e-07,   1.09958935e-07,   6.32568913e-05, ...,
+          1.75251216e-04,   9.53804196e-06,   2.46519606e-05]])</code></pre>
+<p>The graph above represents how active each frequency is (y axis) over a number of time-steps (x axis).</p>
+<p><img src="images/spectrogram.png" style="width:500px;height:200px;"></p>
+<center>
+<strong>Figure 1</strong>: Spectrogram of an audio recording, where the color shows the degree to which different frequencies are present (loud) in the audio at different points in time. Green squares means a certain frequency is more active or more present in the audio clip (louder); blue squares denote less active frequencies.
+</center>
+<p>The dimension of the output spectrogram depends upon the hyperparameters of the spectrogram software and the length of the input. In this notebook, we will be working with 10 second audio clips as the "standard length" for our training examples. The number of timesteps of the spectrogram will be 5511. You'll see later that the spectrogram will be the input <span class="math inline">\(x\)</span> into the network, and so <span class="math inline">\(T_x = 5511\)</span>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">_, data = wavfile.read(<span class="string">&quot;audio_examples/example_train.wav&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Time steps in audio recording before spectrogram&quot;</span>, data[:,<span class="number">0</span>].shape)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Time steps in input after spectrogram&quot;</span>, x.shape)</span><br></pre></td></tr></table></figure>
+<pre><code>Time steps in audio recording before spectrogram (441000,)
+Time steps in input after spectrogram (101, 5511)</code></pre>
+<p>Now, you can define:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Tx = <span class="number">5511</span> <span class="comment"># The number of time steps input to the model from the spectrogram</span></span><br><span class="line">n_freq = <span class="number">101</span> <span class="comment"># Number of frequencies input to the model at each time step of the spectrogram</span></span><br></pre></td></tr></table></figure>
+<p>Note that even with 10 seconds being our default training example length, 10 seconds of time can be discretized to different numbers of value. You've seen 441000 (raw audio) and 5511 (spectrogram). In the former case, each step represents <span class="math inline">\(10/441000 \approx 0.000023\)</span> seconds. In the second case, each step represents <span class="math inline">\(10/5511 \approx 0.0018\)</span> seconds.</p>
+<p>For the 10sec of audio, the key values you will see in this assignment are:</p>
+<ul>
+<li><span class="math inline">\(441000\)</span> (raw audio)</li>
+<li><span class="math inline">\(5511 = T_x\)</span> (spectrogram output, and dimension of input to the neural network).</li>
+<li><span class="math inline">\(10000\)</span> (used by the <code>pydub</code> module to synthesize audio)</li>
+<li><span class="math inline">\(1375 = T_y\)</span> (the number of steps in the output of the GRU you'll build).</li>
+</ul>
+<p>Note that each of these representations correspond to exactly 10 seconds of time. It's just that they are discretizing them to different degrees. All of these are hyperparameters and can be changed (except the 441000, which is a function of the microphone). We have chosen values that are within the standard ranges uses for speech systems.</p>
+<p>Consider the <span class="math inline">\(T_y = 1375\)</span> number above. This means that for the output of the model, we discretize the 10s into 1375 time-intervals (each one of length <span class="math inline">\(10/1375 \approx 0.0072\)</span>s) and try to predict for each of these intervals whether someone recently finished saying "activate."</p>
+<p>Consider also the 10000 number above. This corresponds to discretizing the 10sec clip into 10/10000 = 0.001 second itervals. 0.001 seconds is also called 1 millisecond, or 1ms. So when we say we are discretizing according to 1ms intervals, it means we are using 10,000 steps.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Ty = <span class="number">1375</span> <span class="comment"># The number of time steps in the output of our model</span></span><br></pre></td></tr></table></figure>
+<h2 id="generating-a-single-training-example">1.3 - Generating a single training example</h2>
+<p>Because speech data is hard to acquire and label, you will synthesize your training data using the audio clips of activates, negatives, and backgrounds. It is quite slow to record lots of 10 second audio clips with random "activates" in it. Instead, it is easier to record lots of positives and negative words, and record background noise separately (or download background noise from free online sources).</p>
+<p>To synthesize a single training example, you will:</p>
+<ul>
+<li>Pick a random 10 second background audio clip</li>
+<li>Randomly insert 0-4 audio clips of "activate" into this 10sec clip</li>
+<li>Randomly insert 0-2 audio clips of negative words into this 10sec clip</li>
+</ul>
+<p>Because you had synthesized the word "activate" into the background clip, you know exactly when in the 10sec clip the "activate" makes its appearance. You'll see later that this makes it easier to generate the labels <span class="math inline">\(y^{\langle t \rangle}\)</span> as well.</p>
+<p>You will use the pydub package to manipulate audio. Pydub converts raw audio files into lists of Pydub data structures (it is not important to know the details here). Pydub uses 1ms as the discretization interval (1ms is 1 millisecond = 1/1000 seconds) which is why a 10sec clip is always represented using 10,000 steps.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Load audio segments using pydub </span></span><br><span class="line">activates, negatives, backgrounds = load_raw_audio()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;background len: &quot;</span> + <span class="built_in">str</span>(<span class="built_in">len</span>(backgrounds[<span class="number">0</span>])))    <span class="comment"># Should be 10,000, since it is a 10 sec clip</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;activate[0] len: &quot;</span> + <span class="built_in">str</span>(<span class="built_in">len</span>(activates[<span class="number">0</span>])))     <span class="comment"># Maybe around 1000, since an &quot;activate&quot; audio clip is usually around 1 sec (but varies a lot)</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;activate[1] len: &quot;</span> + <span class="built_in">str</span>(<span class="built_in">len</span>(activates[<span class="number">1</span>])))     <span class="comment"># Different &quot;activate&quot; clips can have different lengths </span></span><br></pre></td></tr></table></figure>
+<pre><code>background len: 10000
+activate[0] len: 916
+activate[1] len: 1579</code></pre>
+<p><strong>Overlaying positive/negative words on the background</strong>:</p>
+<p>Given a 10sec background clip and a short audio clip (positive or negative word), you need to be able to "add" or "insert" the word's short audio clip onto the background. To ensure audio segments inserted onto the background do not overlap, you will keep track of the times of previously inserted audio clips. You will be inserting multiple clips of positive/negative words onto the background, and you don't want to insert an "activate" or a random word somewhere that overlaps with another clip you had previously added.</p>
+<p>For clarity, when you insert a 1sec "activate" onto a 10sec clip of cafe noise, you end up with a 10sec clip that sounds like someone sayng "activate" in a cafe, with "activate" superimposed on the background cafe noise. You do <em>not</em> end up with an 11 sec clip. You'll see later how pydub allows you to do this.</p>
+<p><strong>Creating the labels at the same time you overlay</strong>:</p>
+<p>Recall also that the labels <span class="math inline">\(y^{\langle t \rangle}\)</span> represent whether or not someone has just finished saying "activate." Given a background clip, we can initialize <span class="math inline">\(y^{\langle t \rangle}=0\)</span> for all <span class="math inline">\(t\)</span>, since the clip doesn't contain any "activates."</p>
+<p>When you insert or overlay an "activate" clip, you will also update labels for <span class="math inline">\(y^{\langle t \rangle}\)</span>, so that 50 steps of the output now have target label 1. You will train a GRU to detect when someone has <em>finished</em> saying "activate". For example, suppose the synthesized "activate" clip ends at the 5sec mark in the 10sec audio---exactly halfway into the clip. Recall that <span class="math inline">\(T_y = 1375\)</span>, so timestep $687 = $ <code>int(1375*0.5)</code> corresponds to the moment at 5sec into the audio. So, you will set <span class="math inline">\(y^{\langle 688 \rangle} = 1\)</span>. Further, you would quite satisfied if the GRU detects "activate" anywhere within a short time-internal after this moment, so we actually set 50 consecutive values of the label <span class="math inline">\(y^{\langle t \rangle}\)</span> to 1. Specifically, we have <span class="math inline">\(y^{\langle 688 \rangle} = y^{\langle 689 \rangle} = \cdots = y^{\langle 737 \rangle} = 1\)</span>.</p>
+<p>This is another reason for synthesizing the training data: It's relatively straightforward to generate these labels <span class="math inline">\(y^{\langle t \rangle}\)</span> as described above. In contrast, if you have 10sec of audio recorded on a microphone, it's quite time consuming for a person to listen to it and mark manually exactly when "activate" finished.</p>
+<p>Here's a figure illustrating the labels <span class="math inline">\(y^{\langle t \rangle}\)</span>, for a clip which we have inserted "activate", "innocent", activate", "baby." Note that the positive labels "1" are associated only with the positive words.</p>
+<img src="images/label_diagram.png" style="width:500px;height:200px;">
+<center>
+<strong>Figure 2</strong>
+</center>
+<p>To implement the training set synthesis process, you will use the following helper functions. All of these function will use a 1ms discretization interval, so the 10sec of audio is alwsys discretized into 10,000 steps.</p>
+<ol type="1">
+<li><code>get_random_time_segment(segment_ms)</code> gets a random time segment in our background audio</li>
+<li><code>is_overlapping(segment_time, existing_segments)</code> checks if a time segment overlaps with existing segments</li>
+<li><code>insert_audio_clip(background, audio_clip, existing_times)</code> inserts an audio segment at a random time in our background audio using <code>get_random_time_segment</code> and <code>is_overlapping</code></li>
+<li><code>insert_ones(y, segment_end_ms)</code> inserts 1's into our label vector y after the word "activate"</li>
+</ol>
+<p>The function <code>get_random_time_segment(segment_ms)</code> returns a random time segment onto which we can insert an audio clip of duration <code>segment_ms</code>. Read through the code to make sure you understand what it is doing.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_random_time_segment</span>(<span class="params">segment_ms</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Gets a random time segment of duration segment_ms in a 10,000 ms audio clip.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    segment_ms -- the duration of the audio clip in ms (&quot;ms&quot; stands for &quot;milliseconds&quot;)</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    segment_time -- a tuple of (segment_start, segment_end) in ms</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    segment_start = np.random.randint(low=<span class="number">0</span>, high=<span class="number">10000</span>-segment_ms)   <span class="comment"># Make sure segment doesn&#x27;t run past the 10sec background </span></span><br><span class="line">    segment_end = segment_start + segment_ms - <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> (segment_start, segment_end)</span><br></pre></td></tr></table></figure>
+<p>Next, suppose you have inserted audio clips at segments (1000,1800) and (3400,4500). I.e., the first segment starts at step 1000, and ends at step 1800. Now, if we are considering inserting a new audio clip at (3000,3600) does this overlap with one of the previously inserted segments? In this case, (3000,3600) and (3400,4500) overlap, so we should decide against inserting a clip here.</p>
+<p>For the purpose of this function, define (100,200) and (200,250) to be overlapping, since they overlap at timestep 200. However, (100,199) and (200,250) are non-overlapping.</p>
+<p><strong>Exercise</strong>: Implement <code>is_overlapping(segment_time, existing_segments)</code> to check if a new time segment overlaps with any of the previous segments. You will need to carry out 2 steps:</p>
+<ol type="1">
+<li>Create a "False" flag, that you will later set to "True" if you find that there is an overlap.</li>
+<li>Loop over the previous_segments' start and end times. Compare these times to the segment's start and end times. If there is an overlap, set the flag defined in (1) as True. You can use: <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> ....:</span><br><span class="line">        <span class="keyword">if</span> ... &lt;= ... <span class="keyword">and</span> ... &gt;= ...:</span><br><span class="line">            ...</span><br></pre></td></tr></table></figure> Hint: There is overlap if the segment starts before the previous segment ends, and the segment ends after the previous segment starts.</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GRADED FUNCTION: is_overlapping</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_overlapping</span>(<span class="params">segment_time, previous_segments</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Checks if the time of a segment overlaps with the times of existing segments.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    segment_time -- a tuple of (segment_start, segment_end) for the new segment</span></span><br><span class="line"><span class="string">    previous_segments -- a list of tuples of (segment_start, segment_end) for the existing segments</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    True if the time segment overlaps with any of the existing segments, False otherwise</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    segment_start, segment_end = segment_time</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE ### (≈ 4 line)</span></span><br><span class="line">    <span class="comment"># Step 1: Initialize overlap as a &quot;False&quot; flag. (≈ 1 line)</span></span><br><span class="line">    overlap = <span class="literal">False</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 2: loop over the previous_segments start and end times.</span></span><br><span class="line">    <span class="comment"># Compare start/end times and set the flag to True if there is an overlap (≈ 3 lines)</span></span><br><span class="line">    <span class="keyword">for</span> previous_start, previous_end <span class="keyword">in</span> previous_segments:</span><br><span class="line">        <span class="keyword">if</span> segment_start &lt;= previous_end <span class="keyword">and</span> segment_end &gt;= previous_start:</span><br><span class="line">            overlap = <span class="literal">True</span></span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> overlap</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">overlap1 = is_overlapping((<span class="number">950</span>, <span class="number">1430</span>), [(<span class="number">2000</span>, <span class="number">2550</span>), (<span class="number">260</span>, <span class="number">949</span>)])</span><br><span class="line">overlap2 = is_overlapping((<span class="number">2305</span>, <span class="number">2950</span>), [(<span class="number">824</span>, <span class="number">1532</span>), (<span class="number">1900</span>, <span class="number">2305</span>), (<span class="number">3424</span>, <span class="number">3656</span>)])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Overlap 1 = &quot;</span>, overlap1)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Overlap 2 = &quot;</span>, overlap2)</span><br></pre></td></tr></table></figure>
+<pre><code>Overlap 1 =  False
+Overlap 2 =  True</code></pre>
+<p><strong>Expected Output</strong>:</p>
+<table>
+<tr>
+<td>
+<strong>Overlap 1</strong>
+</td>
+<td>
+False
+</td>
+</tr>
+<tr>
+<td>
+<strong>Overlap 2</strong>
+</td>
+<td>
+True
+</td>
+</tr>
+</table>
+<p>Now, lets use the previous helper functions to insert a new audio clip onto the 10sec background at a random time, but making sure that any newly inserted segment doesn't overlap with the previous segments.</p>
+<p><strong>Exercise</strong>: Implement <code>insert_audio_clip()</code> to overlay an audio clip onto the background 10sec clip. You will need to carry out 4 steps:</p>
+<ol type="1">
+<li>Get a random time segment of the right duration in ms.</li>
+<li>Make sure that the time segment does not overlap with any of the previous time segments. If it is overlapping, then go back to step 1 and pick a new time segment.</li>
+<li>Add the new time segment to the list of existing time segments, so as to keep track of all the segments you've inserted.<br />
+</li>
+<li>Overlay the audio clip over the background using pydub. We have implemented this for you.</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GRADED FUNCTION: insert_audio_clip</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert_audio_clip</span>(<span class="params">background, audio_clip, previous_segments</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Insert a new audio segment over the background noise at a random time step, ensuring that the </span></span><br><span class="line"><span class="string">    audio segment does not overlap with existing segments.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    background -- a 10 second background audio recording.  </span></span><br><span class="line"><span class="string">    audio_clip -- the audio clip to be inserted/overlaid. </span></span><br><span class="line"><span class="string">    previous_segments -- times where audio segments have already been placed</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    new_background -- the updated background audio</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Get the duration of the audio clip in ms</span></span><br><span class="line">    segment_ms = <span class="built_in">len</span>(audio_clip)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE ### </span></span><br><span class="line">    <span class="comment"># Step 1: Use one of the helper functions to pick a random time segment onto which to insert </span></span><br><span class="line">    <span class="comment"># the new audio clip. (≈ 1 line)</span></span><br><span class="line">    segment_time = get_random_time_segment(segment_ms)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Step 2: Check if the new segment_time overlaps with one of the previous_segments. If so, keep </span></span><br><span class="line">    <span class="comment"># picking new segment_time at random until it doesn&#x27;t overlap. (≈ 2 lines)</span></span><br><span class="line">    <span class="keyword">while</span> is_overlapping(segment_time, previous_segments):</span><br><span class="line">        segment_time = get_random_time_segment(segment_ms)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Step 3: Add the new segment_time to the list of previous_segments (≈ 1 line)</span></span><br><span class="line">    previous_segments.append(segment_time)</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 4: Superpose audio segment and background</span></span><br><span class="line">    new_background = background.overlay(audio_clip, position = segment_time[<span class="number">0</span>])</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> new_background, segment_time</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">np.random.seed(<span class="number">5</span>)</span><br><span class="line">audio_clip, segment_time = insert_audio_clip(backgrounds[<span class="number">0</span>], activates[<span class="number">0</span>], [(<span class="number">3790</span>, <span class="number">4400</span>)])</span><br><span class="line">audio_clip.export(<span class="string">&quot;insert_test.wav&quot;</span>, <span class="built_in">format</span>=<span class="string">&quot;wav&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Segment Time: &quot;</span>, segment_time)</span><br><span class="line">IPython.display.Audio(<span class="string">&quot;insert_test.wav&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Segment Time:  (2254, 3169)
+          </code></pre>
+<p><strong>Expected Output</strong></p>
+<table>
+<tr>
+<td>
+<strong>Segment Time</strong>
+</td>
+<td>
+(2254, 3169)
+</td>
+</tr>
+</table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Expected audio</span></span><br><span class="line">IPython.display.Audio(<span class="string">&quot;audio_examples/insert_reference.wav&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>Finally, implement code to update the labels <span class="math inline">\(y^{\langle t \rangle}\)</span>, assuming you just inserted an "activate." In the code below, <code>y</code> is a <code>(1,1375)</code> dimensional vector, since <span class="math inline">\(T_y = 1375\)</span>.</p>
+<p>If the "activate" ended at time step <span class="math inline">\(t\)</span>, then set <span class="math inline">\(y^{\langle t+1 \rangle} = 1\)</span> as well as for up to 49 additional consecutive values. However, make sure you don't run off the end of the array and try to update <code>y[0][1375]</code>, since the valid indices are <code>y[0][0]</code> through <code>y[0][1374]</code> because <span class="math inline">\(T_y = 1375\)</span>. So if "activate" ends at step 1370, you would get only <code>y[0][1371] = y[0][1372] = y[0][1373] = y[0][1374] = 1</code></p>
+<p><strong>Exercise</strong>: Implement <code>insert_ones()</code>. You can use a for loop. (If you are an expert in python's slice operations, feel free also to use slicing to vectorize this.) If a segment ends at <code>segment_end_ms</code> (using a 10000 step discretization), to convert it to the indexing for the outputs <span class="math inline">\(y\)</span> (using a <span class="math inline">\(1375\)</span> step discretization), we will use this formula:<br />
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">segment_end_y = int(segment_end_ms * Ty / 10000.0)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GRADED FUNCTION: insert_ones</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert_ones</span>(<span class="params">y, segment_end_ms</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Update the label vector y. The labels of the 50 output steps strictly after the end of the segment </span></span><br><span class="line"><span class="string">    should be set to 1. By strictly we mean that the label of segment_end_y should be 0 while, the</span></span><br><span class="line"><span class="string">    50 followinf labels should be ones.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    y -- numpy array of shape (1, Ty), the labels of the training example</span></span><br><span class="line"><span class="string">    segment_end_ms -- the end time of the segment in ms</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    y -- updated labels</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># duration of the background (in terms of spectrogram time-steps)</span></span><br><span class="line">    segment_end_y = <span class="built_in">int</span>(segment_end_ms * Ty / <span class="number">10000.0</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Add 1 to the correct index in the background label (y)</span></span><br><span class="line">    <span class="comment">### START CODE HERE ### (≈ 3 lines)</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(segment_end_y+<span class="number">1</span>, segment_end_y+<span class="number">51</span>):</span><br><span class="line">        <span class="keyword">if</span> i &lt; Ty:</span><br><span class="line">            y[<span class="number">0</span>, i] = <span class="number">1.0</span></span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> y</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">arr1 = insert_ones(np.zeros((<span class="number">1</span>, Ty)), <span class="number">9700</span>)</span><br><span class="line">plt.plot(insert_ones(arr1, <span class="number">4251</span>)[<span class="number">0</span>,:])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;sanity checks:&quot;</span>, arr1[<span class="number">0</span>][<span class="number">1333</span>], arr1[<span class="number">0</span>][<span class="number">634</span>], arr1[<span class="number">0</span>][<span class="number">635</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>sanity checks: 0.0 1.0 0.0</code></pre>
+<figure>
+<img src="images/output_33_1.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<strong>Expected Output</strong>
+<table>
+<tr>
+<td>
+<strong>sanity checks</strong>:
+</td>
+<td>
+0.0 1.0 0.0
+</td>
+</tr>
+</table>
+<p><img src="images/ones_reference.png" style="width:320;height:240px;"></p>
+<p>Finally, you can use <code>insert_audio_clip</code> and <code>insert_ones</code> to create a new training example.</p>
+<p><strong>Exercise</strong>: Implement <code>create_training_example()</code>. You will need to carry out the following steps:</p>
+<ol type="1">
+<li>Initialize the label vector <span class="math inline">\(y\)</span> as a numpy array of zeros and shape <span class="math inline">\((1, T_y)\)</span>.</li>
+<li>Initialize the set of existing segments to an empty list.</li>
+<li>Randomly select 0 to 4 "activate" audio clips, and insert them onto the 10sec clip. Also insert labels at the correct position in the label vector <span class="math inline">\(y\)</span>.</li>
+<li>Randomly select 0 to 2 negative audio clips, and insert them into the 10sec clip.</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GRADED FUNCTION: create_training_example</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_training_example</span>(<span class="params">background, activates, negatives</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Creates a training example with a given background, activates, and negatives.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    background -- a 10 second background audio recording</span></span><br><span class="line"><span class="string">    activates -- a list of audio segments of the word &quot;activate&quot;</span></span><br><span class="line"><span class="string">    negatives -- a list of audio segments of random words that are not &quot;activate&quot;</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    x -- the spectrogram of the training example</span></span><br><span class="line"><span class="string">    y -- the label at each time step of the spectrogram</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Set the random seed</span></span><br><span class="line">    np.random.seed(<span class="number">18</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Make background quieter</span></span><br><span class="line">    background = background - <span class="number">20</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">### START CODE HERE ###</span></span><br><span class="line">    <span class="comment"># Step 1: Initialize y (label vector) of zeros (≈ 1 line)</span></span><br><span class="line">    y = np.zeros((<span class="number">1</span>,Ty))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Step 2: Initialize segment times as empty list (≈ 1 line)</span></span><br><span class="line">    previous_segments = []</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Select 0-4 random &quot;activate&quot; audio clips from the entire list of &quot;activates&quot; recordings</span></span><br><span class="line">    number_of_activates = np.random.randint(<span class="number">0</span>, <span class="number">5</span>)</span><br><span class="line">    random_indices = np.random.randint(<span class="built_in">len</span>(activates), size=number_of_activates)</span><br><span class="line">    random_activates = [activates[i] <span class="keyword">for</span> i <span class="keyword">in</span> random_indices]</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE ### (≈ 3 lines)</span></span><br><span class="line">    <span class="comment"># Step 3: Loop over randomly selected &quot;activate&quot; clips and insert in background</span></span><br><span class="line">    <span class="keyword">for</span> random_activate <span class="keyword">in</span> random_activates:</span><br><span class="line">        <span class="comment"># Insert the audio clip on the background</span></span><br><span class="line">        background, segment_time =  insert_audio_clip(background, random_activate, previous_segments)</span><br><span class="line">        <span class="comment"># Retrieve segment_start and segment_end from segment_time</span></span><br><span class="line">        segment_start, segment_end =  segment_time</span><br><span class="line">        <span class="comment"># Insert labels in &quot;y&quot;</span></span><br><span class="line">        y = insert_ones(y, segment_end)</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Select 0-2 random negatives audio recordings from the entire list of &quot;negatives&quot; recordings</span></span><br><span class="line">    number_of_negatives = np.random.randint(<span class="number">0</span>, <span class="number">3</span>)</span><br><span class="line">    random_indices = np.random.randint(<span class="built_in">len</span>(negatives), size=number_of_negatives)</span><br><span class="line">    random_negatives = [negatives[i] <span class="keyword">for</span> i <span class="keyword">in</span> random_indices]</span><br><span class="line"></span><br><span class="line">    <span class="comment">### START CODE HERE ### (≈ 2 lines)</span></span><br><span class="line">    <span class="comment"># Step 4: Loop over randomly selected negative clips and insert in background</span></span><br><span class="line">    <span class="keyword">for</span> random_negative <span class="keyword">in</span> random_negatives:</span><br><span class="line">        <span class="comment"># Insert the audio clip on the background </span></span><br><span class="line">        background, _ = insert_audio_clip(background, random_negative, previous_segments)</span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Standardize the volume of the audio clip </span></span><br><span class="line">    background = match_target_amplitude(background, -<span class="number">20.0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Export new training example </span></span><br><span class="line">    file_handle = background.export(<span class="string">&quot;train&quot;</span> + <span class="string">&quot;.wav&quot;</span>, <span class="built_in">format</span>=<span class="string">&quot;wav&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;File (train.wav) was saved in your directory.&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Get and plot spectrogram of the new recording (background with superposition of positive and negatives)</span></span><br><span class="line">    x = graph_spectrogram(<span class="string">&quot;train.wav&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> x, y</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x, y = create_training_example(backgrounds[<span class="number">0</span>], activates, negatives)</span><br></pre></td></tr></table></figure>
+<pre><code>File (train.wav) was saved in your directory.</code></pre>
+<figure>
+<img src="output_37_1.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p><strong>Expected Output</strong> <img src="images/train_reference.png" style="width:320;height:240px;"></p>
+<p>Now you can listen to the training example you created and compare it to the spectrogram generated above.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPython.display.Audio(<span class="string">&quot;train.wav&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>Expected Output</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPython.display.Audio(<span class="string">&quot;audio_examples/train_reference.wav&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>Finally, you can plot the associated labels for the generated training example.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.plot(y[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>[&lt;matplotlib.lines.Line2D at 0x7f717da726a0&gt;]</code></pre>
+<figure>
+<img src="output_44_1.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p><strong>Expected Output</strong> <img src="images/train_label.png" style="width:320;height:240px;"></p>
+<h2 id="full-training-set">1.4 - Full training set</h2>
+<p>You've now implemented the code needed to generate a single training example. We used this process to generate a large training set. To save time, we've already generated a set of training examples.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Load preprocessed training examples</span></span><br><span class="line">X = np.load(<span class="string">&quot;./XY_train/X.npy&quot;</span>)</span><br><span class="line">Y = np.load(<span class="string">&quot;./XY_train/Y.npy&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="development-set">1.5 - Development set</h2>
+<p>To test our model, we recorded a development set of 25 examples. While our training data is synthesized, we want to create a development set using the same distribution as the real inputs. Thus, we recorded 25 10-second audio clips of people saying "activate" and other random words, and labeled them by hand. This follows the principle described in Course 3 that we should create the dev set to be as similar as possible to the test set distribution; that's why our dev set uses real rather than synthesized audio.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Load preprocessed dev set examples</span></span><br><span class="line">X_dev = np.load(<span class="string">&quot;./XY_dev/X_dev.npy&quot;</span>)</span><br><span class="line">Y_dev = np.load(<span class="string">&quot;./XY_dev/Y_dev.npy&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="model">2 - Model</h1>
+<p>Now that you've built a dataset, lets write and train a trigger word detection model!</p>
+<p>The model will use 1-D convolutional layers, GRU layers, and dense layers. Let's load the packages that will allow you to use these layers in Keras. This might take a minute to load.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> keras.callbacks <span class="keyword">import</span> ModelCheckpoint</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Model, load_model, Sequential</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense, Activation, Dropout, Input, Masking, TimeDistributed, LSTM, Conv1D</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> GRU, Bidirectional, BatchNormalization, Reshape</span><br><span class="line"><span class="keyword">from</span> keras.optimizers <span class="keyword">import</span> Adam</span><br></pre></td></tr></table></figure>
+<h2 id="build-the-model">2.1 - Build the model</h2>
+<p>Here is the architecture we will use. Take some time to look over the model and see if it makes sense.</p>
+<img src="images/model.png" style="width:600px;height:600px;">
+<center>
+<strong>Figure 3</strong>
+</center>
+<p>One key step of this model is the 1D convolutional step (near the bottom of Figure 3). It inputs the 5511 step spectrogram, and outputs a 1375 step output, which is then further processed by multiple layers to get the final <span class="math inline">\(T_y = 1375\)</span> step output. This layer plays a role similar to the 2D convolutions you saw in Course 4, of extracting low-level features and then possibly generating an output of a smaller dimension.</p>
+<p>Computationally, the 1-D conv layer also helps speed up the model because now the GRU has to process only 1375 timesteps rather than 5511 timesteps. The two GRU layers read the sequence of inputs from left to right, then ultimately uses a dense+sigmoid layer to make a prediction for <span class="math inline">\(y^{\langle t \rangle}\)</span>. Because <span class="math inline">\(y\)</span> is binary valued (0 or 1), we use a sigmoid output at the last layer to estimate the chance of the output being 1, corresponding to the user having just said "activate."</p>
+<p>Note that we use a uni-directional RNN rather than a bi-directional RNN. This is really important for trigger word detection, since we want to be able to detect the trigger word almost immediately after it is said. If we used a bi-directional RNN, we would have to wait for the whole 10sec of audio to be recorded before we could tell if "activate" was said in the first second of the audio clip.</p>
+<p>Implementing the model can be done in four steps:</p>
+<p><strong>Step 1</strong>: CONV layer. Use <code>Conv1D()</code> to implement this, with 196 filters, a filter size of 15 (<code>kernel_size=15</code>), and stride of 4. [<a target="_blank" rel="noopener" href="https://keras.io/layers/convolutional/#conv1d">See documentation.</a>]</p>
+<p><strong>Step 2</strong>: First GRU layer. To generate the GRU layer, use: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X = GRU(units = 128, return_sequences = True)(X)</span><br></pre></td></tr></table></figure> Setting <code>return_sequences=True</code> ensures that all the GRU's hidden states are fed to the next layer. Remember to follow this with Dropout and BatchNorm layers.</p>
+<p><strong>Step 3</strong>: Second GRU layer. This is similar to the previous GRU layer (remember to use <code>return_sequences=True</code>), but has an extra dropout layer.</p>
+<p><strong>Step 4</strong>: Create a time-distributed dense layer as follows: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X = TimeDistributed(Dense(1, activation = &quot;sigmoid&quot;))(X)</span><br></pre></td></tr></table></figure> This creates a dense layer followed by a sigmoid, so that the parameters used for the dense layer are the same for every time step. [<a target="_blank" rel="noopener" href="https://keras.io/layers/wrappers/">See documentation</a>.]</p>
+<p><strong>Exercise</strong>: Implement <code>model()</code>, the architecture is presented in Figure 3.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GRADED FUNCTION: model</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">model</span>(<span class="params">input_shape</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Function creating the model&#x27;s graph in Keras.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Argument:</span></span><br><span class="line"><span class="string">    input_shape -- shape of the model&#x27;s input data (using Keras conventions)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">    model -- Keras model instance</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    X_input = Input(shape = input_shape)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 1: CONV layer (≈4 lines)</span></span><br><span class="line">    X = Conv1D(filters = <span class="number">196</span>, kernel_size=<span class="number">15</span>,strides=<span class="number">4</span>)(X_input)        <span class="comment"># CONV1D</span></span><br><span class="line">    X = BatchNormalization()(X)                                <span class="comment"># Batch normalization</span></span><br><span class="line">    X = Activation(<span class="string">&#x27;relu&#x27;</span>)(X)                                  <span class="comment"># ReLu activation</span></span><br><span class="line">    X = Dropout(<span class="number">0.8</span>)(X) </span><br><span class="line"></span><br><span class="line">    <span class="comment"># Step 2: First GRU Layer (≈4 lines)</span></span><br><span class="line">    X = GRU(units = <span class="number">128</span>, return_sequences=<span class="literal">True</span>)(X)                                 <span class="comment"># GRU (use 128 units and return the sequences)</span></span><br><span class="line">    X = Dropout(<span class="number">0.8</span>)(X)                                 <span class="comment"># dropout (use 0.8)</span></span><br><span class="line">    X = BatchNormalization()(X)                                   <span class="comment"># Batch normalization</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 3: Second GRU Layer (≈4 lines)</span></span><br><span class="line">    X = GRU(units = <span class="number">128</span>, return_sequences=<span class="literal">True</span>)(X)       <span class="comment"># GRU (use 128 units and return the sequences)</span></span><br><span class="line">    X = Dropout(<span class="number">0.8</span>)(X)                                  <span class="comment"># dropout (use 0.8)</span></span><br><span class="line">    X = BatchNormalization()(X)                          <span class="comment"># Batch normalization</span></span><br><span class="line">    X = Dropout(<span class="number">0.8</span>)(X)                                  <span class="comment"># dropout (use 0.8)</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 4: Time-distributed dense layer (≈1 line)</span></span><br><span class="line">    X = TimeDistributed(Dense(<span class="number">1</span>, activation = <span class="string">&quot;sigmoid&quot;</span>))(X) <span class="comment"># time distributed  (sigmoid)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line"></span><br><span class="line">    model = Model(inputs = X_input, outputs = X)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> model  </span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model = model(input_shape = (Tx, n_freq))</span><br></pre></td></tr></table></figure>
+<p>Let's print the model summary to keep track of the shapes.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model.summary()</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">_________________________________________________________________</span><br><span class="line">Layer (type)                 Output Shape              Param #   </span><br><span class="line">=================================================================</span><br><span class="line">input_3 (InputLayer)         (None, 5511, 101)         0         </span><br><span class="line">_________________________________________________________________</span><br><span class="line">conv1d_3 (Conv1D)            (None, 1375, 196)         297136    </span><br><span class="line">_________________________________________________________________</span><br><span class="line">batch_normalization_2 (Batch (None, 1375, 196)         784       </span><br><span class="line">_________________________________________________________________</span><br><span class="line">activation_1 (Activation)    (None, 1375, 196)         0         </span><br><span class="line">_________________________________________________________________</span><br><span class="line">dropout_1 (Dropout)          (None, 1375, 196)         0         </span><br><span class="line">_________________________________________________________________</span><br><span class="line">gru_1 (GRU)                  (None, 1375, 128)         124800    </span><br><span class="line">_________________________________________________________________</span><br><span class="line">dropout_2 (Dropout)          (None, 1375, 128)         0         </span><br><span class="line">_________________________________________________________________</span><br><span class="line">batch_normalization_3 (Batch (None, 1375, 128)         512       </span><br><span class="line">_________________________________________________________________</span><br><span class="line">gru_2 (GRU)                  (None, 1375, 128)         98688     </span><br><span class="line">_________________________________________________________________</span><br><span class="line">dropout_3 (Dropout)          (None, 1375, 128)         0         </span><br><span class="line">_________________________________________________________________</span><br><span class="line">batch_normalization_4 (Batch (None, 1375, 128)         512       </span><br><span class="line">_________________________________________________________________</span><br><span class="line">dropout_4 (Dropout)          (None, 1375, 128)         0         </span><br><span class="line">_________________________________________________________________</span><br><span class="line">time_distributed_1 (TimeDist (None, 1375, 1)           129       </span><br><span class="line">=================================================================</span><br><span class="line">Total params: 522,561</span><br><span class="line">Trainable params: 521,657</span><br><span class="line">Non-trainable params: 904</span><br><span class="line">_________________________________________________________________</span><br></pre></td></tr></table></figure>
+<p><strong>Expected Output</strong>:</p>
+<table>
+<tr>
+<td>
+<strong>Total params</strong>
+</td>
+<td>
+522,561
+</td>
+</tr>
+<tr>
+<td>
+<strong>Trainable params</strong>
+</td>
+<td>
+521,657
+</td>
+</tr>
+<tr>
+<td>
+<strong>Non-trainable params</strong>
+</td>
+<td>
+904
+</td>
+</tr>
+</table>
+<p>The output of the network is of shape (None, 1375, 1) while the input is (None, 5511, 101). The Conv1D has reduced the number of steps from 5511 at spectrogram to 1375.</p>
+<h2 id="fit-the-model">2.2 - Fit the model</h2>
+<p>Trigger word detection takes a long time to train. To save time, we've already trained a model for about 3 hours on a GPU using the architecture you built above, and a large training set of about 4000 examples. Let's load the model.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model = load_model(<span class="string">&#x27;./models/tr_model.h5&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>You can train the model further, using the Adam optimizer and binary cross entropy loss, as follows. This will run quickly because we are training just for one epoch and with a small training set of 26 examples.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">opt = Adam(lr=<span class="number">0.0001</span>, beta_1=<span class="number">0.9</span>, beta_2=<span class="number">0.999</span>, decay=<span class="number">0.01</span>)</span><br><span class="line">model.<span class="built_in">compile</span>(loss=<span class="string">&#x27;binary_crossentropy&#x27;</span>, optimizer=opt, metrics=[<span class="string">&quot;accuracy&quot;</span>])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model.fit(X, Y, batch_size = <span class="number">5</span>, epochs=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Epoch 1/1
+26/26 [==============================] - 164s - loss: 0.0726 - acc: 0.9805   
+
+
+
+
+
+&lt;keras.callbacks.History at 0x7f71052e7f60&gt;</code></pre>
+<h2 id="test-the-model">2.3 - Test the model</h2>
+<p>Finally, let's see how your model performs on the dev set.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">loss, acc = model.evaluate(X_dev, Y_dev)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Dev set accuracy = &quot;</span>, acc)</span><br></pre></td></tr></table></figure>
+<pre><code>25/25 [==============================] - 18s
+Dev set accuracy =  0.94565820694</code></pre>
+<p>This looks pretty good! However, accuracy isn't a great metric for this task, since the labels are heavily skewed to 0's, so a neural network that just outputs 0's would get slightly over 90% accuracy. We could define more useful metrics such as F1 score or Precision/Recall. But let's not bother with that here, and instead just empirically see how the model does.</p>
+<h1 id="making-predictions">3 - Making Predictions</h1>
+<p>Now that you have built a working model for trigger word detection, let's use it to make predictions. This code snippet runs audio (saved in a wav file) through the network.</p>
+<!--
+can use your model to make predictions on new audio clips.
+
+You will first need to compute the predictions for an input audio clip.
+
+**Exercise**: Implement predict_activates(). You will need to do the following:
+
+1. Compute the spectrogram for the audio file
+2. Use `np.swap` and `np.expand_dims` to reshape your input to size (1, Tx, n_freqs)
+5. Use forward propagation on your model to compute the prediction at each output step
+!-->
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">detect_triggerword</span>(<span class="params">filename</span>):</span></span><br><span class="line">    plt.subplot(<span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    x = graph_spectrogram(filename)</span><br><span class="line">    <span class="comment"># the spectogram outputs (freqs, Tx) and we want (Tx, freqs) to input into the model</span></span><br><span class="line">    x  = x.swapaxes(<span class="number">0</span>,<span class="number">1</span>)</span><br><span class="line">    x = np.expand_dims(x, axis=<span class="number">0</span>)</span><br><span class="line">    predictions = model.predict(x)</span><br><span class="line">    </span><br><span class="line">    plt.subplot(<span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    plt.plot(predictions[<span class="number">0</span>,:,<span class="number">0</span>])</span><br><span class="line">    plt.ylabel(<span class="string">&#x27;probability&#x27;</span>)</span><br><span class="line">    plt.show()</span><br><span class="line">    <span class="keyword">return</span> predictions</span><br></pre></td></tr></table></figure>
+<p>Once you've estimated the probability of having detected the word "activate" at each output step, you can trigger a "chiming" sound to play when the probability is above a certain threshold. Further, <span class="math inline">\(y^{\langle t \rangle}\)</span> might be near 1 for many values in a row after "activate" is said, yet we want to chime only once. So we will insert a chime sound at most once every 75 output steps. This will help prevent us from inserting two chimes for a single instance of "activate". (This plays a role similar to non-max suppression from computer vision.)</p>
+<!-- 
+**Exercise**: Implement chime_on_activate(). You will need to do the following:
+
+1. Loop over the predicted probabilities at each output step
+2. When the prediction is larger than the threshold and more than 75 consecutive time steps have passed, insert a "chime" sound onto the original audio clip
+
+Use this code to convert from the 1,375 step discretization to the 10,000 step discretization and insert a "chime" using pydub:
+
+` audio_clip = audio_clip.overlay(chime, position = ((i / Ty) * audio.duration_seconds)*1000)
+`
+!-->
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">chime_file = <span class="string">&quot;audio_examples/chime.wav&quot;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">chime_on_activate</span>(<span class="params">filename, predictions, threshold</span>):</span></span><br><span class="line">    audio_clip = AudioSegment.from_wav(filename)</span><br><span class="line">    chime = AudioSegment.from_wav(chime_file)</span><br><span class="line">    Ty = predictions.shape[<span class="number">1</span>]</span><br><span class="line">    <span class="comment"># Step 1: Initialize the number of consecutive output steps to 0</span></span><br><span class="line">    consecutive_timesteps = <span class="number">0</span></span><br><span class="line">    <span class="comment"># Step 2: Loop over the output steps in the y</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(Ty):</span><br><span class="line">        <span class="comment"># Step 3: Increment consecutive output steps</span></span><br><span class="line">        consecutive_timesteps += <span class="number">1</span></span><br><span class="line">        <span class="comment"># Step 4: If prediction is higher than the threshold and more than 75 consecutive output steps have passed</span></span><br><span class="line">        <span class="keyword">if</span> predictions[<span class="number">0</span>,i,<span class="number">0</span>] &gt; threshold <span class="keyword">and</span> consecutive_timesteps &gt; <span class="number">75</span>:</span><br><span class="line">            <span class="comment"># Step 5: Superpose audio and background using pydub</span></span><br><span class="line">            audio_clip = audio_clip.overlay(chime, position = ((i / Ty) * audio_clip.duration_seconds)*<span class="number">1000</span>)</span><br><span class="line">            <span class="comment"># Step 6: Reset consecutive output steps to 0</span></span><br><span class="line">            consecutive_timesteps = <span class="number">0</span></span><br><span class="line">        </span><br><span class="line">    audio_clip.export(<span class="string">&quot;chime_output.wav&quot;</span>, <span class="built_in">format</span>=<span class="string">&#x27;wav&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="test-on-dev-examples">3.3 - Test on dev examples</h2>
+<p>Let's explore how our model performs on two unseen audio clips from the development set. Lets first listen to the two dev set clips.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPython.display.Audio(<span class="string">&quot;./raw_data/dev/1.wav&quot;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPython.display.Audio(<span class="string">&quot;./raw_data/dev/2.wav&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>Now lets run the model on these audio clips and see if it adds a chime after "activate"!</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">filename = <span class="string">&quot;./raw_data/dev/1.wav&quot;</span></span><br><span class="line">prediction = detect_triggerword(filename)</span><br><span class="line">chime_on_activate(filename, prediction, <span class="number">0.5</span>)</span><br><span class="line">IPython.display.Audio(<span class="string">&quot;./chime_output.wav&quot;</span>)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="images/output_78_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">filename  = <span class="string">&quot;./raw_data/dev/2.wav&quot;</span></span><br><span class="line">prediction = detect_triggerword(filename)</span><br><span class="line">chime_on_activate(filename, prediction, <span class="number">0.5</span>)</span><br><span class="line">IPython.display.Audio(<span class="string">&quot;./chime_output.wav&quot;</span>)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="images/output_79_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<h1 id="congratulations">Congratulations</h1>
+<p>You've come to the end of this assignment!</p>
+<p>Here's what you should remember: - Data synthesis is an effective way to create a large training set for speech problems, specifically trigger word detection. - Using a spectrogram and optionally a 1D conv layer is a common pre-processing step prior to passing audio data to an RNN, GRU or LSTM. - An end-to-end deep learning approach can be used to built a very effective trigger word detection system.</p>
+<p><em>Congratulations</em> on finishing the fimal assignment!</p>
+<p>Thank you for sticking with us through the end and for all the hard work you've put into learning deep learning. We hope you have enjoyed the course!</p>
+<h1 id="try-your-own-example-optionalungraded">4 - Try your own example! (OPTIONAL/UNGRADED)</h1>
+<p>In this optional and ungraded portion of this notebook, you can try your model on your own audio clips!</p>
+<p>Record a 10 second audio clip of you saying the word "activate" and other random words, and upload it to the Coursera hub as <code>myaudio.wav</code>. Be sure to upload the audio as a wav file. If your audio is recorded in a different format (such as mp3) there is free software that you can find online for converting it to wav. If your audio recording is not 10 seconds, the code below will either trim or pad it as needed to make it 10 seconds.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Preprocess the audio to the correct format</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">preprocess_audio</span>(<span class="params">filename</span>):</span></span><br><span class="line">    <span class="comment"># Trim or pad audio segment to 10000ms</span></span><br><span class="line">    padding = AudioSegment.silent(duration=<span class="number">10000</span>)</span><br><span class="line">    segment = AudioSegment.from_wav(filename)[:<span class="number">10000</span>]</span><br><span class="line">    segment = padding.overlay(segment)</span><br><span class="line">    <span class="comment"># Set frame rate to 44100</span></span><br><span class="line">    segment = segment.set_frame_rate(<span class="number">44100</span>)</span><br><span class="line">    <span class="comment"># Export as wav</span></span><br><span class="line">    segment.export(filename, <span class="built_in">format</span>=<span class="string">&#x27;wav&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>Once you've uploaded your audio file to Coursera, put the path to your file in the variable below.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">your_filename = <span class="string">&quot;audio_examples/my_audio.wav&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">preprocess_audio(your_filename)</span><br><span class="line">IPython.display.Audio(your_filename) <span class="comment"># listen to the audio you uploaded </span></span><br></pre></td></tr></table></figure>
+<p>Finally, use the model to predict when you say activate in the 10 second audio clip, and trigger a chime. If beeps are not being added appropriately, try to adjust the chime_threshold.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">chime_threshold = <span class="number">0.5</span></span><br><span class="line">prediction = detect_triggerword(your_filename)</span><br><span class="line">chime_on_activate(your_filename, prediction, chime_threshold)</span><br><span class="line">IPython.display.Audio(<span class="string">&quot;./chime_output.wav&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Sequence-Models/" rel="tag"># Sequence Models</a>
+              <a href="/tags/Project/" rel="tag"># Project</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Neural-Machine-Translation-with-Attention/2019/03/29/" rel="prev" title="Neural Machine Translation with Attention">
+      <i class="fa fa-chevron-left"></i> Neural Machine Translation with Attention
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Neural-Networks-and-Deep-Learning/2019/03/29/" rel="next" title="Neural Networks and Deep Learning">
+      Neural Networks and Deep Learning <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#trigger-word-detection"><span class="nav-number">1.</span> <span class="nav-text">Trigger Word Detection</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#data-synthesis-creating-a-speech-dataset"><span class="nav-number"></span> <span class="nav-text">1 - Data synthesis: Creating a speech dataset</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#listening-to-the-data"><span class="nav-number">1.</span> <span class="nav-text">1.1 - Listening to the data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#from-audio-recordings-to-spectrograms"><span class="nav-number">2.</span> <span class="nav-text">1.2 - From audio recordings to spectrograms</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#generating-a-single-training-example"><span class="nav-number">3.</span> <span class="nav-text">1.3 - Generating a single training example</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#full-training-set"><span class="nav-number">4.</span> <span class="nav-text">1.4 - Full training set</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#development-set"><span class="nav-number">5.</span> <span class="nav-text">1.5 - Development set</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#model"><span class="nav-number"></span> <span class="nav-text">2 - Model</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#build-the-model"><span class="nav-number">1.</span> <span class="nav-text">2.1 - Build the model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fit-the-model"><span class="nav-number">2.</span> <span class="nav-text">2.2 - Fit the model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#test-the-model"><span class="nav-number">3.</span> <span class="nav-text">2.3 - Test the model</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#making-predictions"><span class="nav-number"></span> <span class="nav-text">3 - Making Predictions</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#test-on-dev-examples"><span class="nav-number">1.</span> <span class="nav-text">3.3 - Test on dev examples</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#congratulations"><span class="nav-number"></span> <span class="nav-text">Congratulations</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#try-your-own-example-optionalungraded"><span class="nav-number"></span> <span class="nav-text">4 - Try your own example! (OPTIONAL&#x2F;UNGRADED)</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

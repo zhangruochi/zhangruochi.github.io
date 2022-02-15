@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="This chapter is the pinnacle of the hardware part of our journey. We are now ready to take all the chips that we’ve built in chapters 1–3 and integrate them into a general-purpose computer system capa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Computer Architecture">
+<meta property="og:url" content="https://zhangruochi.com/Computer-Architecture/2019/06/03/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="This chapter is the pinnacle of the hardware part of our journey. We are now ready to take all the chips that we’ve built in chapters 1–3 and integrate them into a general-purpose computer system capa">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Computer-Architecture/2019/06/03/1.png">
+<meta property="og:image" content="https://zhangruochi.com/Computer-Architecture/2019/06/03/7.png">
+<meta property="og:image" content="https://zhangruochi.com/Computer-Architecture/2019/06/03/8.png">
+<meta property="og:image" content="https://zhangruochi.com/Computer-Architecture/2019/06/03/2.png">
+<meta property="og:image" content="https://zhangruochi.com/Computer-Architecture/2019/06/03/3.png">
+<meta property="og:image" content="https://zhangruochi.com/Computer-Architecture/2019/06/03/4.png">
+<meta property="og:image" content="https://zhangruochi.com/Computer-Architecture/2019/06/03/5.png">
+<meta property="og:image" content="https://zhangruochi.com/Computer-Architecture/2019/06/03/6.png">
+<meta property="og:image" content="https://zhangruochi.com/Computer-Architecture/2019/06/03/10.png">
+<meta property="og:image" content="https://zhangruochi.com/Computer-Architecture/2019/06/03/11.png">
+<meta property="og:image" content="https://zhangruochi.com/Computer-Architecture/2019/06/03/12.png">
+<meta property="og:image" content="https://zhangruochi.com/Computer-Architecture/2019/06/03/9.png">
+<meta property="article:published_time" content="2019-06-03T11:28:17.000Z">
+<meta property="article:modified_time" content="2019-06-04T15:42:26.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Nand2Tetris">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Computer-Architecture/2019/06/03/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Computer-Architecture/2019/06/03/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Computer Architecture | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Computer-Architecture/2019/06/03/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Computer Architecture
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-06-03 19:28:17" itemprop="dateCreated datePublished" datetime="2019-06-03T19:28:17+08:00">2019-06-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-06-04 23:42:26" itemprop="dateModified" datetime="2019-06-04T23:42:26+08:00">2019-06-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hardware-Architecture/" itemprop="url" rel="index"><span itemprop="name">Hardware Architecture</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Computer-Architecture/2019/06/03/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Computer-Architecture/2019/06/03/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">This chapter is the pinnacle of the hardware part of our journey. We are now ready to take all the chips that we’ve built in chapters 1–3 and integrate them into a general-purpose computer system capable of running programs written in the machine language presented in chapter 4.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote class="blockquote-center">
+We ascribe beauty to that which is simple; which has no superfluous parts; which exactly answers its end; which stands related to all things; which is the mean of many extremes.<br>
+<center>
+-- Ralph Waldo Emerson
+</center>
+</blockquote>
+<h1 id="table-of-contents">Table of Contents</h1>
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#the-von-neumann-architecture">The von Neumann Architecture</a>
+<ul>
+<li><a href="#memory">Memory</a>
+<ul>
+<li><a href="#physical-perspective">Physical Perspective</a></li>
+<li><a href="#logical-perspective">Logical Perspective</a></li>
+<li><a href="#data-memory">Data Memory</a></li>
+<li><a href="#instruction-memory">Instruction Memory</a></li>
+</ul></li>
+<li><a href="#central-processing-unitcpu">Central Processing Unit(CPU)</a>
+<ul>
+<li><a href="#fetching">Fetching</a></li>
+<li><a href="#executing">Executing</a></li>
+<li><a href="#arithmetic-logic-unit">Arithmetic Logic Unit</a></li>
+<li><a href="#registers">Registers</a></li>
+<li><a href="#control-unit">Control Unit</a></li>
+<li><a href="#cpu-operation">CPU Operation</a></li>
+</ul></li>
+<li><a href="#registers-1">Registers</a>
+<ul>
+<li><a href="#data-registers">Data registers</a></li>
+<li><a href="#address-registers">Address registers</a></li>
+<li><a href="#program-counter">Program counter</a></li>
+</ul></li>
+<li><a href="#input-and-output">Input and Output</a>
+<ul>
+<li><a href="#screen">Screen</a></li>
+</ul></li>
+<li><a href="#keyboard">Keyboard</a></li>
+</ul></li>
+<li><a href="#hack-computer-implementation">Hack Computer implementation</a></li>
+</ul>
+<h2 id="overview">Overview</h2>
+<p>This chapter is the pinnacle of the hardware part of our journey. We are now ready to take all the chips that we’ve built in chapters 1–3 and integrate them into a general-purpose computer system capable of running programs written in the machine language presented in chapter 4. The specific computer we will build, called Hack, has two important virtues. <strong>On the one hand</strong>, Hack is a simple machine that can be constructed in just a few hours, using previously built chips and the hardware simulator supplied with the book. <strong>On the other hand</strong>, Hack is sufficiently powerful to illustrate the key operating principles and hardware elements of any general-purpose computer. Therefore, building it will give you an excellent understanding of how modern computers work at the low hardware and software levels.</p>
+<h2 id="the-von-neumann-architecture">The von Neumann Architecture</h2>
+<p><img src="1.png" /></p>
+<p><strong>The von Neumann machine is a practical architecture and the conceptual blueprint of almost all computer platforms today.</strong> At the heart of this architecture lies the <strong>stored program concept</strong>: The computer’s memory stores not only the data that the computer manipulates, but also the very instructions that tell the computer what to do. Let us explore this architecture in some detail.</p>
+<h3 id="memory">Memory</h3>
+<h4 id="physical-perspective">Physical Perspective</h4>
+<p>the memory is a linear sequence of addressable registers, each having a unique address and a value, which is a fixed-size word of information.</p>
+<h4 id="logical-perspective">Logical Perspective</h4>
+<p>he memory is divided into two areas. One area is dedicated for storing data,e.g. the arrays and objects of programs that are presently executing, while the other area is dedicated for storing the programs’ instructions.</p>
+<h4 id="data-memory">Data Memory</h4>
+<p>High-level programs manipulate abstract artifacts like variables, arrays, and objects. After the programs are translated into machine language, these data abstractions become binary codes, <strong>stored in the computer’s memory</strong>. Once an individual register has been selected from the memory by specifying its address, its contents can be either <strong>read</strong> or <strong>written</strong> to.</p>
+<p><img src="7.png" /></p>
+<h4 id="instruction-memory">Instruction Memory</h4>
+<p>Before high-level programs can be executed on the computer, they must be translated into machine language. These instructions are stored in the computer’s instruction memory as binary codes. <strong>In each step of a program’s execution, the CPU fetches (i.e., reads) a binary machine instruction from a selected register in the instruction memory, decodes it, executes the specified instruction, and figures out which instruction to fetch and execute next.</strong></p>
+<p><img src="8.png" /></p>
+<figure class="highlight arm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// This file is part of www.nand2tetris.org</span></span><br><span class="line"><span class="comment">// and the book &quot;The Elements of Computing Systems&quot;</span></span><br><span class="line"><span class="comment">// by Nisan and Schocken, MIT Press.</span></span><br><span class="line"><span class="comment">// File name: projects/05/Memory.hdl</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The complete address space of the Hack computer&#x27;s memory,</span></span><br><span class="line"><span class="comment"> * including RAM and memory-mapped I/O. </span></span><br><span class="line"><span class="comment"> * The chip facilitates read and write operations, as follows:</span></span><br><span class="line"><span class="comment"> *     Read:  out(t) = Memory[address(t)](t)</span></span><br><span class="line"><span class="comment"> *     Write: if load(t-1) then Memory[address(t-1)](t) = in(t-1)</span></span><br><span class="line"><span class="comment"> * In words: the chip always outputs the value stored at the memory </span></span><br><span class="line"><span class="comment"> * location specified by address. If load==1, the in value is loaded </span></span><br><span class="line"><span class="comment"> * into the memory location specified by address. This value becomes </span></span><br><span class="line"><span class="comment"> * available through the out output from the next time step onward.</span></span><br><span class="line"><span class="comment"> * Address space rules:</span></span><br><span class="line"><span class="comment"> * Only the upper 16K+8K+1 words of the Memory chip are used. </span></span><br><span class="line"><span class="comment"> * Access to address&gt;0x6000 is invalid. Access to any address in </span></span><br><span class="line"><span class="comment"> * the range 0x4000-0x5FFF results in accessing the screen memory </span></span><br><span class="line"><span class="comment"> * map. Access to address 0x6000 results in accessing the keyboard </span></span><br><span class="line"><span class="comment"> * memory map. The behavior in these addresses is described in the </span></span><br><span class="line"><span class="comment"> * Screen and Keyboard chip specifications given in the book.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="symbol">CHIP</span> Memory &#123;</span><br><span class="line">    IN in[<span class="number">16</span>], load, address[<span class="number">15</span>]<span class="comment">;</span></span><br><span class="line">    OUT out[<span class="number">16</span>]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="symbol">    PARTS:</span></span><br><span class="line">    <span class="comment">//determine which one to load</span></span><br><span class="line">    DMux(in<span class="symbol">=load</span>,sel<span class="symbol">=address</span>[<span class="number">14</span>],a<span class="symbol">=ramload</span>,b<span class="symbol">=skload</span>)<span class="comment">;</span></span><br><span class="line">    DMux(in<span class="symbol">=skload</span>,sel<span class="symbol">=address</span>[<span class="number">13</span>],a<span class="symbol">=sload</span>,b<span class="symbol">=nothing</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//load ram and screen</span></span><br><span class="line">    RAM16K(in<span class="symbol">=in</span>,load<span class="symbol">=ramload</span>,address<span class="symbol">=address</span>[<span class="number">0</span>..<span class="number">13</span>],out<span class="symbol">=ramout</span>)<span class="comment">;</span></span><br><span class="line">    Screen(in<span class="symbol">=in</span>,load<span class="symbol">=sload</span>,address<span class="symbol">=address</span>[<span class="number">0</span>..<span class="number">12</span>],out<span class="symbol">=screenout</span>)<span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//Deal with keyboard, make sure that all bits in [0..12] are 0</span></span><br><span class="line">    Keyboard(out<span class="symbol">=kbd</span>)<span class="comment">;</span></span><br><span class="line">    Or8Way(in<span class="symbol">=address</span>[<span class="number">0</span>..<span class="number">7</span>], out<span class="symbol">=notkbd1</span>)<span class="comment">;</span></span><br><span class="line">    Or8Way(in[<span class="number">0</span>..<span class="number">4</span>]<span class="symbol">=address</span>[<span class="number">8</span>..<span class="number">12</span>], in[<span class="number">5</span>..<span class="number">7</span>]<span class="symbol">=false</span>, out<span class="symbol">=notkbd2</span>)<span class="comment">;</span></span><br><span class="line">    Or(a<span class="symbol">=notkbd1</span>,b<span class="symbol">=notkbd2</span>,out<span class="symbol">=notkbd</span>)<span class="comment">;</span></span><br><span class="line">    Mux16(a<span class="symbol">=kbd</span>,b<span class="symbol">=false</span>,sel<span class="symbol">=notkbd</span>,out<span class="symbol">=kbdout</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//determine which is the output</span></span><br><span class="line">    Mux16(a<span class="symbol">=ramout</span>,b<span class="symbol">=outsk</span>,sel<span class="symbol">=address</span>[<span class="number">14</span>],out<span class="symbol">=out</span>)<span class="comment">;</span></span><br><span class="line">    Mux16(a<span class="symbol">=screenout</span>,b<span class="symbol">=kbdout</span>,sel<span class="symbol">=address</span>[<span class="number">13</span>],out<span class="symbol">=outsk</span>)<span class="comment">;</span></span><br><span class="line">        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="central-processing-unitcpu">Central Processing Unit(CPU)</h3>
+<p>The CPU—the centerpiece of the computer’s architecture—is in charge of executing the instructions of the currently loaded program. The CPU executes these tasks using three main hardware elements: an <strong>Arithmetic-Logic Unit (ALU)</strong>, a set of <strong>registers</strong>, and a <strong>control unit</strong>.</p>
+<p>The CPU operation can be described as a repeated loop: decode the current instruction, execute it, figure out which instruction to execute next, fetch it, decode it, and so on. This process is sometimes referred to as the <strong>fetch-execute cycle</strong>.</p>
+<h4 id="fetching">Fetching</h4>
+<ol type="1">
+<li>Put the location of the next instruction in the Memory address input</li>
+<li>Get the instruction code by reading the contents at that Memory location <img src="2.png" /></li>
+</ol>
+<h4 id="executing">Executing</h4>
+<p>The instruction code specifies <strong>what to do</strong> - Which arithmetic or logical instruction to execute - Which memory address to access (for read / write) - If / where to jump - ......</p>
+<p>Executing the instruction involves: - accessing registers - accessing the data memory.</p>
+<p><img src="3.png" /></p>
+<h4 id="arithmetic-logic-unit">Arithmetic Logic Unit</h4>
+<ul>
+<li>perform all the low-level arithmetic and logical operations</li>
+<li>Any function not supported by the ALU as a primitive hardware operation can be later realized by the computer’s system software</li>
+</ul>
+<h4 id="registers">Registers</h4>
+<ul>
+<li>store the intermediate results(rather than ship them in and out of the CPU chip and store them in RAM chip)</li>
+<li>typically equipped with a small set of 2 up to 32 resident high-speed registers, each capable of holding a single word.</li>
+</ul>
+<h4 id="control-unit">Control Unit</h4>
+<ul>
+<li>decoded binary instructions</li>
+<li>signal various hardware devices (ALU, registers, memory) how to execute the instructions.</li>
+</ul>
+<h4 id="cpu-operation">CPU Operation</h4>
+<p><img src="4.png" /> <img src="5.png" /> <img src="6.png" /></p>
+<figure class="highlight arm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// This file is part of www.nand2tetris.org</span></span><br><span class="line"><span class="comment">// and the book &quot;The Elements of Computing Systems&quot;</span></span><br><span class="line"><span class="comment">// by Nisan and Schocken, MIT Press.</span></span><br><span class="line"><span class="comment">// File name: projects/05/CPU.hdl</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The Hack CPU (Central Processing unit), consisting of an ALU,</span></span><br><span class="line"><span class="comment"> * two registers named A and D, and a program counter named PC.</span></span><br><span class="line"><span class="comment"> * The CPU is designed to fetch and execute instructions written in </span></span><br><span class="line"><span class="comment"> * the Hack machine language. In particular, functions as follows:</span></span><br><span class="line"><span class="comment"> * Executes the inputted instruction according to the Hack machine </span></span><br><span class="line"><span class="comment"> * language specification. The D and A in the language specification</span></span><br><span class="line"><span class="comment"> * refer to CPU-resident registers, while M refers to the external</span></span><br><span class="line"><span class="comment"> * memory location addressed by A, i.e. to Memory[A]. The inM input </span></span><br><span class="line"><span class="comment"> * holds the value of this location. If the current instruction needs </span></span><br><span class="line"><span class="comment"> * to write a value to M, the value is placed in outM, the address </span></span><br><span class="line"><span class="comment"> * of the target location is placed in the addressM output, and the </span></span><br><span class="line"><span class="comment"> * writeM control bit is asserted. (When writeM==0, any value may </span></span><br><span class="line"><span class="comment"> * appear in outM). The outM and writeM outputs are combinational: </span></span><br><span class="line"><span class="comment"> * they are affected instantaneously by the execution of the current </span></span><br><span class="line"><span class="comment"> * instruction. The addressM and pc outputs are clocked: although they </span></span><br><span class="line"><span class="comment"> * are affected by the execution of the current instruction, they commit </span></span><br><span class="line"><span class="comment"> * to their new values only in the next time step. If reset==1 then the </span></span><br><span class="line"><span class="comment"> * CPU jumps to address 0 (i.e. pc is set to 0 in next time step) rather </span></span><br><span class="line"><span class="comment"> * than to the address resulting from executing the current instruction. </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="symbol">CHIP</span> CPU &#123;</span><br><span class="line"></span><br><span class="line">    IN  inM[<span class="number">16</span>],         <span class="comment">// M value input  (M = contents of RAM[A])</span></span><br><span class="line">        instruction[<span class="number">16</span>], <span class="comment">// Instruction for execution</span></span><br><span class="line">        reset<span class="comment">;           // Signals whether to re-start the current</span></span><br><span class="line">                         <span class="comment">// program (reset=1) or continue executing</span></span><br><span class="line">                         <span class="comment">// the current program (reset=0).</span></span><br><span class="line"></span><br><span class="line">    OUT outM[<span class="number">16</span>],        <span class="comment">// M value output</span></span><br><span class="line">        writeM,          <span class="comment">// Write into M? </span></span><br><span class="line">        addressM[<span class="number">15</span>],    <span class="comment">// Address in data memory (of M)</span></span><br><span class="line">        <span class="built_in">pc</span>[<span class="number">15</span>]<span class="comment">;          // address of next instruction</span></span><br><span class="line"></span><br><span class="line"><span class="symbol">    PARTS:</span></span><br><span class="line">    Mux16(a<span class="symbol">=instruction</span>,b<span class="symbol">=ALUout</span>,sel<span class="symbol">=instruction</span>[<span class="number">15</span>],out<span class="symbol">=Ain</span>)<span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">    Not(in<span class="symbol">=instruction</span>[<span class="number">15</span>],out<span class="symbol">=notinstruction</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//RegisterA </span></span><br><span class="line">    <span class="comment">//when instruction[15] = 0, it is @value means A should load value</span></span><br><span class="line">    Or(a<span class="symbol">=notinstruction</span>,b<span class="symbol">=instruction</span>[<span class="number">5</span>],out<span class="symbol">=loadA</span>)<span class="comment">;//d1</span></span><br><span class="line">    ARegister(in<span class="symbol">=Ain</span>,load<span class="symbol">=loadA</span>,out<span class="symbol">=Aout</span>,out[<span class="number">0</span>..<span class="number">14</span>]<span class="symbol">=addressM</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">    Mux16(a<span class="symbol">=Aout</span>,b<span class="symbol">=inM</span>,sel<span class="symbol">=instruction</span>[<span class="number">12</span>],out<span class="symbol">=AMout</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//Prepare for ALU, if it is not an instruction, just return D</span></span><br><span class="line">    And(a<span class="symbol">=instruction</span>[<span class="number">11</span>],b<span class="symbol">=instruction</span>[<span class="number">15</span>],out<span class="symbol">=zx</span>)<span class="comment">;//c1</span></span><br><span class="line">    And(a<span class="symbol">=instruction</span>[<span class="number">10</span>],b<span class="symbol">=instruction</span>[<span class="number">15</span>],out<span class="symbol">=nx</span>)<span class="comment">;//c2</span></span><br><span class="line">    Or(a<span class="symbol">=instruction</span>[<span class="number">9</span>],b<span class="symbol">=notinstruction</span>,out<span class="symbol">=zy</span>)<span class="comment">;//c3</span></span><br><span class="line">    Or(a<span class="symbol">=instruction</span>[<span class="number">8</span>],b<span class="symbol">=notinstruction</span>,out<span class="symbol">=ny</span>)<span class="comment">;//c4</span></span><br><span class="line">    And(a<span class="symbol">=instruction</span>[<span class="number">7</span>],b<span class="symbol">=instruction</span>[<span class="number">15</span>],out<span class="symbol">=f</span>)<span class="comment">;//c5</span></span><br><span class="line">    And(a<span class="symbol">=instruction</span>[<span class="number">6</span>],b<span class="symbol">=instruction</span>[<span class="number">15</span>],out<span class="symbol">=no</span>)<span class="comment">;//c6</span></span><br><span class="line"></span><br><span class="line">    ALU(x<span class="symbol">=Dout</span>,y<span class="symbol">=AMout</span>,zx<span class="symbol">=zx</span>,nx<span class="symbol">=nx</span>,zy<span class="symbol">=zy</span>,ny<span class="symbol">=ny</span>,f<span class="symbol">=f</span>,no<span class="symbol">=no</span>,out<span class="symbol">=outM</span>,out<span class="symbol">=ALUout</span>,zr<span class="symbol">=zero</span>,ng<span class="symbol">=neg</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//when it is an instruction, write M </span></span><br><span class="line">    And(a<span class="symbol">=instruction</span>[<span class="number">15</span>],b<span class="symbol">=instruction</span>[<span class="number">3</span>],out<span class="symbol">=writeM</span>)<span class="comment">;//d3</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//RegisterD,when it is an instruction, load D</span></span><br><span class="line">    And(a<span class="symbol">=instruction</span>[<span class="number">15</span>],b<span class="symbol">=instruction</span>[<span class="number">4</span>],out<span class="symbol">=loadD</span>)<span class="comment">;//d2</span></span><br><span class="line">    DRegister(in<span class="symbol">=ALUout</span>,load<span class="symbol">=loadD</span>,out<span class="symbol">=Dout</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//Prepare for jump</span></span><br><span class="line">    <span class="comment">//get positive</span></span><br><span class="line">    Or(a<span class="symbol">=zero</span>,b<span class="symbol">=neg</span>,out<span class="symbol">=notpos</span>)<span class="comment">;</span></span><br><span class="line">    Not(in<span class="symbol">=notpos</span>,out<span class="symbol">=pos</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">    And(a<span class="symbol">=instruction</span>[<span class="number">0</span>],b<span class="symbol">=pos</span>,out<span class="symbol">=j3</span>)<span class="comment">;//j3</span></span><br><span class="line">    And(a<span class="symbol">=instruction</span>[<span class="number">1</span>],b<span class="symbol">=zero</span>,out<span class="symbol">=j2</span>)<span class="comment">;//j2</span></span><br><span class="line">    And(a<span class="symbol">=instruction</span>[<span class="number">2</span>],b<span class="symbol">=neg</span>,out<span class="symbol">=j1</span>)<span class="comment">;//j1</span></span><br><span class="line"></span><br><span class="line">    Or(a<span class="symbol">=j1</span>,b<span class="symbol">=j2</span>,out<span class="symbol">=j12</span>)<span class="comment">;</span></span><br><span class="line">    Or(a<span class="symbol">=j12</span>,b<span class="symbol">=j3</span>,out<span class="symbol">=j123</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">    And(a<span class="symbol">=j123</span>,b<span class="symbol">=instruction</span>[<span class="number">15</span>],out<span class="symbol">=jump</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//when jump,load Aout </span></span><br><span class="line">    <span class="built_in">PC</span>(in<span class="symbol">=Aout</span>,load<span class="symbol">=jump</span>,reset<span class="symbol">=reset</span>,inc<span class="symbol">=true</span>,out[<span class="number">0</span>..<span class="number">14</span>]<span class="symbol">=pc</span>)<span class="comment">;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="registers-1">Registers</h3>
+<p>CPU-resident registers save unnecessary memory access, and allow using thinner instruction formats, resulting in faster throughput.(saved ourselves a great deal of time and overhead)</p>
+<h4 id="data-registers">Data registers</h4>
+<ul>
+<li>calculate (a − b)*c, temporary result(a - b) can be stored in some memory register.</li>
+<li>Typically, CPU’s use at least one and up to 32 data registers.</li>
+</ul>
+<h4 id="address-registers">Address registers</h4>
+<ul>
+<li>the output of an address register is typically connected to the address input of a memory device.</li>
+<li>set Memory[17] to 1. First set A=17(<span class="citation" data-cites="17">@17</span>), followed by M=1(M mnemonic stand for Memory[17])</li>
+<li>In addition to supporting this fundamental addressing operation, an address register is, well, a register. Therefore, if needed, it can be used as yet another data register. D=17( <span class="citation" data-cites="17">@17</span>, D=A)</li>
+</ul>
+<h4 id="program-counter">Program counter</h4>
+<p>When executing a program, the CPU must always keep track of the address of the instruction that must be fetched and executed next. This address is kept in a special register called <strong>program counter</strong>.</p>
+<h3 id="input-and-output">Input and Output</h3>
+<p>computer scientists have devised clever schemes to make all these different devices look exactly the same to the computer. The key trick in managing this complexity is called <strong>memory-mapped I/O</strong>.</p>
+<ul>
+<li>The basic idea is to create a binary emulation of the I/O device, making it “look” to the CPU as if it were a <strong>regular memory segment.</strong></li>
+<li>each I/O device is allocated an exclusive area in memory, becoming its “memory map.”</li>
+<li>the data that drives each I/O device must be serialized. example: 2-dimensional grid of pixels, must be mapped on a 1-dimensional vector of fixed-size memory registers.</li>
+</ul>
+<h4 id="screen">Screen</h4>
+<p><img src="10.png" /></p>
+<h3 id="keyboard">Keyboard</h3>
+<p><img src="11.png" /></p>
+<h2 id="hack-computer-implementation">Hack Computer implementation</h2>
+<p><img src="12.png" /> <img src="9.png" /></p>
+<figure class="highlight arm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// This file is part of www.nand2tetris.org</span></span><br><span class="line"><span class="comment">// and the book &quot;The Elements of Computing Systems&quot;</span></span><br><span class="line"><span class="comment">// by Nisan and Schocken, MIT Press.</span></span><br><span class="line"><span class="comment">// File name: projects/05/Computer.hdl</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The HACK computer, including CPU, ROM and RAM.</span></span><br><span class="line"><span class="comment"> * When reset is 0, the program stored in the computer&#x27;s ROM executes.</span></span><br><span class="line"><span class="comment"> * When reset is 1, the execution of the program restarts. </span></span><br><span class="line"><span class="comment"> * Thus, to start a program&#x27;s execution, reset must be pushed &quot;up&quot; (1)</span></span><br><span class="line"><span class="comment"> * and &quot;down&quot; (0). From this point onward the user is at the mercy of </span></span><br><span class="line"><span class="comment"> * the software. In particular, depending on the program&#x27;s code, the </span></span><br><span class="line"><span class="comment"> * screen may show some output and the user may be able to interact </span></span><br><span class="line"><span class="comment"> * with the computer via the keyboard.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="symbol">CHIP</span> Computer &#123;</span><br><span class="line"></span><br><span class="line">    IN reset<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="symbol">    PARTS:</span></span><br><span class="line">    CPU(instruction<span class="symbol">=instruction</span>,reset<span class="symbol">=reset</span>,inM<span class="symbol">=outMemo</span>,outM<span class="symbol">=CPUoutM</span>,writeM<span class="symbol">=wM</span>,addressM<span class="symbol">=adM</span>,<span class="built_in">pc</span><span class="symbol">=PC</span>)<span class="comment">;</span></span><br><span class="line">    Memory(in<span class="symbol">=CPUoutM</span>,load<span class="symbol">=wM</span>,address<span class="symbol">=adM</span>,out<span class="symbol">=outMemo</span>)<span class="comment">;</span></span><br><span class="line">    ROM32K(address<span class="symbol">=PC</span>,out<span class="symbol">=instruction</span>)<span class="comment">;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Nand2Tetris/" rel="tag"># Nand2Tetris</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Transfer-Learning/2019/05/31/" rel="prev" title="Transfer Learning">
+      <i class="fa fa-chevron-left"></i> Transfer Learning
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/the-functions-of-Pooling/2019/06/04/" rel="next" title="The functions of Pooling">
+      The functions of Pooling <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#table-of-contents"><span class="nav-number">1.</span> <span class="nav-text">Table of Contents</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#overview"><span class="nav-number">1.1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#the-von-neumann-architecture"><span class="nav-number">1.2.</span> <span class="nav-text">The von Neumann Architecture</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#memory"><span class="nav-number">1.2.1.</span> <span class="nav-text">Memory</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#physical-perspective"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">Physical Perspective</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#logical-perspective"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">Logical Perspective</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#data-memory"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">Data Memory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#instruction-memory"><span class="nav-number">1.2.1.4.</span> <span class="nav-text">Instruction Memory</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#central-processing-unitcpu"><span class="nav-number">1.2.2.</span> <span class="nav-text">Central Processing Unit(CPU)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fetching"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">Fetching</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#executing"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">Executing</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#arithmetic-logic-unit"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">Arithmetic Logic Unit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#registers"><span class="nav-number">1.2.2.4.</span> <span class="nav-text">Registers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#control-unit"><span class="nav-number">1.2.2.5.</span> <span class="nav-text">Control Unit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cpu-operation"><span class="nav-number">1.2.2.6.</span> <span class="nav-text">CPU Operation</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#registers-1"><span class="nav-number">1.2.3.</span> <span class="nav-text">Registers</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#data-registers"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">Data registers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#address-registers"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">Address registers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#program-counter"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">Program counter</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#input-and-output"><span class="nav-number">1.2.4.</span> <span class="nav-text">Input and Output</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#screen"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">Screen</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#keyboard"><span class="nav-number">1.2.5.</span> <span class="nav-text">Keyboard</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hack-computer-implementation"><span class="nav-number">1.3.</span> <span class="nav-text">Hack Computer implementation</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

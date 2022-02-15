@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Two views of AI, modeling-inference-learning paradigm, Machine Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI - Overview">
+<meta property="og:url" content="https://zhangruochi.com/AI-Overview/2020/02/05/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Two views of AI, modeling-inference-learning paradigm, Machine Learning">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/AI-Overview/2020/02/05/modeling.png">
+<meta property="og:image" content="https://zhangruochi.com/AI-Overview/2020/02/05/inference.png">
+<meta property="og:image" content="https://zhangruochi.com/AI-Overview/2020/02/05/learning.png">
+<meta property="og:image" content="https://zhangruochi.com/AI-Overview/2020/02/05/machine-learning.png">
+<meta property="article:published_time" content="2020-02-05T13:58:42.000Z">
+<meta property="article:modified_time" content="2020-02-07T03:41:20.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/AI-Overview/2020/02/05/modeling.png">
+
+<link rel="canonical" href="https://zhangruochi.com/AI-Overview/2020/02/05/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>AI - Overview | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/AI-Overview/2020/02/05/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AI - Overview
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-02-05 21:58:42" itemprop="dateCreated datePublished" datetime="2020-02-05T21:58:42+08:00">2020-02-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-02-07 11:41:20" itemprop="dateModified" datetime="2020-02-07T11:41:20+08:00">2020-02-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/AI-Overview/2020/02/05/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/AI-Overview/2020/02/05/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Two views of AI, modeling-inference-learning paradigm, Machine Learning</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="two-views-of-ai">Two views of AI</h2>
+<ol type="1">
+<li><strong>AI agents</strong>: how can we create intelligence?</li>
+</ol>
+<ul>
+<li>achieving human-level intelligence, still very far (e.g., generalize from few examples)</li>
+<li>The first is what one would normally associate with AI: the science and engineering of building ”intelligent” agents. The inspiration of what constitutes intelligence comes from the types of capabilities that humans possess: the ability to perceive a very complex world and make enough sense of it to be able to manipulate it.</li>
+</ul>
+<ol start="2" type="1">
+<li><strong>AI tools</strong>: how can we benefit society?</li>
+</ol>
+<ul>
+<li>need to think carefully about real-world consequences (e.g., security, biases)</li>
+<li>The second views AI as a set of tools. We are simply trying to solve problems in the world, and techniques developed by the AI community happen to be useful for that, but these problems are not ones that humans necessarily do well on natively.</li>
+</ul>
+<h2 id="how-should-we-actually-solve-ai-tasks">How should we actually solve AI tasks?</h2>
+<p>In this class, we will adopt the <strong>modeling-inference-learning</strong> paradigm to help us navigate the solution space. In reality the lines are blurry, but this paradigm serves as an ideal and a useful guiding principle.</p>
+<h3 id="modeling">Modeling</h3>
+<ul>
+<li>The first pillar is modeling. Modeling takes messy real world problems and packages them into <strong>neat formal mathematical objects</strong> called models, which can be subject to rigorous analysis and can be operated on by computers. However, modeling is lossy: not all of the richness of the real world can be captured, and therefore there is an art of modeling: what does one keep versus ignore? (An exception to this are games such as Chess, Go or Sodoku, where the real world is identical to the model.)</li>
+<li>As an example, suppose we’re trying to have an AI that can navigate through a busy city. We might formulate this as a graph where nodes represent points in the city, edges represent the roads, and the cost of an edge represents the traffic on that road.</li>
+</ul>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="modeling.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Modeling
+</div>
+</center>
+<h3 id="inference">Inference</h3>
+<ul>
+<li>The second pillar is inference. Given a model, the task of inference is to answer questions with respect to the model. For example, given the model of the city, one could ask questions such as: what is the shortest path? what is the cheapest path?</li>
+<li>The focus of inference is usually on <strong>efficient algorithms</strong> that can answer these questions. For some models, computational complexity can be a concern (games such as Go), and usually approximations are needed.</li>
+</ul>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="inference.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Inference
+</div>
+</center>
+<h3 id="learning">Learning</h3>
+<ul>
+<li>But where does the model come from? Remember that the real world is rich, so if the model is to be faithful, the model has to be rich as well. But we can’t possibly write down such a rich model manually.</li>
+<li>The idea behind (machine) learning is to instead get it from data. Instead of constructing a model, one constructs a skeleton of a model (more precisely, a model family), which is a model without parameters. And then if we have the right type of data, we can run a machine learning algorithm to tune the parameters of the model.</li>
+<li>Note that learning here is not tied to a particular approach (e.g., neural networks), but more of a philosophy. This general paradigm will allow us to bridge the gap between logic-based AI and statistical AI.</li>
+</ul>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="learning.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Learning
+</div>
+</center>
+<h2 id="machine-learning">Machine Learning</h2>
+<p>We concentrate on the models that we can use to represent real-world tasks. The topics will in a sense advance from low-level intelligence to high-level intelligence, evolving from models that simply make a reflex decision to models that are based on logical reasoning.</p>
+<p>Supporting all of these models is machine learning, which has been arguably the most crucial ingredient powering recent successes in AI. From a systems engineering perspective, machine learning allows us to shift the information complexity of the model from code to data, which is much easier to obtain (either naturally occurring or via crowdsourcing).</p>
+<p>The main conceptually magical part of learning is that if done properly, the trained model will be able to produce good predictions beyond the set of training examples. This leap of faith is called generalization, and is, explicitly or implicitly, at the heart of any machine learning algorithm. This can even be formalized using tools from probability and statistical learning theory.</p>
+<ul>
+<li>The main driver of recent successes in AI</li>
+<li>Move from ”code” to ”data” to manage the information complex- ity</li>
+<li>Requires a leap of faith: <strong>generalization</strong></li>
+</ul>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="machine-learning.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+machine-learning.png
+</div>
+</center>
+<h3 id="reflex-based-models">Reflex-based models</h3>
+<p>A reflex-based model simply performs a fixed sequence of computations on a given input. Examples include most models found in machine learning, from simple linear classifiers to deep neural networks. The main characteristic of reflex-based models is that their computations are feed-forward; one doesn’t backtrack and consider alternative computations. Inference is trivial in these models because it is just running the fixed computations, which makes these models appealing.</p>
+<ul>
+<li>linear classifiers, deep neural networks</li>
+<li>Most common models in machine learning</li>
+<li>Fully feed-forward (no backtracking)</li>
+</ul>
+<h3 id="state-based-models">State-based models</h3>
+<p>Reflex-based models are too simple for tasks that require more forethought (e.g., in playing chess or planning a big trip). State-based models overcome this limitation. The key idea is, at a high-level, to model the state of a world and transitions between states which are triggered by actions. Concretely, one can think of states as nodes in a graph and transitions as edges. This reduction is useful because we understand graphs well and have a lot of efficient algorithms for operating on graphs.</p>
+<ul>
+<li>Search problems: you control everything</li>
+<li>Markov decision processes: against nature (e.g., Blackjack)</li>
+<li>Adversarial games: against opponent (e.g., chess)</li>
+</ul>
+<p>application<br />
+- Games: Chess, Go, Pac-Man, Starcraft, etc. - Robotics: motion planning - Natural language generation: machine translation, image caption- ing</p>
+<h3 id="variable-based-models">Variable-based models</h3>
+<ul>
+<li>Constraint satisfaction problems: hard constraints (e.g., Sudoku, scheduling)</li>
+</ul>
+<p>Constraint satisfaction problems are variable-based models where we only have hard constraints. For example, in scheduling, we can’t have two people in the same place at the same time.</p>
+<ul>
+<li>Bayesian networks: soft dependencies (e.g., tracking cars from sensors)</li>
+</ul>
+<p>Bayesian networks are variable-based models where variables are random variables which are dependent on each other. For example, the true location of an airplane Ht and its radar reading Et are related, as are the location Ht and the location at the last time step <span class="math inline">\(H_{t−1}\)</span>. The exact dependency structure is given by the graph structure and it formally defines a joint probability distribution over all of the variables. This topic is studied thoroughly in probabilistic graphical models (CS228).</p>
+<h2 id="optimization">Optimization</h2>
+<p>We are now done with the high-level motivation for the class. Let us now dive into some technical details. Let us focus on the inference and the learning aspect of the modeling-inference-learning paradigm. We will approach <strong>inference</strong> and <strong>learning</strong> from an optimization perspective, which allows us to decouple the mathematical specification of what we want to compute from the algorithms for <strong>how to compute it</strong>.</p>
+<p>In total generality, optimization problems ask that you find the x that lives in a constraint set C that makes the function F(x) as small as possible. There are two types of optimization problems we’ll consider: discrete optimization problems (mostly for inference) and continuous optimization problems (mostly for learning). Both are backed by a rich research field and are interesting topics in their own right. For this course, we will use the most basic tools from these topics: dynamic programming and gradient descent.</p>
+<ol type="1">
+<li>Discrete optimization: find the best discrete object</li>
+</ol>
+<p><span class="math display">\[min_{p \in Paths} Cost(p)\]</span></p>
+<p>Algorithmic tool: dynamic programming</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">computeEditDistance</span>(<span class="params">s, t</span>):</span></span><br><span class="line">    cache = &#123;&#125;  <span class="comment"># (m, n) =&gt; result</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">recurse</span>(<span class="params">m, n</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Return the minimum edit distance between:</span></span><br><span class="line"><span class="string">        - first m letters of s</span></span><br><span class="line"><span class="string">        - first n letters of t</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> (m, n) <span class="keyword">in</span> cache:</span><br><span class="line">            <span class="keyword">return</span> cache[(m, n)]</span><br><span class="line">        <span class="keyword">if</span> m == <span class="number">0</span>:  <span class="comment"># Base case</span></span><br><span class="line">            result = n</span><br><span class="line">        <span class="keyword">elif</span> n == <span class="number">0</span>:  <span class="comment"># Base case</span></span><br><span class="line">            result = m</span><br><span class="line">        <span class="keyword">elif</span> s[m - <span class="number">1</span>] == t[n - <span class="number">1</span>]:  <span class="comment"># Last letter matches</span></span><br><span class="line">            result = recurse(m - <span class="number">1</span>, n - <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            subCost = <span class="number">1</span> + recurse(m - <span class="number">1</span>, n - <span class="number">1</span>)</span><br><span class="line">            delCost = <span class="number">1</span> + recurse(m - <span class="number">1</span>, n)</span><br><span class="line">            insCost = <span class="number">1</span> + recurse(m, n - <span class="number">1</span>)</span><br><span class="line">            result = <span class="built_in">min</span>(subCost, delCost, insCost)</span><br><span class="line">        cache[(m, n)] = result</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> recurse(<span class="built_in">len</span>(s), <span class="built_in">len</span>(t))</span><br><span class="line"></span><br><span class="line"><span class="comment">#print(computeEditDistance(&#x27;a cat!&#x27;, &#x27;the cats!&#x27;))</span></span><br><span class="line"><span class="built_in">print</span>(computeEditDistance(<span class="string">&#x27;a cat!&#x27;</span> * <span class="number">10</span>, <span class="string">&#x27;the cats!&#x27;</span> * <span class="number">10</span>))</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li>Continuous optimization: find the best vector of real numbers</li>
+</ol>
+<p><span class="math display">\[min_{w \in \mathbb{R}^d} TrainingError(w)\]</span></p>
+<p>Algorithmic tool: gradient descent</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">points = [(<span class="number">2</span>, <span class="number">4</span>), (<span class="number">4</span>, <span class="number">2</span>)]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">F</span>(<span class="params">w</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum</span>((w * x - y)**<span class="number">2</span> <span class="keyword">for</span> x, y <span class="keyword">in</span> points)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dF</span>(<span class="params">w</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum</span>(<span class="number">2</span>*(w * x - y) * x <span class="keyword">for</span> x, y <span class="keyword">in</span> points)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Gradient descent</span></span><br><span class="line">w = <span class="number">0</span></span><br><span class="line">eta = <span class="number">0.01</span></span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">    value = F(w)</span><br><span class="line">    gradient = dF(w)</span><br><span class="line">    w = w - eta * gradient</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;iteration &#123;&#125;: w = &#123;&#125;, F(w) = &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(t, w, value))</span><br></pre></td></tr></table></figure>
+<h2 id="reference">Reference</h2>
+<ul>
+<li>course note from <a target="_blank" rel="noopener" href="https://stanford-cs221.github.io/autumn2019/">cs221</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Module-Sequential-ModuleList-ModuleDict/2020/01/28/" rel="prev" title="Module Sequential ModuleList ModuleDict">
+      <i class="fa fa-chevron-left"></i> Module Sequential ModuleList ModuleDict
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/AI-Search/2020/02/06/" rel="next" title="AI - Search">
+      AI - Search <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#two-views-of-ai"><span class="nav-number">1.</span> <span class="nav-text">Two views of AI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how-should-we-actually-solve-ai-tasks"><span class="nav-number">2.</span> <span class="nav-text">How should we actually solve AI tasks?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#modeling"><span class="nav-number">2.1.</span> <span class="nav-text">Modeling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inference"><span class="nav-number">2.2.</span> <span class="nav-text">Inference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#learning"><span class="nav-number">2.3.</span> <span class="nav-text">Learning</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#machine-learning"><span class="nav-number">3.</span> <span class="nav-text">Machine Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#reflex-based-models"><span class="nav-number">3.1.</span> <span class="nav-text">Reflex-based models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#state-based-models"><span class="nav-number">3.2.</span> <span class="nav-text">State-based models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#variable-based-models"><span class="nav-number">3.3.</span> <span class="nav-text">Variable-based models</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#optimization"><span class="nav-number">4.</span> <span class="nav-text">Optimization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Scikit-learn Pipeline">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Machine Learning Pipeline">
+<meta property="og:url" content="https://zhangruochi.com/Machine-Learning-Pipeline/2020/04/13/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Scikit-learn Pipeline">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-13T08:12:30.000Z">
+<meta property="article:modified_time" content="2021-12-31T10:09:36.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhangruochi.com/Machine-Learning-Pipeline/2020/04/13/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Machine Learning Pipeline | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Machine-Learning-Pipeline/2020/04/13/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Machine Learning Pipeline
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-13 16:12:30" itemprop="dateCreated datePublished" datetime="2020-04-13T16:12:30+08:00">2020-04-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 18:09:36" itemprop="dateModified" datetime="2021-12-31T18:09:36+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI-Workflow/" itemprop="url" rel="index"><span itemprop="name">AI Workflow</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI-Workflow/Pipeline/" itemprop="url" rel="index"><span itemprop="name">Pipeline</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Machine-Learning-Pipeline/2020/04/13/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Machine-Learning-Pipeline/2020/04/13/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Scikit-learn Pipeline</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="scikit-learn-pipeline">Scikit-learn Pipeline</h2>
+<h3 id="pipeline-1">Pipeline 1</h3>
+<p>In most machine learning projects the data that you have to work with is unlikely to be in the ideal format for producing the best performing model. There are quite often a number of transformational steps such as encoding categorical variables, feature scaling and normalisation that need to be performed. Scikit-learn has built in functions for most of these commonly used transformations in it’s <code>preprocessing</code> package.</p>
+<p>However, in a typical machine learning workflow you will need to apply all these transformations at <code>least twice</code>. Once when training the model and again on any new data you want to predict on. Of course you could write a function to apply them and reuse that but you would still need to run this first and then call the model separately. Scikit-learn pipelines are a tool to simplify this process. They have several key benefits: - They make your workflow much easier to read and understand. - They enforce the implementation and order of steps in your project. - These in turn make your work much more reproducible.</p>
+<p>Before building the pipeline I am splitting the training data into a train and test set so that I can validate the performance of the model.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X = train.drop(<span class="string">&#x27;Target&#x27;</span>, axis=<span class="number">1</span>)</span><br><span class="line">y = train[<span class="string">&#x27;Target&#x27;</span>]</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="number">0.2</span>)</span><br></pre></td></tr></table></figure>
+<p>The first step in building the pipeline is to define each <code>transformer type</code>. The convention here is generally to create transformers for the different variable types.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> Pipeline</span><br><span class="line"><span class="keyword">from</span> sklearn.impute <span class="keyword">import</span> SimpleImputer</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler, OneHotEncoder</span><br><span class="line"></span><br><span class="line">numeric_transformer = Pipeline(steps=[</span><br><span class="line">    (<span class="string">&#x27;imputer&#x27;</span>, SimpleImputer(strategy=<span class="string">&#x27;median&#x27;</span>)),</span><br><span class="line">    (<span class="string">&#x27;scaler&#x27;</span>, StandardScaler())])</span><br><span class="line"></span><br><span class="line">categorical_transformer = Pipeline(steps=[</span><br><span class="line">    (<span class="string">&#x27;imputer&#x27;</span>, SimpleImputer(strategy=<span class="string">&#x27;constant&#x27;</span>, fill_value=<span class="string">&#x27;missing&#x27;</span>)),</span><br><span class="line">    (<span class="string">&#x27;onehot&#x27;</span>, OneHotEncoder(handle_unknown=<span class="string">&#x27;ignore&#x27;</span>))])</span><br></pre></td></tr></table></figure>
+<p>Next we use the <code>ColumnTransformer</code> to apply the transformations to the correct columns in the dataframe. Before building this I have stored lists of the numeric and categorical columns using the pandas dtype method.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">numeric_features = train.select_dtypes(include=[<span class="string">&#x27;int64&#x27;</span>, <span class="string">&#x27;float64&#x27;</span>]).columns</span><br><span class="line"></span><br><span class="line">categorical_features = train.select_dtypes(include=[<span class="string">&#x27;object&#x27;</span>]).drop([<span class="string">&#x27;Loan_Status&#x27;</span>], axis=<span class="number">1</span>).columns</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.compose <span class="keyword">import</span> ColumnTransformer</span><br><span class="line"></span><br><span class="line">preprocessor = ColumnTransformer(</span><br><span class="line">    transformers=[</span><br><span class="line">        (<span class="string">&#x27;num&#x27;</span>, numeric_transformer, numeric_features),</span><br><span class="line">        (<span class="string">&#x27;cat&#x27;</span>, categorical_transformer, categorical_features)])</span><br></pre></td></tr></table></figure>
+<p>The next step is to create a pipeline that combines the preprocessor created above with a classifier. In this case I have used a simple RandomForestClassifier to start with.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br><span class="line">rf = Pipeline(steps=[(<span class="string">&#x27;preprocessor&#x27;</span>, preprocessor),</span><br><span class="line">                      (<span class="string">&#x27;classifier&#x27;</span>, RandomForestClassifier())])</span><br></pre></td></tr></table></figure>
+<p>Fitting the classifier</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rf.fit(X_train, y_train)</span><br><span class="line">y_pred = rf.predict(X_test)</span><br></pre></td></tr></table></figure>
+<p>A pipeline can also be used during the model selection process. The following example code loops through a number of scikit-learn classifiers applying the transformations and training the model.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> accuracy_score, log_loss</span><br><span class="line"><span class="keyword">from</span> sklearn.neighbors <span class="keyword">import</span> KNeighborsClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn.svm <span class="keyword">import</span> SVC, LinearSVC, NuSVC</span><br><span class="line"><span class="keyword">from</span> sklearn.tree <span class="keyword">import</span> DecisionTreeClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn.discriminant_analysis <span class="keyword">import</span> LinearDiscriminantAnalysis</span><br><span class="line"><span class="keyword">from</span> sklearn.discriminant_analysis <span class="keyword">import</span> QuadraticDiscriminantAnalysis</span><br><span class="line">classifiers = [</span><br><span class="line">    KNeighborsClassifier(<span class="number">3</span>),</span><br><span class="line">    SVC(kernel=<span class="string">&quot;rbf&quot;</span>, C=<span class="number">0.025</span>, probability=<span class="literal">True</span>),</span><br><span class="line">    NuSVC(probability=<span class="literal">True</span>),</span><br><span class="line">    DecisionTreeClassifier(),</span><br><span class="line">    RandomForestClassifier(),</span><br><span class="line">    AdaBoostClassifier(),</span><br><span class="line">    GradientBoostingClassifier()</span><br><span class="line">    ]</span><br><span class="line"><span class="keyword">for</span> classifier <span class="keyword">in</span> classifiers:</span><br><span class="line">    pipe = Pipeline(steps=[(<span class="string">&#x27;preprocessor&#x27;</span>, preprocessor),</span><br><span class="line">                      (<span class="string">&#x27;classifier&#x27;</span>, classifier)])</span><br><span class="line">    pipe.fit(X_train, y_train)   </span><br><span class="line">    <span class="built_in">print</span>(classifier)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;model score: %.3f&quot;</span> % pipe.score(X_test, y_test))</span><br></pre></td></tr></table></figure>
+<p>The pipeline can also be used in grid search to find the best performing parameters. To do this you first need to create a parameter grid for your chosen model. One important thing to note is that you need to <code>append</code> the name that you have given the classifier part of your pipeline to each parameter name. In my code above I have called this ‘classifier’ so I have added <code>classifier__</code> to each parameter. Next I created a grid search object which includes the original pipeline. When I then call fit, the transformations are applied to the data, before a cross-validated grid-search is performed over the parameter grid.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">param_grid = &#123; </span><br><span class="line">    <span class="string">&#x27;classifier__n_estimators&#x27;</span>: [<span class="number">200</span>, <span class="number">500</span>],</span><br><span class="line">    <span class="string">&#x27;classifier__max_features&#x27;</span>: [<span class="string">&#x27;auto&#x27;</span>, <span class="string">&#x27;sqrt&#x27;</span>, <span class="string">&#x27;log2&#x27;</span>],</span><br><span class="line">    <span class="string">&#x27;classifier__max_depth&#x27;</span> : [<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>],</span><br><span class="line">    <span class="string">&#x27;classifier__criterion&#x27;</span> :[<span class="string">&#x27;gini&#x27;</span>, <span class="string">&#x27;entropy&#x27;</span>]&#125;</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</span><br><span class="line">CV = GridSearchCV(rf, param_grid, n_jobs= <span class="number">1</span>)</span><br><span class="line">                  </span><br><span class="line">CV.fit(X_train, y_train)  </span><br><span class="line"><span class="built_in">print</span>(CV.best_params_)    </span><br><span class="line"><span class="built_in">print</span>(CV.best_score_)</span><br></pre></td></tr></table></figure>
+<h3 id="pipeline-2">Pipeline 2</h3>
+<p>The example below demonstrates the pipeline defined with four steps:</p>
+<ul>
+<li>Feature Extraction with Principal Component Analysis (3 features)</li>
+<li>Feature Extraction with Statistical Selection (6 features)</li>
+<li>Feature Union</li>
+<li>Learn a Logistic Regression Model</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pandas <span class="keyword">import</span> read_csv</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> KFold</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> cross_val_score</span><br><span class="line"><span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> Pipeline</span><br><span class="line"><span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> FeatureUnion</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression</span><br><span class="line"><span class="keyword">from</span> sklearn.decomposition <span class="keyword">import</span> PCA</span><br><span class="line"><span class="keyword">from</span> sklearn.feature_selection <span class="keyword">import</span> SelectKBest</span><br><span class="line"><span class="comment"># load data</span></span><br><span class="line">url = <span class="string">&quot;https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv&quot;</span></span><br><span class="line">names = [<span class="string">&#x27;preg&#x27;</span>, <span class="string">&#x27;plas&#x27;</span>, <span class="string">&#x27;pres&#x27;</span>, <span class="string">&#x27;skin&#x27;</span>, <span class="string">&#x27;test&#x27;</span>, <span class="string">&#x27;mass&#x27;</span>, <span class="string">&#x27;pedi&#x27;</span>, <span class="string">&#x27;age&#x27;</span>, <span class="string">&#x27;class&#x27;</span>]</span><br><span class="line">dataframe = read_csv(url, names=names)</span><br><span class="line">array = dataframe.values</span><br><span class="line">X = array[:,<span class="number">0</span>:<span class="number">8</span>]</span><br><span class="line">Y = array[:,<span class="number">8</span>]</span><br><span class="line"><span class="comment"># create feature union</span></span><br><span class="line">features = []</span><br><span class="line">features.append((<span class="string">&#x27;pca&#x27;</span>, PCA(n_components=<span class="number">3</span>)))</span><br><span class="line">features.append((<span class="string">&#x27;select_best&#x27;</span>, SelectKBest(k=<span class="number">6</span>)))</span><br><span class="line">feature_union = FeatureUnion(features)</span><br><span class="line"><span class="comment"># create pipeline</span></span><br><span class="line">estimators = []</span><br><span class="line">estimators.append((<span class="string">&#x27;feature_union&#x27;</span>, feature_union))</span><br><span class="line">estimators.append((<span class="string">&#x27;logistic&#x27;</span>, LogisticRegression()))</span><br><span class="line">model = Pipeline(estimators)</span><br><span class="line"><span class="comment"># evaluate pipeline</span></span><br><span class="line">seed = <span class="number">7</span></span><br><span class="line">kfold = KFold(n_splits=<span class="number">10</span>, random_state=seed)</span><br><span class="line">results = cross_val_score(model, X, Y, cv=kfold)</span><br><span class="line"><span class="built_in">print</span>(results.mean())</span><br></pre></td></tr></table></figure>
+<h3 id="building-scikit-learn-transformers">Building Scikit-Learn transformers</h3>
+<p>Scikit-Learn's API uses <code>duck typing</code>: if you want to write your own custom estimators (including transformers and predictors), you only need to implement the right methods, you don't have to inherit from any particular class.</p>
+<p>For example, all <strong>estimators</strong> must implement a <code>fit()</code> method, and <code>get_params()</code> and <code>set_params()</code> methods. All <strong>transformers</strong> must also implement <code>transform()</code> and <code>fit_transform()</code> methods. All <strong>predictors</strong> must implement a <code>predict()</code> method. And so on.</p>
+<p>The most basic implementation of the <code>fit_transform()</code> method is just this: <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fit_transform</span>(<span class="params">self, X, y=<span class="literal">None</span></span>):</span></span><br><span class="line">    <span class="keyword">return</span> self.fit(X, y).transform(X, y)</span><br></pre></td></tr></table></figure></p>
+<p>You don't have to inherit from the <code>TransformerMixin</code> class, but that's what you get if you do: if you implement the <code>fit()</code> method and the <code>transform()</code> method, it gives you the <code>fit_transform()</code> method for free, just like the above.</p>
+<p>Similarly, the BaseEstimator class just gives you the <code>get_params()</code> and <code>set_params()</code> methods for free. By default, <code>get_params()</code> does some introspection to get the parameters of the constructor <strong>init</strong>(), and it assumes that the class has corresponding instance variables. For example:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.base <span class="keyword">import</span> BaseEstimator</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyEstimator</span>(<span class="params">BaseEstimator</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, a, b=<span class="number">2</span></span>):</span></span><br><span class="line">        self.a = a</span><br><span class="line">        self.b = b</span><br><span class="line"></span><br><span class="line"><span class="comment"># &gt;&gt;&gt; m = MyEstimator(1, 2)</span></span><br><span class="line"><span class="comment"># &gt;&gt;&gt; m.get_params()</span></span><br><span class="line"><span class="comment"># &#123;&#x27;a&#x27;: 1, &#x27;b&#x27;: 2&#125;</span></span><br><span class="line"><span class="comment"># &gt;&gt;&gt; m.set_params(a=5, b=10)</span></span><br><span class="line"><span class="comment"># MyEstimator(a=5, b=10)</span></span><br><span class="line"><span class="comment"># &gt;&gt;&gt; m.a</span></span><br><span class="line"><span class="comment"># 5</span></span><br><span class="line"><span class="comment"># &gt;&gt;&gt; m.b</span></span><br><span class="line"><span class="comment"># 10</span></span><br></pre></td></tr></table></figure>
+<p>Let’s say I have a lot of text and I want to extract certain data from it. I’m going to build a featurizer that takes a list of functions, calls each function with our text, and returns the results of all functions as a feature vector.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longest_run_of_capitol_letters_feature</span>(<span class="params">text</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Find the longest run of capitol letters and return their length.&quot;&quot;&quot;</span></span><br><span class="line">    runs = <span class="built_in">sorted</span>(re.findall(<span class="string">r&quot;[A-Z]+&quot;</span>, text), key=<span class="built_in">len</span>)</span><br><span class="line">    <span class="keyword">if</span> runs:</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(runs[-<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">percent_character_feature</span>(<span class="params">char</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Return percentage of text that is a particular char compared to total</span></span><br><span class="line"><span class="string">    text length.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">feature_fn</span>(<span class="params">text</span>):</span></span><br><span class="line">        periods = text.count(char)</span><br><span class="line">        <span class="keyword">return</span> periods / <span class="built_in">len</span>(text)</span><br><span class="line">    <span class="keyword">return</span> feature_fn</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FunctionFeaturizer</span>(<span class="params">BaseEstimator, TransformerMixin</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, *featurizers</span>):</span></span><br><span class="line">        self.featurizers = featurizers</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fit</span>(<span class="params">self, X, y=<span class="literal">None</span></span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;All SciKit-Learn compatible transformers and classifiers have the</span></span><br><span class="line"><span class="string">        same interface. `fit` always returns the same object.&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">transform</span>(<span class="params">self, X</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;Given a list of original data, return a list of feature vectors.&quot;&quot;&quot;</span></span><br><span class="line">        fvs = []</span><br><span class="line">        <span class="keyword">for</span> datum <span class="keyword">in</span> X:</span><br><span class="line">            fv = [f(datum) <span class="keyword">for</span> f <span class="keyword">in</span> self.featurizers]</span><br><span class="line">            fvs.append(fv)</span><br><span class="line">        <span class="keyword">return</span> np.array(fvs)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.tree <span class="keyword">import</span> DecisionTreeClassifier</span><br><span class="line"></span><br><span class="line">sms_featurizer = FunctionFeaturizer(longest_run_of_capitol_letters_feature,</span><br><span class="line">                                    percent_character_feature(<span class="string">&quot;.&quot;</span>))</span><br><span class="line"><span class="comment"># sms_featurizer.transform(sms_data[:10])</span></span><br><span class="line"></span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(sms_data, sms_results)</span><br><span class="line"></span><br><span class="line">pipe = make_pipeline(sms_featurizer, DecisionTreeClassifier())</span><br><span class="line">pipe.fit(X_train, y_train)</span><br><span class="line">pipe.score(X_test, y_test)</span><br><span class="line"><span class="comment"># =&gt; 0.91385498923187369</span></span><br></pre></td></tr></table></figure>
+<h2 id="sparkml-pipeline">SparkML Pipeline</h2>
+<h3 id="eda">EDA</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># create a dataframe out of it</span></span><br><span class="line">df = spark.read.parquet(<span class="string">&#x27;hmp.parquet&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># register a corresponding query table</span></span><br><span class="line">df.createOrReplaceTempView(<span class="string">&#x27;df&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pyspark.ml.feature <span class="keyword">import</span> StringIndexer</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">indexer = StringIndexer(inputCol=<span class="string">&quot;class&quot;</span>, outputCol=<span class="string">&quot;classIndex&quot;</span>)</span><br><span class="line">indexed = indexer.fit(df).transform(df)</span><br><span class="line">indexed.show()</span><br><span class="line">indexed.select(<span class="string">&#x27;classIndex&#x27;</span>).distinct().show()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pyspark.ml.feature <span class="keyword">import</span> OneHotEncoder, StringIndexer</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">encoder = OneHotEncoder(inputCol=<span class="string">&quot;classIndex&quot;</span>, outputCol=<span class="string">&quot;categoryVec&quot;</span>)</span><br><span class="line">encoded = encoder.transform(indexed)</span><br><span class="line">encoded.show()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pyspark.ml.linalg <span class="keyword">import</span> Vectors</span><br><span class="line"><span class="keyword">from</span> pyspark.ml.feature <span class="keyword">import</span> VectorAssembler</span><br><span class="line"></span><br><span class="line">vectorAssembler = VectorAssembler(inputCols=[<span class="string">&quot;x&quot;</span>,<span class="string">&quot;y&quot;</span>,<span class="string">&quot;z&quot;</span>],</span><br><span class="line">                                  outputCol=<span class="string">&quot;features&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># For your special case that has string instead of doubles you should cast them first.</span></span><br><span class="line"><span class="comment"># expr = [col(c).cast(&quot;Double&quot;).alias(c) </span></span><br><span class="line"><span class="comment">#         for c in vectorAssembler.getInputCols()]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># df2 = df2.select(*expr)</span></span><br><span class="line">features_vectorized = vectorAssembler.transform(encoded)</span><br><span class="line">features_vectorized.show()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pyspark.ml.feature <span class="keyword">import</span> MinMaxScaler</span><br><span class="line"><span class="keyword">from</span> pyspark.ml.linalg <span class="keyword">import</span> Vectors</span><br><span class="line"></span><br><span class="line">min_max_scaler = MinMaxScaler(inputCol=<span class="string">&quot;features&quot;</span>, outputCol=<span class="string">&quot;features_norm&quot;</span>)</span><br><span class="line">min_max_scaler_model = min_max_scaler.fit(features_vectorized)</span><br><span class="line">normalized_data = min_max_scaler_model.transform(features_vectorized)</span><br><span class="line">normalized_data.show()</span><br><span class="line"></span><br><span class="line">df_train = normalized_data.drop(<span class="string">&quot;source&quot;</span>).drop(<span class="string">&quot;class&quot;</span>).drop(<span class="string">&quot;classIndex&quot;</span>).drop(<span class="string">&quot;features&quot;</span>).drop(<span class="string">&quot;x&quot;</span>).drop(<span class="string">&quot;y&quot;</span>).drop(<span class="string">&quot;z&quot;</span>)</span><br><span class="line"></span><br><span class="line">df_train.show()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="pipeline">Pipeline</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.ml <span class="keyword">import</span> Pipeline</span><br><span class="line">pipeline = Pipeline(stages=[indexer, encoder, vectorAssembler, min_max_scaler_model])</span><br><span class="line">model = pipeline.fit(df)</span><br><span class="line">prediction = model.transform(df)</span><br></pre></td></tr></table></figure>
+<h2 id="reference">Reference</h2>
+<ul>
+<li>https://medium.com/vickdata/a-simple-guide-to-scikit-learn-pipelines-4ac0d974bdcf</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Spark-Fundamental/2020/04/06/" rel="prev" title="Spark Fundamental">
+      <i class="fa fa-chevron-left"></i> Spark Fundamental
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/SparkML-Examples/2020/04/14/" rel="next" title="SparkML Examples">
+      SparkML Examples <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#scikit-learn-pipeline"><span class="nav-number">1.</span> <span class="nav-text">Scikit-learn Pipeline</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pipeline-1"><span class="nav-number">1.1.</span> <span class="nav-text">Pipeline 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pipeline-2"><span class="nav-number">1.2.</span> <span class="nav-text">Pipeline 2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#building-scikit-learn-transformers"><span class="nav-number">1.3.</span> <span class="nav-text">Building Scikit-Learn transformers</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sparkml-pipeline"><span class="nav-number">2.</span> <span class="nav-text">SparkML Pipeline</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#eda"><span class="nav-number">2.1.</span> <span class="nav-text">EDA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pipeline"><span class="nav-number">2.2.</span> <span class="nav-text">Pipeline</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">3.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

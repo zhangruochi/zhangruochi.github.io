@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Object Detection Summary">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Object Detection Summary">
+<meta property="og:url" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Object Detection Summary">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/1.png">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/2.png">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/3.png">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/4.png">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/frcnn.png">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/5.png">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/6.png">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/8.png">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/train.png">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/yolo.png">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/yolo_arch.png">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/pass.png">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/box.png">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/yolov3.png">
+<meta property="og:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/10.png">
+<meta property="article:published_time" content="2020-03-06T07:53:08.000Z">
+<meta property="article:modified_time" content="2021-12-31T07:40:44.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Object Detection Summary | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Object-Detection-Summary/2020/03/06/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Object Detection Summary
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-03-06 15:53:08" itemprop="dateCreated datePublished" datetime="2020-03-06T15:53:08+08:00">2020-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 15:40:44" itemprop="dateModified" datetime="2021-12-31T15:40:44+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Object-Detection-Summary/2020/03/06/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Object-Detection-Summary/2020/03/06/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Object Detection Summary</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="基于region-proposal的方法">基于REGION PROPOSAL的方法</h2>
+<h3 id="r-cnn">R-CNN</h3>
+<h4 id="步骤">步骤</h4>
+<p>R-CNN的算法步骤:</p>
+<ol type="1">
+<li>采用Selective Search方法从一张图像中提取约2K个候选区域；</li>
+<li>首先归一化为统一尺寸，再对每个候选区域，使用深度网络提取特征；</li>
+<li>将提取出的特征送入每一类的SVM 分类器，判别是否属于该类；</li>
+<li>使用回归器精细修正候选框位置。因为目标检测问题的衡量标准是重叠面积：许多看似准确的检测结果，往往因为候选框不够准确，导致重叠面积很小。</li>
+</ol>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="1.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+R-CNN Architecture
+</div>
+</center>
+<h3 id="spp-net">SPP-NET</h3>
+<p>Kaiming He最先对此作出改进，提出了SPP-net（全称：Spatial Pyramid Pooling），最大的改进是只需要将原图输入一次，就可以得到每个候选区域的特征。</p>
+<p>在R-CNN中，候选区域需要经过变形缩放，以适应CNN输入，可以通过修改网络结构，使得任意大小的图片都能输入到CNN中。Kaiming He在论文中提出了SPP结构来适应任何大小的图片输入。SPP-net对R-CNN最大的改进就是特征提取步骤做了修改，其他模块仍然和R-CNN一样。特征提取不再需要每个候选区域都经过CNN，只需要将整张图片输入到CNN就可以了，ROI特征直接从特征图获取。和R-CNN相比，速度提高了24~102倍。</p>
+<p>SPP-Net的算法步骤:</p>
+<ol type="1">
+<li>首先通过选择性搜索，对待检测的图片进行搜索出2000个候选窗口。这一步和R-CNN一样。</li>
+<li>特征提取阶段。这一步就是和R-CNN最大的区别了，这一步骤的具体操作如下：把整张待检测的图片，输入CNN中，进行一次性特征提取，得到feature maps，然后在feature maps中找到各个候选框的区域(ROI)，再对各个候选框采用金字塔空间池化，提取出固定长度的特征向量。而R-CNN输入的是每个候选框，然后在进入CNN，因为SPP-Net只需要一次对整张图片进行特征提取，速度会大大提升。</li>
+<li>最后一步也是和R-CNN一样，采用SVM算法进行特征向量分类识别。</li>
+</ol>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="2.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+SPP Architecture
+</div>
+</center>
+<h3 id="fast-r-cnn">FAST R-CNN</h3>
+<p>FAST R-CNN的算法步骤：</p>
+<ol type="1">
+<li>通过selective search生成region proposal，每张图片大约2000个RoI；</li>
+<li>Fast-RCNN把整张图片送入CNN，进行特征提取，把region proposal映射到CNN的最后一层卷积feature map上；</li>
+<li>通过RoI pooling层（也可以称为单层的SPP layer）使得每个建议窗口生成固定大小的feature map；</li>
+<li>继续经过两个全连接层（FC）得到特征向量。特征向量经由各自的FC层，得到两个输出向量，第一个是分类，使用softmax，第二个是每一类的bounding box回归。利用Softmax Loss（探测分类概率）和Smooth L1 Loss（探测边框回归）对分类概率和边框回归（Bounding Box Regression）联合训练。</li>
+</ol>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="3.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Fast-RCNN Architecture
+</div>
+</center>
+<h3 id="faster-r-cnn">FASTER R-CNN</h3>
+<p>由于Fast R-CNN仍然是基于Selective Search方法提取region proposal，而Selective Search方法提取region proposal的计算是无法用GPU进行的，无法借助GPU的高度并行运算能力，所以效率极低。而且选取2000个候选区域，也加重了后面深度学习的处理压力。Faster-RCNN = RPN（区域生成网络）+ Fast-RCNN，用RPN网络代替Fast-RCNN中的Selective Search是Faster-RCNN的核心思想。</p>
+<blockquote>
+<p>RPN 原理 https://zhuanlan.zhihu.com/p/24916624</p>
+</blockquote>
+<p>FASTER R-CNN 的算法步骤: 1. 输入测试图像； 2. 将整张图片输入CNN，进行特征提取； 3. 用RPN生成建议窗口（proposals），每张图片生成300个建议窗口； 4. 把建议窗口映射到CNN的最后一层卷积feature map上； 5. 通过RoI pooling层使每个RoI生成固定尺寸的feature map； 6. 利用Softmax Loss（探测分类概率）和Smooth L1 Loss（探测边框回归）对分类概率和边框回归（Bounding Box Regression）联合训练。</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="4.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Faster-RCNN Architecture
+</div>
+</center>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="frcnn.png" width = "80%" height="80%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Faster-RCNN Architecture2
+</div>
+</center>
+<h4 id="anchors">Anchors</h4>
+<p>所谓anchors，实际上就是一组由rpn/generate_anchors.py生成的矩形。直接运行作者demo中的generate_anchors.py可以得到以下输出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[[ -84.  -40.   99.   55.]</span><br><span class="line"> [-176.  -88.  191.  103.]</span><br><span class="line"> [-360. -184.  375.  199.]</span><br><span class="line"> [ -56.  -56.   71.   71.]</span><br><span class="line"> [-120. -120.  135.  135.]</span><br><span class="line"> [-248. -248.  263.  263.]</span><br><span class="line"> [ -36.  -80.   51.   95.]</span><br><span class="line"> [ -80. -168.   95.  183.]</span><br><span class="line"> [-168. -344.  183.  359.]]</span><br></pre></td></tr></table></figure>
+<p>其中每行的4个值 <span class="math inline">\((x_1, y_1, x_2, y_2)\)</span> 表矩形<code>左上</code>和<code>右下</code>角点坐标。9个矩形共有3种形状，长宽比为大约为 <span class="math inline">\(\frac{width}{height} \in \{1:1, 1:2, 2:1\}\)</span>三种，如图。实际上通过anchors就引入了检测中常用到的多尺度方法。</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="5.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Anchor
+</div>
+</center>
+<p>遍历Conv layers计算获得的feature maps，为每一个点都配备这9种anchors作为初始的检测框。这样做获得检测框很不准确，不用担心，后面还有2次bounding box regression可以修正检测框位置。</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="6.png" width = "70%" height="70%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Anchor2
+</div>
+</center>
+<p>假设在conv5 feature map中每个点上有k个anchor（默认k=9），而每个anhcor要分positive和negative，所以每个点由256d feature转化为cls=2k scores；而每个anchor都有(x, y, w, h)对应4个偏移量，所以reg=4k coordinates. 补充一点，全部anchors拿去训练太多了，训练程序会在合适的anchors中随机选取128个postive anchors+128个negative anchors进行训练。</p>
+<h4 id="bounding-box-regression">Bounding box regression</h4>
+<p>对于窗口一般使用四维向量 (x,y,w,h) 表示，分别表示窗口的中心点坐标和宽高。对于下图，红色的框A代表原始的positive Anchors，绿色的框G代表目标的GT，我们的目标是寻找一种关系，使得输入原始的anchor A经过映射得到一个跟真实窗口G更接近的回归窗口G'，即</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="8.png" width = "50%" height="50%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Bouding Box Regression
+</div>
+</center>
+<ul>
+<li>给定 anchor <span class="math inline">\(A = (A_x, A_y, A_w, A_h)\)</span> 和 <span class="math inline">\(GT =( G_x, G_y, G_w, G_h)\)</span></li>
+<li>寻找一种变换 F, 使得: <span class="math display">\[ F(A_x, A_y, A_w, A_h)$ = ( G_x^{\prime}, G_y^{\prime}, G_w^{\prime}, G_h^{\prime})\]</span> <span class="math display">\[ ( G_x^{\prime}, G_y^{\prime}, G_w^{\prime}, G_h^{\prime}) \approx ( G_x, G_y, G_w, G_h)\]</span></li>
+</ul>
+<p>那么经过何种变换F才能从图10中的anchor A变为G'呢？ 比较简单的思路就是:</p>
+<ol type="1">
+<li>先做平移</li>
+</ol>
+<p><span class="math display">\[G_x^{\prime} = A_w \dot d_x(A) + A_x\]</span> <span class="math display">\[G_y^{\prime} = A_h \dot d_y(A) + A_y\]</span></p>
+<ol start="2" type="1">
+<li>再做缩放</li>
+</ol>
+<p><span class="math display">\[G_w^{\prime} = A_w \dot exp(d_w(A))\]</span> <span class="math display">\[G_h^{\prime} = A_h \dot exp(d_h(A))\]</span></p>
+<p>需要学习的是 <span class="math inline">\(d_x(A)\)</span>, <span class="math inline">\(d_y(A)\)</span>, <span class="math inline">\(d_w(A)\)</span>, <span class="math inline">\(d_h(A)\)</span> 这四个变换。当输入的anchor A与GT相差较小时，可以认为这种变换是一种线性变换， 那么就可以用线性回归来建模对窗口进行微调。</p>
+<p>在 faster RCNN的原文中，positive anchor与ground truth之间的平移量<span class="math inline">\((t_x, t_y)\)</span>与尺度因子<span class="math inline">\((t_w, t_h)\)</span>如下: <span class="math display">\[t_x = \frac{G_x - x_a}{W_a}\]</span> <span class="math display">\[t_y = \frac{G_y - y_a}{h_a}\]</span> <span class="math display">\[t_w = log(\frac{G_w}{W_a})\]</span> <span class="math display">\[t_h = log(\frac{h}{h_a})\]</span></p>
+<p>对于训练bouding box regression网络回归分支，输入是X(cnn feature), label 是上述尺度变换因子，训练的目标是在输入fetaure X的条件下，回归网络分支的输出就是每个Anchor的平移量和变换尺度<span class="math inline">\((t_x, t_y, t_w, t_h)\)</span> 显然即可用来修正Anchor位置了。</p>
+<h4 id="faster-rcnn-训练">Faster RCNN 训练</h4>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="train.png" width = "80%" height="80%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+Training
+</div>
+</center>
+<p>Faster R-CNN的训练，是在已经训练好的model（如VGG_CNN_M_1024，VGG，ZF）的基础上继续进行训练。实际中训练过程分为6个步骤：</p>
+<ol type="1">
+<li>在已经训练好的model上，训练RPN网络</li>
+<li>利用步骤1中训练好的RPN网络</li>
+<li>第一次训练Fast RCNN网络</li>
+<li>第二训练RPN网络</li>
+<li>再次利用步骤4中训练好的RPN网络</li>
+<li>第二次训练Fast RCNN网络</li>
+</ol>
+<h3 id="yolo">YOLO</h3>
+<p>YOLO的核心思想就是利用整张图作为网络的输入，直接在输出层回归bounding box的位置和bounding box所属的类别。</p>
+<p>YOLO的算法步骤:</p>
+<ol type="1">
+<li>首先，将一幅图像分成S×S个网格（grid cell），如果某个物体的中心落在这个网格中，则这个网格就负责预测这个物体。
+<center>
+<img style="border-radius: 0.3125em;
+ box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+ src="yolo.png" width = "50%" height="50%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+ display: inline-block;
+ color: #999;
+ padding: 2px;">
+YOLO
+</div>
+</center></li>
+<li>每个网格要预测B个bounding box，每个bounding box除了要回归自身的位置之外，还要附带预测一个confidence。这个confidence代表了所预测的box中含有object的置信度和这个box预测的有多准这两重信息。</li>
+<li>每个bounding box要预测(x, y, w, h)和confidence共5个值，每个cell还要预测一个类别信息，记为C类。则S×S个网格，每个网格要预测B个bounding box还要预测C个categories。输出就是S×S×(5×B+C)的一个tensor。</li>
+</ol>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="yolo_arch.png" width = "80%" height="80%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+YOLO Architecture
+</div>
+</center>
+<h3 id="yolo-v2">YOLO v2</h3>
+<h4 id="batch-normalization">Batch Normalization</h4>
+<p>可以提高模型收敛速度，减少过拟合；</p>
+<h4 id="high-resolution-classifier">High Resolution Classifier</h4>
+<p>首先采用448×448分辨率的ImageNet数据finetune使网络适应高分辨率输入；然后将该网络用于目标检测任务finetune；</p>
+<h4 id="convolutional-with-anchor-boxes">Convolutional With Anchor Boxes</h4>
+<p>去除了YOLO的全连接层，采用固定框（anchor boxes）来预测bounding boxes；借鉴Faster RCNN的做法，YOLO2也尝试采用先验框（anchor）。在每个grid预先设定一组不同大小和宽高比的边框，来覆盖整个图像的不同位置和多种尺度，这些先验框作为预定义的候选区在神经网络中将检测其中是否存在对象，以及微调边框的位置。</p>
+<h4 id="dimension-clusters">Dimension Clusters**</h4>
+<p>Anchor boxes是通过k-means在训练集中学得的，并且作者定义了新的距离公式，使用k-means获取anchor boxes来预测bounding boxes让模型更容易学习如何预测bounding boxes；聚类算法最重要的是选择如何计算两个边框之间的“距离”，对于常用的欧式距离，大边框会产生更大的误差，但我们关心的是边框的IOU。所以，YOLO2在聚类时采用以下公式来计算两个边框之间的“距离”。 <span class="math display">\[d(box, centroid) = 1 - IOU(box, centroid)\]</span></p>
+<h4 id="direct-location-prediction">Direct location prediction</h4>
+<p>借鉴于Faster RCNN的先验框方法，在训练的早期阶段，其位置预测容易不稳定。其位置预测公式为：</p>
+<p><span class="math display">\[x = (t_x * w_a) + x_a\]</span> <span class="math display">\[y = (t_y * h_a) + y_a\]</span></p>
+<p>其中,(x,y)是预测边框的中心，<span class="math inline">\(x_a\)</span>, <span class="math inline">\(y_a\)</span>是先验框（anchor）的中心点坐标，(w_a,h_a)是先验框（anchor）的宽和高。<span class="math inline">\(t_x\)</span>,<span class="math inline">\(t_y\)</span>是要学习的尺度变换因子。 由于<span class="math inline">\(t_x\)</span>,<span class="math inline">\(t_y\)</span>没有约束，因此预测边框的中心可能出现在任何位置，训练早期阶段不容易稳定。YOLO调整了预测公式，将预测边框的中心约束在特定gird网格内。</p>
+<p><span class="math display">\[b_x = \sigma(t_x) + c_x\]</span> <span class="math display">\[b_y = \sigma(t_y) + c_y\]</span> <span class="math display">\[b_w  = p_w e^{t_w}\]</span> <span class="math display">\[b_h  = p_h e^{t_h}\]</span> <span class="math display">\[Pr(object)\dot IOU(b,object) = \sigma(t_o)\]</span></p>
+<p>其中，<span class="math inline">\(b_X,b_y,b_w,b_h\)</span>是预测边框的中心和宽高,<span class="math inline">\(Pr(object)\dot IOU(b,object) = \sigma(t_o)\)</span> 是预测边框的置信度，YOLO1是直接预测置信度的值，这里对预测参数<span class="math inline">\(t_o\)</span>进行<span class="math inline">\(\sigma\)</span>变换后作为置信度的值。<span class="math inline">\(c_x\)</span>,<span class="math inline">\(c_y\)</span>是当前网格左上角到图像左上角的距离，要先将网格大小归一化，即令一个网格的宽=1，高=1。<span class="math inline">\(p_w,p_h\)</span>是先验框的宽和高。</p>
+<p><strong>see explanantion in https://www.jianshu.com/p/86b8208f634f</strong></p>
+<h4 id="fine-grained-features">Fine-Grained Features</h4>
+<p>YOLOv2通过添加一个pass through layer，将前一个卷积块的特征图的信息融合起来；对象检测面临的一个问题是图像中对象会有大有小，输入图像经过多层网络提取特征，最后输出的特征图中（比如YOLO2中输入416<em>416经过卷积网络下采样最后输出是13</em>13），较小的对象可能特征已经不明显甚至被忽略掉了。为了更好的检测出一些比较小的对象，最后输出的特征图需要保留一些更细节的信息。</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="pass.png" width = "80%" height="80%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+pass through
+</div>
+</center>
+<h4 id="multi-scale-training">Multi-Scale Training</h4>
+<p>YOLOv2网络只用到了卷积层和池化层，因此可以进行动态调整输入图像的尺寸，作者希望YOLOv2对于不同尺寸图像的检测都有较好的鲁棒性，因此做了针对性训练。这种策略让YOLOv2网络不得不学着对不同尺寸的图像输入都要预测得很好，这意味着同一个网络可以胜任不同分辨率的检测任务，在网络训练好之后，在使用时只需要根据需求，修改网络输入图像尺寸（width和height的值）即可。</p>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="box.png" width = "80%" height="80%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+YOLO v2 bounding box regression
+</div>
+</center>
+<h3 id="yolo-v3">YOLO v3</h3>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="yolov3.png" width = "80%" height="80%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+YOLO v3 Architecture
+</div>
+</center>
+<ul>
+<li><strong>DBL</strong>: 如图1左下角所示，也就是代码中的Darknetconv2d_BN_Leaky，是yolo_v3的基本组件。就是卷积+BN+Leaky relu。对于v3来说，BN和leaky relu已经是和卷积层不可分离的部分了(最后一层卷积除外)，共同构成了最小组件。</li>
+<li><strong>resn</strong>：n代表数字，有res1，res2, … ,res8等等，表示这个res_block里含有多少个res_unit。这是yolo_v3的大组件，yolo_v3开始借鉴了ResNet的残差结构，使用这种结构可以让网络结构更深(从v2的darknet-19上升到v3的darknet-53，前者没有残差结构)。对于res_block的解释，可以在图1的右下角直观看到，其基本组件也是DBL。</li>
+<li><strong>concat</strong>：张量拼接。将darknet中间层和后面的某一层的上采样进行拼接。拼接的操作和残差层add的操作是不一样的，拼接会扩充张量的维度，而add只是直接相加不会导致张量维度的改变。</li>
+</ul>
+<h4 id="多尺度特征图">多尺度特征图</h4>
+<ul>
+<li>YOLOv3输出了3个不同的尺度特征图，在它们上面进行融合预测物体框。这借鉴了特征金字塔网络（FPN, feature pyramid networks），采用多尺度来对不同大小的目标进行检测，越精细的grid cell就可以检测出越精细的物体。</li>
+<li>生成3个尺度特征图：
+<ul>
+<li>尺度y1：尺度1的feature map做卷积后直接得到box信息</li>
+<li>尺度y2：对尺度1输出的卷积进行上采样，然后和尺度2的feature map相加，再经过卷积输出box信息，整个feature map大小相对于尺度1扩大了两倍</li>
+<li>尺度y3：同理y2</li>
+</ul></li>
+<li>3个尺度特征图深度都是255，边长的规律是13:26:52。</li>
+<li>采用了多尺度的特征融合，所以边界框的数量要比之前多很多.以输入图像为416x416为例的(13x13+26x26+52x52)x3=10647，要比v2的13x13x5更多。</li>
+</ul>
+<center>
+<img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="10.png" width = "80%" height="80%">
+<div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">
+YOLO v3 Architecture
+</div>
+</center>
+<h2 id="reference">Reference</h2>
+<ul>
+<li>https://blog.csdn.net/v1_vivian/article/details/73275259</li>
+<li>https://blog.csdn.net/zhang_can/article/details/79490735</li>
+<li>https://zhuanlan.zhihu.com/p/31426458</li>
+<li>https://zhuanlan.zhihu.com/p/47575929</li>
+<li>https://blog.csdn.net/leviopku/article/details/82660381</li>
+<li>https://www.jianshu.com/p/86b8208f634f</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/AI-Search-II/2020/03/05/" rel="prev" title="AI - Search II">
+      <i class="fa fa-chevron-left"></i> AI - Search II
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Lifelong-Learning/2020/03/14/" rel="next" title="Lifelong Learning">
+      Lifelong Learning <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8Eregion-proposal%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">基于REGION PROPOSAL的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#r-cnn"><span class="nav-number">1.1.</span> <span class="nav-text">R-CNN</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.1.1.</span> <span class="nav-text">步骤</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#spp-net"><span class="nav-number">1.2.</span> <span class="nav-text">SPP-NET</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fast-r-cnn"><span class="nav-number">1.3.</span> <span class="nav-text">FAST R-CNN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#faster-r-cnn"><span class="nav-number">1.4.</span> <span class="nav-text">FASTER R-CNN</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#anchors"><span class="nav-number">1.4.1.</span> <span class="nav-text">Anchors</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bounding-box-regression"><span class="nav-number">1.4.2.</span> <span class="nav-text">Bounding box regression</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#faster-rcnn-%E8%AE%AD%E7%BB%83"><span class="nav-number">1.4.3.</span> <span class="nav-text">Faster RCNN 训练</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yolo"><span class="nav-number">1.5.</span> <span class="nav-text">YOLO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yolo-v2"><span class="nav-number">1.6.</span> <span class="nav-text">YOLO v2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#batch-normalization"><span class="nav-number">1.6.1.</span> <span class="nav-text">Batch Normalization</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#high-resolution-classifier"><span class="nav-number">1.6.2.</span> <span class="nav-text">High Resolution Classifier</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#convolutional-with-anchor-boxes"><span class="nav-number">1.6.3.</span> <span class="nav-text">Convolutional With Anchor Boxes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dimension-clusters"><span class="nav-number">1.6.4.</span> <span class="nav-text">Dimension Clusters**</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#direct-location-prediction"><span class="nav-number">1.6.5.</span> <span class="nav-text">Direct location prediction</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fine-grained-features"><span class="nav-number">1.6.6.</span> <span class="nav-text">Fine-Grained Features</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#multi-scale-training"><span class="nav-number">1.6.7.</span> <span class="nav-text">Multi-Scale Training</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yolo-v3"><span class="nav-number">1.7.</span> <span class="nav-text">YOLO v3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E5%B0%BA%E5%BA%A6%E7%89%B9%E5%BE%81%E5%9B%BE"><span class="nav-number">1.7.1.</span> <span class="nav-text">多尺度特征图</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">2.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

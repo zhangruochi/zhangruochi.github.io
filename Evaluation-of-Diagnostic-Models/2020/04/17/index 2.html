@@ -1,0 +1,6618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Evaluation of Diagnostic Models">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Evaluation of Diagnostic Models">
+<meta property="og:url" content="https://zhangruochi.com/Evaluation-of-Diagnostic-Models/2020/04/17/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Evaluation of Diagnostic Models">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Evaluation-of-Diagnostic-Models/2020/04/17/output_14_0.png">
+<meta property="og:image" content="https://zhangruochi.com/Evaluation-of-Diagnostic-Models/2020/04/17/sens_spec.png">
+<meta property="og:image" content="https://zhangruochi.com/Evaluation-of-Diagnostic-Models/2020/04/17/output_53_0.png">
+<meta property="og:image" content="https://zhangruochi.com/Evaluation-of-Diagnostic-Models/2020/04/17/output_64_0.png">
+<meta property="og:image" content="https://zhangruochi.com/Evaluation-of-Diagnostic-Models/2020/04/17/output_71_0.png">
+<meta property="og:image" content="https://zhangruochi.com/Evaluation-of-Diagnostic-Models/2020/04/17/output_74_0.png">
+<meta property="article:published_time" content="2020-04-17T10:54:09.000Z">
+<meta property="article:modified_time" content="2021-12-31T07:55:19.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Medicine">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Evaluation-of-Diagnostic-Models/2020/04/17/output_14_0.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Evaluation-of-Diagnostic-Models/2020/04/17/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Evaluation of Diagnostic Models | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Evaluation-of-Diagnostic-Models/2020/04/17/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Evaluation of Diagnostic Models
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-17 18:54:09" itemprop="dateCreated datePublished" datetime="2020-04-17T18:54:09+08:00">2020-04-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 15:55:19" itemprop="dateModified" datetime="2021-12-31T15:55:19+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Evaluation-of-Diagnostic-Models/2020/04/17/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Evaluation-of-Diagnostic-Models/2020/04/17/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Evaluation of Diagnostic Models</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="evaluation-of-diagnostic-models">Evaluation of Diagnostic Models</h1>
+<p>Welcome to the second assignment of course 1. In this assignment, we will be working with the results of the X-ray classification model we developed in the previous assignment. In order to make the data processing a bit more manageable, we will be working with a subset of our training, and validation datasets. We will also use our manually labeled test dataset of 420 X-rays.</p>
+<p>As a reminder, our dataset contains X-rays from 14 different conditions diagnosable from an X-ray. We'll evaluate our performance on each of these classes using the classification metrics we learned in lecture.</p>
+<h2 id="outline">Outline</h2>
+<p>Click on these links to jump to a particular section of this assignment! - <a href="#evaluation-of-diagnostic-models">Evaluation of Diagnostic Models</a> - <a href="#outline">Outline</a> - <a href="#1-packages">1. Packages</a> - <a href="#2-overview">2. Overview</a> - <a href="#3-metrics">3 Metrics</a> - <a href="#31-true-positives-false-positives-true-negatives-and-false-negatives">3.1 True Positives, False Positives, True Negatives, and False Negatives</a> - <a href="#32-accuracy">3.2 Accuracy</a> - <a href="#expected-output">Expected output:</a> - <a href="#33-prevalence">3.3 Prevalence</a> - <a href="#34-sensitivity-and-specificity">3.4 Sensitivity and Specificity</a> - <a href="#expected-output-1">Expected output:</a> - <a href="#35-ppv-and-npv">3.5 PPV and NPV</a> - <a href="#expected-output-2">Expected output:</a> - <a href="#36-roc-curve">3.6 ROC Curve</a> - <a href="#4-confidence-intervals">4. Confidence Intervals</a> - <a href="#5-precision-recall-curve">5. Precision-Recall Curve</a> - <a href="#6-f1-score">6. F1 Score</a> - <a href="#7-calibration">7. Calibration</a> - <a href="#thats-it">That's it!</a></p>
+<p><strong>By the end of this assignment you will learn about:</strong></p>
+<ol type="1">
+<li>Accuracy</li>
+<li>Prevalence</li>
+<li>Specificity &amp; Sensitivity</li>
+<li>PPV and NPV</li>
+<li>ROC curve and AUCROC (c-statistic)</li>
+<li>Confidence Intervals</li>
+</ol>
+<p><a name='1'></a> ## 1. Packages</p>
+<p>In this assignment, we'll make use of the following packages: - <a target="_blank" rel="noopener" href="https://docs.scipy.org/doc/numpy/">numpy</a> is a popular library for scientific computing - <a target="_blank" rel="noopener" href="https://matplotlib.org/3.1.1/contents.html">matplotlib</a> is a plotting library compatible with numpy - <a target="_blank" rel="noopener" href="https://pandas.pydata.org/docs/">pandas</a> is what we'll use to manipulate our data - <a target="_blank" rel="noopener" href="https://scikit-learn.org/stable/index.html">sklearn</a> will be used to measure the performance of our model</p>
+<p>Run the next cell to import all the necessary packages as well as custom util functions.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt </span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd  </span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> util</span><br></pre></td></tr></table></figure>
+<p><a name='2'></a> ## 2. Overview</p>
+<p>We'll go through our evaluation metrics in the following order.</p>
+<ul>
+<li>Metrics
+<ul>
+<li>TP, TN, FP, FN</li>
+<li>Accuracy</li>
+<li>Prevalence</li>
+<li>Sensitivity and Specificity</li>
+<li>PPV and NPV</li>
+<li>AUC</li>
+</ul></li>
+<li>Confidence Intervals</li>
+</ul>
+<p>Let's take a quick peek at our dataset. The data is stored in two CSV files called <code>train_preds.csv</code> and <code>valid_preds.csv</code>. We have precomputed the model outputs for our test cases. We'll work with these predictions and the true class labels throughout the assignment.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">train_results = pd.read_csv(<span class="string">&quot;train_preds.csv&quot;</span>)</span><br><span class="line">valid_results = pd.read_csv(<span class="string">&quot;valid_preds.csv&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># the labels in our dataset</span></span><br><span class="line">class_labels = [<span class="string">&#x27;Cardiomegaly&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Emphysema&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Effusion&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Hernia&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Infiltration&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Mass&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Nodule&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Atelectasis&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Pneumothorax&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Pleural_Thickening&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Pneumonia&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Fibrosis&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Edema&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Consolidation&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># the labels for prediction values in our dataset</span></span><br><span class="line">pred_labels = [l + <span class="string">&quot;_pred&quot;</span> <span class="keyword">for</span> l <span class="keyword">in</span> class_labels]</span><br></pre></td></tr></table></figure>
+<p>Extract the labels (y) and the predictions (pred).</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">y = valid_results[class_labels].values</span><br><span class="line">pred = valid_results[pred_labels].values</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">y.shape, pred.shape</span><br></pre></td></tr></table></figure>
+<pre><code>((1000, 14), (1000, 14))</code></pre>
+<p>Run the next cell to view them side by side.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># let&#x27;s take a peek at our dataset</span></span><br><span class="line">valid_results[np.concatenate([class_labels, pred_labels])].head()</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+Cardiomegaly
+</th>
+<th>
+Emphysema
+</th>
+<th>
+Effusion
+</th>
+<th>
+Hernia
+</th>
+<th>
+Infiltration
+</th>
+<th>
+Mass
+</th>
+<th>
+Nodule
+</th>
+<th>
+Atelectasis
+</th>
+<th>
+Pneumothorax
+</th>
+<th>
+Pleural_Thickening
+</th>
+<th>
+...
+</th>
+<th>
+Infiltration_pred
+</th>
+<th>
+Mass_pred
+</th>
+<th>
+Nodule_pred
+</th>
+<th>
+Atelectasis_pred
+</th>
+<th>
+Pneumothorax_pred
+</th>
+<th>
+Pleural_Thickening_pred
+</th>
+<th>
+Pneumonia_pred
+</th>
+<th>
+Fibrosis_pred
+</th>
+<th>
+Edema_pred
+</th>
+<th>
+Consolidation_pred
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+...
+</td>
+<td>
+0.256020
+</td>
+<td>
+0.266928
+</td>
+<td>
+0.312440
+</td>
+<td>
+0.460342
+</td>
+<td>
+0.079453
+</td>
+<td>
+0.271495
+</td>
+<td>
+0.276861
+</td>
+<td>
+0.398799
+</td>
+<td>
+0.015867
+</td>
+<td>
+0.156320
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+...
+</td>
+<td>
+0.382199
+</td>
+<td>
+0.176825
+</td>
+<td>
+0.465807
+</td>
+<td>
+0.489424
+</td>
+<td>
+0.084595
+</td>
+<td>
+0.377318
+</td>
+<td>
+0.363582
+</td>
+<td>
+0.638024
+</td>
+<td>
+0.025948
+</td>
+<td>
+0.144419
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+...
+</td>
+<td>
+0.427727
+</td>
+<td>
+0.115513
+</td>
+<td>
+0.249030
+</td>
+<td>
+0.035105
+</td>
+<td>
+0.238761
+</td>
+<td>
+0.167095
+</td>
+<td>
+0.166389
+</td>
+<td>
+0.262463
+</td>
+<td>
+0.007758
+</td>
+<td>
+0.125790
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+...
+</td>
+<td>
+0.158596
+</td>
+<td>
+0.259460
+</td>
+<td>
+0.334870
+</td>
+<td>
+0.266489
+</td>
+<td>
+0.073371
+</td>
+<td>
+0.229834
+</td>
+<td>
+0.191281
+</td>
+<td>
+0.344348
+</td>
+<td>
+0.008559
+</td>
+<td>
+0.119153
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+...
+</td>
+<td>
+0.536762
+</td>
+<td>
+0.198797
+</td>
+<td>
+0.273110
+</td>
+<td>
+0.186771
+</td>
+<td>
+0.242122
+</td>
+<td>
+0.309786
+</td>
+<td>
+0.411771
+</td>
+<td>
+0.244666
+</td>
+<td>
+0.126930
+</td>
+<td>
+0.342409
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+5 rows × 28 columns
+</p>
+</div>
+<p>To further understand our dataset details, here's a histogram of the number of samples for each label in the validation dataset:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.xticks(rotation=<span class="number">90</span>)</span><br><span class="line">plt.bar(x = class_labels, height= y.<span class="built_in">sum</span>(axis=<span class="number">0</span>));</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_14_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p>It seem like our dataset has an imbalanced population of samples. Specifically, our dataset has a small number of patients diagnosed with a <code>Hernia</code>.</p>
+<p><a name='3'></a> ## 3 Metrics</p>
+<p><a name='3-1'></a> ### 3.1 True Positives, False Positives, True Negatives, and False Negatives</p>
+<p>The most basic statistics to compute from the model predictions are the true positives, true negatives, false positives, and false negatives.</p>
+<p>As the name suggests - true positive (TP): The model classifies the example as positive, and the actual label also positive. - false positive (FP): The model classifies the example as positive, <strong>but</strong> the actual label is negative. - true negative (TN): The model classifies the example as negative, and the actual label is also negative. - false negative (FN): The model classifies the example as negative, <strong>but</strong> the label is actually positive.</p>
+<p>We will count the number of TP, FP, TN and FN in the given data. All of our metrics can be built off of these four statistics.</p>
+<p>Recall that the model outputs real numbers between 0 and 1. * To compute binary class predictions, we need to convert these to either 0 or 1. * We'll do this using a threshold value <span class="math inline">\(th\)</span>. * Any model outputs above <span class="math inline">\(th\)</span> are set to 1, and below <span class="math inline">\(th\)</span> are set to 0.</p>
+<p>All of our metrics (except for AUC at the end) will depend on the choice of this threshold.</p>
+<p>Fill in the functions to compute the TP, FP, TN, and FN for a given threshold below.</p>
+<p>The first one has been done for you.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C1 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">true_positives</span>(<span class="params">y, pred, th=<span class="number">0.5</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Count true positives.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        y (np.array): ground truth, size (n_examples)</span></span><br><span class="line"><span class="string">        pred (np.array): model output, size (n_examples)</span></span><br><span class="line"><span class="string">        th (float): cutoff value for positive prediction from model</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        TP (int): true positives</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    TP = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># get thresholded predictions</span></span><br><span class="line">    thresholded_preds = pred &gt;= th</span><br><span class="line"></span><br><span class="line">    <span class="comment"># compute TP</span></span><br><span class="line">    TP = np.<span class="built_in">sum</span>((y == <span class="number">1</span>) &amp; (thresholded_preds == <span class="number">1</span>))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> TP</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">true_negatives</span>(<span class="params">y, pred, th=<span class="number">0.5</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Count true negatives.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        y (np.array): ground truth, size (n_examples)</span></span><br><span class="line"><span class="string">        pred (np.array): model output, size (n_examples)</span></span><br><span class="line"><span class="string">        th (float): cutoff value for positive prediction from model</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        TN (int): true negatives</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    TN = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># get thresholded predictions</span></span><br><span class="line">    thresholded_preds = pred &gt;= th</span><br><span class="line"></span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># compute TN</span></span><br><span class="line">    TN = np.<span class="built_in">sum</span>((y == <span class="number">0</span>) &amp; (thresholded_preds == <span class="number">0</span>))</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> TN</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">false_positives</span>(<span class="params">y, pred, th=<span class="number">0.5</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Count false positives.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        y (np.array): ground truth, size (n_examples)</span></span><br><span class="line"><span class="string">        pred (np.array): model output, size (n_examples)</span></span><br><span class="line"><span class="string">        th (float): cutoff value for positive prediction from model</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        FP (int): false positives</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    FP = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># get thresholded predictions</span></span><br><span class="line">    thresholded_preds = pred &gt;= th</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; with your code) ###</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># compute FP</span></span><br><span class="line">    FP = np.<span class="built_in">sum</span>((y == <span class="number">0</span>) &amp; (thresholded_preds == <span class="number">1</span>))</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> FP</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">false_negatives</span>(<span class="params">y, pred, th=<span class="number">0.5</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Count false positives.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        y (np.array): ground truth, size (n_examples)</span></span><br><span class="line"><span class="string">        pred (np.array): model output, size (n_examples)</span></span><br><span class="line"><span class="string">        th (float): cutoff value for positive prediction from model</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        FN (int): false negatives</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    FN = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># get thresholded predictions</span></span><br><span class="line">    thresholded_preds = pred &gt;= th</span><br><span class="line"></span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># compute FN</span></span><br><span class="line">    FN = np.<span class="built_in">sum</span>((y == <span class="number">1</span>) &amp; (thresholded_preds == <span class="number">0</span>))</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> FN</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Note: we must explicity import &#x27;display&#x27; in order for the autograder to compile the submitted code</span></span><br><span class="line"><span class="comment"># Even though we could use this function without importing it, keep this import in order to allow the grader to work</span></span><br><span class="line"><span class="keyword">from</span> IPython.display <span class="keyword">import</span> display</span><br><span class="line"><span class="comment"># Test</span></span><br><span class="line">df = pd.DataFrame(&#123;<span class="string">&#x27;y_test&#x27;</span>: [<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>],</span><br><span class="line">                   <span class="string">&#x27;preds_test&#x27;</span>: [<span class="number">0.8</span>,<span class="number">0.7</span>,<span class="number">0.4</span>,<span class="number">0.3</span>,<span class="number">0.2</span>,<span class="number">0.5</span>,<span class="number">0.6</span>,<span class="number">0.7</span>,<span class="number">0.8</span>,<span class="number">0.1</span>,<span class="number">0.2</span>,<span class="number">0.3</span>,<span class="number">0.4</span>,<span class="number">0</span>],</span><br><span class="line">                   <span class="string">&#x27;category&#x27;</span>: [<span class="string">&#x27;TP&#x27;</span>,<span class="string">&#x27;TP&#x27;</span>,<span class="string">&#x27;TN&#x27;</span>,<span class="string">&#x27;TN&#x27;</span>,<span class="string">&#x27;TN&#x27;</span>,<span class="string">&#x27;FP&#x27;</span>,<span class="string">&#x27;FP&#x27;</span>,<span class="string">&#x27;FP&#x27;</span>,<span class="string">&#x27;FP&#x27;</span>,<span class="string">&#x27;FN&#x27;</span>,<span class="string">&#x27;FN&#x27;</span>,<span class="string">&#x27;FN&#x27;</span>,<span class="string">&#x27;FN&#x27;</span>,<span class="string">&#x27;FN&#x27;</span>]</span><br><span class="line">                  &#125;)</span><br><span class="line"></span><br><span class="line">display(df)</span><br><span class="line"><span class="comment">#y_test = np.array([1, 0, 0, 1, 1])</span></span><br><span class="line">y_test = df[<span class="string">&#x27;y_test&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#preds_test = np.array([0.8, 0.8, 0.4, 0.6, 0.3])</span></span><br><span class="line">preds_test = df[<span class="string">&#x27;preds_test&#x27;</span>]</span><br><span class="line"></span><br><span class="line">threshold = <span class="number">0.5</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;threshold: <span class="subst">&#123;threshold&#125;</span>\n&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;&quot;&quot;Our functions calcualted: </span></span><br><span class="line"><span class="string">TP: <span class="subst">&#123;true_positives(y_test, preds_test, threshold)&#125;</span></span></span><br><span class="line"><span class="string">TN: <span class="subst">&#123;true_negatives(y_test, preds_test, threshold)&#125;</span></span></span><br><span class="line"><span class="string">FP: <span class="subst">&#123;false_positives(y_test, preds_test, threshold)&#125;</span></span></span><br><span class="line"><span class="string">FN: <span class="subst">&#123;false_negatives(y_test, preds_test, threshold)&#125;</span></span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Expected results&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;There are <span class="subst">&#123;<span class="built_in">sum</span>(df[<span class="string">&#x27;category&#x27;</span>] == <span class="string">&#x27;TP&#x27;</span>)&#125;</span> TP&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;There are <span class="subst">&#123;<span class="built_in">sum</span>(df[<span class="string">&#x27;category&#x27;</span>] == <span class="string">&#x27;TN&#x27;</span>)&#125;</span> TN&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;There are <span class="subst">&#123;<span class="built_in">sum</span>(df[<span class="string">&#x27;category&#x27;</span>] == <span class="string">&#x27;FP&#x27;</span>)&#125;</span> FP&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;There are <span class="subst">&#123;<span class="built_in">sum</span>(df[<span class="string">&#x27;category&#x27;</span>] == <span class="string">&#x27;FN&#x27;</span>)&#125;</span> FN&quot;</span>)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+y_test
+</th>
+<th>
+preds_test
+</th>
+<th>
+category
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0.8
+</td>
+<td>
+TP
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+0.7
+</td>
+<td>
+TP
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+0.4
+</td>
+<td>
+TN
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+0.3
+</td>
+<td>
+TN
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+0
+</td>
+<td>
+0.2
+</td>
+<td>
+TN
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td>
+0
+</td>
+<td>
+0.5
+</td>
+<td>
+FP
+</td>
+</tr>
+<tr>
+<th>
+6
+</th>
+<td>
+0
+</td>
+<td>
+0.6
+</td>
+<td>
+FP
+</td>
+</tr>
+<tr>
+<th>
+7
+</th>
+<td>
+0
+</td>
+<td>
+0.7
+</td>
+<td>
+FP
+</td>
+</tr>
+<tr>
+<th>
+8
+</th>
+<td>
+0
+</td>
+<td>
+0.8
+</td>
+<td>
+FP
+</td>
+</tr>
+<tr>
+<th>
+9
+</th>
+<td>
+1
+</td>
+<td>
+0.1
+</td>
+<td>
+FN
+</td>
+</tr>
+<tr>
+<th>
+10
+</th>
+<td>
+1
+</td>
+<td>
+0.2
+</td>
+<td>
+FN
+</td>
+</tr>
+<tr>
+<th>
+11
+</th>
+<td>
+1
+</td>
+<td>
+0.3
+</td>
+<td>
+FN
+</td>
+</tr>
+<tr>
+<th>
+12
+</th>
+<td>
+1
+</td>
+<td>
+0.4
+</td>
+<td>
+FN
+</td>
+</tr>
+<tr>
+<th>
+13
+</th>
+<td>
+1
+</td>
+<td>
+0.0
+</td>
+<td>
+FN
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<pre><code>threshold: 0.5
+
+Our functions calcualted: 
+TP: 2
+TN: 3
+FP: 4
+FN: 5
+
+Expected results
+There are 2 TP
+There are 3 TN
+There are 4 FP
+There are 5 FN</code></pre>
+<p>Run the next cell to see a summary of evaluative metrics for the model predictions for each class.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">util.get_performance_metrics(y, pred, class_labels)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+TP
+</th>
+<th>
+TN
+</th>
+<th>
+FP
+</th>
+<th>
+FN
+</th>
+<th>
+Accuracy
+</th>
+<th>
+Prevalence
+</th>
+<th>
+Sensitivity
+</th>
+<th>
+Specificity
+</th>
+<th>
+PPV
+</th>
+<th>
+NPV
+</th>
+<th>
+AUC
+</th>
+<th>
+F1
+</th>
+<th>
+Threshold
+</th>
+</tr>
+<tr>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+Cardiomegaly
+</th>
+<td>
+16
+</td>
+<td>
+814
+</td>
+<td>
+169
+</td>
+<td>
+1
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Emphysema
+</th>
+<td>
+20
+</td>
+<td>
+869
+</td>
+<td>
+103
+</td>
+<td>
+8
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Effusion
+</th>
+<td>
+99
+</td>
+<td>
+690
+</td>
+<td>
+196
+</td>
+<td>
+15
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Hernia
+</th>
+<td>
+1
+</td>
+<td>
+743
+</td>
+<td>
+255
+</td>
+<td>
+1
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Infiltration
+</th>
+<td>
+114
+</td>
+<td>
+543
+</td>
+<td>
+265
+</td>
+<td>
+78
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Mass
+</th>
+<td>
+40
+</td>
+<td>
+789
+</td>
+<td>
+158
+</td>
+<td>
+13
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Nodule
+</th>
+<td>
+28
+</td>
+<td>
+731
+</td>
+<td>
+220
+</td>
+<td>
+21
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Atelectasis
+</th>
+<td>
+64
+</td>
+<td>
+657
+</td>
+<td>
+249
+</td>
+<td>
+30
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pneumothorax
+</th>
+<td>
+24
+</td>
+<td>
+785
+</td>
+<td>
+183
+</td>
+<td>
+8
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pleural_Thickening
+</th>
+<td>
+24
+</td>
+<td>
+713
+</td>
+<td>
+259
+</td>
+<td>
+4
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pneumonia
+</th>
+<td>
+14
+</td>
+<td>
+661
+</td>
+<td>
+320
+</td>
+<td>
+5
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Fibrosis
+</th>
+<td>
+10
+</td>
+<td>
+725
+</td>
+<td>
+261
+</td>
+<td>
+4
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Edema
+</th>
+<td>
+15
+</td>
+<td>
+767
+</td>
+<td>
+213
+</td>
+<td>
+5
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Consolidation
+</th>
+<td>
+36
+</td>
+<td>
+658
+</td>
+<td>
+297
+</td>
+<td>
+9
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Right now it only has TP, TN, FP, FN. Throughout this assignment we'll fill in all the other metrics to learn more about our model performance.</p>
+<p><a name='3-2'></a> ### 3.2 Accuracy</p>
+<p>Let's use a threshold of .5 for the probability cutoff for our predictions for all classes and calculate our model's accuracy as we would normally do in a machine learning problem.</p>
+<p><span class="math display">\[accuracy = \frac{\text{true positives} + \text{true negatives}}{\text{true positives} + \text{true negatives} + \text{false positives} + \text{false negatives}}\]</span></p>
+<p>Use this formula to compute accuracy below:</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+Remember to set the value for the threshold when calling the functions.
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C2 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_accuracy</span>(<span class="params">y, pred, th=<span class="number">0.5</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Compute accuracy of predictions at threshold.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        y (np.array): ground truth, size (n_examples)</span></span><br><span class="line"><span class="string">        pred (np.array): model output, size (n_examples)</span></span><br><span class="line"><span class="string">        th (float): cutoff value for positive prediction from model</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        accuracy (float): accuracy of predictions at threshold</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    accuracy = <span class="number">0.0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># get TP, FP, TN, FN using our previously defined functions</span></span><br><span class="line">    TP = true_positives(y, pred, th)</span><br><span class="line">    FP = false_positives(y, pred, th)</span><br><span class="line">    TN = true_negatives(y, pred, th)</span><br><span class="line">    FN = false_negatives(y, pred, th)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Compute accuracy using TP, FP, TN, FN</span></span><br><span class="line">    accuracy = (TP + TN)/(TP + TN + FP + FN)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> accuracy</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Test</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test case:&quot;</span>)</span><br><span class="line"></span><br><span class="line">y_test = np.array([<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;test labels: &#123;y_test&#125;&#x27;</span>)</span><br><span class="line"></span><br><span class="line">preds_test = np.array([<span class="number">0.8</span>, <span class="number">0.8</span>, <span class="number">0.4</span>, <span class="number">0.6</span>, <span class="number">0.3</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;test predictions: <span class="subst">&#123;preds_test&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">threshold = <span class="number">0.5</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;threshold: <span class="subst">&#123;threshold&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;computed accuracy: <span class="subst">&#123;get_accuracy(y_test, preds_test, threshold)&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Test case:
+test labels: &#123;y_test&#125;
+test predictions: [0.8 0.8 0.4 0.6 0.3]
+threshold: 0.5
+computed accuracy: 0.6</code></pre>
+<h4 id="expected-output">Expected output:</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">test labels: &#123;y_test&#125;</span><br><span class="line">test predictions: [<span class="number">0.8</span> <span class="number">0.8</span> <span class="number">0.4</span> <span class="number">0.6</span> <span class="number">0.3</span>]</span><br><span class="line">threshold: <span class="number">0.5</span></span><br><span class="line">computed accuracy: <span class="number">0.6</span></span><br></pre></td></tr></table></figure>
+<p>Run the next cell to see the accuracy of the model output for each class, as well as the number of true positives, true negatives, false positives, and false negatives.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">util.get_performance_metrics(y, pred, class_labels, acc=get_accuracy)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+TP
+</th>
+<th>
+TN
+</th>
+<th>
+FP
+</th>
+<th>
+FN
+</th>
+<th>
+Accuracy
+</th>
+<th>
+Prevalence
+</th>
+<th>
+Sensitivity
+</th>
+<th>
+Specificity
+</th>
+<th>
+PPV
+</th>
+<th>
+NPV
+</th>
+<th>
+AUC
+</th>
+<th>
+F1
+</th>
+<th>
+Threshold
+</th>
+</tr>
+<tr>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+Cardiomegaly
+</th>
+<td>
+16
+</td>
+<td>
+814
+</td>
+<td>
+169
+</td>
+<td>
+1
+</td>
+<td>
+0.83
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Emphysema
+</th>
+<td>
+20
+</td>
+<td>
+869
+</td>
+<td>
+103
+</td>
+<td>
+8
+</td>
+<td>
+0.889
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Effusion
+</th>
+<td>
+99
+</td>
+<td>
+690
+</td>
+<td>
+196
+</td>
+<td>
+15
+</td>
+<td>
+0.789
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Hernia
+</th>
+<td>
+1
+</td>
+<td>
+743
+</td>
+<td>
+255
+</td>
+<td>
+1
+</td>
+<td>
+0.744
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Infiltration
+</th>
+<td>
+114
+</td>
+<td>
+543
+</td>
+<td>
+265
+</td>
+<td>
+78
+</td>
+<td>
+0.657
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Mass
+</th>
+<td>
+40
+</td>
+<td>
+789
+</td>
+<td>
+158
+</td>
+<td>
+13
+</td>
+<td>
+0.829
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Nodule
+</th>
+<td>
+28
+</td>
+<td>
+731
+</td>
+<td>
+220
+</td>
+<td>
+21
+</td>
+<td>
+0.759
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Atelectasis
+</th>
+<td>
+64
+</td>
+<td>
+657
+</td>
+<td>
+249
+</td>
+<td>
+30
+</td>
+<td>
+0.721
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pneumothorax
+</th>
+<td>
+24
+</td>
+<td>
+785
+</td>
+<td>
+183
+</td>
+<td>
+8
+</td>
+<td>
+0.809
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pleural_Thickening
+</th>
+<td>
+24
+</td>
+<td>
+713
+</td>
+<td>
+259
+</td>
+<td>
+4
+</td>
+<td>
+0.737
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pneumonia
+</th>
+<td>
+14
+</td>
+<td>
+661
+</td>
+<td>
+320
+</td>
+<td>
+5
+</td>
+<td>
+0.675
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Fibrosis
+</th>
+<td>
+10
+</td>
+<td>
+725
+</td>
+<td>
+261
+</td>
+<td>
+4
+</td>
+<td>
+0.735
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Edema
+</th>
+<td>
+15
+</td>
+<td>
+767
+</td>
+<td>
+213
+</td>
+<td>
+5
+</td>
+<td>
+0.782
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Consolidation
+</th>
+<td>
+36
+</td>
+<td>
+658
+</td>
+<td>
+297
+</td>
+<td>
+9
+</td>
+<td>
+0.694
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>If we were to judge our model's performance based on the accuracy metric, we would say that our model is not very accurate for detecting the <code>Infiltration</code> cases (accuracy of 0.657) but pretty accurate for detecting <code>Emphysema</code> (accuracy of 0.889).</p>
+<p><strong>But is that really the case?...</strong></p>
+<p>Let's imagine a model that simply predicts that any patient does <strong>Not</strong> have <code>Emphysema</code>, regardless of patient's measurements. Let's calculate the accuracy for such a model.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get_accuracy(valid_results[<span class="string">&quot;Emphysema&quot;</span>].values, np.zeros(<span class="built_in">len</span>(valid_results)))</span><br></pre></td></tr></table></figure>
+<p>As you can see above, such a model would be 97% accurate! Even better than our deep learning based model.</p>
+<p>But is this really a good model? Wouldn't this model be wrong 100% of the time if the patient actually had this condition?</p>
+<p>In the following sections, we will address this concern with more advanced model measures - <strong>sensitivity and specificity</strong> - that evaluate how well the model predicts positives for patients with the condition and negatives for cases that actually do not have the condition.</p>
+<p><a name='3-3'></a> ### 3.3 Prevalence Another important concept is <strong>prevalence</strong>. * In a medical context, prevalence is the proportion of people in the population who have the disease (or condition, etc). * In machine learning terms, this is the proportion of positive examples. The expression for prevalence is:</p>
+<p><span class="math display">\[prevalence = \frac{1}{N} \sum_{i} y_i\]</span></p>
+<p>where <span class="math inline">\(y_i = 1\)</span> when the example is 'positive' (has the disease).</p>
+<p>Let's measure prevalence for each disease:</p>
+<details>
+<summary>
+<font size="3" color="darkgreen"><b>Hints</b></font>
+</summary>
+<p>
+<ul>
+<li>
+You can use <a target="_blank" rel="noopener" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.mean.html" > np.mean </a> to calculate the formula.
+</li>
+<li>
+Actually, the automatic grader is expecting numpy.mean, so please use it instead of using an equally valid but different way of calculating the prevalence. =)
+</li>
+</ul>
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C3 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_prevalence</span>(<span class="params">y</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Compute accuracy of predictions at threshold.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        y (np.array): ground truth, size (n_examples)</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        prevalence (float): prevalence of positive cases</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    prevalence = <span class="number">0.0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    prevalence = np.mean(y)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> prevalence</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Test</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test case:\n&quot;</span>)</span><br><span class="line"></span><br><span class="line">y_test = np.array([<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;test labels: <span class="subst">&#123;y_test&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;computed prevalence: <span class="subst">&#123;get_prevalence(y_test)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>Test case:
+
+test labels: [1 0 0 1 1 0 0 0 0 1]
+computed prevalence: 0.4</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">util.get_performance_metrics(y, pred, class_labels, acc=get_accuracy, prevalence=get_prevalence)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+TP
+</th>
+<th>
+TN
+</th>
+<th>
+FP
+</th>
+<th>
+FN
+</th>
+<th>
+Accuracy
+</th>
+<th>
+Prevalence
+</th>
+<th>
+Sensitivity
+</th>
+<th>
+Specificity
+</th>
+<th>
+PPV
+</th>
+<th>
+NPV
+</th>
+<th>
+AUC
+</th>
+<th>
+F1
+</th>
+<th>
+Threshold
+</th>
+</tr>
+<tr>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+Cardiomegaly
+</th>
+<td>
+16
+</td>
+<td>
+814
+</td>
+<td>
+169
+</td>
+<td>
+1
+</td>
+<td>
+0.83
+</td>
+<td>
+0.017
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Emphysema
+</th>
+<td>
+20
+</td>
+<td>
+869
+</td>
+<td>
+103
+</td>
+<td>
+8
+</td>
+<td>
+0.889
+</td>
+<td>
+0.028
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Effusion
+</th>
+<td>
+99
+</td>
+<td>
+690
+</td>
+<td>
+196
+</td>
+<td>
+15
+</td>
+<td>
+0.789
+</td>
+<td>
+0.114
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Hernia
+</th>
+<td>
+1
+</td>
+<td>
+743
+</td>
+<td>
+255
+</td>
+<td>
+1
+</td>
+<td>
+0.744
+</td>
+<td>
+0.002
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Infiltration
+</th>
+<td>
+114
+</td>
+<td>
+543
+</td>
+<td>
+265
+</td>
+<td>
+78
+</td>
+<td>
+0.657
+</td>
+<td>
+0.192
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Mass
+</th>
+<td>
+40
+</td>
+<td>
+789
+</td>
+<td>
+158
+</td>
+<td>
+13
+</td>
+<td>
+0.829
+</td>
+<td>
+0.053
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Nodule
+</th>
+<td>
+28
+</td>
+<td>
+731
+</td>
+<td>
+220
+</td>
+<td>
+21
+</td>
+<td>
+0.759
+</td>
+<td>
+0.049
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Atelectasis
+</th>
+<td>
+64
+</td>
+<td>
+657
+</td>
+<td>
+249
+</td>
+<td>
+30
+</td>
+<td>
+0.721
+</td>
+<td>
+0.094
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pneumothorax
+</th>
+<td>
+24
+</td>
+<td>
+785
+</td>
+<td>
+183
+</td>
+<td>
+8
+</td>
+<td>
+0.809
+</td>
+<td>
+0.032
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pleural_Thickening
+</th>
+<td>
+24
+</td>
+<td>
+713
+</td>
+<td>
+259
+</td>
+<td>
+4
+</td>
+<td>
+0.737
+</td>
+<td>
+0.028
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pneumonia
+</th>
+<td>
+14
+</td>
+<td>
+661
+</td>
+<td>
+320
+</td>
+<td>
+5
+</td>
+<td>
+0.675
+</td>
+<td>
+0.019
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Fibrosis
+</th>
+<td>
+10
+</td>
+<td>
+725
+</td>
+<td>
+261
+</td>
+<td>
+4
+</td>
+<td>
+0.735
+</td>
+<td>
+0.014
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Edema
+</th>
+<td>
+15
+</td>
+<td>
+767
+</td>
+<td>
+213
+</td>
+<td>
+5
+</td>
+<td>
+0.782
+</td>
+<td>
+0.02
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Consolidation
+</th>
+<td>
+36
+</td>
+<td>
+658
+</td>
+<td>
+297
+</td>
+<td>
+9
+</td>
+<td>
+0.694
+</td>
+<td>
+0.045
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code>Hernia</code> has a prevalence 0.002, which is the rarest among the studied conditions in our dataset.</p>
+<p><a name='3-4'></a> ### 3.4 Sensitivity and Specificity <img src="sens_spec.png" width="30%"></p>
+<p>Sensitivity and specificity are two of the most prominent numbers that are used to measure diagnostics tests. - Sensitivity is the probability that our test outputs positive given that the case is actually positive. - Specificity is the probability that the test outputs negative given that the case is actually negative.</p>
+<p>We can phrase this easily in terms of true positives, true negatives, false positives, and false negatives:</p>
+<p><span class="math display">\[sensitivity = \frac{\text{true positives}}{\text{true positives} + \text{false negatives}}\]</span></p>
+<p><span class="math display">\[specificity = \frac{\text{true negatives}}{\text{true negatives} + \text{false positives}}\]</span></p>
+<p>Let's calculate sensitivity and specificity for our model:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C4 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_sensitivity</span>(<span class="params">y, pred, th=<span class="number">0.5</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Compute sensitivity of predictions at threshold.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        y (np.array): ground truth, size (n_examples)</span></span><br><span class="line"><span class="string">        pred (np.array): model output, size (n_examples)</span></span><br><span class="line"><span class="string">        th (float): cutoff value for positive prediction from model</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        sensitivity (float): probability that our test outputs positive given that the case is actually positive</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    sensitivity = <span class="number">0.0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># get TP and FN using our previously defined functions</span></span><br><span class="line">    TP = true_positives(y, pred, th)</span><br><span class="line">    FN = false_negatives(y, pred, th)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># use TP and FN to compute sensitivity</span></span><br><span class="line">    sensitivity = TP / (TP + FN)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> sensitivity</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_specificity</span>(<span class="params">y, pred, th=<span class="number">0.5</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Compute specificity of predictions at threshold.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        y (np.array): ground truth, size (n_examples)</span></span><br><span class="line"><span class="string">        pred (np.array): model output, size (n_examples)</span></span><br><span class="line"><span class="string">        th (float): cutoff value for positive prediction from model</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        specificity (float): probability that the test outputs negative given that the case is actually negative</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    specificity = <span class="number">0.0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># get TN and FP using our previously defined functions</span></span><br><span class="line">    TN = true_negatives(y, pred, th)</span><br><span class="line">    FP = false_positives(y , pred, th)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># use TN and FP to compute specificity </span></span><br><span class="line">    specificity = TN / (TN + FP)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> specificity</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Test</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test case&quot;</span>)</span><br><span class="line"></span><br><span class="line">y_test = np.array([<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;test labels: <span class="subst">&#123;y_test&#125;</span>\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">preds_test = np.array([<span class="number">0.8</span>, <span class="number">0.8</span>, <span class="number">0.4</span>, <span class="number">0.6</span>, <span class="number">0.3</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;test predictions: <span class="subst">&#123;preds_test&#125;</span>\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">threshold = <span class="number">0.5</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;threshold: <span class="subst">&#123;threshold&#125;</span>\n&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;computed sensitivity: <span class="subst">&#123;get_sensitivity(y_test, preds_test, threshold):<span class="number">.2</span>f&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;computed specificity: <span class="subst">&#123;get_specificity(y_test, preds_test, threshold):<span class="number">.2</span>f&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Test case
+test labels: [1 0 0 1 1]
+
+test predictions: [0.8 0.8 0.4 0.6 0.3]
+
+threshold: 0.5
+
+computed sensitivity: 0.67
+computed specificity: 0.50</code></pre>
+<h4 id="expected-output-1">Expected output:</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Test case</span><br><span class="line">test labels: [<span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">test predictions: [<span class="number">0.8</span> <span class="number">0.8</span> <span class="number">0.4</span> <span class="number">0.6</span> <span class="number">0.3</span>]</span><br><span class="line"></span><br><span class="line">threshold: <span class="number">0.5</span></span><br><span class="line"></span><br><span class="line">computed sensitivity: <span class="number">0.67</span></span><br><span class="line">computed specificity: <span class="number">0.50</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">util.get_performance_metrics(y, pred, class_labels, acc=get_accuracy, prevalence=get_prevalence, </span><br><span class="line">                        sens=get_sensitivity, spec=get_specificity)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+TP
+</th>
+<th>
+TN
+</th>
+<th>
+FP
+</th>
+<th>
+FN
+</th>
+<th>
+Accuracy
+</th>
+<th>
+Prevalence
+</th>
+<th>
+Sensitivity
+</th>
+<th>
+Specificity
+</th>
+<th>
+PPV
+</th>
+<th>
+NPV
+</th>
+<th>
+AUC
+</th>
+<th>
+F1
+</th>
+<th>
+Threshold
+</th>
+</tr>
+<tr>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+Cardiomegaly
+</th>
+<td>
+16
+</td>
+<td>
+814
+</td>
+<td>
+169
+</td>
+<td>
+1
+</td>
+<td>
+0.83
+</td>
+<td>
+0.017
+</td>
+<td>
+0.941
+</td>
+<td>
+0.828
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Emphysema
+</th>
+<td>
+20
+</td>
+<td>
+869
+</td>
+<td>
+103
+</td>
+<td>
+8
+</td>
+<td>
+0.889
+</td>
+<td>
+0.028
+</td>
+<td>
+0.714
+</td>
+<td>
+0.894
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Effusion
+</th>
+<td>
+99
+</td>
+<td>
+690
+</td>
+<td>
+196
+</td>
+<td>
+15
+</td>
+<td>
+0.789
+</td>
+<td>
+0.114
+</td>
+<td>
+0.868
+</td>
+<td>
+0.779
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Hernia
+</th>
+<td>
+1
+</td>
+<td>
+743
+</td>
+<td>
+255
+</td>
+<td>
+1
+</td>
+<td>
+0.744
+</td>
+<td>
+0.002
+</td>
+<td>
+0.5
+</td>
+<td>
+0.744
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Infiltration
+</th>
+<td>
+114
+</td>
+<td>
+543
+</td>
+<td>
+265
+</td>
+<td>
+78
+</td>
+<td>
+0.657
+</td>
+<td>
+0.192
+</td>
+<td>
+0.594
+</td>
+<td>
+0.672
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Mass
+</th>
+<td>
+40
+</td>
+<td>
+789
+</td>
+<td>
+158
+</td>
+<td>
+13
+</td>
+<td>
+0.829
+</td>
+<td>
+0.053
+</td>
+<td>
+0.755
+</td>
+<td>
+0.833
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Nodule
+</th>
+<td>
+28
+</td>
+<td>
+731
+</td>
+<td>
+220
+</td>
+<td>
+21
+</td>
+<td>
+0.759
+</td>
+<td>
+0.049
+</td>
+<td>
+0.571
+</td>
+<td>
+0.769
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Atelectasis
+</th>
+<td>
+64
+</td>
+<td>
+657
+</td>
+<td>
+249
+</td>
+<td>
+30
+</td>
+<td>
+0.721
+</td>
+<td>
+0.094
+</td>
+<td>
+0.681
+</td>
+<td>
+0.725
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pneumothorax
+</th>
+<td>
+24
+</td>
+<td>
+785
+</td>
+<td>
+183
+</td>
+<td>
+8
+</td>
+<td>
+0.809
+</td>
+<td>
+0.032
+</td>
+<td>
+0.75
+</td>
+<td>
+0.811
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pleural_Thickening
+</th>
+<td>
+24
+</td>
+<td>
+713
+</td>
+<td>
+259
+</td>
+<td>
+4
+</td>
+<td>
+0.737
+</td>
+<td>
+0.028
+</td>
+<td>
+0.857
+</td>
+<td>
+0.734
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pneumonia
+</th>
+<td>
+14
+</td>
+<td>
+661
+</td>
+<td>
+320
+</td>
+<td>
+5
+</td>
+<td>
+0.675
+</td>
+<td>
+0.019
+</td>
+<td>
+0.737
+</td>
+<td>
+0.674
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Fibrosis
+</th>
+<td>
+10
+</td>
+<td>
+725
+</td>
+<td>
+261
+</td>
+<td>
+4
+</td>
+<td>
+0.735
+</td>
+<td>
+0.014
+</td>
+<td>
+0.714
+</td>
+<td>
+0.735
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Edema
+</th>
+<td>
+15
+</td>
+<td>
+767
+</td>
+<td>
+213
+</td>
+<td>
+5
+</td>
+<td>
+0.782
+</td>
+<td>
+0.02
+</td>
+<td>
+0.75
+</td>
+<td>
+0.783
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Consolidation
+</th>
+<td>
+36
+</td>
+<td>
+658
+</td>
+<td>
+297
+</td>
+<td>
+9
+</td>
+<td>
+0.694
+</td>
+<td>
+0.045
+</td>
+<td>
+0.8
+</td>
+<td>
+0.689
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Note that specificity and sensitivity do not depend on the prevalence of the positive class in the dataset. * This is because the statistics are only computed within people of the same class * Sensitivity only considers output on people in the positive class * Similarly, specificity only considers output on people in the negative class.</p>
+<p><a name='3-5'></a> ### 3.5 PPV and NPV</p>
+<p>Diagnostically, however, sensitivity and specificity are not helpful. Sensitivity, for example, tells us the probability our test outputs positive given that the person already has the condition. Here, we are conditioning on the thing we would like to find out (whether the patient has the condition)!</p>
+<p>What would be more helpful is the probability that the person has the disease given that our test outputs positive. That brings us to positive predictive value (PPV) and negative predictive value (NPV).</p>
+<ul>
+<li>Positive predictive value (PPV) is the probability that subjects with a positive screening test truly have the disease.</li>
+<li>Negative predictive value (NPV) is the probability that subjects with a negative screening test truly don't have the disease.</li>
+</ul>
+<p>Again, we can formulate these in terms of true positives, true negatives, false positives, and false negatives:</p>
+<p><span class="math display">\[PPV = \frac{\text{true positives}}{\text{true positives} + \text{false positives}}\]</span></p>
+<p><span class="math display">\[NPV = \frac{\text{true negatives}}{\text{true negatives} + \text{false negatives}}\]</span></p>
+<p>Let's calculate PPV &amp; NPV for our model:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UNQ_C5 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_ppv</span>(<span class="params">y, pred, th=<span class="number">0.5</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Compute PPV of predictions at threshold.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        y (np.array): ground truth, size (n_examples)</span></span><br><span class="line"><span class="string">        pred (np.array): model output, size (n_examples)</span></span><br><span class="line"><span class="string">        th (float): cutoff value for positive prediction from model</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        PPV (float): positive predictive value of predictions at threshold</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    PPV = <span class="number">0.0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># get TP and FP using our previously defined functions</span></span><br><span class="line">    TP = true_positives(y, pred, th)</span><br><span class="line">    FP = false_positives(y, pred, th)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># use TP and FP to compute PPV</span></span><br><span class="line">    PPV = TP / (TP + FP)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> PPV</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_npv</span>(<span class="params">y, pred, th=<span class="number">0.5</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Compute NPV of predictions at threshold.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        y (np.array): ground truth, size (n_examples)</span></span><br><span class="line"><span class="string">        pred (np.array): model output, size (n_examples)</span></span><br><span class="line"><span class="string">        th (float): cutoff value for positive prediction from model</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        NPV (float): negative predictive value of predictions at threshold</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    NPV = <span class="number">0.0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">### START CODE HERE (REPLACE INSTANCES OF &#x27;None&#x27; with your code) ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># get TN and FN using our previously defined functions</span></span><br><span class="line">    TN = true_negatives(y, pred, th)</span><br><span class="line">    FN = false_negatives(y, pred, th)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># use TN and FN to compute NPV</span></span><br><span class="line">    NPV = TN / (TN + FN)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">### END CODE HERE ###</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> NPV</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Test</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Test case:\n&quot;</span>)</span><br><span class="line"></span><br><span class="line">y_test = np.array([<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;test labels: <span class="subst">&#123;y_test&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">preds_test = np.array([<span class="number">0.8</span>, <span class="number">0.8</span>, <span class="number">0.4</span>, <span class="number">0.6</span>, <span class="number">0.3</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;test predictions: <span class="subst">&#123;preds_test&#125;</span>\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">threshold = <span class="number">0.5</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;threshold: <span class="subst">&#123;threshold&#125;</span>\n&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;computed ppv: <span class="subst">&#123;get_ppv(y_test, preds_test, threshold):<span class="number">.2</span>f&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;computed npv: <span class="subst">&#123;get_npv(y_test, preds_test, threshold):<span class="number">.2</span>f&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Test case:
+
+test labels: [1 0 0 1 1]
+test predictions: [0.8 0.8 0.4 0.6 0.3]
+
+threshold: 0.5
+
+computed ppv: 0.67
+computed npv: 0.50</code></pre>
+<h4 id="expected-output-2">Expected output:</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Test case:</span><br><span class="line"></span><br><span class="line">test labels: [<span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">1</span>]</span><br><span class="line">test predictions: [<span class="number">0.8</span> <span class="number">0.8</span> <span class="number">0.4</span> <span class="number">0.6</span> <span class="number">0.3</span>]</span><br><span class="line"></span><br><span class="line">threshold: <span class="number">0.5</span></span><br><span class="line"></span><br><span class="line">computed ppv: <span class="number">0.67</span></span><br><span class="line">computed npv: <span class="number">0.50</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">util.get_performance_metrics(y, pred, class_labels, acc=get_accuracy, prevalence=get_prevalence, </span><br><span class="line">                        sens=get_sensitivity, spec=get_specificity, ppv=get_ppv, npv=get_npv)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+TP
+</th>
+<th>
+TN
+</th>
+<th>
+FP
+</th>
+<th>
+FN
+</th>
+<th>
+Accuracy
+</th>
+<th>
+Prevalence
+</th>
+<th>
+Sensitivity
+</th>
+<th>
+Specificity
+</th>
+<th>
+PPV
+</th>
+<th>
+NPV
+</th>
+<th>
+AUC
+</th>
+<th>
+F1
+</th>
+<th>
+Threshold
+</th>
+</tr>
+<tr>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+Cardiomegaly
+</th>
+<td>
+16
+</td>
+<td>
+814
+</td>
+<td>
+169
+</td>
+<td>
+1
+</td>
+<td>
+0.83
+</td>
+<td>
+0.017
+</td>
+<td>
+0.941
+</td>
+<td>
+0.828
+</td>
+<td>
+0.086
+</td>
+<td>
+0.999
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Emphysema
+</th>
+<td>
+20
+</td>
+<td>
+869
+</td>
+<td>
+103
+</td>
+<td>
+8
+</td>
+<td>
+0.889
+</td>
+<td>
+0.028
+</td>
+<td>
+0.714
+</td>
+<td>
+0.894
+</td>
+<td>
+0.163
+</td>
+<td>
+0.991
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Effusion
+</th>
+<td>
+99
+</td>
+<td>
+690
+</td>
+<td>
+196
+</td>
+<td>
+15
+</td>
+<td>
+0.789
+</td>
+<td>
+0.114
+</td>
+<td>
+0.868
+</td>
+<td>
+0.779
+</td>
+<td>
+0.336
+</td>
+<td>
+0.979
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Hernia
+</th>
+<td>
+1
+</td>
+<td>
+743
+</td>
+<td>
+255
+</td>
+<td>
+1
+</td>
+<td>
+0.744
+</td>
+<td>
+0.002
+</td>
+<td>
+0.5
+</td>
+<td>
+0.744
+</td>
+<td>
+0.004
+</td>
+<td>
+0.999
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Infiltration
+</th>
+<td>
+114
+</td>
+<td>
+543
+</td>
+<td>
+265
+</td>
+<td>
+78
+</td>
+<td>
+0.657
+</td>
+<td>
+0.192
+</td>
+<td>
+0.594
+</td>
+<td>
+0.672
+</td>
+<td>
+0.301
+</td>
+<td>
+0.874
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Mass
+</th>
+<td>
+40
+</td>
+<td>
+789
+</td>
+<td>
+158
+</td>
+<td>
+13
+</td>
+<td>
+0.829
+</td>
+<td>
+0.053
+</td>
+<td>
+0.755
+</td>
+<td>
+0.833
+</td>
+<td>
+0.202
+</td>
+<td>
+0.984
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Nodule
+</th>
+<td>
+28
+</td>
+<td>
+731
+</td>
+<td>
+220
+</td>
+<td>
+21
+</td>
+<td>
+0.759
+</td>
+<td>
+0.049
+</td>
+<td>
+0.571
+</td>
+<td>
+0.769
+</td>
+<td>
+0.113
+</td>
+<td>
+0.972
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Atelectasis
+</th>
+<td>
+64
+</td>
+<td>
+657
+</td>
+<td>
+249
+</td>
+<td>
+30
+</td>
+<td>
+0.721
+</td>
+<td>
+0.094
+</td>
+<td>
+0.681
+</td>
+<td>
+0.725
+</td>
+<td>
+0.204
+</td>
+<td>
+0.956
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pneumothorax
+</th>
+<td>
+24
+</td>
+<td>
+785
+</td>
+<td>
+183
+</td>
+<td>
+8
+</td>
+<td>
+0.809
+</td>
+<td>
+0.032
+</td>
+<td>
+0.75
+</td>
+<td>
+0.811
+</td>
+<td>
+0.116
+</td>
+<td>
+0.99
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pleural_Thickening
+</th>
+<td>
+24
+</td>
+<td>
+713
+</td>
+<td>
+259
+</td>
+<td>
+4
+</td>
+<td>
+0.737
+</td>
+<td>
+0.028
+</td>
+<td>
+0.857
+</td>
+<td>
+0.734
+</td>
+<td>
+0.085
+</td>
+<td>
+0.994
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pneumonia
+</th>
+<td>
+14
+</td>
+<td>
+661
+</td>
+<td>
+320
+</td>
+<td>
+5
+</td>
+<td>
+0.675
+</td>
+<td>
+0.019
+</td>
+<td>
+0.737
+</td>
+<td>
+0.674
+</td>
+<td>
+0.042
+</td>
+<td>
+0.992
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Fibrosis
+</th>
+<td>
+10
+</td>
+<td>
+725
+</td>
+<td>
+261
+</td>
+<td>
+4
+</td>
+<td>
+0.735
+</td>
+<td>
+0.014
+</td>
+<td>
+0.714
+</td>
+<td>
+0.735
+</td>
+<td>
+0.037
+</td>
+<td>
+0.995
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Edema
+</th>
+<td>
+15
+</td>
+<td>
+767
+</td>
+<td>
+213
+</td>
+<td>
+5
+</td>
+<td>
+0.782
+</td>
+<td>
+0.02
+</td>
+<td>
+0.75
+</td>
+<td>
+0.783
+</td>
+<td>
+0.066
+</td>
+<td>
+0.994
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Consolidation
+</th>
+<td>
+36
+</td>
+<td>
+658
+</td>
+<td>
+297
+</td>
+<td>
+9
+</td>
+<td>
+0.694
+</td>
+<td>
+0.045
+</td>
+<td>
+0.8
+</td>
+<td>
+0.689
+</td>
+<td>
+0.108
+</td>
+<td>
+0.987
+</td>
+<td>
+Not Defined
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Notice that despite having very high sensitivity and accuracy, the PPV of the predictions could still be very low.</p>
+<p>This is the case with <code>Edema</code>, for example. * The sensitivity for <code>Edema</code> is 0.75. * However, given that the model predicted positive, the probability that a person has Edema (its PPV) is only 0.066!</p>
+<p><a name='3-6'></a> ### 3.6 ROC Curve</p>
+<p>So far we have been operating under the assumption that our model's prediction of <code>0.5</code> and above should be treated as positive and otherwise it should be treated as negative. This however was a rather arbitrary choice. One way to see this, is to look at a very informative visualization called the receiver operating characteristic (ROC) curve.</p>
+<p>The ROC curve is created by plotting the true positive rate (TPR) against the false positive rate (FPR) at various threshold settings. The ideal point is at the top left, with a true positive rate of 1 and a false positive rate of 0. The various points on the curve are generated by gradually changing the threshold.</p>
+<p>Let's look at this curve for our model:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">util.get_curve(y, pred, class_labels)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_53_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p>The area under the ROC curve is also called AUCROC or C-statistic and is a measure of goodness of fit. In medical literature this number also gives the probability that a randomly selected patient who experienced a condition had a higher risk score than a patient who had not experienced the event. This summarizes the model output across all thresholds, and provides a good sense of the discriminative power of a given model.</p>
+<p>Let's use the <code>sklearn</code> metric function of <code>roc_auc_score</code> to add this score to our metrics table.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_auc_score</span><br><span class="line">util.get_performance_metrics(y, pred, class_labels, acc=get_accuracy, prevalence=get_prevalence, </span><br><span class="line">                        sens=get_sensitivity, spec=get_specificity, ppv=get_ppv, npv=get_npv, auc=roc_auc_score)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+TP
+</th>
+<th>
+TN
+</th>
+<th>
+FP
+</th>
+<th>
+FN
+</th>
+<th>
+Accuracy
+</th>
+<th>
+Prevalence
+</th>
+<th>
+Sensitivity
+</th>
+<th>
+Specificity
+</th>
+<th>
+PPV
+</th>
+<th>
+NPV
+</th>
+<th>
+AUC
+</th>
+<th>
+F1
+</th>
+<th>
+Threshold
+</th>
+</tr>
+<tr>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+Cardiomegaly
+</th>
+<td>
+16
+</td>
+<td>
+814
+</td>
+<td>
+169
+</td>
+<td>
+1
+</td>
+<td>
+0.83
+</td>
+<td>
+0.017
+</td>
+<td>
+0.941
+</td>
+<td>
+0.828
+</td>
+<td>
+0.086
+</td>
+<td>
+0.999
+</td>
+<td>
+0.933
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Emphysema
+</th>
+<td>
+20
+</td>
+<td>
+869
+</td>
+<td>
+103
+</td>
+<td>
+8
+</td>
+<td>
+0.889
+</td>
+<td>
+0.028
+</td>
+<td>
+0.714
+</td>
+<td>
+0.894
+</td>
+<td>
+0.163
+</td>
+<td>
+0.991
+</td>
+<td>
+0.935
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Effusion
+</th>
+<td>
+99
+</td>
+<td>
+690
+</td>
+<td>
+196
+</td>
+<td>
+15
+</td>
+<td>
+0.789
+</td>
+<td>
+0.114
+</td>
+<td>
+0.868
+</td>
+<td>
+0.779
+</td>
+<td>
+0.336
+</td>
+<td>
+0.979
+</td>
+<td>
+0.891
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Hernia
+</th>
+<td>
+1
+</td>
+<td>
+743
+</td>
+<td>
+255
+</td>
+<td>
+1
+</td>
+<td>
+0.744
+</td>
+<td>
+0.002
+</td>
+<td>
+0.5
+</td>
+<td>
+0.744
+</td>
+<td>
+0.004
+</td>
+<td>
+0.999
+</td>
+<td>
+0.644
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Infiltration
+</th>
+<td>
+114
+</td>
+<td>
+543
+</td>
+<td>
+265
+</td>
+<td>
+78
+</td>
+<td>
+0.657
+</td>
+<td>
+0.192
+</td>
+<td>
+0.594
+</td>
+<td>
+0.672
+</td>
+<td>
+0.301
+</td>
+<td>
+0.874
+</td>
+<td>
+0.696
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Mass
+</th>
+<td>
+40
+</td>
+<td>
+789
+</td>
+<td>
+158
+</td>
+<td>
+13
+</td>
+<td>
+0.829
+</td>
+<td>
+0.053
+</td>
+<td>
+0.755
+</td>
+<td>
+0.833
+</td>
+<td>
+0.202
+</td>
+<td>
+0.984
+</td>
+<td>
+0.888
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Nodule
+</th>
+<td>
+28
+</td>
+<td>
+731
+</td>
+<td>
+220
+</td>
+<td>
+21
+</td>
+<td>
+0.759
+</td>
+<td>
+0.049
+</td>
+<td>
+0.571
+</td>
+<td>
+0.769
+</td>
+<td>
+0.113
+</td>
+<td>
+0.972
+</td>
+<td>
+0.745
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Atelectasis
+</th>
+<td>
+64
+</td>
+<td>
+657
+</td>
+<td>
+249
+</td>
+<td>
+30
+</td>
+<td>
+0.721
+</td>
+<td>
+0.094
+</td>
+<td>
+0.681
+</td>
+<td>
+0.725
+</td>
+<td>
+0.204
+</td>
+<td>
+0.956
+</td>
+<td>
+0.781
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pneumothorax
+</th>
+<td>
+24
+</td>
+<td>
+785
+</td>
+<td>
+183
+</td>
+<td>
+8
+</td>
+<td>
+0.809
+</td>
+<td>
+0.032
+</td>
+<td>
+0.75
+</td>
+<td>
+0.811
+</td>
+<td>
+0.116
+</td>
+<td>
+0.99
+</td>
+<td>
+0.826
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pleural_Thickening
+</th>
+<td>
+24
+</td>
+<td>
+713
+</td>
+<td>
+259
+</td>
+<td>
+4
+</td>
+<td>
+0.737
+</td>
+<td>
+0.028
+</td>
+<td>
+0.857
+</td>
+<td>
+0.734
+</td>
+<td>
+0.085
+</td>
+<td>
+0.994
+</td>
+<td>
+0.868
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pneumonia
+</th>
+<td>
+14
+</td>
+<td>
+661
+</td>
+<td>
+320
+</td>
+<td>
+5
+</td>
+<td>
+0.675
+</td>
+<td>
+0.019
+</td>
+<td>
+0.737
+</td>
+<td>
+0.674
+</td>
+<td>
+0.042
+</td>
+<td>
+0.992
+</td>
+<td>
+0.762
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Fibrosis
+</th>
+<td>
+10
+</td>
+<td>
+725
+</td>
+<td>
+261
+</td>
+<td>
+4
+</td>
+<td>
+0.735
+</td>
+<td>
+0.014
+</td>
+<td>
+0.714
+</td>
+<td>
+0.735
+</td>
+<td>
+0.037
+</td>
+<td>
+0.995
+</td>
+<td>
+0.801
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Edema
+</th>
+<td>
+15
+</td>
+<td>
+767
+</td>
+<td>
+213
+</td>
+<td>
+5
+</td>
+<td>
+0.782
+</td>
+<td>
+0.02
+</td>
+<td>
+0.75
+</td>
+<td>
+0.783
+</td>
+<td>
+0.066
+</td>
+<td>
+0.994
+</td>
+<td>
+0.856
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Consolidation
+</th>
+<td>
+36
+</td>
+<td>
+658
+</td>
+<td>
+297
+</td>
+<td>
+9
+</td>
+<td>
+0.694
+</td>
+<td>
+0.045
+</td>
+<td>
+0.8
+</td>
+<td>
+0.689
+</td>
+<td>
+0.108
+</td>
+<td>
+0.987
+</td>
+<td>
+0.799
+</td>
+<td>
+Not Defined
+</td>
+<td>
+0.5
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><a name='4'></a> ## 4. Confidence Intervals</p>
+<p>Of course our dataset is only a sample of the real world, and our calculated values for all above metrics is an estimate of the real world values. It would be good to quantify this uncertainty due to the sampling of our dataset. We'll do this through the use of confidence intervals. A 95% confidence interval for an estimate <span class="math inline">\(\hat{s}\)</span> of a parameter <span class="math inline">\(s\)</span> is an interval <span class="math inline">\(I = (a, b)\)</span> such that 95% of the time when the experiment is run, the true value <span class="math inline">\(s\)</span> is contained in <span class="math inline">\(I\)</span>. More concretely, if we were to run the experiment many times, then the fraction of those experiments for which <span class="math inline">\(I\)</span> contains the true parameter would tend towards 95%.</p>
+<p>While some estimates come with methods for computing the confidence interval analytically, more complicated statistics, such as the AUC for example, are difficult. For these we can use a method called the <em>bootstrap</em>. The bootstrap estimates the uncertainty by resampling the dataset with replacement. For each resampling <span class="math inline">\(i\)</span>, we will get a new estimate, <span class="math inline">\(\hat{s}_i\)</span>. We can then estimate the distribution of <span class="math inline">\(\hat{s}\)</span> by using the distribution of <span class="math inline">\(\hat{s}_i\)</span> for our bootstrap samples.</p>
+<p>In the code below, we create bootstrap samples and compute sample AUCs from those samples. Note that we use stratified random sampling (sampling from the positive and negative classes separately) to make sure that members of each class are represented.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bootstrap_auc</span>(<span class="params">y, pred, classes, bootstraps = <span class="number">100</span>, fold_size = <span class="number">1000</span></span>):</span></span><br><span class="line">    statistics = np.zeros((<span class="built_in">len</span>(classes), bootstraps))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> c <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(classes)):</span><br><span class="line">        df = pd.DataFrame(columns=[<span class="string">&#x27;y&#x27;</span>, <span class="string">&#x27;pred&#x27;</span>])</span><br><span class="line">        df.loc[:, <span class="string">&#x27;y&#x27;</span>] = y[:, c]</span><br><span class="line">        df.loc[:, <span class="string">&#x27;pred&#x27;</span>] = pred[:, c]</span><br><span class="line">        <span class="comment"># get positive examples for stratified sampling</span></span><br><span class="line">        df_pos = df[df.y == <span class="number">1</span>]</span><br><span class="line">        df_neg = df[df.y == <span class="number">0</span>]</span><br><span class="line">        prevalence = <span class="built_in">len</span>(df_pos) / <span class="built_in">len</span>(df)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(bootstraps):</span><br><span class="line">            <span class="comment"># stratified sampling of positive and negative examples</span></span><br><span class="line">            pos_sample = df_pos.sample(n = <span class="built_in">int</span>(fold_size * prevalence), replace=<span class="literal">True</span>)</span><br><span class="line">            neg_sample = df_neg.sample(n = <span class="built_in">int</span>(fold_size * (<span class="number">1</span>-prevalence)), replace=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">            y_sample = np.concatenate([pos_sample.y.values, neg_sample.y.values])</span><br><span class="line">            pred_sample = np.concatenate([pos_sample.pred.values, neg_sample.pred.values])</span><br><span class="line">            score = roc_auc_score(y_sample, pred_sample)</span><br><span class="line">            statistics[c][i] = score</span><br><span class="line">    <span class="keyword">return</span> statistics</span><br><span class="line"></span><br><span class="line">statistics = bootstrap_auc(y, pred, class_labels)</span><br></pre></td></tr></table></figure>
+<p>Now we can compute confidence intervals from the sample statistics that we computed.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">util.print_confidence_intervals(class_labels, statistics)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+Mean AUC (CI 5%-95%)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+Cardiomegaly
+</th>
+<td>
+0.93 (0.90-0.97)
+</td>
+</tr>
+<tr>
+<th>
+Emphysema
+</th>
+<td>
+0.93 (0.90-0.96)
+</td>
+</tr>
+<tr>
+<th>
+Effusion
+</th>
+<td>
+0.89 (0.87-0.91)
+</td>
+</tr>
+<tr>
+<th>
+Hernia
+</th>
+<td>
+0.67 (0.30-0.98)
+</td>
+</tr>
+<tr>
+<th>
+Infiltration
+</th>
+<td>
+0.69 (0.65-0.73)
+</td>
+</tr>
+<tr>
+<th>
+Mass
+</th>
+<td>
+0.89 (0.86-0.92)
+</td>
+</tr>
+<tr>
+<th>
+Nodule
+</th>
+<td>
+0.74 (0.68-0.80)
+</td>
+</tr>
+<tr>
+<th>
+Atelectasis
+</th>
+<td>
+0.78 (0.75-0.81)
+</td>
+</tr>
+<tr>
+<th>
+Pneumothorax
+</th>
+<td>
+0.83 (0.75-0.91)
+</td>
+</tr>
+<tr>
+<th>
+Pleural_Thickening
+</th>
+<td>
+0.87 (0.82-0.93)
+</td>
+</tr>
+<tr>
+<th>
+Pneumonia
+</th>
+<td>
+0.76 (0.65-0.84)
+</td>
+</tr>
+<tr>
+<th>
+Fibrosis
+</th>
+<td>
+0.81 (0.75-0.86)
+</td>
+</tr>
+<tr>
+<th>
+Edema
+</th>
+<td>
+0.85 (0.81-0.90)
+</td>
+</tr>
+<tr>
+<th>
+Consolidation
+</th>
+<td>
+0.80 (0.75-0.84)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>As you can see, our confidence intervals are much wider for some classes than for others. Hernia, for example, has an interval around (0.30 - 0.98), indicating that we can't be certain it is better than chance (at 0.5).</p>
+<p><a name='5'></a> ## 5. Precision-Recall Curve</p>
+<p>Precision-Recall is a useful measure of success of prediction when the classes are very imbalanced.</p>
+<p>In information retrieval - Precision is a measure of result relevancy and that is equivalent to our previously defined PPV. - Recall is a measure of how many truly relevant results are returned and that is equivalent to our previously defined sensitivity measure.</p>
+<p>The precision-recall curve (PRC) shows the trade-off between precision and recall for different thresholds. A high area under the curve represents both high recall and high precision, where high precision relates to a low false positive rate, and high recall relates to a low false negative rate.</p>
+<p>High scores for both show that the classifier is returning accurate results (high precision), as well as returning a majority of all positive results (high recall).</p>
+<p>Run the following cell to generate a PRC:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">util.get_curve(y, pred, class_labels, curve=<span class="string">&#x27;prc&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_64_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p><a name='6'></a> ## 6. F1 Score</p>
+<p>F1 score is the harmonic mean of the precision and recall, where an F1 score reaches its best value at 1 (perfect precision and recall) and worst at 0.</p>
+<p>Again, we can simply use <code>sklearn</code>'s utility metric function of <code>f1_score</code> to add this measure to our performance table.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> f1_score</span><br><span class="line">util.get_performance_metrics(y, pred, class_labels, acc=get_accuracy, prevalence=get_prevalence, </span><br><span class="line">                        sens=get_sensitivity, spec=get_specificity, ppv=get_ppv, npv=get_npv, auc=roc_auc_score,f1=f1_score)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+TP
+</th>
+<th>
+TN
+</th>
+<th>
+FP
+</th>
+<th>
+FN
+</th>
+<th>
+Accuracy
+</th>
+<th>
+Prevalence
+</th>
+<th>
+Sensitivity
+</th>
+<th>
+Specificity
+</th>
+<th>
+PPV
+</th>
+<th>
+NPV
+</th>
+<th>
+AUC
+</th>
+<th>
+F1
+</th>
+<th>
+Threshold
+</th>
+</tr>
+<tr>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+Cardiomegaly
+</th>
+<td>
+16
+</td>
+<td>
+814
+</td>
+<td>
+169
+</td>
+<td>
+1
+</td>
+<td>
+0.83
+</td>
+<td>
+0.017
+</td>
+<td>
+0.941
+</td>
+<td>
+0.828
+</td>
+<td>
+0.086
+</td>
+<td>
+0.999
+</td>
+<td>
+0.933
+</td>
+<td>
+0.158
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Emphysema
+</th>
+<td>
+20
+</td>
+<td>
+869
+</td>
+<td>
+103
+</td>
+<td>
+8
+</td>
+<td>
+0.889
+</td>
+<td>
+0.028
+</td>
+<td>
+0.714
+</td>
+<td>
+0.894
+</td>
+<td>
+0.163
+</td>
+<td>
+0.991
+</td>
+<td>
+0.935
+</td>
+<td>
+0.265
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Effusion
+</th>
+<td>
+99
+</td>
+<td>
+690
+</td>
+<td>
+196
+</td>
+<td>
+15
+</td>
+<td>
+0.789
+</td>
+<td>
+0.114
+</td>
+<td>
+0.868
+</td>
+<td>
+0.779
+</td>
+<td>
+0.336
+</td>
+<td>
+0.979
+</td>
+<td>
+0.891
+</td>
+<td>
+0.484
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Hernia
+</th>
+<td>
+1
+</td>
+<td>
+743
+</td>
+<td>
+255
+</td>
+<td>
+1
+</td>
+<td>
+0.744
+</td>
+<td>
+0.002
+</td>
+<td>
+0.5
+</td>
+<td>
+0.744
+</td>
+<td>
+0.004
+</td>
+<td>
+0.999
+</td>
+<td>
+0.644
+</td>
+<td>
+0.008
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Infiltration
+</th>
+<td>
+114
+</td>
+<td>
+543
+</td>
+<td>
+265
+</td>
+<td>
+78
+</td>
+<td>
+0.657
+</td>
+<td>
+0.192
+</td>
+<td>
+0.594
+</td>
+<td>
+0.672
+</td>
+<td>
+0.301
+</td>
+<td>
+0.874
+</td>
+<td>
+0.696
+</td>
+<td>
+0.399
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Mass
+</th>
+<td>
+40
+</td>
+<td>
+789
+</td>
+<td>
+158
+</td>
+<td>
+13
+</td>
+<td>
+0.829
+</td>
+<td>
+0.053
+</td>
+<td>
+0.755
+</td>
+<td>
+0.833
+</td>
+<td>
+0.202
+</td>
+<td>
+0.984
+</td>
+<td>
+0.888
+</td>
+<td>
+0.319
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Nodule
+</th>
+<td>
+28
+</td>
+<td>
+731
+</td>
+<td>
+220
+</td>
+<td>
+21
+</td>
+<td>
+0.759
+</td>
+<td>
+0.049
+</td>
+<td>
+0.571
+</td>
+<td>
+0.769
+</td>
+<td>
+0.113
+</td>
+<td>
+0.972
+</td>
+<td>
+0.745
+</td>
+<td>
+0.189
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Atelectasis
+</th>
+<td>
+64
+</td>
+<td>
+657
+</td>
+<td>
+249
+</td>
+<td>
+30
+</td>
+<td>
+0.721
+</td>
+<td>
+0.094
+</td>
+<td>
+0.681
+</td>
+<td>
+0.725
+</td>
+<td>
+0.204
+</td>
+<td>
+0.956
+</td>
+<td>
+0.781
+</td>
+<td>
+0.314
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pneumothorax
+</th>
+<td>
+24
+</td>
+<td>
+785
+</td>
+<td>
+183
+</td>
+<td>
+8
+</td>
+<td>
+0.809
+</td>
+<td>
+0.032
+</td>
+<td>
+0.75
+</td>
+<td>
+0.811
+</td>
+<td>
+0.116
+</td>
+<td>
+0.99
+</td>
+<td>
+0.826
+</td>
+<td>
+0.201
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pleural_Thickening
+</th>
+<td>
+24
+</td>
+<td>
+713
+</td>
+<td>
+259
+</td>
+<td>
+4
+</td>
+<td>
+0.737
+</td>
+<td>
+0.028
+</td>
+<td>
+0.857
+</td>
+<td>
+0.734
+</td>
+<td>
+0.085
+</td>
+<td>
+0.994
+</td>
+<td>
+0.868
+</td>
+<td>
+0.154
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Pneumonia
+</th>
+<td>
+14
+</td>
+<td>
+661
+</td>
+<td>
+320
+</td>
+<td>
+5
+</td>
+<td>
+0.675
+</td>
+<td>
+0.019
+</td>
+<td>
+0.737
+</td>
+<td>
+0.674
+</td>
+<td>
+0.042
+</td>
+<td>
+0.992
+</td>
+<td>
+0.762
+</td>
+<td>
+0.079
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Fibrosis
+</th>
+<td>
+10
+</td>
+<td>
+725
+</td>
+<td>
+261
+</td>
+<td>
+4
+</td>
+<td>
+0.735
+</td>
+<td>
+0.014
+</td>
+<td>
+0.714
+</td>
+<td>
+0.735
+</td>
+<td>
+0.037
+</td>
+<td>
+0.995
+</td>
+<td>
+0.801
+</td>
+<td>
+0.07
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Edema
+</th>
+<td>
+15
+</td>
+<td>
+767
+</td>
+<td>
+213
+</td>
+<td>
+5
+</td>
+<td>
+0.782
+</td>
+<td>
+0.02
+</td>
+<td>
+0.75
+</td>
+<td>
+0.783
+</td>
+<td>
+0.066
+</td>
+<td>
+0.994
+</td>
+<td>
+0.856
+</td>
+<td>
+0.121
+</td>
+<td>
+0.5
+</td>
+</tr>
+<tr>
+<th>
+Consolidation
+</th>
+<td>
+36
+</td>
+<td>
+658
+</td>
+<td>
+297
+</td>
+<td>
+9
+</td>
+<td>
+0.694
+</td>
+<td>
+0.045
+</td>
+<td>
+0.8
+</td>
+<td>
+0.689
+</td>
+<td>
+0.108
+</td>
+<td>
+0.987
+</td>
+<td>
+0.799
+</td>
+<td>
+0.19
+</td>
+<td>
+0.5
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><a name='7'></a> ## 7. Calibration</p>
+<p>When performing classification we often want not only to predict the class label, but also obtain a probability of each label. This probability would ideally give us some kind of confidence on the prediction. In order to observe how our model's generated probabilities are aligned with the real probabilities, we can plot what's called a <em>calibration curve</em>.</p>
+<p>In order to generate a calibration plot, we first bucketize our predictions to a fixed number of separate bins (e.g. 5) between 0 and 1. We then calculate a point for each bin: the x-value for each point is the mean for the probability that our model has assigned to these points and the y-value for each point fraction of true positives in that bin. We then plot these points in a linear plot. A well-calibrated model has a calibration curve that almost aligns with the y=x line.</p>
+<p>The <code>sklearn</code> library has a utility <code>calibration_curve</code> for generating a calibration plot. Let's use it and take a look at our model's calibration:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.calibration <span class="keyword">import</span> calibration_curve</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_calibration_curve</span>(<span class="params">y, pred</span>):</span></span><br><span class="line">    plt.figure(figsize=(<span class="number">20</span>, <span class="number">20</span>))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(class_labels)):</span><br><span class="line">        plt.subplot(<span class="number">4</span>, <span class="number">4</span>, i + <span class="number">1</span>)</span><br><span class="line">        fraction_of_positives, mean_predicted_value = calibration_curve(y[:,i], pred[:,i], n_bins=<span class="number">20</span>)</span><br><span class="line">        plt.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">1</span>], linestyle=<span class="string">&#x27;--&#x27;</span>)</span><br><span class="line">        plt.plot(mean_predicted_value, fraction_of_positives, marker=<span class="string">&#x27;.&#x27;</span>)</span><br><span class="line">        plt.xlabel(<span class="string">&quot;Predicted Value&quot;</span>)</span><br><span class="line">        plt.ylabel(<span class="string">&quot;Fraction of Positives&quot;</span>)</span><br><span class="line">        plt.title(class_labels[i])</span><br><span class="line">    plt.tight_layout()</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plot_calibration_curve(y, pred)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_71_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<p>As the above plots show, for most predictions our model's calibration plot does not resemble a well calibrated plot. How can we fix that?...</p>
+<p>Thankfully, there is a very useful method called <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Platt_scaling">Platt scaling</a> which works by fitting a logistic regression model to our model's scores. To build this model, we will be using the training portion of our dataset to generate the linear model and then will use the model to calibrate the predictions for our test portion.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression <span class="keyword">as</span> LR </span><br><span class="line"></span><br><span class="line">y_train = train_results[class_labels].values</span><br><span class="line">pred_train = train_results[pred_labels].values</span><br><span class="line">pred_calibrated = np.zeros_like(pred)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(class_labels)):</span><br><span class="line">    lr = LR(solver=<span class="string">&#x27;liblinear&#x27;</span>, max_iter=<span class="number">10000</span>)</span><br><span class="line">    lr.fit(pred_train[:, i].reshape(-<span class="number">1</span>, <span class="number">1</span>), y_train[:, i])    </span><br><span class="line">    pred_calibrated[:, i] = lr.predict_proba(pred[:, i].reshape(-<span class="number">1</span>, <span class="number">1</span>))[:,<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plot_calibration_curve(y[:,], pred_calibrated)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_74_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<h1 id="thats-it">That's it!</h1>
+<p>Congratulations! That was a lot of metrics to get familiarized with. We hope that you feel a lot more confident in your understanding of medical diagnostic evaluation and test your models correctly in your future work :)</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Medicine/" rel="tag"># Medicine</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Deploy-a-keras-model-on-IBM-cloud/2020/04/15/" rel="prev" title="Deploy a keras model on IBM cloud">
+      <i class="fa fa-chevron-left"></i> Deploy a keras model on IBM cloud
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Develop-a-blockchain-application-from-scratch-in-Python/2020/04/21/" rel="next" title="Develop a blockchain application from scratch in Python">
+      Develop a blockchain application from scratch in Python <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#evaluation-of-diagnostic-models"><span class="nav-number">1.</span> <span class="nav-text">Evaluation of Diagnostic Models</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#outline"><span class="nav-number">1.1.</span> <span class="nav-text">Outline</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#expected-output"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">Expected output:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#expected-output-1"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">Expected output:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#expected-output-2"><span class="nav-number">1.1.0.3.</span> <span class="nav-text">Expected output:</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#thats-it"><span class="nav-number">2.</span> <span class="nav-text">That&#39;s it!</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Boolean Functions and Gate Logic">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Boolean Functions and Gate Logic">
+<meta property="og:url" content="https://zhangruochi.com/Boolean-Functions-and-Gate-Logic/2019/05/20/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Boolean Functions and Gate Logic">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Boolean-Functions-and-Gate-Logic/2019/05/20/functions.png">
+<meta property="og:image" content="https://zhangruochi.com/Boolean-Functions-and-Gate-Logic/2019/05/20/identities.png">
+<meta property="og:image" content="https://zhangruochi.com/Boolean-Functions-and-Gate-Logic/2019/05/20/truth_table.png">
+<meta property="og:image" content="https://zhangruochi.com/Boolean-Functions-and-Gate-Logic/2019/05/20/gate.png">
+<meta property="og:image" content="https://zhangruochi.com/Boolean-Functions-and-Gate-Logic/2019/05/20/implementation.png">
+<meta property="og:image" content="https://zhangruochi.com/Boolean-Functions-and-Gate-Logic/2019/05/20/Multiplexor.png">
+<meta property="og:image" content="https://zhangruochi.com/Boolean-Functions-and-Gate-Logic/2019/05/20/xor.png">
+<meta property="article:published_time" content="2019-05-20T07:43:54.000Z">
+<meta property="article:modified_time" content="2021-12-31T10:12:40.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Nand2Tetris">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Boolean-Functions-and-Gate-Logic/2019/05/20/functions.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Boolean-Functions-and-Gate-Logic/2019/05/20/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Boolean Functions and Gate Logic | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Boolean-Functions-and-Gate-Logic/2019/05/20/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Boolean Functions and Gate Logic
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-05-20 15:43:54" itemprop="dateCreated datePublished" datetime="2019-05-20T15:43:54+08:00">2019-05-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 18:12:40" itemprop="dateModified" datetime="2021-12-31T18:12:40+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hardware-Architecture/" itemprop="url" rel="index"><span itemprop="name">Hardware Architecture</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Boolean-Functions-and-Gate-Logic/2019/05/20/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Boolean-Functions-and-Gate-Logic/2019/05/20/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Boolean Functions and Gate Logic</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="boolean-logic">Boolean Logic</h2>
+<ol type="1">
+<li>Every digital device is made from the same building blocks: <strong>Elementary logic gates</strong>;</li>
+<li>Nand can build all the other logic gate from itself;</li>
+</ol>
+<h3 id="boolean-algebra">Boolean Algebra</h3>
+<ol type="1">
+<li><strong>Boolean algebra</strong> deals with Boolean (also called binary) values that are typically labeled true/false, 1/0, yes/no, on/off, and so forth</li>
+<li><strong>A Boolean function</strong> is a function that operates on binary inputs and returns binary outputs.</li>
+</ol>
+<ul>
+<li>Infinitely many Boolean expressions vs. only a finite number of Boolean functions</li>
+<li>Infinitely many Boolean expressions are equivalent to the same Boolean function</li>
+<li>Boolean values are the two logic constants True, and False.</li>
+<li>for n independent Boolean variables, each taking one particular Boolean value, there are <span class="math inline">\(2^n\)</span> different possible combinations. A Boolean function has to assign one Boolean value to each one of these combinations. This brings the number of different possible Boolean functions of n variables to a total of <span class="math inline">\(2^{2^n}\)</span></li>
+<li><img src="functions.png" /></li>
+</ul>
+<ol start="3" type="1">
+<li>Boolean Identities <img src="identities.png" /></li>
+</ol>
+<h3 id="two-ways-to-represent-the-boolean-functions">two ways to represent the boolean functions</h3>
+<ol type="1">
+<li><strong>Truth Table Representation</strong>: The simplest way to specify a Boolean function is to enumerate all the possible values of the function’s input variables, along with the function’s output for each set of inputs.</li>
+</ol>
+<p><img src="truth_table.png" /></p>
+<ol start="2" type="1">
+<li><strong>Boolean Expressions</strong>: a Boolean function can also be specified using Boolean operations over its input variables</li>
+</ol>
+<p><span class="math display">\[f(x,y,z) = (x + y) * \bar(z)\]</span></p>
+<h4 id="canonical-representation">Canonical Representation</h4>
+<p>Every Boolean function, no matter how complex, can be expressed using three Boolean operators only: And, Or, and Not.</p>
+<p>example: for the figure above, we can get <span class="math display">\[f(x,y,z) = \bar(x)y\bar(z) + x\bar(y)\bar(z) + xy\bar(z)\]</span></p>
+<p>find all the expressions euqual to 1, use "and" conbines the bits together and use "or" conbine all the expressions.</p>
+<h2 id="gate-logic">Gate Logic</h2>
+<p>A gate is a physical device that implements a Boolean function. If a Boolean function f operates on n variables and returns m binary results (in all our examples so far, m was 1), the gate that implements f will have n input pins and m output pins.</p>
+<p>Each one of the operations And, Or, and Not can be constructed from it, and it alone (e.g., x Or y = (x Nand x) Nand (y Nand y). And since every Boolean function can be constructed from And, Or, and Not operations using the canonical representation method, it follows that every Boolean function can be constructed from Nand operations alone</p>
+<h3 id="primitive-and-composite-gates">Primitive and Composite Gates</h3>
+<p>a primitive gate (see figure 1.3) can be viewed as a black box device that implements an elementary logical operation in one way or another—we don’t care how. Computer scientists can be content with the <strong>abstract notions</strong> of Boolean algebra and gate logic, trusting that someone else (the physicists and electrical engineers—bless their souls) will figure out how to actually realize them in hardware <img src="gate.png" /></p>
+<p>We see that any given logic gate can be viewed from two different perspectives: external and internal. As the blow picture a example. The right-hand side of figure gives the gate’s internal architecture, or <strong>implementation</strong>, whereas the left side shows only the gate <strong>interface</strong>. The gate implementation will realize its stated interface, in one way or another.</p>
+<p><img src="implementation.png" /></p>
+<h3 id="multi-bit-versions-of-basic-gates">Multi-Bit Versions of Basic Gates</h3>
+<p>Computer hardware is typically designed to operate on multi-bit arrays called <strong>buses</strong>.</p>
+<p>or example, a basic requirement of a 32-bit computer is to be able to compute (bit-wise) an And function on two given 32-bit buses. To implement this operation, we can build an array of 32 binary And gates, each operating separately on a pair of bits. In order to enclose all this logic in one package, we can encapsulate the gates array in a single chip interface consisting of two 32-bit input buses and one 32-bit output bus.</p>
+<p>example, <strong>Multi-Bit Not</strong> An n-bit Not gate applies the Boolean operation Not to every one of the bits in its n-bit input bus:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Chip name: Not16</span><br><span class="line">Inputs: <span class="keyword">in</span>[16] // a 16-bit pin Outputs: out[16]</span><br><span class="line">Function: For i=0..15 out[i]=Not(<span class="keyword">in</span>[i]).</span><br></pre></td></tr></table></figure>
+<h3 id="multi-way-versions-of-basic-gates">Multi-Way Versions of Basic Gates</h3>
+<p>any 2-way logic gates that accept two inputs have natural generalization to multi- way variants that accept an arbitrary number of inputs.</p>
+<p>example, <strong>Multi-Way Or An n-way Or</strong> gate outputs 1 when at least one of its n bit inputs is 1, and 0 otherwise. Here is the 8-way variant of this gate:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Chip name: Or8Way</span><br><span class="line">Inputs: <span class="keyword">in</span>[8]</span><br><span class="line">Outputs: out</span><br><span class="line">Function: out=Or(<span class="keyword">in</span>[0],<span class="keyword">in</span>[1],...,<span class="keyword">in</span>[7]).</span><br></pre></td></tr></table></figure>
+<h3 id="multiplexor">Multiplexor</h3>
+<p>A multiplexor is a three-input gate that uses one of the inputs, called <strong>selection bit</strong>, to select and output one of the other two inputs, called <strong>data bits</strong>. Thus, a better name for this device might have been <strong>selector</strong>.</p>
+<p><img src="Multiplexor.png" /></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Chip name: Xor</span><br><span class="line">Inputs: a, b</span><br><span class="line">Outputs: out</span><br><span class="line">Function: If a=/b <span class="keyword">then</span> out=1 <span class="keyword">else</span> out=0.</span><br></pre></td></tr></table></figure>
+<h3 id="demultiplexor">Demultiplexor</h3>
+<p>A demultiplexor performs the opposite function of a multiplexor: It takes a single input and channels it to one of two possible outputs according to a selector bit that specifies which output to chose.</p>
+<p><a href="Demultiplexor.png"></a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Chip name: DMux</span><br><span class="line">Inputs: <span class="keyword">in</span>, sel</span><br><span class="line">Outputs: a, b</span><br><span class="line">Function: If sel=0 <span class="keyword">then</span> &#123;a=<span class="keyword">in</span>, b=0&#125; <span class="keyword">else</span> &#123;a=0, b=<span class="keyword">in</span>&#125;.</span><br></pre></td></tr></table></figure>
+<h2 id="hardware-description-language-hdl">Hardware Description Language (HDL)</h2>
+<p>Thus, using HDL, one can completely plan, debug, and optimize the entire chip before a single penny is spent on actual production. When the HDL program is deemed complete, that is, when the performance of the simulated chip satisfies the client who ordered it, the HDL program can become the blueprint from which many copies of the physical chip can be stamped in silicon.</p>
+<p>An HDL definition of a chip consists of a <strong>header section</strong> and a <strong>parts section</strong>. The header section specifies the chip interface, namely the chip name and the names of its input and output pins. The parts section describes the names and topol- ogy of all the lower-level parts (other chips) from which this chip is constructed</p>
+<h3 id="hdl-implementation-of-a-xor-gate.">HDL implementation of a Xor gate.</h3>
+<p><img src="xor.png" /></p>
+<h2 id="hardware-simulation">Hardware Simulation</h2>
+<p>Since HDL is a hardware construction language, the process of writing and debug- ging HDL programs is quite similar to software development. The main difference is that instead of writing code in a language like Java, we write it in HDL, and instead of using a compiler to translate and test the code, we use a hardware simulator. The hardware simulator is a computer program that knows how to parse and interpret HDL code, turn it into an executable representation, and test it according to the specifications of a given test script</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Nand2Tetris/" rel="tag"># Nand2Tetris</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Domain-Driven-Design-Introduction/2019/05/16/" rel="prev" title="Domain Driven Design Introduction">
+      <i class="fa fa-chevron-left"></i> Domain Driven Design Introduction
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Boolean-Logic-Project/2019/05/21/" rel="next" title="Boolean Logic Project">
+      Boolean Logic Project <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#boolean-logic"><span class="nav-number">1.</span> <span class="nav-text">Boolean Logic</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#boolean-algebra"><span class="nav-number">1.1.</span> <span class="nav-text">Boolean Algebra</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#two-ways-to-represent-the-boolean-functions"><span class="nav-number">1.2.</span> <span class="nav-text">two ways to represent the boolean functions</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#canonical-representation"><span class="nav-number">1.2.1.</span> <span class="nav-text">Canonical Representation</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gate-logic"><span class="nav-number">2.</span> <span class="nav-text">Gate Logic</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#primitive-and-composite-gates"><span class="nav-number">2.1.</span> <span class="nav-text">Primitive and Composite Gates</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multi-bit-versions-of-basic-gates"><span class="nav-number">2.2.</span> <span class="nav-text">Multi-Bit Versions of Basic Gates</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multi-way-versions-of-basic-gates"><span class="nav-number">2.3.</span> <span class="nav-text">Multi-Way Versions of Basic Gates</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multiplexor"><span class="nav-number">2.4.</span> <span class="nav-text">Multiplexor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#demultiplexor"><span class="nav-number">2.5.</span> <span class="nav-text">Demultiplexor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hardware-description-language-hdl"><span class="nav-number">3.</span> <span class="nav-text">Hardware Description Language (HDL)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hdl-implementation-of-a-xor-gate."><span class="nav-number">3.1.</span> <span class="nav-text">HDL implementation of a Xor gate.</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hardware-simulation"><span class="nav-number">4.</span> <span class="nav-text">Hardware Simulation</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

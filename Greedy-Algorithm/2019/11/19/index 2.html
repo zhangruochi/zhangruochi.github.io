@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Greedy Algorithm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Greedy Algorithm">
+<meta property="og:url" content="https://zhangruochi.com/Greedy-Algorithm/2019/11/19/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Greedy Algorithm">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Greedy-Algorithm/2019/11/19/1.png">
+<meta property="article:published_time" content="2019-11-19T01:17:16.000Z">
+<meta property="article:modified_time" content="2022-01-18T07:44:45.966Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Greedy-Algorithm/2019/11/19/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Greedy-Algorithm/2019/11/19/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Greedy Algorithm | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Greedy-Algorithm/2019/11/19/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Greedy Algorithm
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-11-19 09:17:16" itemprop="dateCreated datePublished" datetime="2019-11-19T09:17:16+08:00">2019-11-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-01-18 15:44:45" itemprop="dateModified" datetime="2022-01-18T15:44:45+08:00">2022-01-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure-and-Algorithm/" itemprop="url" rel="index"><span itemprop="name">Data Structure and Algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Greedy-Algorithm/2019/11/19/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Greedy-Algorithm/2019/11/19/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Greedy Algorithm</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="定义">定义</h2>
+<p><strong>贪心算法</strong>，是指在对问题求解时，总是做出再当前看来是最好的选择。也就是说，不从整体最优上加以考虑，他所做出的仅是某种意义上的局部最优解。贪心算法没有固定算法框架，算法设计的关键是贪心策略的选择。必须注意的是，贪心算法不是对所有问题都能得到整体最优解，选择的贪心策略必须具备无后效性，即某个状态以后的过程不会影响以前的状态，只与当前状态有关。</p>
+<h2 id="基本思路">基本思路</h2>
+<ol type="1">
+<li>建立数学模型来描述问题</li>
+<li>把求解的问题分成若干个子问题</li>
+<li>对每一子问题求解，得到子问题的局部最优解</li>
+<li>把子问题的解局部最优解合成原来解问题的一个解</li>
+</ol>
+<h2 id="适用的问题">适用的问题</h2>
+<p><strong>局部最优策略能导致产生全局最优解</strong></p>
+<h2 id="最小生成树问题">最小生成树问题</h2>
+<p>给定一个无向联通带权图G(V,E). G中的每一条边<span class="math inline">\(E_i\)</span>权值为<span class="math inline">\(w_i\)</span>。如果G的子图G'是一个包含G中所有顶点的子图，那么G'称为G的最小生成树，如果G'的边的权值最小.</p>
+<p><img src="1.png" /></p>
+<h3 id="kruskal算法">Kruskal算法</h3>
+<p>Kruskal算法是基于贪心的思想得到的。首先我们把所有的边按照权值先从小到大排列，接着按照顺序选取每条边，如果这条边的两个端点不属于同一集合，那么就将它们合并，直到所有的点都属于同一个集合为止。至于怎么合并到一个集合，那么这里我们就可以用到一个工具——-并查集。换而言之，Kruskal算法就是基于并查集的贪心算法。</p>
+<ol type="1">
+<li>将图G看做一个森林，每个顶点为一棵独立的树</li>
+<li>将所有的边加入集合S，即一开始S = E</li>
+<li>从S中拿出一条最短的边(u,v)，如果(u,v)不在同一棵树内，则连接u,v合并这两棵树，同时将(u,v)加入生成树的边集E'</li>
+<li>重复(3)直到所有点属于同一棵树，边集E'就是一棵最小生成树</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>():</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self,items</span>):</span></span><br><span class="line">        self.parent = &#123;item:item <span class="keyword">for</span> item <span class="keyword">in</span> items&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_root</span>(<span class="params">self, i</span>):</span></span><br><span class="line">        <span class="keyword">while</span> i != self.parent[i]:</span><br><span class="line">            i = self.parent[i]</span><br><span class="line">        <span class="keyword">return</span> i</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, i, j</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.get_root(i) == self.get_root(j)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, i, j</span>):</span></span><br><span class="line">        i_root = self.get_root(i)</span><br><span class="line">        j_root = self.get_root(j)</span><br><span class="line">        self.parent[i_root] = j_root</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kruskal</span>(<span class="params">G</span>):</span></span><br><span class="line">    nodes = <span class="built_in">list</span>(G.keys())</span><br><span class="line">    uf = UnionFind(nodes)</span><br><span class="line"></span><br><span class="line">    res_deges = <span class="built_in">set</span>()</span><br><span class="line">    res_weight = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    edges = <span class="built_in">set</span>()</span><br><span class="line">    <span class="keyword">for</span> node_1 <span class="keyword">in</span> G:</span><br><span class="line">        <span class="keyword">for</span> node_2 <span class="keyword">in</span> G[node_1]:</span><br><span class="line">            <span class="keyword">if</span> node_1 &lt; node_2:</span><br><span class="line">                edges.add((node_1,node_2, G[node_1][node_2]))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                edges.add((node_2,node_1, G[node_1][node_2]))</span><br><span class="line">    edges = <span class="built_in">list</span>(edges)</span><br><span class="line">    edges.sort(key = <span class="keyword">lambda</span> edge: edge[-<span class="number">1</span>])</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> edge <span class="keyword">in</span> edges:</span><br><span class="line">        node_1,node_2,weight = edge</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> uf.is_connected(node_1,node_2):</span><br><span class="line">            uf.union(node_1,node_2)</span><br><span class="line">            res_deges.add(edge)</span><br><span class="line">            res_weight += weight</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res_deges,res_weight</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    graph = &#123;<span class="string">&#x27;A&#x27;</span>:&#123;<span class="string">&#x27;B&#x27;</span>:<span class="number">7</span>,<span class="string">&#x27;D&#x27;</span>:<span class="number">5</span>&#125;,</span><br><span class="line">             <span class="string">&#x27;B&#x27;</span>:&#123;<span class="string">&#x27;A&#x27;</span>:<span class="number">7</span>,<span class="string">&#x27;C&#x27;</span>:<span class="number">8</span>,<span class="string">&#x27;D&#x27;</span>:<span class="number">9</span>,<span class="string">&#x27;E&#x27;</span>:<span class="number">7</span>&#125;,</span><br><span class="line">             <span class="string">&#x27;C&#x27;</span>:&#123;<span class="string">&#x27;B&#x27;</span>:<span class="number">8</span>,<span class="string">&#x27;E&#x27;</span>:<span class="number">5</span>&#125;,</span><br><span class="line">             <span class="string">&#x27;D&#x27;</span>:&#123;<span class="string">&#x27;A&#x27;</span>:<span class="number">5</span>,<span class="string">&#x27;B&#x27;</span>:<span class="number">9</span>,<span class="string">&#x27;E&#x27;</span>:<span class="number">15</span>,<span class="string">&#x27;F&#x27;</span>:<span class="number">6</span>&#125;,</span><br><span class="line">             <span class="string">&#x27;E&#x27;</span>:&#123;<span class="string">&#x27;B&#x27;</span>:<span class="number">7</span>,<span class="string">&#x27;C&#x27;</span>:<span class="number">5</span>,<span class="string">&#x27;D&#x27;</span>:<span class="number">15</span>,<span class="string">&#x27;F&#x27;</span>:<span class="number">8</span>,<span class="string">&#x27;G&#x27;</span>:<span class="number">9</span>&#125;,</span><br><span class="line">             <span class="string">&#x27;F&#x27;</span>:&#123;<span class="string">&#x27;D&#x27;</span>:<span class="number">6</span>,<span class="string">&#x27;E&#x27;</span>:<span class="number">8</span>,<span class="string">&#x27;G&#x27;</span>:<span class="number">11</span>&#125;,</span><br><span class="line">             <span class="string">&#x27;G&#x27;</span>:&#123;<span class="string">&#x27;E&#x27;</span>:<span class="number">9</span>,<span class="string">&#x27;F&#x27;</span>:<span class="number">11</span>&#125;</span><br><span class="line">             &#125;</span><br><span class="line">    edges, weight = kruskal(graph)</span><br><span class="line">    <span class="built_in">print</span>(edges)</span><br><span class="line">    <span class="built_in">print</span>(weight)</span><br></pre></td></tr></table></figure>
+<h2 id="prim算法">Prim算法</h2>
+<ol type="1">
+<li>以某一个点开始，寻找当前该点可以访问的所有的边；</li>
+<li>在已经寻找的边中发现最小边，这个边必须有一个点还没有访问过，将还没有访问的点加入我们的集合，记录添加的边；</li>
+<li>寻找当前集合可以访问的所有边，重复2的过程，直到没有新的点可以加入；</li>
+<li>此时由所有边构成的树即为最小生成树。</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">prim</span>(<span class="params">graph, root</span>):</span></span><br><span class="line">    </span><br><span class="line">    nodes = <span class="built_in">list</span>(graph)</span><br><span class="line">    nodes.remove(root)</span><br><span class="line">    visited = [root]</span><br><span class="line">    edges = <span class="built_in">set</span>()</span><br><span class="line">    weight = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> nodes:</span><br><span class="line">        distance = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) </span><br><span class="line">        <span class="keyword">for</span> s <span class="keyword">in</span> visited:</span><br><span class="line">            <span class="keyword">for</span> d <span class="keyword">in</span> graph[s]:</span><br><span class="line">                <span class="keyword">if</span> d <span class="keyword">in</span> visited <span class="keyword">or</span> s == d:</span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">                <span class="keyword">if</span> graph[s][d] &lt; distance:</span><br><span class="line">                    distance = graph[s][d]</span><br><span class="line">                    node_1 = s</span><br><span class="line">                    node_2 = d</span><br><span class="line">        edges.add((node_1,node_2,graph[node_1][node_2]))</span><br><span class="line">        weight += graph[node_1][node_2]</span><br><span class="line">        visited.append(node_2)</span><br><span class="line">        nodes.remove(node_2)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> edges,weight</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    graph = &#123;<span class="string">&#x27;A&#x27;</span>:&#123;<span class="string">&#x27;B&#x27;</span>:<span class="number">7</span>,<span class="string">&#x27;D&#x27;</span>:<span class="number">5</span>&#125;,</span><br><span class="line">             <span class="string">&#x27;B&#x27;</span>:&#123;<span class="string">&#x27;A&#x27;</span>:<span class="number">7</span>,<span class="string">&#x27;C&#x27;</span>:<span class="number">8</span>,<span class="string">&#x27;D&#x27;</span>:<span class="number">9</span>,<span class="string">&#x27;E&#x27;</span>:<span class="number">7</span>&#125;,</span><br><span class="line">             <span class="string">&#x27;C&#x27;</span>:&#123;<span class="string">&#x27;B&#x27;</span>:<span class="number">8</span>,<span class="string">&#x27;E&#x27;</span>:<span class="number">5</span>&#125;,</span><br><span class="line">             <span class="string">&#x27;D&#x27;</span>:&#123;<span class="string">&#x27;A&#x27;</span>:<span class="number">5</span>,<span class="string">&#x27;B&#x27;</span>:<span class="number">9</span>,<span class="string">&#x27;E&#x27;</span>:<span class="number">15</span>,<span class="string">&#x27;F&#x27;</span>:<span class="number">6</span>&#125;,</span><br><span class="line">             <span class="string">&#x27;E&#x27;</span>:&#123;<span class="string">&#x27;B&#x27;</span>:<span class="number">7</span>,<span class="string">&#x27;C&#x27;</span>:<span class="number">5</span>,<span class="string">&#x27;D&#x27;</span>:<span class="number">15</span>,<span class="string">&#x27;F&#x27;</span>:<span class="number">8</span>,<span class="string">&#x27;G&#x27;</span>:<span class="number">9</span>&#125;,</span><br><span class="line">             <span class="string">&#x27;F&#x27;</span>:&#123;<span class="string">&#x27;D&#x27;</span>:<span class="number">6</span>,<span class="string">&#x27;E&#x27;</span>:<span class="number">8</span>,<span class="string">&#x27;G&#x27;</span>:<span class="number">11</span>&#125;,</span><br><span class="line">             <span class="string">&#x27;G&#x27;</span>:&#123;<span class="string">&#x27;E&#x27;</span>:<span class="number">9</span>,<span class="string">&#x27;F&#x27;</span>:<span class="number">11</span>&#125;</span><br><span class="line">             &#125;</span><br><span class="line"></span><br><span class="line">    edges, weight = prim(graph,<span class="string">&#x27;A&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(edges)</span><br><span class="line">    <span class="built_in">print</span>(weight)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="leetcode-455-assign-cookies">leetcode 455 <a target="_blank" rel="noopener" href="https://leetcode.com/problems/assign-cookies/">Assign Cookies</a></h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">Assume you are an awesome parent and want to give your children some cookies. But, you should give each child at most one cookie. Each child i has a greed factor gi, which is the minimum size of a cookie that the child will be content with; and each cookie j has a size sj. If sj &gt;= gi, we can assign the cookie j to the child i, and the child i will be content. Your goal is to maximize the number of your content children and output the maximum number.</span><br><span class="line"></span><br><span class="line">Note:</span><br><span class="line">You may assume the greed factor is always positive. </span><br><span class="line">You cannot assign more than one cookie to one child.</span><br><span class="line"></span><br><span class="line">Example 1:</span><br><span class="line"></span><br><span class="line">Input: [1,2,3], [1,1]</span><br><span class="line"></span><br><span class="line">Output: 1</span><br><span class="line"></span><br><span class="line">Explanation: You have 3 children and 2 cookies. The greed factors of 3 children are 1, 2, 3. </span><br><span class="line">And even though you have 2 cookies, since their size is both 1, you could only make the child whose greed factor is 1 content.</span><br><span class="line">You need to output 1.</span><br><span class="line">Example 2:</span><br><span class="line"></span><br><span class="line">Input: [1,2], [1,2,3]</span><br><span class="line"></span><br><span class="line">Output: 2</span><br><span class="line"></span><br><span class="line">Explanation: You have 2 children and 3 cookies. The greed factors of 2 children are 1, 2. </span><br><span class="line">You have 3 cookies and their sizes are big enough to gratify all of the children, </span><br><span class="line">You need to output 2.</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>因为最小的孩子最容易得到满足，因此先满足最小孩子。给一个孩子的饼干应当尽量小又能满足该孩子，这样大饼干就能拿来给满足度比较大的孩子。 假设在某次选择中，贪心策略选择给第 i 个孩子分配第 m 个饼干，并且第 i 个孩子满足度最小，第 m 个饼干为可以满足第 i 个孩子的最小饼干，利用贪心策略最终可以满足 k 个孩子。假设最优策略在这次选择中给 i 个孩子分配第 n 个饼干，并且这个饼干大于第 m 个饼干。我们发现使用第 m 个饼干去替代第 n 个饼干完全不影响后续的结果，因此不存在比贪心策略更优的策略，即贪心策略就是最优策略。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">findContentChildren</span>(<span class="params">self, g: <span class="type">List</span>[<span class="built_in">int</span>], s: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">        res = <span class="number">0</span>; i = <span class="number">0</span>; j = <span class="number">0</span></span><br><span class="line">        g.sort()</span><br><span class="line">        s.sort()</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(g) <span class="keyword">and</span> j &lt; <span class="built_in">len</span>(s):</span><br><span class="line">            <span class="keyword">if</span> g[i] &lt;= s[j]:</span><br><span class="line">                res += <span class="number">1</span></span><br><span class="line">                i+=<span class="number">1</span></span><br><span class="line">            j+=<span class="number">1</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Flee-from-famine/2019/11/19/" rel="prev" title="Flee from famine">
+      <i class="fa fa-chevron-left"></i> Flee from famine
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Union-Find/2019/11/19/" rel="next" title="Union Find">
+      Union Find <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">基本思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%82%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">适用的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">最小生成树问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kruskal%E7%AE%97%E6%B3%95"><span class="nav-number">4.1.</span> <span class="nav-text">Kruskal算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#prim%E7%AE%97%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">Prim算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-455-assign-cookies"><span class="nav-number">6.</span> <span class="nav-text">leetcode 455 Assign Cookies</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

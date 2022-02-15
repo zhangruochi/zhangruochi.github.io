@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Why should we care about metric">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Metrics">
+<meta property="og:url" content="https://zhangruochi.com/Metrics/2019/07/14/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Why should we care about metric">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Metrics/2019/07/14/1.png">
+<meta property="og:image" content="https://zhangruochi.com/Metrics/2019/07/14/2.png">
+<meta property="og:image" content="https://zhangruochi.com/Metrics/2019/07/14/3.png">
+<meta property="og:image" content="https://zhangruochi.com/Metrics/2019/07/14/4.png">
+<meta property="og:image" content="https://zhangruochi.com/Metrics/2019/07/14/5.png">
+<meta property="og:image" content="https://zhangruochi.com/Metrics/2019/07/14/6.png">
+<meta property="og:image" content="https://zhangruochi.com/Metrics/2019/07/14/7.png">
+<meta property="og:image" content="https://zhangruochi.com/Metrics/2019/07/14/8.png">
+<meta property="og:image" content="https://zhangruochi.com/Metrics/2019/07/14/9.png">
+<meta property="og:image" content="https://zhangruochi.com/Metrics/2019/07/14/10.png">
+<meta property="article:published_time" content="2019-07-14T14:07:38.000Z">
+<meta property="article:modified_time" content="2019-07-17T08:40:01.348Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Metrics/2019/07/14/1.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Metrics/2019/07/14/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Metrics | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Metrics/2019/07/14/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Metrics
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-07-14 22:07:38" itemprop="dateCreated datePublished" datetime="2019-07-14T22:07:38+08:00">2019-07-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-07-17 16:40:01" itemprop="dateModified" datetime="2019-07-17T16:40:01+08:00">2019-07-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Competition/" itemprop="url" rel="index"><span itemprop="name">Competition</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Competition/Tricks/" itemprop="url" rel="index"><span itemprop="name">Tricks</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Metrics/2019/07/14/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Metrics/2019/07/14/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Why should we care about metric</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="overview">Overview</h1>
+<ol type="1">
+<li>Why there are so many metrics? – Different metrics for different problems</li>
+<li>Why should we care about metric in competitions? – It is how the competitors are ranked!</li>
+</ol>
+<h1 id="regression">Regression</h1>
+<p>Why target mean value minimizes MSE error and why target median minimizes MAE.</p>
+<p>Suppose we have a dataset <span class="math display">\[
+\{(x\_i,y\_i)\}\_{i=1}^N
+\]</span></p>
+<p>Basically, we are given pairs: features <span class="math inline">\(x_i\)</span> and corresponding target value <span class="math inline">\(y_i \in \mathbb{R}\)</span>.</p>
+<p>We will denote vector of targets as <span class="math inline">\(y \in \mathbb{R}^N\)</span>, such that <span class="math inline">\(y_i\)</span> is target for object <span class="math inline">\(x_i\)</span>. Similarly, <span class="math inline">\(\hat y \in \mathbb{R}\)</span> denotes predictions for the objects: <span class="math inline">\(\hat y_i\)</span> for object <span class="math inline">\(x_i\)</span>.</p>
+<h2 id="first-order-derivative-and-second-order-derivative">first-order derivative and second-order derivative</h2>
+<p>设<span class="math inline">\(f(x)\)</span>在<span class="math inline">\([a,b]\)</span>上连续，在<span class="math inline">\((a,b)\)</span>内具有一阶和二阶导数，那么:</p>
+<ul>
+<li>若在（a,b)内f''(x)&gt;0,则f(x)在[a,b]上的图形是凹的；</li>
+<li>若在（a,b)内f’‘(x)&lt;0,则f(x)在[a,b]上的图形是凸的。</li>
+</ul>
+<p>结合一阶、二阶导数可以求函数的极值。</p>
+<ul>
+<li>当一阶导数等于0，而二阶导数大于0时，为极小值点；</li>
+<li>当一阶导数等于0，而二阶导数小于0时，为极大值点；</li>
+<li>当一阶导数和二阶导数都等于0时，为驻点。</li>
+</ul>
+<h2 id="mse">MSE</h2>
+<p><img src="1.png" /></p>
+<p>Let's start with MSE loss. It is defined as follows:</p>
+<p><span class="math display">\[ 
+MSE(y, \hat y) = \frac{1}{N} \sum_{i=1}^N (\hat y_i - y_i)^2
+\]</span></p>
+<p>Now, the question is: if predictions for all the objects were the same and equal to <span class="math inline">\(\alpha\)</span>: <span class="math inline">\(\hat y_i = \alpha\)</span>, what value of <span class="math inline">\(\alpha\)</span> would minimize MSE error?</p>
+<p><span class="math display">\[ 
+\min_{\alpha} f(\alpha) = \frac{1}{N} \sum_{i=1}^N (\alpha - y_i)^2
+\]</span></p>
+<p>The function <span class="math inline">\(f(\alpha)\)</span>, that we want to minimize is smooth with respect to <span class="math inline">\(\alpha\)</span>. A required condition for <span class="math inline">\(\alpha^*\)</span> to be a local optima is <span class="math display">\[
+\frac{d f}{d \alpha}\bigg|_{\alpha=\alpha^*} = 0\, .
+\]</span></p>
+<p>Let's find the points, that satisfy the condition:</p>
+<p><span class="math display">\[
+\frac{d f}{d \alpha}\bigg|_{\alpha=\alpha^*} = \frac{2}{N} \sum_{i=1}^N (\alpha^* - y_i) = 0
+\]</span></p>
+<p><span class="math display">\[
+\frac{2}{N} \sum_{i=1}^N \alpha^* - \frac{2}{N} \sum_{i=1}^N y_i = 0
+\]</span></p>
+<p><span class="math display">\[
+ \alpha^* - \frac{1}{N} \sum_{i=1}^N y_i = 0
+\]</span></p>
+<p>And finally: <span class="math display">\[
+ \alpha^* =  \frac{1}{N} \sum_{i=1}^N y_i
+\]</span></p>
+<p>Since second derivative <span class="math inline">\(\frac{d^2 f}{d \alpha^2}\)</span> is positive at point <span class="math inline">\(\alpha^\*\)</span>, then what we found is local minima.</p>
+<p>So, that is how it is possible to find, that optial constant for MSE metric is target mean value.</p>
+<h2 id="mae">MAE</h2>
+<p><img src="2.png" /></p>
+<p>Similarly to the way we found optimal constant for MSE loss, we can find it for MAE.</p>
+<p><span class="math display">\[ 
+MAE(y, \hat y) = \frac{1}{N} \sum_{i=1}^N |\hat y_i - y_i|
+\]</span></p>
+<p><span class="math display">\[ 
+\min_{\alpha} f(\alpha) = \frac{1}{N} \sum_{i=1}^N |\alpha - y_i|
+\]</span></p>
+<p>Recall that $  = sign(x)$, where <span class="math inline">\(sign\)</span> stands for <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Sign_function">signum function</a> . Thus</p>
+<p><span class="math display">\[
+\frac{d f}{d \alpha}\bigg|_{\alpha=\alpha^*} = \frac{1}{N} \sum_{i=1}^N sign(\alpha^* - y_i) = 0
+\]</span></p>
+<p>So we need to find such <span class="math inline">\(\alpha^\*\)</span> that</p>
+<p><span class="math display">\[
+g(\alpha^*) = \sum_{i=1}^N sign(\alpha^* - y_i) = 0
+\]</span></p>
+<p>Note that <span class="math inline">\(g(\alpha^\*)\)</span> is piecewise-constant non-decreasing function. <span class="math inline">\(g(\alpha^\*)=-1\)</span> for all calues of <span class="math inline">\(\alpha\)</span> less then mimimum <span class="math inline">\(y\_i\)</span> and <span class="math inline">\(g(\alpha^\*)=1\)</span> for <span class="math inline">\(\alpha &gt; \max\_i y\_i\)</span>. The function "jumps" by <span class="math inline">\(\frac{2}{N}\)</span> at every point <span class="math inline">\(y\_i\)</span>. Here is an example, how this function looks like for <span class="math inline">\(y = [-0.5, 0, 1, 3, 3.4]\)</span>:</p>
+<p><img src="3.png" /></p>
+<p>Basically there are <span class="math inline">\(N\)</span> jumps of the same size, starting from <span class="math inline">\(-1\)</span> and ending at <span class="math inline">\(1\)</span>. It is clear, that you need to do about <span class="math inline">\(\frac{N}{2}\)</span> jumps to hit zero. And that happens exactly at median value of the target vector <span class="math inline">\(g(median(y))=0\)</span>. We should be careful and separate two cases: when there are even number of points and odd, but the intuition remains the same.</p>
+<h2 id="mspe-mape-msle">MSPE, MAPE, MSLE</h2>
+<p><img src="4.png" /> <img src="5.png" /> <img src="6.png" /></p>
+<h1 id="classification">Classification</h1>
+<h2 id="accuracy">Accuracy</h2>
+<p><span class="math display">\[Accuracy = \frac{1}{N}\sum_{i=1}^{N}[\alpha = y_i]\]</span></p>
+<p>Best constant: <strong>predict the most frequent class.</strong></p>
+<h2 id="logarithmic-loss">Logarithmic loss</h2>
+<ol type="1">
+<li>Binary: <span class="math display">\[LogLoss = -\frac{1}{N}\sum^{N}_{i=1}y_{i}log(\hat{y}_{i}) + (1 - y_i)log(1-\hat{y}_{i})\]</span></li>
+<li>Multiclass: <span class="math display">\[LogLoss = -\frac{1}{N}\sum^{N}_{i=1}\sum^{L}_{i=1}y_{il}log(\hat{y}\_{il}) \]</span>
+<ul>
+<li>Logloss strongly penalizes completely wrong answers</li>
+<li>Best constant: set <span class="math inline">\(\alpha_{i}\)</span> to frequency of <span class="math inline">\(i-th\)</span> class.</li>
+</ul></li>
+</ol>
+<h2 id="area-under-roc-curve">Area under ROC curve</h2>
+<p><img src="7.png" /></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> metrics</span><br><span class="line">fpr, tpr, thresholds = metrics.roc_curve(y_true, y_pred)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>TP: true positives</li>
+<li>FP: false positives</li>
+<li>Best constant: All constants give same score</li>
+<li>Random predictions lead to AUC = 0.5</li>
+</ul>
+<h2 id="kappa">Kappa</h2>
+<h3 id="cohens-kappa-motivation">Cohen’s Kappa motivation</h3>
+<p><span class="math display">\[CP = 1 - \frac{1-acc}{1-p_e}\]</span></p>
+<ul>
+<li><span class="math inline">\(p_e\)</span>: what accuracy would be on average, if we randomly permute our predictions</li>
+</ul>
+<h3 id="weighted-kappa">Weighted Kappa</h3>
+<p>dataset:</p>
+<ul>
+<li>10 cats</li>
+<li>90 dogs</li>
+<li>tigers</li>
+</ul>
+<ol type="1">
+<li>Error weight matrix W</li>
+</ol>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">pred/true</th>
+<th style="text-align: left;">cat</th>
+<th style="text-align: left;">dog</th>
+<th style="text-align: left;">tiger</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">cat</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">dog</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tiger</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>you can define this by youself</strong></p>
+<ol start="2" type="1">
+<li>Confision matrix C</li>
+</ol>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">pred/true</th>
+<th style="text-align: left;">cat</th>
+<th style="text-align: left;">dog</th>
+<th style="text-align: left;">tiger</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">cat</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">dog</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">88</td>
+<td style="text-align: left;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tiger</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">12</td>
+</tr>
+</tbody>
+</table>
+<ol start="3" type="1">
+<li><p>weighted error <span class="math display">\[weighted \, error = \frac{1}{const}\sum_{i,j}C_{ij}W_{ij}\]</span></p></li>
+<li><p>weighted Kappa <span class="math display">\[weighted \, kappa = 1 - \frac{weighted \, error}{weighted \, baseline \, error} \]</span></p></li>
+<li><p>Quadratic and Linear Weighted Kappa if the target is orderd label, the weighted martix can simply get by follows: <img src="8.png" /></p></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">soft_kappa_grad_hess</span>(<span class="params">y, p</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        Returns first and second derivatives of the objective with respect to predictions `p`. </span></span><br><span class="line"><span class="string">        `y` is a vector of corresponding target labels.  </span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    norm = p.dot(p) + y.dot(y)</span><br><span class="line">    </span><br><span class="line">    grad = -<span class="number">2</span> * y / norm + <span class="number">4</span> * p * np.dot(y, p) / (norm ** <span class="number">2</span>)</span><br><span class="line">    hess = <span class="number">8</span> * p * y / (norm ** <span class="number">2</span>) + <span class="number">4</span> * np.dot(y, p) / (norm ** <span class="number">2</span>)  - (<span class="number">16</span> * p ** <span class="number">2</span> * np.dot(y, p)) / (norm ** <span class="number">3</span>)</span><br><span class="line">    <span class="keyword">return</span> grad, hess</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">soft_kappa</span>(<span class="params">preds, dtrain</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        Having predictions `preds` and targets `dtrain.get_label()` this function coumputes soft kappa loss.</span></span><br><span class="line"><span class="string">        NOTE, that it assumes `mean(target) = 0`.</span></span><br><span class="line"><span class="string">        </span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    target = dtrain.get_label()</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;kappa&#x27;</span> ,  -<span class="number">2</span> * target.dot(preds) / (target.dot(target) + preds.dot(preds))</span><br></pre></td></tr></table></figure>
+<h1 id="general-approaches-for-metrics-optimization">General approaches for metrics optimization</h1>
+<ul>
+<li>Target metric is what we want to optimize</li>
+<li>Optimization loss is what model optimizes</li>
+</ul>
+<p>The approaches can be broadly divided into several categories, depending on the metric we need to optimize. Some metrics can be optimized directly.</p>
+<p>Approaches in general: 1. Just run the right model(given the metric we need to optimize) - MSE, Logloss 2. Preprocess train and optimize another metric - MSPE, MAPE, RMSLE, ... 3. Optimize another metric,postprocess predictions - Accuracy, Kappa 4. Write a custom loss function - Any, if you can 5. Optimize another metric,<strong>use early stopping</strong> <img src="9.png" /></p>
+<h2 id="regression-metrics-optimization">Regression metrics optimization</h2>
+<ol type="1">
+<li>MSE and MAE &gt; just find the right model</li>
+<li>MSPE and MAPE
+<ul>
+<li>Use weights for samples (<code>sample_weights</code>)
+<ul>
+<li>And use MSE (MAE)</li>
+<li>Not every library accepts sample weights
+<ul>
+<li>XGBoost,LightGBMaccept</li>
+<li>Easy to implement if not supported</li>
+</ul></li>
+</ul></li>
+<li>Resample the train set
+<ul>
+<li>df.sample(weights=sample_weights)</li>
+<li>And use any model that optimizes MSE (MAE)</li>
+</ul></li>
+</ul></li>
+<li>(R)MSLE
+<ul>
+<li>Transform target for the train set: <span class="math display">\[z_i = log(y_i + 1) \]</span></li>
+<li>Fit a model with MSE loss:</li>
+<li>Transform predictions back: <span class="math display">\[\hat{y}_i = exp(\hat{z}_{i}) - 1\]</span></li>
+</ul></li>
+<li>AUC <span class="math display">\[AUC = \frac{1 - \# \, correct \, ordered \,  pairs}{total \, number \, pairs}\]</span> <img src="10.png" /></li>
+</ol>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">ID</th>
+<th style="text-align: left;">LABEL</th>
+<th style="text-align: left;">TARGET</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">0.35</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">0.8</td>
+</tr>
+</tbody>
+</table>
+<p>假设有4条样本。2个正样本，2个负样本，那么M*N=4。即总共有4个样本对。分别是：（D,B）,（D,A）,(C,B),（C,A）。在（D,B）样本对中，正样本D预测的概率大于负样本B预测的概率（也就是D的得分比B高），记为1。同理，对于（C,B）。正样本C预测的概率小于负样本C预测的概率，记为0. 最后可以算得，总共有3个符合正样本得分高于负样本得分，故最后的AUC为: <span class="math display">\[auc = \frac{1+1+1}{4} = 0.75\]</span> - Pointwise loss - Logloss</p>
+<ol start="5" type="1">
+<li>Quadratic weighted Kappa
+<ul>
+<li>Optimize MSE <span class="math display">\[kappa = 1 - \frac{mse}{hard \ to deal \ with \ part}\]</span></li>
+<li>Find right thresholds – Bad:np.round(predictions) − Better: optimize thresholds</li>
+</ul></li>
+</ol>
+<h2 id="probability-calibration">Probability Calibration</h2>
+<ul>
+<li>logistic regression，在拟合参数的时候采用的是“最大似然法”来直接优化log-loss,因此，logistic function本身返回的就是经过校验的probability。</li>
+<li>Guassian_NaiveBayes，其应用有个前提假设：所有的特征向量是相互独立的。而在实际的工作中，特征向量集难免有冗余，彼此相关，因此利用Guassian_NaiveBayes拟合模型时，往往会<strong>over-confidence</strong>，所得probability多倾向于0或1。</li>
+<li>RandomForest，与Guassian_NaiveBayes正好相反，由于其分类要旨是取所有分类器的平均，或采用服从多数的策略，因此，RandomForest往往会<strong>under-confidence</strong>，所得probability多在(0，1)之间。</li>
+<li>SupportVector，由于受到hard margin的影响，其预测probability多集中在(0，1)之间，与RandomForest相似，为<strong>under-confidence</strong>的情况。</li>
+</ul>
+<p>为了解决上述模型的over-confidence，或under-confidence的情况，我们可以用“概率校验”来对prediction label进行概率估计。</p>
+<ol type="1">
+<li>non-parameter isotonic regression：isotonic calibration is preferable for non-sigmoid calibration curves and in situations where large amounts of data are available for calibration.
+<ul>
+<li>Just fit Isotonic Regression to your predictions(like in stacking)</li>
+</ul></li>
+<li>Platt’s scaling（sigmoid function）: sigmoid calibration is preferable in cases where the calibration curve is sigmoid and where there is limited calibration data.
+<ul>
+<li>JustfitLogisticRegressiontoyourpredictions(like in stacking)</li>
+</ul></li>
+<li>Stacking − Just fit XGBoost or neural net to your predictions</li>
+</ol>
+<p><strong>概率校验</strong>的操作方法如下： 1. 将dataset分为train和test（可用cross_validation.train_test_split）。 2. 用test去拟合校验概率模型； 3. 用train去拟合机器学习模型； 4. 将校验概率模型应用于已经拟合好的机器学习模型上。对机器学习模型的prediction结果进行调整。 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sklearn中的实现：sklearn.calibration.CalibratedClassifierCV</span></span><br><span class="line"><span class="comment"># 主要参数：</span></span><br><span class="line"><span class="comment"># base_estimator ：初始分类函数</span></span><br><span class="line"><span class="comment"># method ：校准采用的方法。取值‘sigmoid’ 或者 ‘isotonic’</span></span><br><span class="line"><span class="comment"># cv ：交叉验证的折叠次数。</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Gaussian Naive-Bayes with no calibration</span></span><br><span class="line">clf = GaussianNB()</span><br><span class="line">clf.fit(X_train, y_train)  <span class="comment"># GaussianNB itself does not support sample-weights</span></span><br><span class="line">prob_pos_clf = clf.predict_proba(X_test)[:, <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Gaussian Naive-Bayes with isotonic calibration</span></span><br><span class="line">clf_isotonic = CalibratedClassifierCV(clf, cv=<span class="number">2</span>, method=<span class="string">&#x27;isotonic&#x27;</span>)</span><br><span class="line">clf_isotonic.fit(X_train, y_train, sw_train)</span><br><span class="line">prob_pos_isotonic = clf_isotonic.predict_proba(X_test)[:, <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Gaussian Naive-Bayes with sigmoid calibration</span></span><br><span class="line">clf_sigmoid = CalibratedClassifierCV(clf, cv=<span class="number">2</span>, method=<span class="string">&#x27;sigmoid&#x27;</span>)</span><br><span class="line">clf_sigmoid.fit(X_train, y_train, sw_train)</span><br><span class="line">prob_pos_sigmoid = clf_sigmoid.predict_proba(X_test)[:, <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Brier scores: (the smaller the better)&quot;</span>)</span><br><span class="line"></span><br><span class="line">clf_score = brier_score_loss(y_test, prob_pos_clf, sw_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;No calibration: %1.3f&quot;</span> % clf_score)</span><br><span class="line"></span><br><span class="line">clf_isotonic_score = brier_score_loss(y_test, prob_pos_isotonic, sw_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;With isotonic calibration: %1.3f&quot;</span> % clf_isotonic_score)</span><br><span class="line"></span><br><span class="line">clf_sigmoid_score = brier_score_loss(y_test, prob_pos_sigmoid, sw_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;With sigmoid calibration: %1.3f&quot;</span> % clf_sigmoid_score)</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Exploratory-data-analysis/2019/07/13/" rel="prev" title="Exploratory data analysis">
+      <i class="fa fa-chevron-left"></i> Exploratory data analysis
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Mean-Encodings/2019/07/15/" rel="next" title="Mean Encodings">
+      Mean Encodings <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#regression"><span class="nav-number">2.</span> <span class="nav-text">Regression</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#first-order-derivative-and-second-order-derivative"><span class="nav-number">2.1.</span> <span class="nav-text">first-order derivative and second-order derivative</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mse"><span class="nav-number">2.2.</span> <span class="nav-text">MSE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mae"><span class="nav-number">2.3.</span> <span class="nav-text">MAE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mspe-mape-msle"><span class="nav-number">2.4.</span> <span class="nav-text">MSPE, MAPE, MSLE</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#classification"><span class="nav-number">3.</span> <span class="nav-text">Classification</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#accuracy"><span class="nav-number">3.1.</span> <span class="nav-text">Accuracy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#logarithmic-loss"><span class="nav-number">3.2.</span> <span class="nav-text">Logarithmic loss</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#area-under-roc-curve"><span class="nav-number">3.3.</span> <span class="nav-text">Area under ROC curve</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kappa"><span class="nav-number">3.4.</span> <span class="nav-text">Kappa</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cohens-kappa-motivation"><span class="nav-number">3.4.1.</span> <span class="nav-text">Cohen’s Kappa motivation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#weighted-kappa"><span class="nav-number">3.4.2.</span> <span class="nav-text">Weighted Kappa</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#general-approaches-for-metrics-optimization"><span class="nav-number">4.</span> <span class="nav-text">General approaches for metrics optimization</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#regression-metrics-optimization"><span class="nav-number">4.1.</span> <span class="nav-text">Regression metrics optimization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#probability-calibration"><span class="nav-number">4.2.</span> <span class="nav-text">Probability Calibration</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

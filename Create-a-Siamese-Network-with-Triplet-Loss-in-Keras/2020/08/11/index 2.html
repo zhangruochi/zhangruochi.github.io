@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Create a Siamese Network with Triplet Loss in Keras">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Create a Siamese Network with Triplet Loss in Keras">
+<meta property="og:url" content="https://zhangruochi.com/Create-a-Siamese-Network-with-Triplet-Loss-in-Keras/2020/08/11/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Create a Siamese Network with Triplet Loss in Keras">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Create-a-Siamese-Network-with-Triplet-Loss-in-Keras/2020/08/11/CNN.png">
+<meta property="og:image" content="https://zhangruochi.com/Create-a-Siamese-Network-with-Triplet-Loss-in-Keras/2020/08/11/embeddings.png">
+<meta property="og:image" content="https://zhangruochi.com/Create-a-Siamese-Network-with-Triplet-Loss-in-Keras/2020/08/11/siamese.png">
+<meta property="og:image" content="https://zhangruochi.com/Create-a-Siamese-Network-with-Triplet-Loss-in-Keras/2020/08/11/plot1.png">
+<meta property="og:image" content="https://zhangruochi.com/Create-a-Siamese-Network-with-Triplet-Loss-in-Keras/2020/08/11/plot2.png">
+<meta property="og:image" content="https://zhangruochi.com/Create-a-Siamese-Network-with-Triplet-Loss-in-Keras/2020/08/11/plot3.png">
+<meta property="article:published_time" content="2020-08-11T11:04:16.000Z">
+<meta property="article:modified_time" content="2022-01-18T07:46:11.197Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Project">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Create-a-Siamese-Network-with-Triplet-Loss-in-Keras/2020/08/11/CNN.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Create-a-Siamese-Network-with-Triplet-Loss-in-Keras/2020/08/11/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Create a Siamese Network with Triplet Loss in Keras | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Create-a-Siamese-Network-with-Triplet-Loss-in-Keras/2020/08/11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Create a Siamese Network with Triplet Loss in Keras
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-08-11 19:04:16" itemprop="dateCreated datePublished" datetime="2020-08-11T19:04:16+08:00">2020-08-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-01-18 15:46:11" itemprop="dateModified" datetime="2022-01-18T15:46:11+08:00">2022-01-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Create-a-Siamese-Network-with-Triplet-Loss-in-Keras/2020/08/11/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Create-a-Siamese-Network-with-Triplet-Loss-in-Keras/2020/08/11/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Create a Siamese Network with Triplet Loss in Keras</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="create-a-siamese-network-with-triplet-loss-in-keras">Create a Siamese Network with Triplet Loss in Keras</h1>
+<h1 id="task-1-understanding-the-approach">Task 1: Understanding the Approach</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib notebook</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pca_plotter <span class="keyword">import</span> PCAPlotter</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;TensorFlow version:&#x27;</span>, tf.__version__)</span><br></pre></td></tr></table></figure>
+<pre><code>TensorFlow version: 2.1.0</code></pre>
+<h2 id="understanding-the-approach">Understanding the Approach</h2>
+<p>This appraoch is taken from the popular <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1503.03832">FaceNet</a> paper.</p>
+<p>We have a CNN model called <code>EmbeddingModel</code>:</p>
+<figure>
+<img src="CNN.png" alt="CNN" /><figcaption aria-hidden="true">CNN</figcaption>
+</figure>
+<p>We use three images for each training example: 1. <code>person1_image1.jpg</code> (Anchor Example, represented below in green) 2. <code>person1_image2.jpg</code> (Positive Example, in blue) 3. <code>person2_image1.jpg</code> (Negative Example, in red).</p>
+<figure>
+<img src="embeddings.png" alt="Embeddings" /><figcaption aria-hidden="true">Embeddings</figcaption>
+</figure>
+<h2 id="siamese-network">Siamese Network</h2>
+<p>All the three images of an example pass through the model, and we get the three Embeddings: One for the Anchor Example, one for the Positive Example, and one for the Negative Example.</p>
+<figure>
+<img src="siamese.png" alt="Siamese Network" /><figcaption aria-hidden="true">Siamese Network</figcaption>
+</figure>
+<p>The three instances of the <code>EmbeddingModel</code> shown above are not different instances. It's the same, shared model instance - i.e. the parameters are shared, and are updated for all the three paths simultaneously.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.decomposition <span class="keyword">import</span> PCA</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PCAPlotter</span>(<span class="params">tf.keras.callbacks.Callback</span>):</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, plt, embedding_model, x_test, y_test</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(PCAPlotter, self).__init__()</span><br><span class="line">        self.embedding_model = embedding_model</span><br><span class="line">        self.x_test = x_test</span><br><span class="line">        self.y_test = y_test</span><br><span class="line">        self.fig = plt.figure(figsize=(<span class="number">9</span>, <span class="number">4</span>))</span><br><span class="line">        self.ax1 = plt.subplot(<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">        self.ax2 = plt.subplot(<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>)</span><br><span class="line">        plt.ion()</span><br><span class="line">        </span><br><span class="line">        self.losses = []</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">plot</span>(<span class="params">self, epoch=<span class="literal">None</span>, plot_loss=<span class="literal">False</span></span>):</span></span><br><span class="line">        x_test_embeddings = self.embedding_model.predict(self.x_test)</span><br><span class="line">        pca_out = PCA(n_components=<span class="number">2</span>).fit_transform(x_test_embeddings)</span><br><span class="line">        self.ax1.clear()</span><br><span class="line">        self.ax1.scatter(pca_out[:, <span class="number">0</span>], pca_out[:, <span class="number">1</span>], c=self.y_test, cmap=<span class="string">&#x27;seismic&#x27;</span>)</span><br><span class="line">        <span class="keyword">if</span> plot_loss:</span><br><span class="line">            self.ax2.clear()</span><br><span class="line">            self.ax2.plot(<span class="built_in">range</span>(epoch), self.losses)</span><br><span class="line">            self.ax2.set_xlabel(<span class="string">&#x27;Epochs&#x27;</span>)</span><br><span class="line">            self.ax2.set_ylabel(<span class="string">&#x27;Loss&#x27;</span>)</span><br><span class="line">        self.fig.canvas.draw()</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">on_train_begin</span>(<span class="params">self, logs=<span class="literal">None</span></span>):</span></span><br><span class="line">        self.losses = []</span><br><span class="line">        self.fig.show()</span><br><span class="line">        self.fig.canvas.draw()</span><br><span class="line">        self.plot()</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">on_epoch_end</span>(<span class="params">self, epoch, logs=<span class="literal">None</span></span>):</span></span><br><span class="line">        self.losses.append(logs.get(<span class="string">&#x27;loss&#x27;</span>))</span><br><span class="line">        self.plot(epoch+<span class="number">1</span>, plot_loss=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="task-2-importing-the-data">Task 2: Importing the Data</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()</span><br><span class="line"><span class="built_in">print</span>(x_train.shape)</span><br></pre></td></tr></table></figure>
+<pre><code>(60000, 28, 28)</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x_train = np.reshape(x_train, (x_train.shape[<span class="number">0</span>], <span class="number">784</span>))/<span class="number">255.</span></span><br><span class="line">x_test = np.reshape(x_test, (x_test.shape[<span class="number">0</span>], <span class="number">784</span>))/<span class="number">255.</span></span><br><span class="line"><span class="built_in">print</span>(x_train.shape)</span><br></pre></td></tr></table></figure>
+<pre><code>(60000, 784)</code></pre>
+<h1 id="task-3-plotting-examples">Task 3: Plotting Examples</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_triplets</span>(<span class="params">examples</span>):</span></span><br><span class="line">    plt.figure(figsize=(<span class="number">6</span>, <span class="number">2</span>))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">        plt.subplot(<span class="number">1</span>, <span class="number">3</span>, <span class="number">1</span> + i)</span><br><span class="line">        plt.imshow(np.reshape(examples[i], (<span class="number">28</span>, <span class="number">28</span>)), cmap=<span class="string">&#x27;binary&#x27;</span>)</span><br><span class="line">        plt.xticks([])</span><br><span class="line">        plt.yticks([])</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plot_triplets([x_train[<span class="number">0</span>], x_train[<span class="number">1</span>], x_train[<span class="number">2</span>]])</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="plot1.png" alt="plot1" /><figcaption aria-hidden="true">plot1</figcaption>
+</figure>
+<h1 id="task-4-a-batch-of-triplets">Task 4: A Batch of Triplets</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_batch</span>(<span class="params">batch_size=<span class="number">256</span></span>):</span></span><br><span class="line">    x_anchors = np.zeros((batch_size, <span class="number">784</span>))</span><br><span class="line">    x_positives = np.zeros((batch_size, <span class="number">784</span>))</span><br><span class="line">    x_negatives = np.zeros((batch_size, <span class="number">784</span>))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, batch_size):</span><br><span class="line">        <span class="comment"># We need to find an anchor, a positive example and a negative example</span></span><br><span class="line">        random_index = random.randint(<span class="number">0</span>, x_train.shape[<span class="number">0</span>] - <span class="number">1</span>)</span><br><span class="line">        x_anchor = x_train[random_index]</span><br><span class="line">        y = y_train[random_index]</span><br><span class="line">        </span><br><span class="line">        indices_for_pos = np.squeeze(np.where(y_train == y))</span><br><span class="line">        indices_for_neg = np.squeeze(np.where(y_train != y))</span><br><span class="line">        </span><br><span class="line">        x_positive = x_train[indices_for_pos[random.randint(<span class="number">0</span>, <span class="built_in">len</span>(indices_for_pos) - <span class="number">1</span>)]]</span><br><span class="line">        x_negative = x_train[indices_for_neg[random.randint(<span class="number">0</span>, <span class="built_in">len</span>(indices_for_neg) - <span class="number">1</span>)]]</span><br><span class="line">        </span><br><span class="line">        x_anchors[i] = x_anchor</span><br><span class="line">        x_positives[i] = x_positive</span><br><span class="line">        x_negatives[i] = x_negative</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">return</span> [x_anchors, x_positives, x_negatives]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">examples = create_batch(<span class="number">1</span>)</span><br><span class="line">plot_triplets(examples)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="plot2.png" alt="plot2" /><figcaption aria-hidden="true">plot2</figcaption>
+</figure>
+<h1 id="task-5-embedding-model">Task 5: Embedding Model</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">emb_size = <span class="number">64</span></span><br><span class="line"></span><br><span class="line">embedding_model = tf.keras.models.Sequential([</span><br><span class="line">    tf.keras.layers.Dense(<span class="number">64</span>, activation=<span class="string">&#x27;relu&#x27;</span>, input_shape=(<span class="number">784</span>,)),</span><br><span class="line">    tf.keras.layers.Dense(emb_size, activation=<span class="string">&#x27;sigmoid&#x27;</span>)</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">embedding_model.summary()</span><br></pre></td></tr></table></figure>
+<pre><code>Model: &quot;sequential&quot;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dense (Dense)                (None, 64)                50240     
+_________________________________________________________________
+dense_1 (Dense)              (None, 64)                4160      
+=================================================================
+Total params: 54,400
+Trainable params: 54,400
+Non-trainable params: 0
+_________________________________________________________________</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">example = np.expand_dims(x_train[<span class="number">0</span>], axis=<span class="number">0</span>)</span><br><span class="line">example_emb = embedding_model.predict(example)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(example_emb)</span><br></pre></td></tr></table></figure>
+<pre><code>[0.42349347 0.43482512 0.5846526  0.5047948  0.4264534  0.48105526
+ 0.37568194 0.5898737  0.61923265 0.38126072 0.51810735 0.6918024
+ 0.42151055 0.31393877 0.550636   0.4718757  0.72107047 0.5304595
+ 0.60560906 0.54731256 0.47088197 0.57321566 0.38795182 0.3528969
+ 0.5260858  0.5058847  0.60069776 0.5351782  0.45879558 0.49318898
+ 0.52481294 0.48127335 0.41399142 0.53644794 0.596148   0.35952103
+ 0.4660656  0.51290053 0.34802675 0.28829136 0.49941048 0.41946915
+ 0.5193161  0.59598917 0.42652634 0.7554737  0.51301926 0.3393702
+ 0.61319596 0.3912717  0.58737236 0.5881264  0.5892425  0.62002826
+ 0.47996673 0.44889334 0.47385594 0.4038328  0.60131633 0.57539546
+ 0.47411144 0.5514124  0.6192302  0.60763264]</code></pre>
+<h1 id="task-6-siamese-network">Task 6: Siamese Network</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">input_anchor = tf.keras.layers.Input(shape=(<span class="number">784</span>,))</span><br><span class="line">input_positive = tf.keras.layers.Input(shape=(<span class="number">784</span>,))</span><br><span class="line">input_negative = tf.keras.layers.Input(shape=(<span class="number">784</span>,))</span><br><span class="line"></span><br><span class="line">embedding_anchor = embedding_model(input_anchor)</span><br><span class="line">embedding_positive = embedding_model(input_positive)</span><br><span class="line">embedding_negative = embedding_model(input_negative)</span><br><span class="line"></span><br><span class="line">output = tf.keras.layers.concatenate([embedding_anchor, embedding_positive, embedding_negative], axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">net = tf.keras.models.Model([input_anchor, input_positive, input_negative], output)</span><br><span class="line">net.summary()</span><br></pre></td></tr></table></figure>
+<pre><code>Model: &quot;model&quot;
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+input_1 (InputLayer)            [(None, 784)]        0                                            
+__________________________________________________________________________________________________
+input_2 (InputLayer)            [(None, 784)]        0                                            
+__________________________________________________________________________________________________
+input_3 (InputLayer)            [(None, 784)]        0                                            
+__________________________________________________________________________________________________
+sequential (Sequential)         (None, 64)           54400       input_1[0][0]                    
+                                                                 input_2[0][0]                    
+                                                                 input_3[0][0]                    
+__________________________________________________________________________________________________
+concatenate (Concatenate)       (None, 192)          0           sequential[1][0]                 
+                                                                 sequential[2][0]                 
+                                                                 sequential[3][0]                 
+==================================================================================================
+Total params: 54,400
+Trainable params: 54,400
+Non-trainable params: 0
+__________________________________________________________________________________________________</code></pre>
+<h1 id="task-7-triplet-loss">Task 7: Triplet Loss</h1>
+<p>A loss function that tries to pull the Embeddings of Anchor and Positive Examples closer, and tries to push the Embeddings of Anchor and Negative Examples away from each other.</p>
+<p>Root mean square difference between Anchor and Positive examples in a batch of N images is: $ <span class="math display">\[\begin{equation}
+d_p = \sqrt{\frac{\sum_{i=0}^{N-1}(f(a_i) - f(p_i))^2}{N}}
+\end{equation}\]</span> $</p>
+<p>Root mean square difference between Anchor and Negative examples in a batch of N images is: $ <span class="math display">\[\begin{equation}
+d_n = \sqrt{\frac{\sum_{i=0}^{N-1}(f(a_i) - f(n_i))^2}{N}}
+\end{equation}\]</span> $</p>
+<p>For each example, we want: $ <span class="math display">\[\begin{equation}
+d_p \leq d_n
+\end{equation}\]</span> $</p>
+<p>Therefore, $ <span class="math display">\[\begin{equation}
+d_p - d_n \leq 0
+\end{equation}\]</span> $</p>
+<p>This condition is quite easily satisfied during the training.</p>
+<p>We will make it non-trivial by adding a margin (alpha): $ <span class="math display">\[\begin{equation}
+d_p - d_n + \alpha \leq 0
+\end{equation}\]</span> $</p>
+<p>Given the condition above, the Triplet Loss L is defined as: $ <span class="math display">\[\begin{equation}
+L = max(d_p - d_n + \alpha, 0)
+\end{equation}\]</span> $</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">alpha = <span class="number">0.2</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">triplet_loss</span>(<span class="params">y_true, y_pred</span>):</span></span><br><span class="line">    anchor, positive, negative = y_pred[:,:emb_size], y_pred[:,emb_size:<span class="number">2</span>*emb_size], y_pred[:,<span class="number">2</span>*emb_size:]</span><br><span class="line">    positive_dist = tf.reduce_mean(tf.square(anchor - positive), axis=<span class="number">1</span>)</span><br><span class="line">    negative_dist = tf.reduce_mean(tf.square(anchor - negative), axis=<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> tf.maximum(positive_dist - negative_dist + alpha, <span class="number">0.</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="task-8-data-generator">Task 8: Data Generator</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">data_generator</span>(<span class="params">batch_size=<span class="number">256</span></span>):</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        x = create_batch(batch_size)</span><br><span class="line">        y = np.zeros((batch_size, <span class="number">3</span>*emb_size))</span><br><span class="line">        <span class="keyword">yield</span> x, y</span><br></pre></td></tr></table></figure>
+<h1 id="task-9-model-training">Task 9: Model Training</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">batch_size = <span class="number">2048</span></span><br><span class="line">epochs = <span class="number">10</span></span><br><span class="line">steps_per_epoch = <span class="built_in">int</span>(x_train.shape[<span class="number">0</span>]/batch_size)</span><br><span class="line"></span><br><span class="line">net.<span class="built_in">compile</span>(loss=triplet_loss, optimizer=<span class="string">&#x27;adam&#x27;</span>)</span><br><span class="line"></span><br><span class="line">_ = net.fit(</span><br><span class="line">    data_generator(batch_size),</span><br><span class="line">    steps_per_epoch=steps_per_epoch,</span><br><span class="line">    epochs=epochs, verbose=<span class="literal">False</span>,</span><br><span class="line">    callbacks=[</span><br><span class="line">        PCAPlotter(</span><br><span class="line">            plt, embedding_model,</span><br><span class="line">            x_test[:<span class="number">1000</span>], y_test[:<span class="number">1000</span>]</span><br><span class="line">        )]</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="plot3.png" alt="plot3" /><figcaption aria-hidden="true">plot3</figcaption>
+</figure>
+<pre><code>WARNING:tensorflow:sample_weight modes were coerced from
+  ...
+    to  
+  [&#39;...&#39;]</code></pre>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Project/" rel="tag"># Project</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Image-Super-Resolution/2020/08/11/" rel="prev" title="Image Super Resolution">
+      <i class="fa fa-chevron-left"></i> Image Super Resolution
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/The-K-Armed-Bandit-Problem/2020/09/03/" rel="next" title="The K-Armed Bandit Problem">
+      The K-Armed Bandit Problem <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#create-a-siamese-network-with-triplet-loss-in-keras"><span class="nav-number">1.</span> <span class="nav-text">Create a Siamese Network with Triplet Loss in Keras</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#task-1-understanding-the-approach"><span class="nav-number">2.</span> <span class="nav-text">Task 1: Understanding the Approach</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#understanding-the-approach"><span class="nav-number">2.1.</span> <span class="nav-text">Understanding the Approach</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#siamese-network"><span class="nav-number">2.2.</span> <span class="nav-text">Siamese Network</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#task-2-importing-the-data"><span class="nav-number">3.</span> <span class="nav-text">Task 2: Importing the Data</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#task-3-plotting-examples"><span class="nav-number">4.</span> <span class="nav-text">Task 3: Plotting Examples</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#task-4-a-batch-of-triplets"><span class="nav-number">5.</span> <span class="nav-text">Task 4: A Batch of Triplets</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#task-5-embedding-model"><span class="nav-number">6.</span> <span class="nav-text">Task 5: Embedding Model</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#task-6-siamese-network"><span class="nav-number">7.</span> <span class="nav-text">Task 6: Siamese Network</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#task-7-triplet-loss"><span class="nav-number">8.</span> <span class="nav-text">Task 7: Triplet Loss</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#task-8-data-generator"><span class="nav-number">9.</span> <span class="nav-text">Task 8: Data Generator</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#task-9-model-training"><span class="nav-number">10.</span> <span class="nav-text">Task 9: Model Training</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

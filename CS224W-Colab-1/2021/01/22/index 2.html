@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="CS224W - Colab 1 Homework">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CS224W - Colab 1">
+<meta property="og:url" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="CS224W - Colab 1 Homework">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/output_7_0.png">
+<meta property="og:image" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/output_38_0.png">
+<meta property="og:image" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/output_40_0.png">
+<meta property="og:image" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/output_40_2.png">
+<meta property="og:image" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/output_40_4.png">
+<meta property="og:image" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/output_40_6.png">
+<meta property="og:image" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/output_40_8.png">
+<meta property="og:image" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/output_40_10.png">
+<meta property="og:image" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/output_40_12.png">
+<meta property="og:image" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/output_40_14.png">
+<meta property="og:image" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/output_40_16.png">
+<meta property="og:image" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/output_40_18.png">
+<meta property="og:image" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/output_42_0.png">
+<meta property="article:published_time" content="2021-01-22T08:39:10.000Z">
+<meta property="article:modified_time" content="2021-12-31T07:04:09.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/output_7_0.png">
+
+<link rel="canonical" href="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>CS224W - Colab 1 | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/CS224W-Colab-1/2021/01/22/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CS224W - Colab 1
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-01-22 16:39:10" itemprop="dateCreated datePublished" datetime="2021-01-22T16:39:10+08:00">2021-01-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 15:04:09" itemprop="dateModified" datetime="2021-12-31T15:04:09+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Graph-Neural-Network/" itemprop="url" rel="index"><span itemprop="name">Graph Neural Network</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/CS224W-Colab-1/2021/01/22/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/CS224W-Colab-1/2021/01/22/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">CS224W - Colab 1 Homework</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="cs224w---colab-1"><strong>CS224W - Colab 1</strong></h1>
+<p>In this Colab, we will write a full pipeline for <strong>learning node embeddings</strong>. We will go through the following 3 steps.</p>
+<p>To start, we will load a classic graph in network science, the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Zachary%27s_karate_club">Karate Club Network</a>. We will explore multiple graph statistics for that graph.</p>
+<p>We will then work together to transform the graph structure into a PyTorch tensor, so that we can perform machine learning over the graph.</p>
+<p>Finally, we will finish the first learning algorithm on graphs: a node embedding model. For simplicity, our model here is simpler than DeepWalk / node2vec algorithms taught in the lecture. But it's still rewarding and challenging, as we will write it from scratch via PyTorch.</p>
+<p>Now let's get started!</p>
+<p><strong>Note</strong>: Make sure to <strong>sequentially run all the cells</strong>, so that the intermediate variables / packages will carry over to the next cell</p>
+<h1 id="graph-basics">1 Graph Basics</h1>
+<p>To start, we will load a classic graph in network science, the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Zachary%27s_karate_club">Karate Club Network</a>. We will explore multiple graph statistics for that graph.</p>
+<h2 id="setup">Setup</h2>
+<p>We will heavily use NetworkX in this Colab.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> networkx <span class="keyword">as</span> nx</span><br></pre></td></tr></table></figure>
+<h2 id="zacharys-karate-club-network">Zachary's karate club network</h2>
+<p>The <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Zachary%27s_karate_club">Karate Club Network</a> is a graph describes a social network of 34 members of a karate club and documents links between members who interacted outside the club.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">G = nx.karate_club_graph()</span><br><span class="line"></span><br><span class="line"><span class="comment"># G is an undirected graph</span></span><br><span class="line"><span class="built_in">type</span>(G)</span><br></pre></td></tr></table></figure>
+<pre><code>networkx.classes.graph.Graph</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Visualize the graph</span></span><br><span class="line">nx.draw(G, with_labels = <span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_7_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">G.is_directed()</span><br></pre></td></tr></table></figure>
+<pre><code>False</code></pre>
+<h2 id="question-1-what-is-the-average-degree-of-the-karate-club-network-5-points">Question 1: What is the average degree of the karate club network? (5 Points)</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">average_degree</span>(<span class="params">num_edges, num_nodes</span>):</span></span><br><span class="line">  <span class="comment"># <span class="doctag">TODO:</span> Implement this function that takes number of edges</span></span><br><span class="line">  <span class="comment"># and number of nodes, and returns the average node degree of </span></span><br><span class="line">  <span class="comment"># the graph. Round the result to nearest integer (for example </span></span><br><span class="line">  <span class="comment"># 3.3 will be rounded to 3 and 3.7 will be rounded to 4)</span></span><br><span class="line"></span><br><span class="line">  avg_degree = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">############# Your code here ############</span></span><br><span class="line">  avg_degree = <span class="built_in">round</span>(num_edges / num_nodes)</span><br><span class="line"></span><br><span class="line">  <span class="comment">#########################################</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> avg_degree</span><br><span class="line"></span><br><span class="line">num_edges = G.number_of_edges()</span><br><span class="line">num_nodes = G.number_of_nodes()</span><br><span class="line">avg_degree = average_degree(num_edges, num_nodes)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Average degree of karate club network is &#123;&#125;&quot;</span>.<span class="built_in">format</span>(avg_degree))</span><br></pre></td></tr></table></figure>
+<pre><code>Average degree of karate club network is 2</code></pre>
+<h2 id="question-2-what-is-the-average-clustering-coefficient-of-the-karate-club-network-5-points">Question 2: What is the average clustering coefficient of the karate club network? (5 Points)</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> networkx.algorithms.approximation.clustering_coefficient <span class="keyword">import</span> average_clustering</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">average_clustering_coefficient</span>(<span class="params">G</span>):</span></span><br><span class="line">  <span class="comment"># <span class="doctag">TODO:</span> Implement this function that takes a nx.Graph</span></span><br><span class="line">  <span class="comment"># and returns the average clustering coefficient. Round </span></span><br><span class="line">  <span class="comment"># the result to 2 decimal places (for example 3.333 will</span></span><br><span class="line">  <span class="comment"># be rounded to 3.33 and 3.7571 will be rounded to 3.76)</span></span><br><span class="line"></span><br><span class="line">  avg_cluster_coef = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">############# Your code here ############</span></span><br><span class="line">  <span class="comment">## Note: </span></span><br><span class="line">  <span class="comment">## 1: Please use the appropriate NetworkX clustering function</span></span><br><span class="line">  avg_cluster_coef = <span class="built_in">round</span>(average_clustering(G),<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment">#########################################</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> avg_cluster_coef</span><br><span class="line"></span><br><span class="line">avg_cluster_coef = average_clustering_coefficient(G)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Average clustering coefficient of karate club network is &#123;&#125;&quot;</span>.<span class="built_in">format</span>(avg_cluster_coef))</span><br></pre></td></tr></table></figure>
+<pre><code>Average clustering coefficient of karate club network is 0.57</code></pre>
+<h2 id="question-3-what-is-the-pagerank-value-for-node-0-node-with-id-0-after-one-pagerank-iteration-5-points">Question 3: What is the PageRank value for node 0 (node with id 0) after one PageRank iteration? (5 Points)</h2>
+<p>Please complete the code block by implementing the PageRank equation: <span class="math inline">\(r_j = \sum_{i \rightarrow j} \beta \frac{r_i}{d_i} + (1 - \beta) \frac{1}{N}\)</span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">one_iter_pagerank</span>(<span class="params">G, beta, r0, node_id</span>):</span></span><br><span class="line">  <span class="comment"># <span class="doctag">TODO:</span> Implement this function that takes a nx.Graph, beta, r0 and node id.</span></span><br><span class="line">  <span class="comment"># The return value r1 is one interation PageRank value for the input node.</span></span><br><span class="line">  <span class="comment"># Please round r1 to 2 decimal places.</span></span><br><span class="line"></span><br><span class="line">  r1 = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">############# Your code here ############</span></span><br><span class="line">  <span class="comment">## Note: </span></span><br><span class="line">  <span class="comment">## 1: You should not use nx.pagerank</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  in_nodes_d = &#123;&#125;</span><br><span class="line">  <span class="keyword">for</span> n <span class="keyword">in</span> <span class="built_in">list</span>(G.neighbors(node_id)):</span><br><span class="line">    count = <span class="number">0</span>      </span><br><span class="line">    in_nodes_d[n] = G.degree(n)</span><br><span class="line">    </span><br><span class="line">  <span class="keyword">for</span> k, v <span class="keyword">in</span> in_nodes_d.items():</span><br><span class="line">    r1 += beta * <span class="built_in">float</span>(r0)/v</span><br><span class="line">  </span><br><span class="line">  r1 += (<span class="number">1</span> - beta) / G.number_of_nodes()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="comment">#########################################</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> r1</span><br><span class="line"></span><br><span class="line">beta = <span class="number">0.8</span></span><br><span class="line">r0 = <span class="number">1.0</span> / G.number_of_nodes()</span><br><span class="line">node = <span class="number">0</span></span><br><span class="line">r1 = one_iter_pagerank(G, beta, r0, node)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;The PageRank value for node 0 after one iteration is &#123;&#125;&quot;</span>.<span class="built_in">format</span>(r1))</span><br></pre></td></tr></table></figure>
+<pre><code>The PageRank value for node 0 after one iteration is 0.12810457516339868</code></pre>
+<h2 id="question-4-what-is-the-raw-closeness-centrality-for-the-karate-club-network-node-5-5-points">Question 4: What is the (raw) closeness centrality for the karate club network node 5? (5 Points)</h2>
+<p>The equation for closeness centrality is <span class="math inline">\(c(v) = \frac{1}{\sum_{u \neq v}\text{shortest path length between } u \text{ and } v}\)</span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> networkx.algorithms <span class="keyword">import</span> centrality</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">closeness_centrality</span>(<span class="params">G, node=<span class="number">5</span></span>):</span></span><br><span class="line">  <span class="comment"># <span class="doctag">TODO:</span> Implement the function that calculates closeness centrality </span></span><br><span class="line">  <span class="comment"># for a node in karate club network. G is the input karate club </span></span><br><span class="line">  <span class="comment"># network and node is the node id in the graph. Please round the </span></span><br><span class="line">  <span class="comment"># closeness centrality result to 2 decimal places.</span></span><br><span class="line"></span><br><span class="line">  closeness = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">## Note:</span></span><br><span class="line">  <span class="comment">## 1: You can use networkx closeness centrality function.</span></span><br><span class="line">  <span class="comment">## 2: Notice that networkx closeness centrality returns the normalized </span></span><br><span class="line">  <span class="comment">## closeness directly, which is different from the raw (unnormalized) </span></span><br><span class="line">  <span class="comment">## one that we learned in the lecture.</span></span><br><span class="line"></span><br><span class="line">  closeness = centrality.closeness_centrality(G, node)</span><br><span class="line"></span><br><span class="line">  <span class="comment">#########################################</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> closeness</span><br><span class="line"></span><br><span class="line">node = <span class="number">5</span></span><br><span class="line">closeness = closeness_centrality(G, node=node)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;The karate club network has closeness centrality &#123;&#125;&quot;</span>.<span class="built_in">format</span>(closeness))</span><br></pre></td></tr></table></figure>
+<pre><code>The karate club network has closeness centrality 0.38372093023255816</code></pre>
+<h1 id="graph-to-tensor">2 Graph to Tensor</h1>
+<p>We will then work together to transform the graph <span class="math inline">\(G\)</span> into a PyTorch tensor, so that we can perform machine learning over the graph.</p>
+<h2 id="setup-1">Setup</h2>
+<p>Check if PyTorch is properly installed</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="built_in">print</span>(torch.__version__)</span><br></pre></td></tr></table></figure>
+<pre><code>1.7.1</code></pre>
+<h2 id="pytorch-tensor-basics">PyTorch tensor basics</h2>
+<p>We can generate PyTorch tensor with all zeros, ones or random values.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Generate 3 x 4 tensor with all ones</span></span><br><span class="line">ones = torch.ones(<span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line"><span class="built_in">print</span>(ones)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Generate 3 x 4 tensor with all zeros</span></span><br><span class="line">zeros = torch.zeros(<span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line"><span class="built_in">print</span>(zeros)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Generate 3 x 4 tensor with random values on the interval [0, 1)</span></span><br><span class="line">random_tensor = torch.rand(<span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line"><span class="built_in">print</span>(random_tensor)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Get the shape of the tensor</span></span><br><span class="line"><span class="built_in">print</span>(ones.shape)</span><br></pre></td></tr></table></figure>
+<pre><code>tensor([[1., 1., 1., 1.],
+        [1., 1., 1., 1.],
+        [1., 1., 1., 1.]])
+tensor([[0., 0., 0., 0.],
+        [0., 0., 0., 0.],
+        [0., 0., 0., 0.]])
+tensor([[0.0280, 0.6091, 0.4008, 0.1651],
+        [0.1234, 0.8024, 0.6696, 0.8063],
+        [0.6875, 0.4731, 0.7378, 0.6720]])
+torch.Size([3, 4])</code></pre>
+<p>PyTorch tensor contains elements for a single data type, the <code>dtype</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Create a 3 x 4 tensor with all 32-bit floating point zeros</span></span><br><span class="line">zeros = torch.zeros(<span class="number">3</span>, <span class="number">4</span>, dtype=torch.float32)</span><br><span class="line"><span class="built_in">print</span>(zeros.dtype)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Change the tensor dtype to 64-bit integer</span></span><br><span class="line">zeros = zeros.<span class="built_in">type</span>(torch.long)</span><br><span class="line"><span class="built_in">print</span>(zeros.dtype)</span><br></pre></td></tr></table></figure>
+<pre><code>torch.float32
+torch.int64</code></pre>
+<h2 id="question-5-getting-the-edge-list-of-the-karate-club-network-and-transform-it-into-torch.longtensor.-what-is-the-torch.sum-value-of-pos_edge_index-tensor-10-points">Question 5: Getting the edge list of the karate club network and transform it into <code>torch.LongTensor</code>. What is the <code>torch.sum</code> value of <code>pos_edge_index</code> tensor? (10 Points)</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">graph_to_edge_list</span>(<span class="params">G</span>):</span></span><br><span class="line">  <span class="comment"># <span class="doctag">TODO:</span> Implement the function that returns the edge list of</span></span><br><span class="line">  <span class="comment"># an nx.Graph. The returned edge_list should be a list of tuples</span></span><br><span class="line">  <span class="comment"># where each tuple is a tuple representing an edge connected </span></span><br><span class="line">  <span class="comment"># by two nodes.</span></span><br><span class="line"></span><br><span class="line">    edge_list = []</span><br><span class="line"></span><br><span class="line">  <span class="comment">############# Your code here ############</span></span><br><span class="line"></span><br><span class="line">    edge_list = <span class="built_in">list</span>(G.edges())</span><br><span class="line">  <span class="comment">#########################################</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> edge_list</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edge_list_to_tensor</span>(<span class="params">edge_list</span>):</span></span><br><span class="line">    <span class="comment"># <span class="doctag">TODO:</span> Implement the function that transforms the edge_list to</span></span><br><span class="line">    <span class="comment"># tensor. The input edge_list is a list of tuples and the resulting</span></span><br><span class="line">    <span class="comment"># tensor should have the shape [2 x len(edge_list)].</span></span><br><span class="line"></span><br><span class="line">    edge_index = torch.tensor([])</span><br><span class="line"></span><br><span class="line">    <span class="comment">############# Your code here ############</span></span><br><span class="line">    edge_index = torch.tensor(edge_list, dtype = torch.long).permute((<span class="number">1</span>,<span class="number">0</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">#########################################</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> edge_index</span><br><span class="line"></span><br><span class="line">pos_edge_list = graph_to_edge_list(G)</span><br><span class="line">pos_edge_index = edge_list_to_tensor(pos_edge_list)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;The pos_edge_index tensor has shape &#123;&#125;&quot;</span>.<span class="built_in">format</span>(pos_edge_index.shape))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;The pos_edge_index tensor has sum value &#123;&#125;&quot;</span>.<span class="built_in">format</span>(torch.<span class="built_in">sum</span>(pos_edge_index)))</span><br></pre></td></tr></table></figure>
+<pre><code>The pos_edge_index tensor has shape torch.Size([2, 78])
+The pos_edge_index tensor has sum value 2535</code></pre>
+<h2 id="question-6-please-implement-following-function-that-samples-negative-edges.-then-you-will-answer-which-edges-edge_1-to-edge_5-can-be-negative-ones-in-the-karate-club-network-10-points">Question 6: Please implement following function that samples negative edges. Then you will answer which edges (edge_1 to edge_5) can be negative ones in the karate club network? (10 Points)</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sample_negative_edges</span>(<span class="params">G, num_neg_samples</span>):</span></span><br><span class="line">    <span class="comment"># <span class="doctag">TODO:</span> Implement the function that returns a list of negative edges.</span></span><br><span class="line">    <span class="comment"># The number of sampled negative edges is num_neg_samples. You do not</span></span><br><span class="line">    <span class="comment"># need to consider the corner case when the number of possible negative edges</span></span><br><span class="line">    <span class="comment"># is less than num_neg_samples. It should be ok as long as your implementation </span></span><br><span class="line">    <span class="comment"># works on the karate club network. In this implementation, self loop should </span></span><br><span class="line">    <span class="comment"># not be considered as either a positive or negative edge. Also, notice that </span></span><br><span class="line">    <span class="comment"># the karate club network is an undirected graph, if (0, 1) is a positive </span></span><br><span class="line">    <span class="comment"># edge, do you think (1, 0) can be a negative one?</span></span><br><span class="line"></span><br><span class="line">    neg_edge_list = []</span><br><span class="line"></span><br><span class="line">    pos_set = <span class="built_in">set</span>(G.edges())</span><br><span class="line">    visited_set = <span class="built_in">set</span>()</span><br><span class="line"></span><br><span class="line">    <span class="comment">############# Your code here ############</span></span><br><span class="line">    <span class="keyword">for</span> n_i <span class="keyword">in</span> G.nodes():</span><br><span class="line">        <span class="keyword">for</span> n_j <span class="keyword">in</span> G.nodes():</span><br><span class="line">            <span class="keyword">if</span> n_i == n_j <span class="keyword">or</span> (n_i,n_j) <span class="keyword">in</span> pos_set <span class="keyword">or</span> (n_j,n_i) <span class="keyword">in</span> pos_set <span class="keyword">or</span> (n_i,n_j) <span class="keyword">in</span> visited_set <span class="keyword">or</span> (n_j, n_i) <span class="keyword">is</span> visited_set:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            neg_edge_list.append((n_i,n_j))</span><br><span class="line">            visited_set.add((n_i,n_j))</span><br><span class="line">            visited_set.add((n_j,n_i))</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(neg_edge_list) == num_neg_samples:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#########################################</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> neg_edge_list</span><br><span class="line"></span><br><span class="line"><span class="comment"># Sample 78 negative edges</span></span><br><span class="line">neg_edge_list = sample_negative_edges(G, <span class="built_in">len</span>(pos_edge_list))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Transform the negative edge list to tensor</span></span><br><span class="line">neg_edge_index = edge_list_to_tensor(neg_edge_list)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;The neg_edge_index tensor has shape &#123;&#125;&quot;</span>.<span class="built_in">format</span>(neg_edge_index.shape))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Which of following edges can be negative ones?</span></span><br><span class="line">edge_1 = (<span class="number">7</span>, <span class="number">1</span>)</span><br><span class="line">edge_2 = (<span class="number">1</span>, <span class="number">33</span>)</span><br><span class="line">edge_3 = (<span class="number">33</span>, <span class="number">22</span>)</span><br><span class="line">edge_4 = (<span class="number">0</span>, <span class="number">4</span>)</span><br><span class="line">edge_5 = (<span class="number">4</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">############# Your code here ############</span></span><br><span class="line"><span class="comment">## Note:</span></span><br><span class="line"><span class="comment">## 1: For each of the 5 edges, print whether it can be negative edge</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#########################################</span></span><br></pre></td></tr></table></figure>
+<pre><code>The neg_edge_index tensor has shape torch.Size([2, 483])</code></pre>
+<h1 id="node-emebedding-learning">3 Node Emebedding Learning</h1>
+<p>Finally, we will finish the first learning algorithm on graphs: a node embedding model.</p>
+<h2 id="setup-2">Setup</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> sklearn.decomposition <span class="keyword">import</span> PCA</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(torch.__version__)</span><br></pre></td></tr></table></figure>
+<pre><code>1.7.1</code></pre>
+<p>To write our own node embedding learning methods, we'll heavily use the <a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.Embedding.html"><code>nn.Embedding</code></a> module in PyTorch. Let's see how to use <code>nn.Embedding</code>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Initialize an embedding layer</span></span><br><span class="line"><span class="comment"># Suppose we want to have embedding for 4 items (e.g., nodes)</span></span><br><span class="line"><span class="comment"># Each item is represented with 8 dimensional vector</span></span><br><span class="line"></span><br><span class="line">emb_sample = nn.Embedding(num_embeddings=<span class="number">4</span>, embedding_dim=<span class="number">8</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Sample embedding layer: &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(emb_sample))</span><br></pre></td></tr></table></figure>
+<pre><code>Sample embedding layer: Embedding(4, 8)</code></pre>
+<p>We can select items from the embedding matrix, by using Tensor indices</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Select an embedding in emb_sample</span></span><br><span class="line"><span class="built_in">id</span> = torch.LongTensor([<span class="number">1</span>])</span><br><span class="line"><span class="built_in">print</span>(emb_sample(<span class="built_in">id</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Select multiple embeddings</span></span><br><span class="line">ids = torch.LongTensor([<span class="number">1</span>, <span class="number">3</span>])</span><br><span class="line"><span class="built_in">print</span>(emb_sample(ids))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Get the shape of the embedding weight matrix</span></span><br><span class="line">shape = emb_sample.weight.data.shape</span><br><span class="line"><span class="built_in">print</span>(shape)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Overwrite the weight to tensor with all ones</span></span><br><span class="line">emb_sample.weight.data = torch.ones(shape)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Let&#x27;s check if the emb is indeed initilized</span></span><br><span class="line">ids = torch.LongTensor([<span class="number">0</span>, <span class="number">3</span>])</span><br><span class="line"><span class="built_in">print</span>(emb_sample(ids))</span><br></pre></td></tr></table></figure>
+<pre><code>tensor([[ 0.1296,  0.3114,  0.9752,  0.1887,  0.7663,  1.1147, -1.2896,  0.4189]],
+       grad_fn=&lt;EmbeddingBackward&gt;)
+tensor([[ 0.1296,  0.3114,  0.9752,  0.1887,  0.7663,  1.1147, -1.2896,  0.4189],
+        [-0.8057, -0.6563, -0.1285,  0.5352, -1.1358,  1.3075, -0.2638, -2.3275]],
+       grad_fn=&lt;EmbeddingBackward&gt;)
+torch.Size([4, 8])
+tensor([[1., 1., 1., 1., 1., 1., 1., 1.],
+        [1., 1., 1., 1., 1., 1., 1., 1.]], grad_fn=&lt;EmbeddingBackward&gt;)</code></pre>
+<p>Now, it's your time to create node embedding matrix for the graph we have! - We want to have <strong>16 dimensional</strong> vector for each node in the karate club network. - We want to initalize the matrix under <strong>uniform distribution</strong>, in the range of <span class="math inline">\([0, 1)\)</span>. We suggest you using <a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.rand.html"><code>torch.rand</code></a>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Please do not change / reset the random seed</span></span><br><span class="line">torch.manual_seed(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_node_emb</span>(<span class="params">num_node=<span class="number">34</span>, embedding_dim=<span class="number">16</span></span>):</span></span><br><span class="line">  <span class="comment"># <span class="doctag">TODO:</span> Implement this function that will create the node embedding matrix.</span></span><br><span class="line">  <span class="comment"># A torch.nn.Embedding layer will be returned. You do not need to change </span></span><br><span class="line">  <span class="comment"># the values of num_node and embedding_dim. The weight matrix of returned </span></span><br><span class="line">  <span class="comment"># layer should be initialized under uniform distribution. </span></span><br><span class="line"></span><br><span class="line">  emb = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">############# Your code here ############</span></span><br><span class="line">  emb = torch.nn.Embedding(num_embeddings = num_node, embedding_dim = embedding_dim)</span><br><span class="line"></span><br><span class="line">  <span class="comment">#########################################</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> emb</span><br><span class="line"></span><br><span class="line">emb = create_node_emb()</span><br><span class="line"><span class="built_in">print</span>(emb.weight.data.shape)</span><br><span class="line">ids = torch.LongTensor([<span class="number">0</span>, <span class="number">3</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Print the embedding layer</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Embedding: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(emb))</span><br><span class="line"></span><br><span class="line"><span class="comment"># An example that gets the embeddings for node 0 and 3</span></span><br><span class="line"><span class="built_in">print</span>(emb(ids))</span><br></pre></td></tr></table></figure>
+<pre><code>torch.Size([34, 16])
+Embedding: Embedding(34, 16)
+tensor([[-1.5256, -0.7502, -0.6540, -1.6095, -0.1002, -0.6092, -0.9798, -1.6091,
+         -0.7121,  0.3037, -0.7773, -0.2515, -0.2223,  1.6871,  0.2284,  0.4676],
+        [-0.9274,  0.5451,  0.0663, -0.4370,  0.7626,  0.4415,  1.1651,  2.0154,
+          0.1374,  0.9386, -0.1860, -0.6446,  1.5392, -0.8696, -3.3312, -0.7479]],
+       grad_fn=&lt;EmbeddingBackward&gt;)</code></pre>
+<h2 id="visualize-the-initial-node-embeddings">Visualize the initial node embeddings</h2>
+<p>One good way to understand an embedding matrix, is to visualize it in a 2D space. Here, we have implemented an embedding visualization function for you. We first do PCA to reduce the dimensionality of embeddings to a 2D space. Then visualize each point, colored by the community it belongs to.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">visualize_emb</span>(<span class="params">emb</span>):</span></span><br><span class="line">  X = emb.weight.data.numpy()</span><br><span class="line">  pca = PCA(n_components=<span class="number">2</span>)</span><br><span class="line">  components = pca.fit_transform(X)</span><br><span class="line">  plt.figure(figsize=(<span class="number">6</span>, <span class="number">6</span>))</span><br><span class="line">  club1_x = []</span><br><span class="line">  club1_y = []</span><br><span class="line">  club2_x = []</span><br><span class="line">  club2_y = []</span><br><span class="line">  <span class="keyword">for</span> node <span class="keyword">in</span> G.nodes(data=<span class="literal">True</span>):</span><br><span class="line">    <span class="keyword">if</span> node[<span class="number">1</span>][<span class="string">&#x27;club&#x27;</span>] == <span class="string">&#x27;Mr. Hi&#x27;</span>:</span><br><span class="line">      club1_x.append(components[node[<span class="number">0</span>]][<span class="number">0</span>])</span><br><span class="line">      club1_y.append(components[node[<span class="number">0</span>]][<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">      club2_x.append(components[node[<span class="number">0</span>]][<span class="number">0</span>])</span><br><span class="line">      club2_y.append(components[node[<span class="number">0</span>]][<span class="number">1</span>])</span><br><span class="line">  plt.scatter(club1_x, club1_y, color=<span class="string">&quot;red&quot;</span>, label=<span class="string">&quot;Mr. Hi&quot;</span>)</span><br><span class="line">  plt.scatter(club2_x, club2_y, color=<span class="string">&quot;blue&quot;</span>, label=<span class="string">&quot;Officer&quot;</span>)</span><br><span class="line">  plt.legend()</span><br><span class="line">  plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Visualize the initial random embeddding</span></span><br><span class="line">visualize_emb(emb)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_38_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<h2 id="question-7-training-the-embedding-what-is-the-best-performance-you-can-get-please-report-both-the-best-loss-and-accuracy-on-gradescope.-20-points">Question 7: Training the embedding! What is the best performance you can get? Please report both the best loss and accuracy on Gradescope. (20 Points)</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.optim <span class="keyword">import</span> SGD</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">accuracy</span>(<span class="params">pred, label</span>):</span></span><br><span class="line">  <span class="comment"># <span class="doctag">TODO:</span> Implement the accuracy function. This function takes the </span></span><br><span class="line">  <span class="comment"># pred tensor (the resulting tensor after sigmoid) and the label </span></span><br><span class="line">  <span class="comment"># tensor (torch.LongTensor). Predicted value greater than 0.5 will </span></span><br><span class="line">  <span class="comment"># be classified as label 1. Else it will be classified as label 0.</span></span><br><span class="line">  <span class="comment"># The returned accuracy should be rounded to 4 decimal places. </span></span><br><span class="line">  <span class="comment"># For example, accuracy 0.82956 will be rounded to 0.8296.</span></span><br><span class="line"></span><br><span class="line">  accu = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">############# Your code here ############</span></span><br><span class="line">  pred_label = pred.ge(<span class="number">0.5</span>) </span><br><span class="line">  accu = torch.<span class="built_in">sum</span>(pred_label == label) / label.shape[<span class="number">0</span>]</span><br><span class="line">  accu = accu.item()</span><br><span class="line"></span><br><span class="line">  <span class="comment">#########################################</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">round</span>(accu,<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">emb, loss_fn, sigmoid, train_label, train_edge</span>):</span></span><br><span class="line">  <span class="comment"># <span class="doctag">TODO:</span> Train the embedding layer here. You can also change epochs and </span></span><br><span class="line">  <span class="comment"># learning rate. In general, you need to implement: </span></span><br><span class="line">  <span class="comment"># (1) Get the embeddings of the nodes in train_edge</span></span><br><span class="line">  <span class="comment"># (2) Dot product the embeddings between each node pair</span></span><br><span class="line">  <span class="comment"># (3) Feed the dot product result into sigmoid</span></span><br><span class="line">  <span class="comment"># (4) Feed the sigmoid output into the loss_fn</span></span><br><span class="line">  <span class="comment"># (5) Print both loss and accuracy of each epoch </span></span><br><span class="line">  <span class="comment"># (as a sanity check, the loss should decrease during training)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">############# Your code here ############</span></span><br><span class="line">    epochs = <span class="number">1000</span></span><br><span class="line">    learning_rate = <span class="number">0.5</span></span><br><span class="line"></span><br><span class="line">    optimizer = SGD(emb.parameters(), lr=learning_rate, momentum=<span class="number">0.9</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(epochs):</span><br><span class="line">      optimizer.zero_grad()  <span class="comment"># Clear gradients.</span></span><br><span class="line"></span><br><span class="line">      product = torch.<span class="built_in">sum</span>(torch.mul(emb(train_edge[<span class="number">0</span>]),emb(train_edge[<span class="number">1</span>])), axis = <span class="number">1</span>)</span><br><span class="line">      pred = torch.sigmoid(product)</span><br><span class="line">      loss = loss_fn(pred, train_label)</span><br><span class="line">      loss.backward()  <span class="comment"># Derive gradients.</span></span><br><span class="line">      optimizer.step()  <span class="comment"># Update parameters based on gradients.</span></span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">      <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">        accu = accuracy(pred, train_label)</span><br><span class="line">        <span class="keyword">if</span> i % <span class="number">100</span> == <span class="number">0</span>:</span><br><span class="line">          visualize_emb(emb)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;loss: &#123;&#125;, accuracy: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(loss.item(), accu))</span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">    <span class="comment">#########################################</span></span><br><span class="line"></span><br><span class="line">loss_fn = nn.BCELoss()</span><br><span class="line">sigmoid = nn.Sigmoid()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Generate the positive and negative labels</span></span><br><span class="line">pos_label = torch.ones(pos_edge_index.shape[<span class="number">1</span>], )</span><br><span class="line">neg_label = torch.zeros(neg_edge_index.shape[<span class="number">1</span>], )</span><br><span class="line"></span><br><span class="line"><span class="comment"># Concat positive and negative labels into one tensor</span></span><br><span class="line">train_label = torch.cat([pos_label, neg_label], dim=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Concat positive and negative edges into one tensor</span></span><br><span class="line"><span class="comment"># Since the network is very small, we do not split the edges into val/test sets</span></span><br><span class="line">train_edge = torch.cat([pos_edge_index, neg_edge_index], dim=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">train(emb, loss_fn, sigmoid, train_label, train_edge)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_40_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>loss: 1.8108690977096558, accuracy: 0.5223
+loss: 1.7916563749313354, accuracy: 0.5223
+loss: 1.7565724849700928, accuracy: 0.5241
+loss: 1.7077500820159912, accuracy: 0.5294
+loss: 1.648955225944519, accuracy: 0.5348
+loss: 1.5831259489059448, accuracy: 0.5383
+loss: 1.5129375457763672, accuracy: 0.5472
+loss: 1.4409009218215942, accuracy: 0.5508
+loss: 1.3691587448120117, accuracy: 0.5544
+loss: 1.2993651628494263, accuracy: 0.5579
+loss: 1.2327100038528442, accuracy: 0.5597
+loss: 1.1700843572616577, accuracy: 0.5704
+loss: 1.1119712591171265, accuracy: 0.5722
+loss: 1.058617115020752, accuracy: 0.5704
+loss: 1.0100302696228027, accuracy: 0.5668
+loss: 0.9660666584968567, accuracy: 0.5758
+loss: 0.9264485836029053, accuracy: 0.5793
+loss: 0.890836238861084, accuracy: 0.5811
+loss: 0.8588409423828125, accuracy: 0.5882
+loss: 0.8300676941871643, accuracy: 0.6007
+loss: 0.8041285276412964, accuracy: 0.6096
+loss: 0.7806589007377625, accuracy: 0.6185
+loss: 0.7593265771865845, accuracy: 0.6221
+loss: 0.7398355007171631, accuracy: 0.6221
+loss: 0.7219288349151611, accuracy: 0.6275
+loss: 0.705386757850647, accuracy: 0.6346
+loss: 0.6900262832641602, accuracy: 0.6435
+loss: 0.6756975054740906, accuracy: 0.6471
+loss: 0.6622791886329651, accuracy: 0.6524
+loss: 0.6496756076812744, accuracy: 0.6524
+loss: 0.6378111839294434, accuracy: 0.6524
+loss: 0.6266270875930786, accuracy: 0.6595
+loss: 0.6160765290260315, accuracy: 0.672
+loss: 0.6061222553253174, accuracy: 0.6791
+loss: 0.5967330932617188, accuracy: 0.6845
+loss: 0.5878822207450867, accuracy: 0.6952
+loss: 0.5795450210571289, accuracy: 0.7023
+loss: 0.5716977119445801, accuracy: 0.7094
+loss: 0.5643171072006226, accuracy: 0.7184
+loss: 0.5573796033859253, accuracy: 0.7184
+loss: 0.5508610010147095, accuracy: 0.7201
+loss: 0.5447365641593933, accuracy: 0.7184
+loss: 0.5389813184738159, accuracy: 0.7148
+loss: 0.533569872379303, accuracy: 0.7166
+loss: 0.528477132320404, accuracy: 0.7237
+loss: 0.5236783623695374, accuracy: 0.7308
+loss: 0.5191494226455688, accuracy: 0.7362
+loss: 0.5148675441741943, accuracy: 0.7344
+loss: 0.5108106136322021, accuracy: 0.7415
+loss: 0.5069583654403687, accuracy: 0.7451
+loss: 0.5032919049263, accuracy: 0.7469
+loss: 0.49979403614997864, accuracy: 0.7469
+loss: 0.49644914269447327, accuracy: 0.7469
+loss: 0.49324309825897217, accuracy: 0.754
+loss: 0.4901635944843292, accuracy: 0.7558
+loss: 0.4871997535228729, accuracy: 0.7594
+loss: 0.48434197902679443, accuracy: 0.7611
+loss: 0.48158201575279236, accuracy: 0.7647
+loss: 0.4789126217365265, accuracy: 0.7718
+loss: 0.47632765769958496, accuracy: 0.7718
+loss: 0.4738217294216156, accuracy: 0.7754
+loss: 0.47139012813568115, accuracy: 0.779
+loss: 0.4690288007259369, accuracy: 0.7825
+loss: 0.4667339324951172, accuracy: 0.7861
+loss: 0.46450239419937134, accuracy: 0.7843
+loss: 0.46233096718788147, accuracy: 0.7843
+loss: 0.4602169394493103, accuracy: 0.7843
+loss: 0.45815736055374146, accuracy: 0.7825
+loss: 0.4561498165130615, accuracy: 0.7843
+loss: 0.454191654920578, accuracy: 0.7807
+loss: 0.4522803723812103, accuracy: 0.7825
+loss: 0.4504134953022003, accuracy: 0.7825
+loss: 0.44858866930007935, accuracy: 0.7861
+loss: 0.44680342078208923, accuracy: 0.7879
+loss: 0.4450555145740509, accuracy: 0.7879
+loss: 0.4433427155017853, accuracy: 0.795
+loss: 0.4416627585887909, accuracy: 0.7968
+loss: 0.4400136172771454, accuracy: 0.7968
+loss: 0.4383932948112488, accuracy: 0.7968
+loss: 0.43679994344711304, accuracy: 0.7968
+loss: 0.4352317452430725, accuracy: 0.8004
+loss: 0.4336870014667511, accuracy: 0.8004
+loss: 0.4321642518043518, accuracy: 0.8021
+loss: 0.43066203594207764, accuracy: 0.8021
+loss: 0.42917901277542114, accuracy: 0.8021
+loss: 0.4277139902114868, accuracy: 0.8057
+loss: 0.4262658655643463, accuracy: 0.8075
+loss: 0.42483365535736084, accuracy: 0.8093
+loss: 0.4234163463115692, accuracy: 0.8128
+loss: 0.42201319336891174, accuracy: 0.8182
+loss: 0.42062345147132874, accuracy: 0.8217
+loss: 0.4192463159561157, accuracy: 0.8235
+loss: 0.41788119077682495, accuracy: 0.8253
+loss: 0.41652756929397583, accuracy: 0.8289
+loss: 0.4151849150657654, accuracy: 0.8307
+loss: 0.4138526916503906, accuracy: 0.8324
+loss: 0.41253039240837097, accuracy: 0.8324
+loss: 0.4112178087234497, accuracy: 0.836
+loss: 0.4099143445491791, accuracy: 0.836
+loss: 0.40861976146698, accuracy: 0.8378</code></pre>
+<figure>
+<img src="output_40_2.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>loss: 0.4073337912559509, accuracy: 0.8378
+loss: 0.4060560166835785, accuracy: 0.8396
+loss: 0.40478628873825073, accuracy: 0.8414
+loss: 0.4035242795944214, accuracy: 0.8414
+loss: 0.4022696912288666, accuracy: 0.8396
+loss: 0.40102240443229675, accuracy: 0.8414
+loss: 0.3997821807861328, accuracy: 0.8431
+loss: 0.39854884147644043, accuracy: 0.8449
+loss: 0.3973221182823181, accuracy: 0.8485
+loss: 0.3961019515991211, accuracy: 0.8467
+loss: 0.39488810300827026, accuracy: 0.8467
+loss: 0.3936805725097656, accuracy: 0.8467
+loss: 0.3924790024757385, accuracy: 0.8503
+loss: 0.39128342270851135, accuracy: 0.852
+loss: 0.3900936245918274, accuracy: 0.8503
+loss: 0.38890963792800903, accuracy: 0.8538
+loss: 0.3877311646938324, accuracy: 0.8538
+loss: 0.3865582346916199, accuracy: 0.852
+loss: 0.3853907585144043, accuracy: 0.8538
+loss: 0.38422858715057373, accuracy: 0.8556
+loss: 0.3830716013908386, accuracy: 0.8574
+loss: 0.38191986083984375, accuracy: 0.8592
+loss: 0.38077312707901, accuracy: 0.861
+loss: 0.37963148951530457, accuracy: 0.861
+loss: 0.3784947693347931, accuracy: 0.861
+loss: 0.3773629069328308, accuracy: 0.861
+loss: 0.3762359321117401, accuracy: 0.8592
+loss: 0.3751136362552643, accuracy: 0.8592
+loss: 0.37399613857269287, accuracy: 0.8592
+loss: 0.37288326025009155, accuracy: 0.861
+loss: 0.3717750012874603, accuracy: 0.861
+loss: 0.3706713020801544, accuracy: 0.861
+loss: 0.36957207322120667, accuracy: 0.861
+loss: 0.3684772849082947, accuracy: 0.861
+loss: 0.36738693714141846, accuracy: 0.861
+loss: 0.36630088090896606, accuracy: 0.8592
+loss: 0.36521923542022705, accuracy: 0.8592
+loss: 0.3641417324542999, accuracy: 0.861
+loss: 0.36306846141815186, accuracy: 0.861
+loss: 0.36199936270713806, accuracy: 0.861
+loss: 0.3609343469142914, accuracy: 0.861
+loss: 0.3598734140396118, accuracy: 0.8627
+loss: 0.3588164746761322, accuracy: 0.8627
+loss: 0.35776352882385254, accuracy: 0.8627
+loss: 0.3567143976688385, accuracy: 0.8627
+loss: 0.35566914081573486, accuracy: 0.8627
+loss: 0.35462769865989685, accuracy: 0.8627
+loss: 0.3535900413990021, accuracy: 0.8645
+loss: 0.3525559902191162, accuracy: 0.8645
+loss: 0.35152560472488403, accuracy: 0.8663
+loss: 0.3504987955093384, accuracy: 0.8699
+loss: 0.3494754731655121, accuracy: 0.8734
+loss: 0.34845566749572754, accuracy: 0.8752
+loss: 0.347439169883728, accuracy: 0.877
+loss: 0.3464260995388031, accuracy: 0.877
+loss: 0.3454163074493408, accuracy: 0.877
+loss: 0.3444097638130188, accuracy: 0.877
+loss: 0.34340640902519226, accuracy: 0.877
+loss: 0.34240615367889404, accuracy: 0.877
+loss: 0.34140896797180176, accuracy: 0.8788
+loss: 0.3404148519039154, accuracy: 0.8806
+loss: 0.33942362666130066, accuracy: 0.8841
+loss: 0.3384353518486023, accuracy: 0.8841
+loss: 0.33744993805885315, accuracy: 0.8877
+loss: 0.33646732568740845, accuracy: 0.8877
+loss: 0.3354874849319458, accuracy: 0.8877
+loss: 0.33451035618782043, accuracy: 0.8895
+loss: 0.33353593945503235, accuracy: 0.8895
+loss: 0.33256417512893677, accuracy: 0.893
+loss: 0.33159497380256653, accuracy: 0.893
+loss: 0.33062833547592163, accuracy: 0.8948
+loss: 0.3296642601490021, accuracy: 0.8948
+loss: 0.3287026584148407, accuracy: 0.8966
+loss: 0.3277435004711151, accuracy: 0.9002
+loss: 0.3267867863178253, accuracy: 0.9037
+loss: 0.3258325457572937, accuracy: 0.9037
+loss: 0.3248806595802307, accuracy: 0.902
+loss: 0.32393115758895874, accuracy: 0.9002
+loss: 0.32298406958580017, accuracy: 0.9002
+loss: 0.32203927636146545, accuracy: 0.9002
+loss: 0.32109683752059937, accuracy: 0.9002
+loss: 0.3201567232608795, accuracy: 0.9002
+loss: 0.3192189037799835, accuracy: 0.902
+loss: 0.31828343868255615, accuracy: 0.902
+loss: 0.31735026836395264, accuracy: 0.9037
+loss: 0.31641942262649536, accuracy: 0.9037
+loss: 0.31549087166786194, accuracy: 0.902
+loss: 0.31456461548805237, accuracy: 0.9037
+loss: 0.31364068388938904, accuracy: 0.9055
+loss: 0.31271910667419434, accuracy: 0.9055
+loss: 0.31179988384246826, accuracy: 0.9073
+loss: 0.3108830153942108, accuracy: 0.9091
+loss: 0.3099684417247772, accuracy: 0.9091
+loss: 0.30905628204345703, accuracy: 0.9109
+loss: 0.30814653635025024, accuracy: 0.9109
+loss: 0.3072391152381897, accuracy: 0.9109
+loss: 0.3063341975212097, accuracy: 0.9109
+loss: 0.30543169379234314, accuracy: 0.9109
+loss: 0.30453160405158997, accuracy: 0.9127
+loss: 0.30363398790359497, accuracy: 0.9127</code></pre>
+<figure>
+<img src="output_40_4.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>loss: 0.30273890495300293, accuracy: 0.9127
+loss: 0.3018462657928467, accuracy: 0.9127
+loss: 0.30095618963241577, accuracy: 0.9127
+loss: 0.3000686764717102, accuracy: 0.9127
+loss: 0.29918372631073, accuracy: 0.9127
+loss: 0.2983013987541199, accuracy: 0.9127
+loss: 0.29742157459259033, accuracy: 0.9144
+loss: 0.2965444326400757, accuracy: 0.9144
+loss: 0.29566988348960876, accuracy: 0.9144
+loss: 0.2947980463504791, accuracy: 0.9144
+loss: 0.293928861618042, accuracy: 0.9162
+loss: 0.29306235909461975, accuracy: 0.9162
+loss: 0.2921985983848572, accuracy: 0.9162
+loss: 0.2913375198841095, accuracy: 0.9162
+loss: 0.29047921299934387, accuracy: 0.918
+loss: 0.2896236479282379, accuracy: 0.918
+loss: 0.2887708842754364, accuracy: 0.918
+loss: 0.2879208028316498, accuracy: 0.918
+loss: 0.2870735824108124, accuracy: 0.918
+loss: 0.28622913360595703, accuracy: 0.918
+loss: 0.28538745641708374, accuracy: 0.918
+loss: 0.2845486104488373, accuracy: 0.918
+loss: 0.28371262550354004, accuracy: 0.9198
+loss: 0.28287941217422485, accuracy: 0.9198
+loss: 0.2820490300655365, accuracy: 0.9216
+loss: 0.28122150897979736, accuracy: 0.9216
+loss: 0.2803967297077179, accuracy: 0.9234
+loss: 0.27957484126091003, accuracy: 0.9234
+loss: 0.278755784034729, accuracy: 0.9234
+loss: 0.2779395282268524, accuracy: 0.9234
+loss: 0.27712610363960266, accuracy: 0.9234
+loss: 0.27631545066833496, accuracy: 0.9234
+loss: 0.27550768852233887, accuracy: 0.9234
+loss: 0.27470269799232483, accuracy: 0.9234
+loss: 0.27390047907829285, accuracy: 0.9234
+loss: 0.2731010913848877, accuracy: 0.9234
+loss: 0.272304505109787, accuracy: 0.9234
+loss: 0.27151063084602356, accuracy: 0.9234
+loss: 0.27071958780288696, accuracy: 0.9234
+loss: 0.26993128657341003, accuracy: 0.9234
+loss: 0.2691457271575928, accuracy: 0.9234
+loss: 0.26836293935775757, accuracy: 0.9251
+loss: 0.26758289337158203, accuracy: 0.9269
+loss: 0.266805499792099, accuracy: 0.9269
+loss: 0.266030877828598, accuracy: 0.9269
+loss: 0.26525893807411194, accuracy: 0.9269
+loss: 0.2644897401332855, accuracy: 0.9269
+loss: 0.263723224401474, accuracy: 0.9269
+loss: 0.2629593014717102, accuracy: 0.9269
+loss: 0.26219815015792847, accuracy: 0.9269
+loss: 0.26143959164619446, accuracy: 0.9269
+loss: 0.26068374514579773, accuracy: 0.9269
+loss: 0.25993049144744873, accuracy: 0.9287
+loss: 0.25917989015579224, accuracy: 0.9269
+loss: 0.25843194127082825, accuracy: 0.9269
+loss: 0.257686585187912, accuracy: 0.9269
+loss: 0.25694388151168823, accuracy: 0.9269
+loss: 0.2562038004398346, accuracy: 0.9287
+loss: 0.2554662823677063, accuracy: 0.9287
+loss: 0.2547314167022705, accuracy: 0.9305
+loss: 0.25399914383888245, accuracy: 0.9323
+loss: 0.2532694935798645, accuracy: 0.9323
+loss: 0.2525424361228943, accuracy: 0.9323
+loss: 0.251817911863327, accuracy: 0.9323
+loss: 0.25109606981277466, accuracy: 0.9323
+loss: 0.25037682056427, accuracy: 0.9323
+loss: 0.24966014921665192, accuracy: 0.9323
+loss: 0.24894611537456512, accuracy: 0.9323
+loss: 0.24823465943336487, accuracy: 0.9323
+loss: 0.24752584099769592, accuracy: 0.9323
+loss: 0.2468196451663971, accuracy: 0.934
+loss: 0.2461160570383072, accuracy: 0.934
+loss: 0.2454150766134262, accuracy: 0.934
+loss: 0.2447167932987213, accuracy: 0.934
+loss: 0.24402111768722534, accuracy: 0.934
+loss: 0.24332807958126068, accuracy: 0.9358
+loss: 0.2426377534866333, accuracy: 0.9358
+loss: 0.24195004999637604, accuracy: 0.9358
+loss: 0.24126505851745605, accuracy: 0.9358
+loss: 0.24058276414871216, accuracy: 0.9358
+loss: 0.23990313708782196, accuracy: 0.9358
+loss: 0.2392263114452362, accuracy: 0.9358
+loss: 0.23855215311050415, accuracy: 0.9376
+loss: 0.23788070678710938, accuracy: 0.9376
+loss: 0.23721210658550262, accuracy: 0.9376
+loss: 0.23654620349407196, accuracy: 0.9394
+loss: 0.23588311672210693, accuracy: 0.9394
+loss: 0.23522283136844635, accuracy: 0.9394
+loss: 0.2345653921365738, accuracy: 0.9394
+loss: 0.23391073942184448, accuracy: 0.9394
+loss: 0.2332589328289032, accuracy: 0.9394
+loss: 0.23261001706123352, accuracy: 0.9394
+loss: 0.23196394741535187, accuracy: 0.9394
+loss: 0.2313207983970642, accuracy: 0.9394
+loss: 0.23068052530288696, accuracy: 0.9394
+loss: 0.2300432175397873, accuracy: 0.9412
+loss: 0.2294088453054428, accuracy: 0.943
+loss: 0.2287774235010147, accuracy: 0.943
+loss: 0.228148952126503, accuracy: 0.943
+loss: 0.22752350568771362, accuracy: 0.943</code></pre>
+<figure>
+<img src="output_40_6.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>loss: 0.2269010692834854, accuracy: 0.9447
+loss: 0.22628159821033478, accuracy: 0.9465
+loss: 0.22566519677639008, accuracy: 0.9465
+loss: 0.22505180537700653, accuracy: 0.9465
+loss: 0.2244414985179901, accuracy: 0.9483
+loss: 0.22383421659469604, accuracy: 0.9483
+loss: 0.22323007881641388, accuracy: 0.9483
+loss: 0.22262899577617645, accuracy: 0.9483
+loss: 0.22203101217746735, accuracy: 0.9483
+loss: 0.22143611311912537, accuracy: 0.9483
+loss: 0.22084438800811768, accuracy: 0.9483
+loss: 0.22025573253631592, accuracy: 0.9501
+loss: 0.21967020630836487, accuracy: 0.9501
+loss: 0.21908783912658691, accuracy: 0.9501
+loss: 0.21850860118865967, accuracy: 0.9501
+loss: 0.21793249249458313, accuracy: 0.9519
+loss: 0.2173595428466797, accuracy: 0.9519
+loss: 0.21678975224494934, accuracy: 0.9519
+loss: 0.21622304618358612, accuracy: 0.9519
+loss: 0.215659499168396, accuracy: 0.9519
+loss: 0.21509915590286255, accuracy: 0.9519
+loss: 0.21454186737537384, accuracy: 0.9554
+loss: 0.21398769319057465, accuracy: 0.9554
+loss: 0.21343663334846497, accuracy: 0.9554
+loss: 0.2128887176513672, accuracy: 0.9554
+loss: 0.21234388649463654, accuracy: 0.9554
+loss: 0.2118021547794342, accuracy: 0.9554
+loss: 0.2112634778022766, accuracy: 0.9572
+loss: 0.21072787046432495, accuracy: 0.9572
+loss: 0.21019534766674042, accuracy: 0.9572
+loss: 0.20966577529907227, accuracy: 0.9572
+loss: 0.20913924276828766, accuracy: 0.9572
+loss: 0.2086157500743866, accuracy: 0.9572
+loss: 0.20809516310691833, accuracy: 0.9572
+loss: 0.20757758617401123, accuracy: 0.9572
+loss: 0.20706294476985931, accuracy: 0.9572
+loss: 0.206551194190979, accuracy: 0.959
+loss: 0.2060423195362091, accuracy: 0.959
+loss: 0.205536350607872, accuracy: 0.959
+loss: 0.20503322780132294, accuracy: 0.959
+loss: 0.2045329362154007, accuracy: 0.959
+loss: 0.20403538644313812, accuracy: 0.959
+loss: 0.20354063808918, accuracy: 0.959
+loss: 0.20304864645004272, accuracy: 0.9572
+loss: 0.20255938172340393, accuracy: 0.9572
+loss: 0.20207282900810242, accuracy: 0.959
+loss: 0.2015889286994934, accuracy: 0.959
+loss: 0.2011077105998993, accuracy: 0.959
+loss: 0.2006290853023529, accuracy: 0.959
+loss: 0.20015309751033783, accuracy: 0.959
+loss: 0.1996796876192093, accuracy: 0.959
+loss: 0.1992087960243225, accuracy: 0.959
+loss: 0.19874045252799988, accuracy: 0.959
+loss: 0.198274627327919, accuracy: 0.959
+loss: 0.1978112906217575, accuracy: 0.959
+loss: 0.1973503977060318, accuracy: 0.959
+loss: 0.19689197838306427, accuracy: 0.9608
+loss: 0.19643594324588776, accuracy: 0.9608
+loss: 0.19598230719566345, accuracy: 0.9608
+loss: 0.19553104043006897, accuracy: 0.9608
+loss: 0.1950821578502655, accuracy: 0.9626
+loss: 0.19463558495044708, accuracy: 0.9626
+loss: 0.1941913515329361, accuracy: 0.9626
+loss: 0.19374936819076538, accuracy: 0.9626
+loss: 0.19330964982509613, accuracy: 0.9626
+loss: 0.19287221133708954, accuracy: 0.9626
+loss: 0.1924370527267456, accuracy: 0.9626
+loss: 0.1920040100812912, accuracy: 0.9626
+loss: 0.19157323241233826, accuracy: 0.9626
+loss: 0.19114458560943604, accuracy: 0.9626
+loss: 0.19071811437606812, accuracy: 0.9626
+loss: 0.1902938038110733, accuracy: 0.9626
+loss: 0.18987157940864563, accuracy: 0.9626
+loss: 0.1894514560699463, accuracy: 0.9643
+loss: 0.18903343379497528, accuracy: 0.9661
+loss: 0.18861745297908783, accuracy: 0.9661
+loss: 0.18820354342460632, accuracy: 0.9661
+loss: 0.1877916306257248, accuracy: 0.9661
+loss: 0.1873817890882492, accuracy: 0.9661
+loss: 0.1869739294052124, accuracy: 0.9661
+loss: 0.1865679919719696, accuracy: 0.9661
+loss: 0.18616405129432678, accuracy: 0.9661
+loss: 0.18576206266880035, accuracy: 0.9661
+loss: 0.18536199629306793, accuracy: 0.9661
+loss: 0.18496382236480713, accuracy: 0.9661
+loss: 0.18456757068634033, accuracy: 0.9661
+loss: 0.18417316675186157, accuracy: 0.9661
+loss: 0.18378061056137085, accuracy: 0.9661
+loss: 0.18338991701602936, accuracy: 0.9661
+loss: 0.1830010563135147, accuracy: 0.9661
+loss: 0.18261395394802094, accuracy: 0.9661
+loss: 0.1822286993265152, accuracy: 0.9661
+loss: 0.18184515833854675, accuracy: 0.9661
+loss: 0.18146346509456635, accuracy: 0.9661
+loss: 0.18108348548412323, accuracy: 0.9661
+loss: 0.1807052195072174, accuracy: 0.9661
+loss: 0.1803286373615265, accuracy: 0.9661
+loss: 0.17995375394821167, accuracy: 0.9661
+loss: 0.17958058416843414, accuracy: 0.9661
+loss: 0.17920903861522675, accuracy: 0.9661</code></pre>
+<figure>
+<img src="output_40_8.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>loss: 0.17883916199207306, accuracy: 0.9661
+loss: 0.1784709244966507, accuracy: 0.9661
+loss: 0.17810428142547607, accuracy: 0.9679
+loss: 0.1777392327785492, accuracy: 0.9679
+loss: 0.17737574875354767, accuracy: 0.9679
+loss: 0.17701385915279388, accuracy: 0.9679
+loss: 0.17665351927280426, accuracy: 0.9679
+loss: 0.1762947142124176, accuracy: 0.9679
+loss: 0.1759374588727951, accuracy: 0.9679
+loss: 0.1755816638469696, accuracy: 0.9679
+loss: 0.1752273589372635, accuracy: 0.9679
+loss: 0.17487454414367676, accuracy: 0.9679
+loss: 0.17452317476272583, accuracy: 0.9679
+loss: 0.1741732656955719, accuracy: 0.9697
+loss: 0.17382477223873138, accuracy: 0.9697
+loss: 0.17347769439220428, accuracy: 0.9697
+loss: 0.1731320023536682, accuracy: 0.9697
+loss: 0.17278774082660675, accuracy: 0.9697
+loss: 0.17244479060173035, accuracy: 0.9679
+loss: 0.17210325598716736, accuracy: 0.9679
+loss: 0.17176300287246704, accuracy: 0.9679
+loss: 0.17142412066459656, accuracy: 0.9697
+loss: 0.17108651995658875, accuracy: 0.9697
+loss: 0.17075024545192719, accuracy: 0.9697
+loss: 0.1704152226448059, accuracy: 0.9697
+loss: 0.17008152604103088, accuracy: 0.9697
+loss: 0.16974900662899017, accuracy: 0.9697
+loss: 0.16941773891448975, accuracy: 0.9697
+loss: 0.1690877228975296, accuracy: 0.9697
+loss: 0.16875888407230377, accuracy: 0.9697
+loss: 0.16843131184577942, accuracy: 0.9697
+loss: 0.168104887008667, accuracy: 0.9697
+loss: 0.1677796095609665, accuracy: 0.9697
+loss: 0.1674555093050003, accuracy: 0.9697
+loss: 0.16713252663612366, accuracy: 0.9697
+loss: 0.16681069135665894, accuracy: 0.9697
+loss: 0.16648997366428375, accuracy: 0.9697
+loss: 0.16617035865783691, accuracy: 0.9697
+loss: 0.16585181653499603, accuracy: 0.9697
+loss: 0.1655343770980835, accuracy: 0.9697
+loss: 0.16521801054477692, accuracy: 0.9697
+loss: 0.16490264236927032, accuracy: 0.9697
+loss: 0.1645883172750473, accuracy: 0.9697
+loss: 0.16427502036094666, accuracy: 0.9697
+loss: 0.163962721824646, accuracy: 0.9697
+loss: 0.1636514663696289, accuracy: 0.9697
+loss: 0.16334113478660583, accuracy: 0.9697
+loss: 0.16303183138370514, accuracy: 0.9697
+loss: 0.16272340714931488, accuracy: 0.9697
+loss: 0.162416011095047, accuracy: 0.9697
+loss: 0.16210946440696716, accuracy: 0.9697
+loss: 0.1618039309978485, accuracy: 0.9697
+loss: 0.1614992320537567, accuracy: 0.9697
+loss: 0.16119548678398132, accuracy: 0.9697
+loss: 0.1608925759792328, accuracy: 0.9697
+loss: 0.16059055924415588, accuracy: 0.9697
+loss: 0.16028939187526703, accuracy: 0.9697
+loss: 0.15998908877372742, accuracy: 0.9697
+loss: 0.15968960523605347, accuracy: 0.9697
+loss: 0.15939094126224518, accuracy: 0.9697
+loss: 0.15909309685230255, accuracy: 0.9697
+loss: 0.15879610180854797, accuracy: 0.9697
+loss: 0.15849989652633667, accuracy: 0.9697
+loss: 0.15820442140102386, accuracy: 0.9697
+loss: 0.15790970623493195, accuracy: 0.9697
+loss: 0.1576157957315445, accuracy: 0.9697
+loss: 0.15732264518737793, accuracy: 0.9697
+loss: 0.1570301651954651, accuracy: 0.9715
+loss: 0.1567384898662567, accuracy: 0.9715
+loss: 0.15644752979278564, accuracy: 0.9715
+loss: 0.1561572551727295, accuracy: 0.9715
+loss: 0.15586769580841064, accuracy: 0.9715
+loss: 0.1555788516998291, accuracy: 0.9715
+loss: 0.15529067814350128, accuracy: 0.9715
+loss: 0.15500321984291077, accuracy: 0.9715
+loss: 0.1547163724899292, accuracy: 0.9715
+loss: 0.15443024039268494, accuracy: 0.9715
+loss: 0.15414471924304962, accuracy: 0.9715
+loss: 0.15385986864566803, accuracy: 0.9697
+loss: 0.15357570350170135, accuracy: 0.9697
+loss: 0.15329214930534363, accuracy: 0.9697
+loss: 0.15300920605659485, accuracy: 0.9697
+loss: 0.1527269333600998, accuracy: 0.9697
+loss: 0.15244527161121368, accuracy: 0.9697
+loss: 0.15216422080993652, accuracy: 0.9697
+loss: 0.1518838107585907, accuracy: 0.9697
+loss: 0.15160398185253143, accuracy: 0.9697
+loss: 0.1513248234987259, accuracy: 0.9697
+loss: 0.15104620158672333, accuracy: 0.9697
+loss: 0.15076826512813568, accuracy: 0.9697
+loss: 0.150490865111351, accuracy: 0.9697
+loss: 0.15021413564682007, accuracy: 0.9697
+loss: 0.1499379575252533, accuracy: 0.9697
+loss: 0.14966246485710144, accuracy: 0.9697
+loss: 0.14938752353191376, accuracy: 0.9697
+loss: 0.14911320805549622, accuracy: 0.9697
+loss: 0.14883951842784882, accuracy: 0.9697
+loss: 0.14856645464897156, accuracy: 0.9697
+loss: 0.14829401671886444, accuracy: 0.9697
+loss: 0.1480221450328827, accuracy: 0.9697</code></pre>
+<figure>
+<img src="output_40_10.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>loss: 0.14775097370147705, accuracy: 0.9697
+loss: 0.14748044312000275, accuracy: 0.9697
+loss: 0.14721056818962097, accuracy: 0.9697
+loss: 0.14694133400917053, accuracy: 0.9697
+loss: 0.146672785282135, accuracy: 0.9715
+loss: 0.14640489220619202, accuracy: 0.9715
+loss: 0.14613769948482513, accuracy: 0.9715
+loss: 0.14587119221687317, accuracy: 0.9715
+loss: 0.14560537040233612, accuracy: 0.9715
+loss: 0.14534027874469757, accuracy: 0.9715
+loss: 0.1450759768486023, accuracy: 0.9715
+loss: 0.14481237530708313, accuracy: 0.9715
+loss: 0.14454954862594604, accuracy: 0.9715
+loss: 0.14428748190402985, accuracy: 0.9715
+loss: 0.14402617514133453, accuracy: 0.9715
+loss: 0.14376568794250488, accuracy: 0.9715
+loss: 0.14350605010986328, accuracy: 0.9715
+loss: 0.14324723184108734, accuracy: 0.9715
+loss: 0.14298926293849945, accuracy: 0.9715
+loss: 0.14273211359977722, accuracy: 0.9715
+loss: 0.14247585833072662, accuracy: 0.9733
+loss: 0.14222052693367004, accuracy: 0.9733
+loss: 0.1419661045074463, accuracy: 0.9733
+loss: 0.14171257615089417, accuracy: 0.9733
+loss: 0.14146001636981964, accuracy: 0.9733
+loss: 0.14120839536190033, accuracy: 0.9733
+loss: 0.140957772731781, accuracy: 0.9733
+loss: 0.14070813357830048, accuracy: 0.9733
+loss: 0.14045946300029755, accuracy: 0.9733
+loss: 0.140211820602417, accuracy: 0.9733
+loss: 0.1399652063846588, accuracy: 0.9733
+loss: 0.1397196501493454, accuracy: 0.9733
+loss: 0.13947510719299316, accuracy: 0.9733
+loss: 0.13923168182373047, accuracy: 0.9733
+loss: 0.13898926973342896, accuracy: 0.9733
+loss: 0.13874797523021698, accuracy: 0.9733
+loss: 0.13850778341293335, accuracy: 0.9733
+loss: 0.13826866447925568, accuracy: 0.9733
+loss: 0.13803069293498993, accuracy: 0.9733
+loss: 0.13779379427433014, accuracy: 0.9733
+loss: 0.13755804300308228, accuracy: 0.9733
+loss: 0.13732342422008514, accuracy: 0.9733
+loss: 0.13708987832069397, accuracy: 0.9733
+loss: 0.1368575394153595, accuracy: 0.9733
+loss: 0.13662630319595337, accuracy: 0.975
+loss: 0.13639619946479797, accuracy: 0.975
+loss: 0.1361672431230545, accuracy: 0.975
+loss: 0.13593941926956177, accuracy: 0.975
+loss: 0.13571275770664215, accuracy: 0.975
+loss: 0.13548722863197327, accuracy: 0.975
+loss: 0.13526283204555511, accuracy: 0.975
+loss: 0.1350395828485489, accuracy: 0.975
+loss: 0.1348174661397934, accuracy: 0.975
+loss: 0.13459646701812744, accuracy: 0.975
+loss: 0.1343766152858734, accuracy: 0.975
+loss: 0.1341579109430313, accuracy: 0.975
+loss: 0.13394032418727875, accuracy: 0.975
+loss: 0.13372382521629333, accuracy: 0.975
+loss: 0.13350844383239746, accuracy: 0.975
+loss: 0.1332942247390747, accuracy: 0.975
+loss: 0.13308103382587433, accuracy: 0.975
+loss: 0.13286900520324707, accuracy: 0.975
+loss: 0.13265807926654816, accuracy: 0.975
+loss: 0.1324481964111328, accuracy: 0.975
+loss: 0.1322394162416458, accuracy: 0.975
+loss: 0.13203172385692596, accuracy: 0.9768
+loss: 0.13182507455348969, accuracy: 0.9768
+loss: 0.13161951303482056, accuracy: 0.9768
+loss: 0.131414994597435, accuracy: 0.9768
+loss: 0.1312115639448166, accuracy: 0.9768
+loss: 0.13100916147232056, accuracy: 0.9768
+loss: 0.1308078020811081, accuracy: 0.9768
+loss: 0.130607470870018, accuracy: 0.9768
+loss: 0.1304081678390503, accuracy: 0.9768
+loss: 0.13020987808704376, accuracy: 0.9768
+loss: 0.1300126016139984, accuracy: 0.9768
+loss: 0.12981636822223663, accuracy: 0.9768
+loss: 0.12962107360363007, accuracy: 0.9768
+loss: 0.12942679226398468, accuracy: 0.9768
+loss: 0.12923352420330048, accuracy: 0.9768
+loss: 0.12904120981693268, accuracy: 0.9768
+loss: 0.12884986400604248, accuracy: 0.9768
+loss: 0.1286594718694687, accuracy: 0.9768
+loss: 0.12847007811069489, accuracy: 0.9768
+loss: 0.1282816231250763, accuracy: 0.9768
+loss: 0.12809407711029053, accuracy: 0.9768
+loss: 0.12790748476982117, accuracy: 0.9768
+loss: 0.12772183120250702, accuracy: 0.9768
+loss: 0.1275370866060257, accuracy: 0.9768
+loss: 0.127353236079216, accuracy: 0.9768
+loss: 0.12717032432556152, accuracy: 0.9768
+loss: 0.12698829174041748, accuracy: 0.9768
+loss: 0.12680716812610626, accuracy: 0.9768
+loss: 0.12662693858146667, accuracy: 0.9768
+loss: 0.12644757330417633, accuracy: 0.9768
+loss: 0.12626907229423523, accuracy: 0.9768
+loss: 0.12609145045280457, accuracy: 0.9768
+loss: 0.12591467797756195, accuracy: 0.9768
+loss: 0.12573875486850739, accuracy: 0.9768
+loss: 0.12556368112564087, accuracy: 0.9768</code></pre>
+<figure>
+<img src="output_40_12.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>loss: 0.1253894418478012, accuracy: 0.9768
+loss: 0.1252160370349884, accuracy: 0.9768
+loss: 0.12504345178604126, accuracy: 0.9768
+loss: 0.12487170100212097, accuracy: 0.9768
+loss: 0.12470073997974396, accuracy: 0.9768
+loss: 0.12453058362007141, accuracy: 0.9768
+loss: 0.12436120957136154, accuracy: 0.9768
+loss: 0.12419265508651733, accuracy: 0.9768
+loss: 0.12402483820915222, accuracy: 0.9768
+loss: 0.12385786324739456, accuracy: 0.9768
+loss: 0.1236916333436966, accuracy: 0.9768
+loss: 0.1235261783003807, accuracy: 0.9768
+loss: 0.12336144596338272, accuracy: 0.9768
+loss: 0.12319750338792801, accuracy: 0.9768
+loss: 0.12303429841995239, accuracy: 0.9768
+loss: 0.12287183105945587, accuracy: 0.9768
+loss: 0.12271009385585785, accuracy: 0.9768
+loss: 0.12254910171031952, accuracy: 0.9768
+loss: 0.1223888173699379, accuracy: 0.9768
+loss: 0.12222926318645477, accuracy: 0.9768
+loss: 0.12207040935754776, accuracy: 0.9768
+loss: 0.12191224098205566, accuracy: 0.9768
+loss: 0.12175482511520386, accuracy: 0.9768
+loss: 0.12159806489944458, accuracy: 0.9768
+loss: 0.12144201248884201, accuracy: 0.9768
+loss: 0.12128662317991257, accuracy: 0.9768
+loss: 0.12113192677497864, accuracy: 0.9768
+loss: 0.12097792327404022, accuracy: 0.9768
+loss: 0.12082457542419434, accuracy: 0.9768
+loss: 0.12067187577486038, accuracy: 0.9768
+loss: 0.12051984667778015, accuracy: 0.9768
+loss: 0.12036846578121185, accuracy: 0.9768
+loss: 0.12021773308515549, accuracy: 0.9768
+loss: 0.12006764113903046, accuracy: 0.9768
+loss: 0.11991819739341736, accuracy: 0.9768
+loss: 0.1197693794965744, accuracy: 0.9768
+loss: 0.11962117999792099, accuracy: 0.9768
+loss: 0.11947361379861832, accuracy: 0.9768
+loss: 0.11932666599750519, accuracy: 0.9768
+loss: 0.1191803514957428, accuracy: 0.9768
+loss: 0.11903461813926697, accuracy: 0.9768
+loss: 0.11888951808214188, accuracy: 0.9768
+loss: 0.11874498426914215, accuracy: 0.9768
+loss: 0.11860106140375137, accuracy: 0.9768
+loss: 0.11845775693655014, accuracy: 0.9768
+loss: 0.11831498891115189, accuracy: 0.9768
+loss: 0.11817283183336258, accuracy: 0.9768
+loss: 0.11803126335144043, accuracy: 0.9768
+loss: 0.11789024621248245, accuracy: 0.9768
+loss: 0.11774983257055283, accuracy: 0.9768
+loss: 0.11760997027158737, accuracy: 0.9768
+loss: 0.11747065931558609, accuracy: 0.9768
+loss: 0.11733192950487137, accuracy: 0.9768
+loss: 0.11719372868537903, accuracy: 0.9768
+loss: 0.11705608665943146, accuracy: 0.9768
+loss: 0.11691900342702866, accuracy: 0.9768
+loss: 0.11678243428468704, accuracy: 0.9768
+loss: 0.11664643883705139, accuracy: 0.9768
+loss: 0.11651095747947693, accuracy: 0.9768
+loss: 0.11637603491544724, accuracy: 0.9768
+loss: 0.11624158918857574, accuracy: 0.9768
+loss: 0.1161077469587326, accuracy: 0.9768
+loss: 0.11597434431314468, accuracy: 0.9768
+loss: 0.11584149301052094, accuracy: 0.9768
+loss: 0.11570916324853897, accuracy: 0.9768
+loss: 0.1155773177742958, accuracy: 0.9768
+loss: 0.11544601619243622, accuracy: 0.9768
+loss: 0.11531522125005722, accuracy: 0.9768
+loss: 0.11518487334251404, accuracy: 0.9768
+loss: 0.11505507677793503, accuracy: 0.9768
+loss: 0.11492573469877243, accuracy: 0.9768
+loss: 0.11479691416025162, accuracy: 0.9768
+loss: 0.1146685779094696, accuracy: 0.9768
+loss: 0.114540696144104, accuracy: 0.9768
+loss: 0.1144133135676384, accuracy: 0.9768
+loss: 0.11428641527891159, accuracy: 0.9768
+loss: 0.1141599789261818, accuracy: 0.9768
+loss: 0.11403403431177139, accuracy: 0.9768
+loss: 0.113908551633358, accuracy: 0.9768
+loss: 0.11378352344036102, accuracy: 0.9768
+loss: 0.11365897208452225, accuracy: 0.9768
+loss: 0.11353486776351929, accuracy: 0.9768
+loss: 0.11341124027967453, accuracy: 0.9768
+loss: 0.1132880449295044, accuracy: 0.9768
+loss: 0.11316531151533127, accuracy: 0.9768
+loss: 0.11304302513599396, accuracy: 0.9768
+loss: 0.11292118579149246, accuracy: 0.9768
+loss: 0.11279979348182678, accuracy: 0.9768
+loss: 0.11267884820699692, accuracy: 0.9768
+loss: 0.11255832016468048, accuracy: 0.9768
+loss: 0.11243824660778046, accuracy: 0.9768
+loss: 0.11231860518455505, accuracy: 0.9768
+loss: 0.11219938099384308, accuracy: 0.9768
+loss: 0.11208059638738632, accuracy: 0.9768
+loss: 0.111962229013443, accuracy: 0.9768
+loss: 0.11184428632259369, accuracy: 0.9768
+loss: 0.11172676831483841, accuracy: 0.9768
+loss: 0.11160964518785477, accuracy: 0.9768
+loss: 0.11149296164512634, accuracy: 0.9768
+loss: 0.11137669533491135, accuracy: 0.9768</code></pre>
+<figure>
+<img src="output_40_14.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>loss: 0.11126083135604858, accuracy: 0.9768
+loss: 0.11114537715911865, accuracy: 0.9768
+loss: 0.11103031039237976, accuracy: 0.9768
+loss: 0.1109156683087349, accuracy: 0.9768
+loss: 0.11080142110586166, accuracy: 0.9768
+loss: 0.11068757623434067, accuracy: 0.9768
+loss: 0.1105741336941719, accuracy: 0.9768
+loss: 0.11046106368303299, accuracy: 0.9768
+loss: 0.11034838855266571, accuracy: 0.9768
+loss: 0.11023613065481186, accuracy: 0.9768
+loss: 0.11012423783540726, accuracy: 0.9768
+loss: 0.1100127324461937, accuracy: 0.9768
+loss: 0.10990161448717117, accuracy: 0.9768
+loss: 0.1097908765077591, accuracy: 0.9768
+loss: 0.10968052595853806, accuracy: 0.9768
+loss: 0.10957055538892746, accuracy: 0.9768
+loss: 0.10946092754602432, accuracy: 0.9768
+loss: 0.10935170203447342, accuracy: 0.9768
+loss: 0.10924284160137177, accuracy: 0.9768
+loss: 0.10913435369729996, accuracy: 0.9768
+loss: 0.1090262308716774, accuracy: 0.9768
+loss: 0.10891847312450409, accuracy: 0.9768
+loss: 0.10881106555461884, accuracy: 0.9768
+loss: 0.10870402306318283, accuracy: 0.9768
+loss: 0.10859733819961548, accuracy: 0.9768
+loss: 0.10849101841449738, accuracy: 0.9768
+loss: 0.10838506370782852, accuracy: 0.9768
+loss: 0.10827942937612534, accuracy: 0.9768
+loss: 0.108174167573452, accuracy: 0.9768
+loss: 0.10806925594806671, accuracy: 0.9768
+loss: 0.10796469449996948, accuracy: 0.9768
+loss: 0.10786047577857971, accuracy: 0.9768
+loss: 0.1077565923333168, accuracy: 0.9768
+loss: 0.10765307396650314, accuracy: 0.9768
+loss: 0.10754988342523575, accuracy: 0.9768
+loss: 0.10744703561067581, accuracy: 0.9768
+loss: 0.10734448581933975, accuracy: 0.9768
+loss: 0.10724231600761414, accuracy: 0.9768
+loss: 0.10714045912027359, accuracy: 0.9768
+loss: 0.1070389598608017, accuracy: 0.9768
+loss: 0.10693775862455368, accuracy: 0.9768
+loss: 0.10683689266443253, accuracy: 0.9768
+loss: 0.10673636198043823, accuracy: 0.9768
+loss: 0.1066361665725708, accuracy: 0.9768
+loss: 0.10653626918792725, accuracy: 0.9768
+loss: 0.10643670707941055, accuracy: 0.9768
+loss: 0.10633745044469833, accuracy: 0.9768
+loss: 0.10623852908611298, accuracy: 0.9768
+loss: 0.10613992810249329, accuracy: 0.9768
+loss: 0.10604163259267807, accuracy: 0.9768
+loss: 0.10594365000724792, accuracy: 0.9768
+loss: 0.10584598034620285, accuracy: 0.9768
+loss: 0.10574861615896225, accuracy: 0.9768
+loss: 0.10565157979726791, accuracy: 0.9768
+loss: 0.10555481910705566, accuracy: 0.9768
+loss: 0.10545837134122849, accuracy: 0.9768
+loss: 0.10536222904920578, accuracy: 0.9768
+loss: 0.10526642203330994, accuracy: 0.9768
+loss: 0.10517086833715439, accuracy: 0.9768
+loss: 0.1050756424665451, accuracy: 0.9768
+loss: 0.1049806997179985, accuracy: 0.9768
+loss: 0.10488607734441757, accuracy: 0.9768
+loss: 0.10479173064231873, accuracy: 0.9768
+loss: 0.10469768196344376, accuracy: 0.9768
+loss: 0.10460391640663147, accuracy: 0.9768
+loss: 0.10451045632362366, accuracy: 0.9768
+loss: 0.10441725701093674, accuracy: 0.9768
+loss: 0.10432437807321548, accuracy: 0.9768
+loss: 0.10423176735639572, accuracy: 0.9768
+loss: 0.10413945466279984, accuracy: 0.9768
+loss: 0.10404741019010544, accuracy: 0.9768
+loss: 0.10395565629005432, accuracy: 0.9768
+loss: 0.10386417806148529, accuracy: 0.9768
+loss: 0.10377299040555954, accuracy: 0.9768
+loss: 0.10368206351995468, accuracy: 0.9768
+loss: 0.1035914272069931, accuracy: 0.9768
+loss: 0.10350107401609421, accuracy: 0.9768
+loss: 0.10341097414493561, accuracy: 0.9768
+loss: 0.1033211499452591, accuracy: 0.9768
+loss: 0.10323159396648407, accuracy: 0.9768
+loss: 0.10314231365919113, accuracy: 0.9768
+loss: 0.10305330902338028, accuracy: 0.9768
+loss: 0.10296457260847092, accuracy: 0.9768
+loss: 0.10287609696388245, accuracy: 0.9768
+loss: 0.10278790444135666, accuracy: 0.9768
+loss: 0.10269993543624878, accuracy: 0.9768
+loss: 0.10261223465204239, accuracy: 0.9768
+loss: 0.10252482444047928, accuracy: 0.9768
+loss: 0.10243766009807587, accuracy: 0.9768
+loss: 0.10235076397657394, accuracy: 0.9768
+loss: 0.10226410627365112, accuracy: 0.9768
+loss: 0.1021777093410492, accuracy: 0.9768
+loss: 0.10209155827760696, accuracy: 0.9768
+loss: 0.10200567543506622, accuracy: 0.9768
+loss: 0.10192004591226578, accuracy: 0.9768
+loss: 0.10183466970920563, accuracy: 0.9768
+loss: 0.10174952447414398, accuracy: 0.9768
+loss: 0.10166465491056442, accuracy: 0.9768
+loss: 0.10158001631498337, accuracy: 0.9768
+loss: 0.10149563103914261, accuracy: 0.9768</code></pre>
+<figure>
+<img src="output_40_16.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>loss: 0.10141148418188095, accuracy: 0.9768
+loss: 0.10132759064435959, accuracy: 0.9768
+loss: 0.10124392807483673, accuracy: 0.9768
+loss: 0.10116051882505417, accuracy: 0.9768
+loss: 0.10107734054327011, accuracy: 0.9768
+loss: 0.10099440813064575, accuracy: 0.9768
+loss: 0.10091172158718109, accuracy: 0.9768
+loss: 0.10082925856113434, accuracy: 0.9768
+loss: 0.10074704140424728, accuracy: 0.9768
+loss: 0.10066504776477814, accuracy: 0.9768
+loss: 0.10058329254388809, accuracy: 0.9768
+loss: 0.10050178319215775, accuracy: 0.9768
+loss: 0.1004204973578453, accuracy: 0.9768
+loss: 0.10033943504095078, accuracy: 0.9768
+loss: 0.10025861114263535, accuracy: 0.9768
+loss: 0.10017801076173782, accuracy: 0.9768
+loss: 0.10009763389825821, accuracy: 0.9768
+loss: 0.1000175029039383, accuracy: 0.9768
+loss: 0.09993758052587509, accuracy: 0.9768
+loss: 0.09985789656639099, accuracy: 0.9768
+loss: 0.0997784286737442, accuracy: 0.9768
+loss: 0.09969919174909592, accuracy: 0.9768
+loss: 0.09962015599012375, accuracy: 0.9768
+loss: 0.09954136610031128, accuracy: 0.9768
+loss: 0.09946278482675552, accuracy: 0.9768
+loss: 0.09938442707061768, accuracy: 0.9768
+loss: 0.09930627048015594, accuracy: 0.9768
+loss: 0.09922832995653152, accuracy: 0.9768
+loss: 0.09915062040090561, accuracy: 0.9768
+loss: 0.099073126912117, accuracy: 0.9768
+loss: 0.09899584949016571, accuracy: 0.9768
+loss: 0.09891877323389053, accuracy: 0.9768
+loss: 0.09884190559387207, accuracy: 0.9768
+loss: 0.09876526147127151, accuracy: 0.9768
+loss: 0.09868882596492767, accuracy: 0.9768
+loss: 0.09861260652542114, accuracy: 0.9768
+loss: 0.09853657335042953, accuracy: 0.9768
+loss: 0.09846074879169464, accuracy: 0.9768
+loss: 0.09838515520095825, accuracy: 0.9768
+loss: 0.09830974042415619, accuracy: 0.9768
+loss: 0.09823454916477203, accuracy: 0.9768
+loss: 0.0981595516204834, accuracy: 0.9768
+loss: 0.09808475524187088, accuracy: 0.9768
+loss: 0.09801016747951508, accuracy: 0.9768
+loss: 0.09793578088283539, accuracy: 0.9768
+loss: 0.09786158055067062, accuracy: 0.9768
+loss: 0.09778761863708496, accuracy: 0.9768
+loss: 0.09771381318569183, accuracy: 0.9768
+loss: 0.09764021635055542, accuracy: 0.9768
+loss: 0.09756682813167572, accuracy: 0.9768
+loss: 0.09749363362789154, accuracy: 0.9768
+loss: 0.09742061048746109, accuracy: 0.9768
+loss: 0.09734781086444855, accuracy: 0.9768
+loss: 0.09727519005537033, accuracy: 0.9768
+loss: 0.09720275551080704, accuracy: 0.9768
+loss: 0.09713052213191986, accuracy: 0.9768
+loss: 0.09705847501754761, accuracy: 0.9768
+loss: 0.09698662161827087, accuracy: 0.9768
+loss: 0.09691496193408966, accuracy: 0.9768
+loss: 0.09684348106384277, accuracy: 0.9768
+loss: 0.0967721939086914, accuracy: 0.9768
+loss: 0.09670109301805496, accuracy: 0.9768
+loss: 0.09663018584251404, accuracy: 0.9768
+loss: 0.09655945003032684, accuracy: 0.9768
+loss: 0.09648890793323517, accuracy: 0.9768
+loss: 0.09641853719949722, accuracy: 0.9768
+loss: 0.0963483452796936, accuracy: 0.9768
+loss: 0.0962783545255661, accuracy: 0.9768
+loss: 0.09620853513479233, accuracy: 0.9768
+loss: 0.09613889455795288, accuracy: 0.9768
+loss: 0.09606944024562836, accuracy: 0.9768
+loss: 0.09600016474723816, accuracy: 0.9768
+loss: 0.0959310531616211, accuracy: 0.9768
+loss: 0.09586213529109955, accuracy: 0.9768
+loss: 0.09579338878393173, accuracy: 0.9768
+loss: 0.09572481364011765, accuracy: 0.9768
+loss: 0.09565640985965729, accuracy: 0.9768
+loss: 0.09558819234371185, accuracy: 0.9768
+loss: 0.09552015364170074, accuracy: 0.9768
+loss: 0.09545227885246277, accuracy: 0.9768
+loss: 0.09538456797599792, accuracy: 0.9768
+loss: 0.09531703591346741, accuracy: 0.9768
+loss: 0.09524968266487122, accuracy: 0.9768
+loss: 0.09518249332904816, accuracy: 0.9768
+loss: 0.09511546790599823, accuracy: 0.9768
+loss: 0.09504862129688263, accuracy: 0.9768
+loss: 0.09498193860054016, accuracy: 0.9768
+loss: 0.09491541236639023, accuracy: 0.9768
+loss: 0.09484905749559402, accuracy: 0.9768
+loss: 0.09478288143873215, accuracy: 0.9768
+loss: 0.0947168692946434, accuracy: 0.9768
+loss: 0.0946510061621666, accuracy: 0.9768
+loss: 0.09458532929420471, accuracy: 0.9768
+loss: 0.09451979398727417, accuracy: 0.9768
+loss: 0.09445442259311676, accuracy: 0.9768
+loss: 0.09438922256231308, accuracy: 0.9768
+loss: 0.09432418644428253, accuracy: 0.9768
+loss: 0.09425931423902512, accuracy: 0.9768
+loss: 0.09419458359479904, accuracy: 0.9768
+loss: 0.0941300317645073, accuracy: 0.9768</code></pre>
+<figure>
+<img src="output_40_18.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<pre><code>loss: 0.09406563639640808, accuracy: 0.9768
+loss: 0.09400137513875961, accuracy: 0.9768
+loss: 0.09393730014562607, accuracy: 0.9768
+loss: 0.09387335926294327, accuracy: 0.9768
+loss: 0.0938095971941948, accuracy: 0.9768
+loss: 0.09374597668647766, accuracy: 0.9768
+loss: 0.09368249028921127, accuracy: 0.9768
+loss: 0.0936191976070404, accuracy: 0.9768
+loss: 0.09355603158473969, accuracy: 0.9768
+loss: 0.09349304437637329, accuracy: 0.9768
+loss: 0.09343019127845764, accuracy: 0.9768
+loss: 0.09336749464273453, accuracy: 0.9768
+loss: 0.09330495446920395, accuracy: 0.9768
+loss: 0.09324254095554352, accuracy: 0.9768
+loss: 0.09318029880523682, accuracy: 0.9768
+loss: 0.09311820566654205, accuracy: 0.9768
+loss: 0.09305625408887863, accuracy: 0.9768
+loss: 0.09299445152282715, accuracy: 0.9768
+loss: 0.092932790517807, accuracy: 0.9768
+loss: 0.0928713008761406, accuracy: 0.9768
+loss: 0.09280992299318314, accuracy: 0.9768
+loss: 0.0927487164735794, accuracy: 0.9768
+loss: 0.09268765151500702, accuracy: 0.9768
+loss: 0.09262672811746597, accuracy: 0.9768
+loss: 0.09256593883037567, accuracy: 0.9768
+loss: 0.0925053209066391, accuracy: 0.9768
+loss: 0.09244481474161148, accuracy: 0.9768
+loss: 0.0923844575881958, accuracy: 0.9768
+loss: 0.09232426434755325, accuracy: 0.9768
+loss: 0.09226419031620026, accuracy: 0.9768
+loss: 0.092204250395298, accuracy: 0.9768
+loss: 0.09214446693658829, accuracy: 0.9768
+loss: 0.09208481758832932, accuracy: 0.9768
+loss: 0.09202532470226288, accuracy: 0.9768
+loss: 0.0919659435749054, accuracy: 0.9768
+loss: 0.09190671145915985, accuracy: 0.9768
+loss: 0.09184760600328445, accuracy: 0.9768
+loss: 0.09178866446018219, accuracy: 0.9768
+loss: 0.09172984957695007, accuracy: 0.9768
+loss: 0.0916711613535881, accuracy: 0.9768
+loss: 0.09161260724067688, accuracy: 0.9768
+loss: 0.0915541872382164, accuracy: 0.9768
+loss: 0.09149591624736786, accuracy: 0.9768
+loss: 0.09143777936697006, accuracy: 0.9768
+loss: 0.09137974679470062, accuracy: 0.9768
+loss: 0.09132187068462372, accuracy: 0.9768
+loss: 0.09126411378383636, accuracy: 0.9768
+loss: 0.09120649844408035, accuracy: 0.9768
+loss: 0.09114901721477509, accuracy: 0.9768
+loss: 0.09109166264533997, accuracy: 0.9768
+loss: 0.09103444963693619, accuracy: 0.9768
+loss: 0.09097735583782196, accuracy: 0.9768
+loss: 0.09092038869857788, accuracy: 0.9768
+loss: 0.09086354821920395, accuracy: 0.9768
+loss: 0.09080684930086136, accuracy: 0.9768
+loss: 0.09075027704238892, accuracy: 0.9768
+loss: 0.09069381654262543, accuracy: 0.9768
+loss: 0.09063747525215149, accuracy: 0.9768
+loss: 0.09058129787445068, accuracy: 0.9768
+loss: 0.09052521735429764, accuracy: 0.9768
+loss: 0.09046925604343414, accuracy: 0.9768
+loss: 0.09041344374418259, accuracy: 0.9768
+loss: 0.09035775065422058, accuracy: 0.9768
+loss: 0.09030216932296753, accuracy: 0.9768
+loss: 0.09024671465158463, accuracy: 0.9768
+loss: 0.09019139409065247, accuracy: 0.9768
+loss: 0.09013618528842926, accuracy: 0.9768
+loss: 0.09008108824491501, accuracy: 0.9768
+loss: 0.0900261402130127, accuracy: 0.9768
+loss: 0.08997129648923874, accuracy: 0.9768
+loss: 0.08991657942533493, accuracy: 0.9768
+loss: 0.08986198902130127, accuracy: 0.9768
+loss: 0.08980751037597656, accuracy: 0.9768
+loss: 0.089753158390522, accuracy: 0.9768
+loss: 0.0896989032626152, accuracy: 0.9768
+loss: 0.08964478224515915, accuracy: 0.9768
+loss: 0.08959077298641205, accuracy: 0.9768
+loss: 0.08953689783811569, accuracy: 0.9768
+loss: 0.0894831195473671, accuracy: 0.9768
+loss: 0.08942947536706924, accuracy: 0.9768
+loss: 0.08937593549489975, accuracy: 0.9768
+loss: 0.08932250738143921, accuracy: 0.9768
+loss: 0.08926922082901001, accuracy: 0.9768
+loss: 0.08921601623296738, accuracy: 0.9768
+loss: 0.08916295319795609, accuracy: 0.9768
+loss: 0.08910998702049255, accuracy: 0.9768
+loss: 0.08905714750289917, accuracy: 0.9768
+loss: 0.08900440484285355, accuracy: 0.9768
+loss: 0.08895178884267807, accuracy: 0.9768
+loss: 0.08889929205179214, accuracy: 0.9768
+loss: 0.08884689956903458, accuracy: 0.9768
+loss: 0.08879460394382477, accuracy: 0.9768
+loss: 0.08874243497848511, accuracy: 0.9768
+loss: 0.0886903703212738, accuracy: 0.9768
+loss: 0.08863842487335205, accuracy: 0.9768
+loss: 0.08858657628297806, accuracy: 0.9768
+loss: 0.08853486180305481, accuracy: 0.9768
+loss: 0.08848322182893753, accuracy: 0.9768
+loss: 0.08843172341585159, accuracy: 0.9768
+loss: 0.08838032186031342, accuracy: 0.9768</code></pre>
+<h2 id="visualize-the-final-node-embeddings">Visualize the final node embeddings</h2>
+<p>Visualize your final embedding here! You can visually compare the figure with the previous embedding figure. After training, you should oberserve that the two classes are more evidently separated. This is a great sanitity check for your implementation as well.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Visualize the final learned embedding</span></span><br><span class="line">visualize_emb(emb)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_42_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<h1 id="submission">Submission</h1>
+<p>In order to get credit, you must go submit your answers on Gradescope.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Implement-your-agent/2020/10/19/" rel="prev" title="Implement your agent">
+      <i class="fa fa-chevron-left"></i> Implement your agent
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Product-Manager-Introduction/2021/05/06/" rel="next" title="Product Manager - Introduction">
+      Product Manager - Introduction <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#cs224w---colab-1"><span class="nav-number">1.</span> <span class="nav-text">CS224W - Colab 1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#graph-basics"><span class="nav-number">2.</span> <span class="nav-text">1 Graph Basics</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#setup"><span class="nav-number">2.1.</span> <span class="nav-text">Setup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zacharys-karate-club-network"><span class="nav-number">2.2.</span> <span class="nav-text">Zachary&#39;s karate club network</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#question-1-what-is-the-average-degree-of-the-karate-club-network-5-points"><span class="nav-number">2.3.</span> <span class="nav-text">Question 1: What is the average degree of the karate club network? (5 Points)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#question-2-what-is-the-average-clustering-coefficient-of-the-karate-club-network-5-points"><span class="nav-number">2.4.</span> <span class="nav-text">Question 2: What is the average clustering coefficient of the karate club network? (5 Points)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#question-3-what-is-the-pagerank-value-for-node-0-node-with-id-0-after-one-pagerank-iteration-5-points"><span class="nav-number">2.5.</span> <span class="nav-text">Question 3: What is the PageRank value for node 0 (node with id 0) after one PageRank iteration? (5 Points)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#question-4-what-is-the-raw-closeness-centrality-for-the-karate-club-network-node-5-5-points"><span class="nav-number">2.6.</span> <span class="nav-text">Question 4: What is the (raw) closeness centrality for the karate club network node 5? (5 Points)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#graph-to-tensor"><span class="nav-number">3.</span> <span class="nav-text">2 Graph to Tensor</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#setup-1"><span class="nav-number">3.1.</span> <span class="nav-text">Setup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pytorch-tensor-basics"><span class="nav-number">3.2.</span> <span class="nav-text">PyTorch tensor basics</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#question-5-getting-the-edge-list-of-the-karate-club-network-and-transform-it-into-torch.longtensor.-what-is-the-torch.sum-value-of-pos_edge_index-tensor-10-points"><span class="nav-number">3.3.</span> <span class="nav-text">Question 5: Getting the edge list of the karate club network and transform it into torch.LongTensor. What is the torch.sum value of pos_edge_index tensor? (10 Points)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#question-6-please-implement-following-function-that-samples-negative-edges.-then-you-will-answer-which-edges-edge_1-to-edge_5-can-be-negative-ones-in-the-karate-club-network-10-points"><span class="nav-number">3.4.</span> <span class="nav-text">Question 6: Please implement following function that samples negative edges. Then you will answer which edges (edge_1 to edge_5) can be negative ones in the karate club network? (10 Points)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#node-emebedding-learning"><span class="nav-number">4.</span> <span class="nav-text">3 Node Emebedding Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#setup-2"><span class="nav-number">4.1.</span> <span class="nav-text">Setup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#visualize-the-initial-node-embeddings"><span class="nav-number">4.2.</span> <span class="nav-text">Visualize the initial node embeddings</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#question-7-training-the-embedding-what-is-the-best-performance-you-can-get-please-report-both-the-best-loss-and-accuracy-on-gradescope.-20-points"><span class="nav-number">4.3.</span> <span class="nav-text">Question 7: Training the embedding! What is the best performance you can get? Please report both the best loss and accuracy on Gradescope. (20 Points)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#visualize-the-final-node-embeddings"><span class="nav-number">4.4.</span> <span class="nav-text">Visualize the final node embeddings</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#submission"><span class="nav-number">5.</span> <span class="nav-text">Submission</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

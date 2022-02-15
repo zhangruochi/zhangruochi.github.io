@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="This Project we will train a neural net to generate plausible human faces in all their subtlty such as appearance, expression, accessories, etc.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Generative Adversarial Network Project">
+<meta property="og:url" content="https://zhangruochi.com/Generative-Adversarial-Network-Project/2019/07/11/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="This Project we will train a neural net to generate plausible human faces in all their subtlty such as appearance, expression, accessories, etc.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Generative-Adversarial-Network-Project/2019/07/11/nvidia_cool_gan.png">
+<meta property="og:image" content="https://zhangruochi.com/Generative-Adversarial-Network-Project/2019/07/11/output_4_1.png">
+<meta property="og:image" content="https://zhangruochi.com/Generative-Adversarial-Network-Project/2019/07/11/noise_to_face.png">
+<meta property="og:image" content="https://zhangruochi.com/Generative-Adversarial-Network-Project/2019/07/11/gan.png">
+<meta property="og:image" content="https://zhangruochi.com/Generative-Adversarial-Network-Project/2019/07/11/output_20_0.png">
+<meta property="og:image" content="https://zhangruochi.com/Generative-Adversarial-Network-Project/2019/07/11/output_20_1.png">
+<meta property="og:image" content="https://zhangruochi.com/Generative-Adversarial-Network-Project/2019/07/11/output_22_0.png">
+<meta property="article:published_time" content="2019-07-10T19:56:49.000Z">
+<meta property="article:modified_time" content="2020-01-09T05:42:22.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Project">
+<meta property="article:tag" content="Computer Vision">
+<meta property="article:tag" content="Generative Adversarial Network">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Generative-Adversarial-Network-Project/2019/07/11/nvidia_cool_gan.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Generative-Adversarial-Network-Project/2019/07/11/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Generative Adversarial Network Project | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Generative-Adversarial-Network-Project/2019/07/11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Generative Adversarial Network Project
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-07-11 03:56:49" itemprop="dateCreated datePublished" datetime="2019-07-11T03:56:49+08:00">2019-07-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-09 13:42:22" itemprop="dateModified" datetime="2020-01-09T13:42:22+08:00">2020-01-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Generative-Adversarial-Network-Project/2019/07/11/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Generative-Adversarial-Network-Project/2019/07/11/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">This Project we will train a neural net to generate plausible human faces in all their subtlty such as appearance, expression, accessories, etc.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="generating-human-faces-with-adversarial-networks">Generating human faces with Adversarial Networks</h3>
+<p><img src="nvidia_cool_gan.png" width="400px"/> <em>© research.nvidia.com</em></p>
+<p>This time we'll train a neural net to generate plausible human faces in all their subtlty: appearance, expression, accessories, etc. 'Cuz when us machines gonna take over Earth, there won't be any more faces left. We want to preserve this data for future iterations. Yikes...</p>
+<p>Based on https://github.com/Lasagne/Recipes/pull/94 .</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">sys.path.append(<span class="string">&quot;..&quot;</span>)</span><br><span class="line"><span class="keyword">import</span> grading</span><br><span class="line"><span class="keyword">import</span> download_utils</span><br><span class="line"><span class="keyword">import</span> tqdm_utils</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">download_utils.link_week_4_resources()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">plt.rcParams.update(&#123;<span class="string">&#x27;axes.titlesize&#x27;</span>: <span class="string">&#x27;small&#x27;</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_digits</span><br><span class="line"><span class="comment">#The following line fetches you two datasets: images, usable for autoencoder training and attributes.</span></span><br><span class="line"><span class="comment">#Those attributes will be required for the final part of the assignment (applying smiles), so please keep them in mind</span></span><br><span class="line"><span class="keyword">from</span> lfw_dataset <span class="keyword">import</span> load_lfw_dataset </span><br><span class="line">data,attrs = load_lfw_dataset(dimx=<span class="number">36</span>,dimy=<span class="number">36</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#preprocess faces</span></span><br><span class="line">data = np.float32(data)/<span class="number">255.</span></span><br><span class="line"></span><br><span class="line">IMG_SHAPE = data.shape[<span class="number">1</span>:]</span><br></pre></td></tr></table></figure>
+<pre><code>HBox(children=(IntProgress(value=0, max=13233), HTML(value=&#39;&#39;)))</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#print random image</span></span><br><span class="line">plt.imshow(data[np.random.randint(data.shape[<span class="number">0</span>])], cmap=<span class="string">&quot;gray&quot;</span>, interpolation=<span class="string">&quot;none&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>&lt;matplotlib.image.AxesImage at 0x11dfdf358&gt;</code></pre>
+<figure>
+<img src="output_4_1.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<h1 id="generative-adversarial-nets-101">Generative adversarial nets 101</h1>
+<p><img src="noise_to_face.png" width="400px"/> <em>© torch.github.io</em></p>
+<p>Deep learning is simple, isn't it? * build some network that generates the face (small image) * make up a <strong>measure</strong> of <strong>how good that face is</strong> * optimize with gradient descent :)</p>
+<p>The only problem is: how can we engineers tell well-generated faces from bad? And i bet you we won't ask a designer for help.</p>
+<p><strong>If we can't tell good faces from bad, we delegate it to yet another neural network!</strong></p>
+<p>That makes the two of them: * __G__enerator - takes random noize for inspiration and tries to generate a face sample. * Let's call him <strong>G</strong>(z), where z is a gaussian noize. * __D__iscriminator - takes a face sample and tries to tell if it's great or fake. * Predicts the probability of input image being a <strong>real face</strong> * Let's call him <strong>D</strong>(x), x being an image. * <strong>D(x)</strong> is a predition for real image and <strong>D(G(z))</strong> is prediction for the face made by generator.</p>
+<p>Before we dive into training them, let's construct the two networks.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> keras_utils <span class="keyword">import</span> reset_tf_session</span><br><span class="line">s = reset_tf_session()</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> layers <span class="keyword">as</span> L</span><br></pre></td></tr></table></figure>
+<pre><code>Using TensorFlow backend.</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">CODE_SIZE = <span class="number">256</span></span><br><span class="line"></span><br><span class="line">generator = Sequential()</span><br><span class="line">generator.add(L.InputLayer([CODE_SIZE],name=<span class="string">&#x27;noise&#x27;</span>))</span><br><span class="line">generator.add(L.Dense(<span class="number">10</span>*<span class="number">8</span>*<span class="number">8</span>, activation=<span class="string">&#x27;elu&#x27;</span>))</span><br><span class="line"></span><br><span class="line">generator.add(L.Reshape((<span class="number">8</span>,<span class="number">8</span>,<span class="number">10</span>)))</span><br><span class="line">generator.add(L.Deconv2D(<span class="number">64</span>,kernel_size=(<span class="number">5</span>,<span class="number">5</span>),activation=<span class="string">&#x27;elu&#x27;</span>))</span><br><span class="line">generator.add(L.Deconv2D(<span class="number">64</span>,kernel_size=(<span class="number">5</span>,<span class="number">5</span>),activation=<span class="string">&#x27;elu&#x27;</span>))</span><br><span class="line">generator.add(L.UpSampling2D(size=(<span class="number">2</span>,<span class="number">2</span>)))</span><br><span class="line">generator.add(L.Deconv2D(<span class="number">32</span>,kernel_size=<span class="number">3</span>,activation=<span class="string">&#x27;elu&#x27;</span>))</span><br><span class="line">generator.add(L.Deconv2D(<span class="number">32</span>,kernel_size=<span class="number">3</span>,activation=<span class="string">&#x27;elu&#x27;</span>))</span><br><span class="line">generator.add(L.Deconv2D(<span class="number">32</span>,kernel_size=<span class="number">3</span>,activation=<span class="string">&#x27;elu&#x27;</span>))</span><br><span class="line"></span><br><span class="line">generator.add(L.Conv2D(<span class="number">3</span>,kernel_size=<span class="number">3</span>,activation=<span class="literal">None</span>))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">generator.summary()</span><br></pre></td></tr></table></figure>
+<pre><code>_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+noise (InputLayer)           (None, 256)               0         
+_________________________________________________________________
+dense_1 (Dense)              (None, 640)               164480    
+_________________________________________________________________
+reshape_1 (Reshape)          (None, 8, 8, 10)          0         
+_________________________________________________________________
+conv2d_transpose_1 (Conv2DTr (None, 12, 12, 64)        16064     
+_________________________________________________________________
+conv2d_transpose_2 (Conv2DTr (None, 16, 16, 64)        102464    
+_________________________________________________________________
+up_sampling2d_1 (UpSampling2 (None, 32, 32, 64)        0         
+_________________________________________________________________
+conv2d_transpose_3 (Conv2DTr (None, 34, 34, 32)        18464     
+_________________________________________________________________
+conv2d_transpose_4 (Conv2DTr (None, 36, 36, 32)        9248      
+_________________________________________________________________
+conv2d_transpose_5 (Conv2DTr (None, 38, 38, 32)        9248      
+_________________________________________________________________
+conv2d_1 (Conv2D)            (None, 36, 36, 3)         867       
+=================================================================
+Total params: 320,835
+Trainable params: 320,835
+Non-trainable params: 0
+_________________________________________________________________</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">assert</span> generator.output_shape[<span class="number">1</span>:] == IMG_SHAPE, <span class="string">&quot;generator must output an image of shape %s, but instead it produces %s&quot;</span>%(IMG_SHAPE,generator.output_shape[<span class="number">1</span>:])</span><br></pre></td></tr></table></figure>
+<h3 id="discriminator">Discriminator</h3>
+<ul>
+<li>Discriminator is your usual convolutional network with interlooping convolution and pooling layers</li>
+<li>The network does not include dropout/batchnorm to avoid learning complications.</li>
+<li>We also regularize the pre-output layer to prevent discriminator from being too certain.</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">discriminator = Sequential()</span><br><span class="line"></span><br><span class="line">discriminator.add(L.InputLayer(IMG_SHAPE))</span><br><span class="line"></span><br><span class="line"><span class="comment"># &lt;build discriminator body&gt;</span></span><br><span class="line">discriminator.add(L.Conv2D(<span class="number">32</span>, kernel_size=<span class="number">3</span>, activation=<span class="string">&#x27;elu&#x27;</span>))</span><br><span class="line">discriminator.add(L.MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>)))</span><br><span class="line">discriminator.add(L.Conv2D(<span class="number">64</span>, kernel_size=<span class="number">3</span>, activation=<span class="string">&#x27;elu&#x27;</span>))</span><br><span class="line">discriminator.add(L.MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>)))</span><br><span class="line">discriminator.add(L.Conv2D(<span class="number">128</span>, kernel_size=<span class="number">3</span>, activation=<span class="string">&#x27;elu&#x27;</span>))</span><br><span class="line">discriminator.add(L.MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>)))</span><br><span class="line"></span><br><span class="line">discriminator.add(L.Flatten())</span><br><span class="line">discriminator.add(L.Dense(<span class="number">256</span>,activation=<span class="string">&#x27;tanh&#x27;</span>))</span><br><span class="line">discriminator.add(L.Dense(<span class="number">2</span>,activation=tf.nn.log_softmax))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="training">Training</h1>
+<p>We train the two networks concurrently: * Train <strong>discriminator</strong> to better distinguish real data from <strong>current</strong> generator * Train <strong>generator</strong> to make discriminator think generator is real * Since discriminator is a differentiable neural network, we train both with gradient descent.</p>
+<p><img src="gan.png" width="600px"/> <em>© deeplearning4j.org</em></p>
+<p>Training is done iteratively until discriminator is no longer able to find the difference (or until you run out of patience).</p>
+<h3 id="tricks">Tricks:</h3>
+<ul>
+<li>Regularize discriminator output weights to prevent explosion</li>
+<li>Train generator with <strong>adam</strong> to speed up training. Discriminator trains with SGD to avoid problems with momentum.</li>
+<li>More: https://github.com/soumith/ganhacks</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">noise = tf.placeholder(<span class="string">&#x27;float32&#x27;</span>,[<span class="literal">None</span>,CODE_SIZE])</span><br><span class="line">real_data = tf.placeholder(<span class="string">&#x27;float32&#x27;</span>,[<span class="literal">None</span>,]+<span class="built_in">list</span>(IMG_SHAPE))</span><br><span class="line"></span><br><span class="line">logp_real = discriminator(real_data)</span><br><span class="line"></span><br><span class="line">generated_data = generator(noise) <span class="comment">#&lt;gen(noise)&gt;</span></span><br><span class="line"></span><br><span class="line">logp_gen = discriminator(generated_data) <span class="comment">#&lt;log P(real | gen(noise))</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">########################</span></span><br><span class="line"><span class="comment">#discriminator training#</span></span><br><span class="line"><span class="comment">########################</span></span><br><span class="line"></span><br><span class="line">d_loss = -tf.reduce_mean(logp_real[:,<span class="number">1</span>] + logp_gen[:,<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment">#regularize</span></span><br><span class="line">d_loss += tf.reduce_mean(discriminator.layers[-<span class="number">1</span>].kernel**<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#optimize</span></span><br><span class="line">disc_optimizer =  tf.train.GradientDescentOptimizer(<span class="number">1e-3</span>).minimize(d_loss,var_list=discriminator.trainable_weights)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">########################</span></span><br><span class="line"><span class="comment">###generator training###</span></span><br><span class="line"><span class="comment">########################</span></span><br><span class="line"></span><br><span class="line">g_loss = -tf.reduce_mean(logp_gen[:,<span class="number">1</span>]) <span class="comment"># &lt;generator loss&gt;</span></span><br><span class="line"></span><br><span class="line">gen_optimizer = tf.train.AdamOptimizer(<span class="number">1e-4</span>).minimize(g_loss,var_list=generator.trainable_weights)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s.run(tf.global_variables_initializer())</span><br></pre></td></tr></table></figure>
+<h3 id="auxiliary-functions">Auxiliary functions</h3>
+<p>Here we define a few helper functions that draw current data distributions and sample training batches.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sample_noise_batch</span>(<span class="params">bsize</span>):</span></span><br><span class="line">    <span class="keyword">return</span> np.random.normal(size=(bsize, CODE_SIZE)).astype(<span class="string">&#x27;float32&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sample_data_batch</span>(<span class="params">bsize</span>):</span></span><br><span class="line">    idxs = np.random.choice(np.arange(data.shape[<span class="number">0</span>]), size=bsize)</span><br><span class="line">    <span class="keyword">return</span> data[idxs]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sample_images</span>(<span class="params">nrow,ncol, sharp=<span class="literal">False</span></span>):</span></span><br><span class="line">    images = generator.predict(sample_noise_batch(bsize=nrow*ncol))</span><br><span class="line">    <span class="keyword">if</span> np.var(images)!=<span class="number">0</span>:</span><br><span class="line">        images = images.clip(np.<span class="built_in">min</span>(data),np.<span class="built_in">max</span>(data))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(nrow*ncol):</span><br><span class="line">        plt.subplot(nrow,ncol,i+<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> sharp:</span><br><span class="line">            plt.imshow(images[i].reshape(IMG_SHAPE),cmap=<span class="string">&quot;gray&quot;</span>, interpolation=<span class="string">&quot;none&quot;</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            plt.imshow(images[i].reshape(IMG_SHAPE),cmap=<span class="string">&quot;gray&quot;</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sample_probas</span>(<span class="params">bsize</span>):</span></span><br><span class="line">    plt.title(<span class="string">&#x27;Generated vs real data&#x27;</span>)</span><br><span class="line">    plt.hist(np.exp(discriminator.predict(sample_data_batch(bsize)))[:,<span class="number">1</span>],</span><br><span class="line">             label=<span class="string">&#x27;D(x)&#x27;</span>, alpha=<span class="number">0.5</span>,<span class="built_in">range</span>=[<span class="number">0</span>,<span class="number">1</span>])</span><br><span class="line">    plt.hist(np.exp(discriminator.predict(generator.predict(sample_noise_batch(bsize))))[:,<span class="number">1</span>],</span><br><span class="line">             label=<span class="string">&#x27;D(G(z))&#x27;</span>,alpha=<span class="number">0.5</span>,<span class="built_in">range</span>=[<span class="number">0</span>,<span class="number">1</span>])</span><br><span class="line">    plt.legend(loc=<span class="string">&#x27;best&#x27;</span>)</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+<h3 id="training-1">Training</h3>
+<p>Main loop. We just train generator and discriminator in a loop and plot results once every N iterations.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> IPython <span class="keyword">import</span> display</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> tqdm_utils.tqdm_notebook_failsafe(<span class="built_in">range</span>(<span class="number">50000</span>)):</span><br><span class="line">    </span><br><span class="line">    feed_dict = &#123;</span><br><span class="line">        real_data:sample_data_batch(<span class="number">100</span>),</span><br><span class="line">        noise:sample_noise_batch(<span class="number">100</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">        s.run(disc_optimizer,feed_dict)</span><br><span class="line">    </span><br><span class="line">    s.run(gen_optimizer,feed_dict)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> epoch %<span class="number">100</span>==<span class="number">0</span>:</span><br><span class="line">        display.clear_output(wait=<span class="literal">True</span>)</span><br><span class="line">        sample_images(<span class="number">2</span>,<span class="number">3</span>,<span class="literal">True</span>)</span><br><span class="line">        sample_probas(<span class="number">1000</span>)</span><br><span class="line">        </span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_20_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure>
+<img src="output_20_1.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> submit_honor <span class="keyword">import</span> submit_honor</span><br><span class="line">submit_honor((generator, discriminator), &lt;YOUR_EMAIL&gt;, &lt;YOUR_TOKEN&gt;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#The network was trained for about 15k iterations. </span></span><br><span class="line"><span class="comment">#Training for longer yields MUCH better results</span></span><br><span class="line">plt.figure(figsize=[<span class="number">16</span>,<span class="number">24</span>])</span><br><span class="line">sample_images(<span class="number">16</span>,<span class="number">8</span>)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="output_22_0.png" alt="png" /><figcaption aria-hidden="true">png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Project/" rel="tag"># Project</a>
+              <a href="/tags/Computer-Vision/" rel="tag"># Computer Vision</a>
+              <a href="/tags/Generative-Adversarial-Network/" rel="tag"># Generative Adversarial Network</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Image-Captioning-Project/2019/07/11/" rel="prev" title="Image Captioning Project">
+      <i class="fa fa-chevron-left"></i> Image Captioning Project
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Decision-Boundry/2019/07/13/" rel="next" title="Decision Boundry">
+      Decision Boundry <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#generating-human-faces-with-adversarial-networks"><span class="nav-number">1.</span> <span class="nav-text">Generating human faces with Adversarial Networks</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#generative-adversarial-nets-101"><span class="nav-number"></span> <span class="nav-text">Generative adversarial nets 101</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#discriminator"><span class="nav-number">1.</span> <span class="nav-text">Discriminator</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#training"><span class="nav-number"></span> <span class="nav-text">Training</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tricks"><span class="nav-number">1.</span> <span class="nav-text">Tricks:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#auxiliary-functions"><span class="nav-number">2.</span> <span class="nav-text">Auxiliary functions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#training-1"><span class="nav-number">3.</span> <span class="nav-text">Training</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

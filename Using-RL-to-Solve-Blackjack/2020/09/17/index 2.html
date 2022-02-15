@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="强化学习——MC(蒙特卡洛)玩21点扑克游戏">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Using RL to Solve Blackjack">
+<meta property="og:url" content="https://zhangruochi.com/Using-RL-to-Solve-Blackjack/2020/09/17/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="强化学习——MC(蒙特卡洛)玩21点扑克游戏">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Users/hongtao/Library/Application%20Support/typora-user-images/image-20190424164753631.png">
+<meta property="og:image" content="https://zhangruochi.com/Users/hongtao/Library/Application%20Support/typora-user-images/image-20190429164937096.png">
+<meta property="og:image" content="https://zhangruochi.com/Users/hongtao/Library/Application%20Support/typora-user-images/image-20190426125404672.png">
+<meta property="article:published_time" content="2020-09-17T09:44:04.000Z">
+<meta property="article:modified_time" content="2021-12-31T10:04:17.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Users/hongtao/Library/Application%20Support/typora-user-images/image-20190424164753631.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Using-RL-to-Solve-Blackjack/2020/09/17/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Using RL to Solve Blackjack | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Using-RL-to-Solve-Blackjack/2020/09/17/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Using RL to Solve Blackjack
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-17 17:44:04" itemprop="dateCreated datePublished" datetime="2020-09-17T17:44:04+08:00">2020-09-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 18:04:17" itemprop="dateModified" datetime="2021-12-31T18:04:17+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Reinforcement-Learning/" itemprop="url" rel="index"><span itemprop="name">Reinforcement Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Using-RL-to-Solve-Blackjack/2020/09/17/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Using-RL-to-Solve-Blackjack/2020/09/17/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">强化学习——MC(蒙特卡洛)玩21点扑克游戏</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>转载自: https://github.com/zht007/tensorflow-practice/blob/master/7_Renforcement_Learning_blackjack/强化学习——MC(蒙特卡洛)玩21点扑克游戏.md</strong></p>
+<h3 id="关于21点游戏">1. 关于21点游戏</h3>
+<h4 id="规则简介">1.1 规则简介</h4>
+<p>21点的游戏规则详细很容易就能够找到，这里进行简单的介绍。</p>
+<blockquote>
+<ul>
+<li><p>在这里<strong>智能体(Agent)</strong>扮演<strong>玩家(Player)</strong>，对方是<strong>庄家(Dealer)</strong>。</p></li>
+<li><p><strong>点数(Score)</strong>：2-10的点数为牌面数字；J，Q，K是10点；<strong>A有两种算法</strong>，1或者11，算11总点数不超过21时则必须算成11(<strong>usable</strong>)，否则算作1。</p></li>
+<li><p>庄家需要<strong>亮(Show)</strong>一张牌，玩家根据自己手中的牌和庄家亮的牌决定是<strong>要牌(hits)</strong>还是<strong>停牌(sticks)</strong>。</p></li>
+<li><p>庄家要牌和停牌的规则是固定的，即点数小于17必须要牌，否则停牌。</p></li>
+<li><p><strong>爆牌(goes bust)</strong>：牌总数操过21点，谁爆牌谁输，谁首先凑到21点谁赢，每有爆牌的时候谁大谁赢，同时凑到21为和局。</p></li>
+</ul>
+</blockquote>
+<p>####1.2 转换成MDP</p>
+<p>了解规则后，我们将游戏转换成MDP，MDP的几大要素：状态(S: State)，行动(A: Action)，奖励(R: Reward)，策略Policy，状态值函数V(s): State-Value Function，行动值函数Q(s, a)Action-Value Function。</p>
+<blockquote>
+<p><strong>行动A</strong>：<strong>要牌(hits)</strong>还是<strong>停牌(sticks)</strong></p>
+<p><strong>状态S</strong>：状态是由双方目前牌的点数决定的，但是当玩家点数小于等于11时，当然会毫不犹豫选择要牌，所以真正涉及到做选择的状态是12-21点的状态，此时庄家亮牌有A-10种情况，再加上是否有11的A(usable A)，所以21点游戏中所有的状态一<strong>共只有200个</strong>。</p>
+<p><strong>奖励R</strong>：玩家赢牌奖励为1，输牌奖励为-1，和局和其他状态奖励为0。</p>
+<p><strong>策略Policy</strong>：该状态下，要牌和停牌的概率</p>
+</blockquote>
+<h3 id="mc策略评估">2. MC策略评估</h3>
+<p>在<strong>给定策略</strong>下，为什么我们不用上一篇文章提到的DP方法进行策略评估呢？DP方法需要look one step ahead，假设玩家手里牌点数为14，庄家亮牌为10，你需要计算要牌和停牌之后所有可能性，下一张牌是什么？庄家可能抽到什么？离获得奖励有多远？等等，这几乎是不可能的。</p>
+<p>MC可以通过抽样方式，直接根据策略实践，从而获取奖励和学习V(s)，克服了DP方法的限制。这里采用首次访问MC方法。大致分为三步：</p>
+<p><strong>第一步</strong>：根据策略采样，直到游戏结束，获得一个episode的 (S0, A0, R1), (S1, A1, R2), . . . , (ST-1, AT-1, RT)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">episode = []</span><br><span class="line">state = env.reset()      </span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">    action = policy(state)</span><br><span class="line">    next_state, reward, done, _ = env.step(action)</span><br><span class="line">    episode.append((state, action, reward))</span><br><span class="line">    <span class="keyword">if</span> done:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    state = next_state</span><br></pre></td></tr></table></figure>
+<p><em>该部分代码参考<a target="_blank" rel="noopener" href="https://github.com/dennybritz/reinforcement-learning/blob/master/MC/MC%20Prediction%20Solution.ipynb">github</a> with MIT license</em></p>
+<p><strong>第二步:</strong> 计算首次出现s状态的Reward，直到这个episode结束总共累积的Reward。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">states_in_episode = <span class="built_in">set</span>([<span class="built_in">tuple</span>(x[<span class="number">0</span>]) <span class="keyword">for</span> x <span class="keyword">in</span> episode])</span><br><span class="line">        <span class="keyword">for</span> state <span class="keyword">in</span> states_in_episode:</span><br><span class="line">            <span class="comment"># Find the first occurance of the state in the episode</span></span><br><span class="line">            first_occurence_idx = <span class="built_in">next</span>(i <span class="keyword">for</span> i,x <span class="keyword">in</span> <span class="built_in">enumerate</span>(episode) <span class="keyword">if</span> x[<span class="number">0</span>] == state)</span><br><span class="line">            <span class="comment"># Sum up all rewards since the first occurance</span></span><br><span class="line">            G = <span class="built_in">sum</span>([x[<span class="number">2</span>]*(discount_factor**i) <span class="keyword">for</span> i,x <span class="keyword">in</span> <span class="built_in">enumerate</span>(episode[first_occurence_idx:])])</span><br><span class="line">            <span class="comment"># Calculate average return for this state over all sampled episodes</span></span><br><span class="line">            returns_sum[state] += G</span><br><span class="line">            returns_count[state] += <span class="number">1.0</span></span><br></pre></td></tr></table></figure>
+<p><em>该部分代码参考<a target="_blank" rel="noopener" href="https://github.com/dennybritz/reinforcement-learning/blob/master/MC/MC%20Prediction%20Solution.ipynb">github</a> with MIT license</em></p>
+<p><strong>第三步</strong>：若干个epsoide之后，将累积的R平均就得到该s下的V(s)了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">V[state] = returns_sum[state] / returns_count[state]</span><br></pre></td></tr></table></figure>
+<p>给定玩家的策略，当分数小于20则要牌，否则停牌</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sample_policy</span>(<span class="params">observation</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    A policy that sticks if the player score is &gt;= 20 and hits otherwise.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    score, dealer_score, usable_ace = observation</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span> <span class="keyword">if</span> score &gt;= <span class="number">20</span> <span class="keyword">else</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p><em>该部分代码参考<a target="_blank" rel="noopener" href="https://github.com/dennybritz/reinforcement-learning/blob/master/MC/MC%20Prediction%20Solution.ipynb">github</a> with MIT license</em></p>
+<p>下图为500,000个epsoide之后的V(s)<img src="/Users/hongtao/Library/Application%20Support/typora-user-images/image-20190424164753631.png" alt="image-20190424164753631" /></p>
+<p>V(s)的分布只能告诉我们<strong>当前策略下</strong>每个<strong>状态</strong>(你的点数，庄家亮牌，是否有usable A)的<strong>价值</strong>，我们如何使用V(s)来改进我们的策略，从而获得最大几率获胜的可能性呢？这就是我们下一节要讨论的内容。</p>
+<h3 id="mc控制">3. MC控制</h3>
+<p>当然我们的目的不仅仅是对当前策略进行评估，我们希望改进策略在游戏中获得最大的收益。与DP一样，MC可以采用评估加改进(Policy Evaluation and Policy Improvement)的方式，迭代更新策略，最终可以收敛到一个最佳的策略。</p>
+<p>当然我们在MC控制中采用策略评估的时候，需要加入对行动的评估，即<strong>Q(s, a)行动值函数</strong>的评估。但是如果我们采用DP中Greedy的方式来改进策略会遇到问题。由于MC是用<strong>采样</strong>的方式更新<strong>Q(s, a)</strong>，这就意味着我们很可能错过一些状态和行动，而且永远也无法更新该状态和行动的Q函数了。这就是典型的<strong>探索利用困境(Explore Exploit Delima)</strong>。</p>
+<p>解决探索利用困境，我们可以使用epsilon-greedy 方法，或者将探索和利用的policy分开，采用off-policy的方法更新策略。</p>
+<h4 id="on-policy-的-epsilon-greedy采样法">3.1 On-Policy 的 epsilon-greedy采样法</h4>
+<p>On-Policy即评估和改进的策略是同一个策略，为避免探索利用困境，我们采用 epsilon-greedy的方法。</p>
+<p><strong>第一步</strong>：对于21点的游戏，我们定义 epsilon-greedy policy.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_epsilon_greedy_policy</span>(<span class="params">Q, epsilon, nA</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">policy_fn</span>(<span class="params">observation</span>):</span></span><br><span class="line">        A = np.ones(nA, dtype=<span class="built_in">float</span>) * epsilon / nA </span><br><span class="line">        best_action = np.argmax(Q[observation])</span><br><span class="line">        A[best_action] += (<span class="number">1.0</span> - epsilon)</span><br><span class="line">        <span class="keyword">return</span> A </span><br><span class="line">    <span class="keyword">return</span> policy_fn</span><br></pre></td></tr></table></figure>
+<p>该部分代码参考<a target="_blank" rel="noopener" href="https://github.com/dennybritz/reinforcement-learning/blob/master/MC/MC%20Prediction%20Solution.ipynb">github</a> with MIT license</p>
+<p>其中Q是一个dictionary，为该状态下对应的行动，这样定义epsilon greedy policy 既保证了最优行动的几率最大，同时也让采取其他行动几率为一个非零的小值(epsilon / nA )。这样就保证了智能体在采样的时候能够探索未知的状态和行动。</p>
+<p><strong>第二步</strong>：与MC评估的第一步一致，根据策略采样，直到游戏结束，获得一个episode的 (S0, A0, R1), (S1, A1, R2), . . . , (ST-1, AT-1, RT)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">policy = make_epsilon_greedy_policy(Q, epsilon, env.action_space.n)</span><br><span class="line">       episode = []</span><br><span class="line">       state = env.reset()</span><br><span class="line">       <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">           probs = policy(state)</span><br><span class="line">           action = np.random.choice(np.arange(<span class="built_in">len</span>(probs)), p=probs)</span><br><span class="line">           next_state, reward, done, _ = env.step(action)</span><br><span class="line">           episode.append((state, action, reward))</span><br><span class="line">           <span class="keyword">if</span> done:</span><br><span class="line">               <span class="keyword">break</span></span><br><span class="line">           state = next_state</span><br></pre></td></tr></table></figure>
+<p><em>该部分代码参考<a target="_blank" rel="noopener" href="https://github.com/dennybritz/reinforcement-learning/blob/master/MC/MC%20Control%20with%20Epsilon-Greedy%20Policies.ipynb">github</a> MIT license</em></p>
+<p>注意与MC评估不同的是，action无法从policy中直接得出，而是根据概率随机选择的，也就是有可能智能体会"探索"非最优行动。</p>
+<p><strong>第三步</strong>：计算首次出现该s 和 a 的Reward，直到这个episode结束，总共累积的Reward。平均Reward并更新Q表。Q表更新的同时，Policy也就自动更新了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sa_in_episode = <span class="built_in">set</span>([(<span class="built_in">tuple</span>(x[<span class="number">0</span>]), x[<span class="number">1</span>]) <span class="keyword">for</span> x <span class="keyword">in</span> episode])</span><br><span class="line">        <span class="keyword">for</span> state, action <span class="keyword">in</span> sa_in_episode:</span><br><span class="line">            sa_pair = (state, action)</span><br><span class="line">            <span class="comment"># Find the first occurance of the (state, action) pair in the episode</span></span><br><span class="line">            first_occurence_idx = <span class="built_in">next</span>(i <span class="keyword">for</span> i,x <span class="keyword">in</span> <span class="built_in">enumerate</span>(episode)</span><br><span class="line">                                       <span class="keyword">if</span> x[<span class="number">0</span>] == state <span class="keyword">and</span> x[<span class="number">1</span>] == action)</span><br><span class="line">            <span class="comment"># Sum up all rewards since the first occurance</span></span><br><span class="line">            G = <span class="built_in">sum</span>([x[<span class="number">2</span>]*(discount_factor**i) <span class="keyword">for</span> i,x <span class="keyword">in</span> <span class="built_in">enumerate</span>(episode[first_occurence_idx:])])</span><br><span class="line">            <span class="comment"># Calculate average return for this state over all sampled episodes</span></span><br><span class="line">            returns_sum[sa_pair] += G</span><br><span class="line">            returns_count[sa_pair] += <span class="number">1.0</span></span><br><span class="line">            Q[state][action] = returns_sum[sa_pair] / returns_count[sa_pair]</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># The policy is improved implicitly by changing the Q dictionary</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> Q, policy</span><br></pre></td></tr></table></figure>
+<p><em>该部分代码参考<a target="_blank" rel="noopener" href="https://github.com/dennybritz/reinforcement-learning/blob/master/MC/MC%20Control%20with%20Epsilon-Greedy%20Policies.ipynb">github</a> MIT license</em></p>
+<p>下图是500,000个episode之后Q表中各个状态对应的Action值，Action只有两个值0(停牌)和1(要牌)，读者就可以尝试用下图的策略指导玩21点的游戏啦。举个例子，比如你现在手上牌是14点，没有可作为11的A，庄家亮牌为8，那么根据左图所示，最好的策略就是要牌。</p>
+<figure>
+<img src="/Users/hongtao/Library/Application%20Support/typora-user-images/image-20190429164937096.png" alt="image-20190429164937096" /><figcaption aria-hidden="true">image-20190429164937096</figcaption>
+</figure>
+<h4 id="off-policy的-weighted-importance采样法">3.2 Off-Policy的 Weighted Importance采样法</h4>
+<p>Off-Policy就是将最终想要得到的<strong>目标策略(Target Policy)</strong>和用于探索的<strong>行为策略(Behavior Policy)</strong>分离，对目标策略采取Greedy的改进方式，而对实际行动的行为策略采用随机探索的改进方式从而解决了探索利用困境。当然Off-Policy 还有很多其他的优点比如学习历史经验，学习别人的经验等等。</p>
+<p>这部分涉及到的理论比较复杂，可参考<a target="_blank" rel="noopener" href="http://incompleteideas.net/book/RLbook2018.pdf">[1]</a> <a target="_blank" rel="noopener" href="http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html">[2]</a>中的相关内容。简单解释即首先用Behavior Policy指导智能体进行MC采样，然后用包含<strong>Importance Sampling Ratio</strong> 函数来更新Target Policy。Importance Sampling Ratio是Target Policy和Behavior Policy在同一路径下的概率比值。</p>
+<p>Target Policy的Q(s, a)函数在MC采样下需要平均，这里采用加权平均的方法，包含Importatnce Sampling Ratio的权重简记为 W，最后，我们通过递推的方法更新 W 即可跟新Q(s, a)。</p>
+<p><strong>第一步</strong>：生成两种policy方法，random policy 用于Behavior Policy，greedy policy用于Target Policy.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_random_policy</span>(<span class="params">nA</span>):</span></span><br><span class="line">    A = np.ones(nA, dtype=<span class="built_in">float</span>) / nA</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">policy_fn</span>(<span class="params">observation</span>):</span></span><br><span class="line">        <span class="keyword">return</span> A</span><br><span class="line">    <span class="keyword">return</span> policy_fn</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_greedy_policy</span>(<span class="params">Q</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">policy_fn</span>(<span class="params">state</span>):</span></span><br><span class="line">        A = np.zeros_like(Q[state], dtype=<span class="built_in">float</span>)</span><br><span class="line">        best_action = np.argmax(Q[state])</span><br><span class="line">        A[best_action] = <span class="number">1.0</span></span><br><span class="line">        <span class="keyword">return</span> A</span><br><span class="line">    <span class="keyword">return</span> policy_fn</span><br></pre></td></tr></table></figure>
+<p><em>该部分代码参考<a target="_blank" rel="noopener" href="https://github.com/dennybritz/reinforcement-learning/blob/master/MC/Off-Policy%20MC%20Control%20with%20Weighted%20Importance%20Sampling%20Solution.ipynb">github</a> with MIT license</em></p>
+<p><strong>第二步</strong>：用Behavior Policy进行MC采样，这里与On-Policy 的方法类似。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">target_policy = create_greedy_policy(Q)</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">for</span> i_episode <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, num_episodes + <span class="number">1</span>):</span><br><span class="line">        episode = []</span><br><span class="line">        state = env.reset()</span><br><span class="line">        <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">            <span class="comment"># Sample an action from our policy</span></span><br><span class="line">            probs = behavior_policy(state)</span><br><span class="line">            action = np.random.choice(np.arange(<span class="built_in">len</span>(probs)), p=probs)</span><br><span class="line">            next_state, reward, done, _ = env.step(action)</span><br><span class="line">            episode.append((state, action, reward))</span><br><span class="line">            <span class="keyword">if</span> done:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            state = next_state</span><br></pre></td></tr></table></figure>
+<p><em>该部分代码参考<a target="_blank" rel="noopener" href="https://github.com/dennybritz/reinforcement-learning/blob/master/MC/Off-Policy%20MC%20Control%20with%20Weighted%20Importance%20Sampling%20Solution.ipynb">github</a> with MIT license</em></p>
+<p>第三步**：递推的方法更新W和Q，Target Policy 也就自动更新了。注意由于是采用递推的方法，该episode是从后往前计算的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">    G = <span class="number">0.0</span></span><br><span class="line">    <span class="comment"># The importance sampling ratio (the weights of the returns)</span></span><br><span class="line">    W = <span class="number">1.0</span></span><br><span class="line">    <span class="comment"># For each step in the episode, backwards</span></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(episode))[::-<span class="number">1</span>]:</span><br><span class="line">        state, action, reward = episode[t]</span><br><span class="line">        <span class="comment"># Update the total reward since step t</span></span><br><span class="line">        G = discount_factor * G + reward</span><br><span class="line">        <span class="comment"># Update weighted importance sampling formula denominator</span></span><br><span class="line">        C[state][action] += W</span><br><span class="line">        <span class="comment"># Update the action-value function using the incremental update formula (5.7)</span></span><br><span class="line">        <span class="comment"># This also improves our target policy which holds a reference to Q</span></span><br><span class="line">        Q[state][action] += (W / C[state][action]) * (G - Q[state][action])</span><br><span class="line">        <span class="comment"># If the action taken by the behavior policy is not the action </span></span><br><span class="line">        <span class="comment"># taken by the target policy the probability will be 0 and we can break</span></span><br><span class="line">        <span class="keyword">if</span> action !=  np.argmax(target_policy(state)):</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        W = W * <span class="number">1.</span>/behavior_policy(state)[action]</span><br><span class="line">    </span><br><span class="line"><span class="keyword">return</span> Q, target_policy</span><br></pre></td></tr></table></figure>
+<p><em>该部分代码参考<a target="_blank" rel="noopener" href="https://github.com/dennybritz/reinforcement-learning/blob/master/MC/Off-Policy%20MC%20Control%20with%20Weighted%20Importance%20Sampling%20Solution.ipynb">github</a> with MIT license</em></p>
+<p>最后，经过500,000 个episod我们得到的最佳策略，与上一节采用On-Policy MC 方法的结果稍有差异，但基本一致。</p>
+<figure>
+<img src="/Users/hongtao/Library/Application%20Support/typora-user-images/image-20190426125404672.png" alt="image-20190426125404672" /><figcaption aria-hidden="true">image-20190426125404672</figcaption>
+</figure>
+<hr />
+<p>参考资料</p>
+<p>[1] <a target="_blank" rel="noopener" href="http://incompleteideas.net/book/RLbook2018.pdf">Reinforcement Learning: An Introduction (2nd Edition)</a></p>
+<p>[2] <a target="_blank" rel="noopener" href="http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html">David Silver's Reinforcement Learning Course (UCL, 2015)</a></p>
+<p>[3] <a target="_blank" rel="noopener" href="https://github.com/dennybritz/reinforcement-learning">Github repo: Reinforcement Learning</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Generalized-Policy-Iteration/2020/09/10/" rel="prev" title="Generalized Policy Iteration">
+      <i class="fa fa-chevron-left"></i> Generalized Policy Iteration
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Transformer-Summarizer/2020/09/27/" rel="next" title="Transformer Summarizer">
+      Transformer Summarizer <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E21%E7%82%B9%E6%B8%B8%E6%88%8F"><span class="nav-number">1.</span> <span class="nav-text">1. 关于21点游戏</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 规则简介</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mc%E7%AD%96%E7%95%A5%E8%AF%84%E4%BC%B0"><span class="nav-number">2.</span> <span class="nav-text">2. MC策略评估</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mc%E6%8E%A7%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">3. MC控制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#on-policy-%E7%9A%84-epsilon-greedy%E9%87%87%E6%A0%B7%E6%B3%95"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 On-Policy 的 epsilon-greedy采样法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#off-policy%E7%9A%84-weighted-importance%E9%87%87%E6%A0%B7%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Off-Policy的 Weighted Importance采样法</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

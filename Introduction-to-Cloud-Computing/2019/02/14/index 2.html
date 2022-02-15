@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Introduction to Cloud Computing">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Introduction to Cloud Computing">
+<meta property="og:url" content="https://zhangruochi.com/Introduction-to-Cloud-Computing/2019/02/14/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Introduction to Cloud Computing">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Introduction-to-Cloud-Computing/2019/02/14/01.png">
+<meta property="og:image" content="https://zhangruochi.com/Introduction-to-Cloud-Computing/2019/02/14/02.png">
+<meta property="og:image" content="https://zhangruochi.com/Introduction-to-Cloud-Computing/2019/02/14/03.png">
+<meta property="og:image" content="https://zhangruochi.com/Introduction-to-Cloud-Computing/2019/02/14/04.png">
+<meta property="og:image" content="https://zhangruochi.com/Introduction-to-Cloud-Computing/2019/02/14/05.png">
+<meta property="og:image" content="https://zhangruochi.com/Introduction-to-Cloud-Computing/2019/02/14/06.png">
+<meta property="og:image" content="https://zhangruochi.com/Introduction-to-Cloud-Computing/2019/02/14/07.png">
+<meta property="og:image" content="https://zhangruochi.com/Introduction-to-Cloud-Computing/2019/02/14/08.png">
+<meta property="og:image" content="https://zhangruochi.com/Introduction-to-Cloud-Computing/2019/02/14/09.png">
+<meta property="article:published_time" content="2019-02-14T13:35:16.000Z">
+<meta property="article:modified_time" content="2021-12-31T07:47:10.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Course Note">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Introduction-to-Cloud-Computing/2019/02/14/01.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Introduction-to-Cloud-Computing/2019/02/14/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Introduction to Cloud Computing | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Introduction-to-Cloud-Computing/2019/02/14/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Introduction to Cloud Computing
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-02-14 21:35:16" itemprop="dateCreated datePublished" datetime="2019-02-14T21:35:16+08:00">2019-02-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-31 15:47:10" itemprop="dateModified" datetime="2021-12-31T15:47:10+08:00">2021-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/" itemprop="url" rel="index"><span itemprop="name">Big Data Architecture</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Big-Data-Architecture/Distributed-Cloud-Computing/" itemprop="url" rel="index"><span itemprop="name">Distributed & Cloud Computing</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Introduction-to-Cloud-Computing/2019/02/14/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Introduction-to-Cloud-Computing/2019/02/14/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Introduction to Cloud Computing</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="table-of-contents">Table of Contents</h1>
+<ul>
+<li><a href="#overview">Overview</a>
+<ul>
+<li><a href="#goals-and-objectives">Goals and Objectives</a></li>
+<li><a href="#key-phrasesconcepts">Key Phrases/Concepts</a></li>
+<li><a href="#guiding-questions">Guiding Questions</a></li>
+</ul></li>
+<li><a href="#introduction">Introduction</a>
+<ul>
+<li><a href="#two-categories-of-cloud">Two categories of cloud</a></li>
+</ul></li>
+<li><a href="#what-is-a-cloud">What is a cloud?</a>
+<ul>
+<li><a href="#four-major-characteristics">Four major characteristics</a></li>
+</ul></li>
+<li><a href="#a-cloud-is-a-distribyted-system">A cloud is a distribyted system</a></li>
+<li><a href="#economics-of-clouds">Economics of clouds</a></li>
+<li><a href="#what-is-a-distributed-system">What is a distributed system</a>
+<ul>
+<li><a href="#our-interest-in-distributed-systems-involves">Our interest in distributed systems involves</a></li>
+</ul></li>
+<li><a href="#mapreduce-paradigm">MapReduce paradigm</a>
+<ul>
+<li><a href="#map">Map</a></li>
+<li><a href="#reduce">Reduce</a></li>
+</ul></li>
+<li><a href="#mapreduce-scheduling">MapReduce Scheduling</a>
+<ul>
+<li><a href="#the-yarn-scheduler">The YARN SCHEDULER</a></li>
+<li><a href="#mapreduce-example">MapReduce Example</a></li>
+</ul></li>
+<li><a href="#fault-tolerance">Fault tolerance</a>
+<ul>
+<li><a href="#stragglers">stragglers</a></li>
+<li><a href="#locality">Locality</a></li>
+</ul></li>
+</ul>
+<h2 id="overview">Overview</h2>
+<p>This week you will see what cloud computing is, a bit about its history and economics, and why cloud computing is all about distributed systems topics (which the course focuses on).</p>
+<h3 id="goals-and-objectives">Goals and Objectives</h3>
+<p>After you actively engage in the learning experiences in this module, you should be able to:</p>
+<ul>
+<li>Know the key differences between cloud computing and previous generations of distributed systems.</li>
+<li>Design MapReduce programs for a variety of problems.</li>
+<li>Know how Hadoop schedules jobs.</li>
+</ul>
+<h3 id="key-phrasesconcepts">Key Phrases/Concepts</h3>
+<p>Keep your eyes open for the following key terms or phrases as you complete the readings and interact with the lectures. These topics will help you better understand the content in this module.</p>
+<ul>
+<li>Clouds</li>
+<li>MapReduce paradigm</li>
+<li>Hadoop YARN</li>
+</ul>
+<h3 id="guiding-questions">Guiding Questions</h3>
+<p>Develop your answers to the following guiding questions while completing the readings and working on assignments throughout the week.</p>
+<ul>
+<li>Why is cloud computing popular today?</li>
+<li>What is different in cloud computing compared to previous generations of distributed systems?</li>
+<li>How does one program in MapReduce?</li>
+<li>How does the MapReduce system schedule jobs?</li>
+</ul>
+<h2 id="overview-1">Overview</h2>
+<ul>
+<li>Why this course is about distributed system comcepts in cloud?
+<ul>
+<li>clouds are distributed system</li>
+</ul></li>
+<li>Cloud examples
+<ul>
+<li>MapReduce and Hadoops</li>
+</ul></li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<ul>
+<li>Customers save money and time</li>
+</ul>
+<h3 id="two-categories-of-cloud">Two categories of cloud</h3>
+<ol type="1">
+<li>public
+<ul>
+<li>provide service to any paying customer</li>
+</ul></li>
+<li>private
+<ul>
+<li>accessbile only to company employees</li>
+</ul></li>
+</ol>
+<h2 id="what-is-a-cloud">What is a cloud?</h2>
+<ol type="1">
+<li><p>Informal definition &gt; lots of storage + compute circle nearby</p></li>
+<li><p>Components</p>
+<ol type="1">
+<li>a single-site cloud
+<ul>
+<li>Compute nodes (grouped into racks) (servers)</li>
+<li>Switches, connecting the racks</li>
+<li>A network topology, e.g. hierarchical</li>
+<li>Storage(backend) nodes, connecting to the network</li>
+<li>Front-end for submiting jobs and receiveing client requests</li>
+<li>Software services</li>
+</ul></li>
+<li>a geographically distributed cloud
+<ul>
+<li>Mutiple such sites</li>
+<li>Each site perhaps with different structures and services</li>
+</ul></li>
+</ol></li>
+</ol>
+<p><img src="01.png" /></p>
+<h3 id="four-major-characteristics">Four major characteristics</h3>
+<p>Distinguish today's clouds from previous generations of distributed computing systems and problems</p>
+<ol type="1">
+<li><strong>Massive scale</strong> Massive-scale essentially means that data centers are very large. They contain tens of thousands, sometimes hundreds of thousands of servers and you could run your computation across as many servers as you want and as many servers as your application will scale</li>
+<li><strong>On-demand access</strong> Pay-as-you-go, no upfront commitment. Anyone can access it
+<ul>
+<li>HaaS: Hardware as a Service</li>
+<li>IaaS: Infrastructure as a Service(Ex: Amazon Web Services (AWS: EC2 and S3))</li>
+<li>PaaS: Platform as a Service(You get access to flexible computing and storage infrastructure, coupled with a software platform (often tightly), Ex: Google’s AppEngine (Python, Java, Go))</li>
+<li>SaaS: Software as a Service(You get access to software services, when you need them. Often said to subsume SOA (Service Oriented Architectures), Ex: Google docs, MS Office on demand)</li>
+</ul></li>
+<li><strong>Data-intensive Nature</strong>
+<ul>
+<li>Typically store data at datacenters</li>
+<li>Use compute nodes nearby</li>
+<li>Compute nodes run computation services</li>
+<li>In data-intensive computing, <strong>the focus shifts from computation to the data</strong>: CPU utilization no longer the most important resource metric, instead I/O is (disk and/or network)</li>
+</ul></li>
+<li><strong>New Cloud Programming Paradigms</strong>
+<ul>
+<li>MapReduce/Hadoop, NoSQL/Cassandra/MongoDB and many others.</li>
+<li>Easy to write and run highly parallel programs in new cloud programming paradigms:</li>
+</ul></li>
+</ol>
+<h2 id="a-cloud-is-a-distribyted-system">A cloud is a distribyted system</h2>
+<ol type="1">
+<li>A cloud consists of
+<ul>
+<li>Hundreds to thousands of machines in a datacenter (server side)</li>
+<li>Thousands to millions of machines accessing these services (client side)</li>
+</ul></li>
+<li>Servers communicate amongst one another
+<ul>
+<li>Distributed System</li>
+<li>Essentially a cluster!</li>
+</ul></li>
+<li>Clients communicate with servers
+<ul>
+<li>Also a distributed system!</li>
+</ul></li>
+<li>Clients also communicate with each other
+<ul>
+<li>Also a distributed system!</li>
+<li><img src="02.png" /></li>
+</ul></li>
+<li><strong>Four Features of Clouds = All Distributed Systems Features</strong></li>
+<li><strong>Cloud = A Fancy Word for a Distributed System</strong></li>
+</ol>
+<h2 id="economics-of-clouds">Economics of clouds</h2>
+<p><img src="03.png" /></p>
+<h2 id="what-is-a-distributed-system">What is a distributed system</h2>
+<ul>
+<li>A distributed system is a collection of independent computers that appear to the users of the system as a single computer.[Andrew Tanenbaum]</li>
+<li>A distributed system is several computers doing something together. Thus, a distributed system has three primary characteristics: multiple computers, interconnections, and shared state. [Michael Schroeder]</li>
+<li>A distributed system is a collection of entities, each of which is <strong>autonomous</strong>, <strong>programmable</strong>, <strong>asynchronous</strong> and failure- prone, and which communicate through an unreliable communication medium.
+<ul>
+<li><strong>programmable</strong>,Eliminates “Humans Interacting with each other”</li>
+<li><strong>asynchronous</strong>, Distinguishes distributed systems from parallel systems (e.g., multiprocessor systems)</li>
+</ul></li>
+</ul>
+<h3 id="our-interest-in-distributed-systems-involves">Our interest in distributed systems involves</h3>
+<ul>
+<li>algorithmics</li>
+<li>design and implementation</li>
+<li>maintenance,</li>
+<li>study</li>
+</ul>
+<h2 id="mapreduce-paradigm">MapReduce paradigm</h2>
+<ul>
+<li>(map square (1,2,3,4))
+<ul>
+<li>output: (1,4,9,16) process each record sequentially and independently</li>
+</ul></li>
+<li>(reduce + (1,4,9,16))
+<ul>
+<li>(+16 (+9 (+4)))</li>
+<li>output: 30 process set of all records in batches</li>
+</ul></li>
+</ul>
+<h3 id="map">Map</h3>
+<ul>
+<li>Map task processes each record <strong>sequentially and independently</strong></li>
+<li><strong>Parallelly</strong> process different map tasks <img src="04.png" /></li>
+</ul>
+<h3 id="reduce">Reduce</h3>
+<ul>
+<li>Reduce process set of all records in batches</li>
+<li>Parallelly process by partitioning records <img src="05.png" /></li>
+</ul>
+<h2 id="mapreduce-scheduling">MapReduce Scheduling</h2>
+<p>1.Externally, for the user: 1. write map program, write reduce program 2. submit job; wait for result 3. need to know nothing about parallel programming</p>
+<ol start="2" type="1">
+<li>Internally, for the paradigm and scheduler
+<ol type="1">
+<li>Parallelize Map
+<ul>
+<li>each Map task is independent</li>
+<li>all Map output records with teh same key should assign to the same Reducer</li>
+</ul></li>
+<li>Transfer data from Map to Reduce</li>
+<li>Parallelize Reduce
+<ul>
+<li>each Reduce task is independent</li>
+<li>use partition function</li>
+</ul></li>
+<li>Implement Storage for Map input, Map output, Reduce input, Reduce output
+<ul>
+<li>Map input: DFS</li>
+<li>Map output: local disk</li>
+<li>Reduce input: remote disk</li>
+<li>Reduce output: DFS</li>
+</ul></li>
+</ol></li>
+</ol>
+<p><img src="06.png" /></p>
+<h3 id="the-yarn-scheduler">The YARN SCHEDULER</h3>
+<ul>
+<li>Used in Hadoop 2.x +</li>
+<li>YARN = Yet Another Resource Negotiator</li>
+<li>Treats each server as a collection of containers
+<ul>
+<li>Container = some CPU + some memory</li>
+</ul></li>
+<li>Has 3 main components
+<ul>
+<li>Global Resource Manager (RM)
+<ul>
+<li>scheduling</li>
+</ul></li>
+<li>Per-server Node Manager (NM)
+<ul>
+<li>Daemon and server-specific functions</li>
+</ul></li>
+<li>Per-application (job) Application Master (AM)
+<ul>
+<li>Container negotiation with RM and NMs</li>
+<li>Detecting task failures of that job</li>
+</ul></li>
+</ul></li>
+</ul>
+<p><img src="07.png" /></p>
+<h3 id="mapreduce-example">MapReduce Example</h3>
+<p><img src="08.png" /></p>
+<h2 id="fault-tolerance">Fault tolerance</h2>
+<ul>
+<li>Server failure
+<ul>
+<li>NM,AM heartbeats to RM</li>
+<li>NM keep track of each task running at its server</li>
+</ul></li>
+<li>RM failure
+<ul>
+<li>use old checkpoints and bring up secondary RM</li>
+</ul></li>
+</ul>
+<h3 id="stragglers">stragglers</h3>
+<ul>
+<li>the slowest machine slows the entire job</li>
+<li><strong>speculative exection</strong>: backup execction of straggler task</li>
+</ul>
+<h3 id="locality">Locality</h3>
+<p><img src="09.png" /></p>
+<p><strong>Reference from some slides from Coursera course <a target="_blank" rel="noopener" href="https://www.coursera.org/learn/cloud-computing">Cloud Computing</a></strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Course-Note/" rel="tag"># Course Note</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Gossip-Member-Grid/2019/02/14/" rel="prev" title="Gossip,Member,Grid">
+      <i class="fa fa-chevron-left"></i> Gossip,Member,Grid
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/The%20Learning%20Problems/2019/02/14/" rel="next" title="The Learning Problems">
+      The Learning Problems <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#table-of-contents"><span class="nav-number">1.</span> <span class="nav-text">Table of Contents</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#overview"><span class="nav-number">1.1.</span> <span class="nav-text">Overview</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#goals-and-objectives"><span class="nav-number">1.1.1.</span> <span class="nav-text">Goals and Objectives</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#key-phrasesconcepts"><span class="nav-number">1.1.2.</span> <span class="nav-text">Key Phrases&#x2F;Concepts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#guiding-questions"><span class="nav-number">1.1.3.</span> <span class="nav-text">Guiding Questions</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#overview-1"><span class="nav-number">1.2.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.3.</span> <span class="nav-text">Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#two-categories-of-cloud"><span class="nav-number">1.3.1.</span> <span class="nav-text">Two categories of cloud</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#what-is-a-cloud"><span class="nav-number">1.4.</span> <span class="nav-text">What is a cloud?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#four-major-characteristics"><span class="nav-number">1.4.1.</span> <span class="nav-text">Four major characteristics</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#a-cloud-is-a-distribyted-system"><span class="nav-number">1.5.</span> <span class="nav-text">A cloud is a distribyted system</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#economics-of-clouds"><span class="nav-number">1.6.</span> <span class="nav-text">Economics of clouds</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#what-is-a-distributed-system"><span class="nav-number">1.7.</span> <span class="nav-text">What is a distributed system</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#our-interest-in-distributed-systems-involves"><span class="nav-number">1.7.1.</span> <span class="nav-text">Our interest in distributed systems involves</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mapreduce-paradigm"><span class="nav-number">1.8.</span> <span class="nav-text">MapReduce paradigm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#map"><span class="nav-number">1.8.1.</span> <span class="nav-text">Map</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reduce"><span class="nav-number">1.8.2.</span> <span class="nav-text">Reduce</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mapreduce-scheduling"><span class="nav-number">1.9.</span> <span class="nav-text">MapReduce Scheduling</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#the-yarn-scheduler"><span class="nav-number">1.9.1.</span> <span class="nav-text">The YARN SCHEDULER</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mapreduce-example"><span class="nav-number">1.9.2.</span> <span class="nav-text">MapReduce Example</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fault-tolerance"><span class="nav-number">1.10.</span> <span class="nav-text">Fault tolerance</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stragglers"><span class="nav-number">1.10.1.</span> <span class="nav-text">stragglers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#locality"><span class="nav-number">1.10.2.</span> <span class="nav-text">Locality</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

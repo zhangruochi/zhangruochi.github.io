@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Important concepts about Matrix Algebra. This part contains the contents of Matrices and Systems of linear equations.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Matrix Algebra for Engineers (part one)">
+<meta property="og:url" content="https://zhangruochi.com/Matrix-Algebra-for-Engineers-part-one/2019/03/17/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Important concepts about Matrix Algebra. This part contains the contents of Matrices and Systems of linear equations.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Matrix-Algebra-for-Engineers-part-one/2019/03/17/Rotating.png">
+<meta property="article:published_time" content="2019-03-17T00:42:45.000Z">
+<meta property="article:modified_time" content="2019-11-23T19:32:36.706Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Course Note">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Matrix-Algebra-for-Engineers-part-one/2019/03/17/Rotating.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Matrix-Algebra-for-Engineers-part-one/2019/03/17/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Matrix Algebra for Engineers (part one) | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Matrix-Algebra-for-Engineers-part-one/2019/03/17/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Matrix Algebra for Engineers (part one)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-03-17 08:42:45" itemprop="dateCreated datePublished" datetime="2019-03-17T08:42:45+08:00">2019-03-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-24 03:32:36" itemprop="dateModified" datetime="2019-11-24T03:32:36+08:00">2019-11-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/Linear-Algebra/" itemprop="url" rel="index"><span itemprop="name">Linear Algebra</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Matrix-Algebra-for-Engineers-part-one/2019/03/17/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Matrix-Algebra-for-Engineers-part-one/2019/03/17/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Important concepts about Matrix Algebra. This part contains the contents of Matrices and Systems of linear equations.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>reference from <em>Matrix Algebra for Engineers</em> by Jeffrey R. Chasnov</strong></p>
+<h2 id="inner-and-outer-products">Inner and outer products</h2>
+<p>The <strong>inner product</strong> (or dot product or scalar product) between two vectors is obtained from the ma- trix product of a row vector times a column vector</p>
+<p><span class="math display">\[
+\mu^{T}\nu = ( \mu_{1} \quad \mu_{2} \quad \mu_{3} ) \begin{pmatrix} \nu_{1} \\ \nu_{2} \\ \nu_{3} \end{pmatrix} = \mu_{1}\nu_{1} + \mu_{2}\nu_{2} + \mu_{3}\nu_{3}.
+\]</span></p>
+<p>If the inner product between two vectors is zero, we say that the vectors are <strong>orthogonal</strong>.</p>
+<p>The <strong>norm</strong> of a vector is defined by</p>
+<p><span class="math display">\[
+\lVert \mu \rVert = (\mu^{T}\mu) =  ( \mu_{1}^{2} + \mu_{2}^{2} + \mu_{3}^{2} )^{\frac{1}{2}}
+\]</span></p>
+<p>If the norm of a vector is equal to one, we say that the vector is <strong>normalized.</strong> If a set of vectors are mutually orthogonal and normalized, we say that these vectors are <strong>orthonormal.</strong></p>
+<p>An <strong>outer product</strong> is also defined, and is used in some applications. The outer product between u and v is given by</p>
+<p><span class="math display">\[
+\mu\nu^{T} = \begin{pmatrix} \mu_{1} \\ \mu_{2} \\ \mu_{3} \end{pmatrix} ( \nu_{1} \quad \nu_{2} \quad \nu_{3} ) = 
+\begin{pmatrix} 
+\mu_{1}\nu_{1} &amp; \mu_{1}\nu_{2} &amp; \mu_{1}\nu_{3} \\
+\mu_{2}\nu_{1} &amp; \mu_{2}\nu_{2} &amp; \mu_{2}\nu_{3} \\
+\mu_{3}\nu_{1} &amp; \mu_{3}\nu_{2} &amp; \mu_{3}\nu_{3} \\
+\end{pmatrix}
+\]</span></p>
+<h2 id="inverse-matrix">Inverse matrix</h2>
+<p>Square matrices may have inverses. When a matrix A has an inverse, we say it is invertible and denote its inverse by <span class="math inline">\(A^{−1}\)</span>. The inverse matrix satisfies</p>
+<p><span class="math display">\[AA^{−1} = A^{−1}A = I.\]</span></p>
+<p><span class="math display">\[A^{-1} = \frac{1}{ad-bc}
+\begin{pmatrix}
+d &amp; -b \\
+-c &amp; a \\
+\end{pmatrix} 
+\]</span></p>
+<p><span class="math display">\[
+det \ A = 
+\begin{vmatrix}
+a &amp; b \\
+c &amp; d \\
+\end{vmatrix}
+= ad - bc
+\]</span></p>
+<p>The determinant of a two-by-two matrix is the product of the diagonals minus the product of the off-diagonals. Evidently, A is invertible only if <span class="math inline">\(det \quad A \neq 0.\)</span> Notice that the inverse of a two-by-two matrix, in words, is found by switching the diagonal elements of the matrix, negating the off-diagonal elements, and dividing by the determinant. Later, we will show that an n-by-n matrix is invertible <strong>if and only if its determinant is nonzero.</strong> This will require a more general definition of determinant.</p>
+<h2 id="orthogonal-matrices">Orthogonal matrices</h2>
+<p>A square matrix Q with real entries that satisfies</p>
+<p><span class="math display">\[Q^{−1} = Q^{T}\]</span></p>
+<p>is called an <strong>orthogonal matrix</strong>.</p>
+<p>Since the columns of <span class="math inline">\(Q^{T}\)</span> are just the rows of Q, and <span class="math inline">\(QQ^{T}\)</span> = I, the row vectors that form Q must be <strong>orthonormal</strong>. Similarly, since the rows of <span class="math inline">\(Q^{T}\)</span> are just the columns of Q, and <span class="math inline">\(Q^{T}Q\)</span> = I, the column vectors that form Q must also be <strong>orthonormal</strong>.</p>
+<h2 id="rotation-matrices">Rotation matrices</h2>
+<figure>
+<img src="Rotating.png" alt="Rotating.png" /><figcaption aria-hidden="true">Rotating.png</figcaption>
+</figure>
+<p>Writing the equations for <span class="math inline">\(x&#39;\)</span> and <span class="math inline">\(y&#39;\)</span> in matrix form, we have</p>
+<p><span class="math display">\[
+\begin{pmatrix} 
+x&#39; \\
+y&#39; \\
+\end{pmatrix}  = \begin{pmatrix} 
+cos\theta &amp; -sin\theta \\
+sin\theta &amp; cos\theta \\
+\end{pmatrix} = \begin{pmatrix} 
+x \\
+y \\
+\end{pmatrix} 
+\]</span></p>
+<p>The above two-by-two matrix is a rotation matrix and we will denote it by <span class="math inline">\(R_{θ}\)</span>. Observe that the rows and columns of <span class="math inline">\(R_{θ}\)</span> are <strong>orthonormal</strong> and that the inverse of <span class="math inline">\(R_{θ}\)</span> is just its transpose. The inverse of <span class="math inline">\(R_{θ}\)</span> rotates a vector by −θ.</p>
+<h2 id="permutation-matrices">Permutation matrices</h2>
+<p>Another type of <strong>orthogonal matrix</strong> is a permutation matrix. An n-by-n permutation matrix, when <strong>multiplying on the left permutes the rows of a matrix</strong>, and when <strong>multiplying on the right permutes the columns</strong>. Clearly, permuting the rows of a column vector will not change its norm.</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+0 &amp; 1 \\
+1 &amp; 0 \\
+\end{pmatrix}
+\begin{pmatrix}
+a &amp; b \\
+c &amp; d \\
+\end{pmatrix} =
+\begin{pmatrix}
+c &amp; d \\
+a &amp; b \\
+\end{pmatrix}
+\]</span></p>
+<p><span class="math display">\[
+\begin{pmatrix}
+a &amp; b \\
+c &amp; d \\
+\end{pmatrix}
+\begin{pmatrix}
+0 &amp; 1 \\
+1 &amp; 0 \\
+\end{pmatrix} =
+\begin{pmatrix}
+b &amp; a \\
+d &amp; c \\
+\end{pmatrix}
+\]</span></p>
+<h2 id="gaussian-elimination">Gaussian elimination</h2>
+<p><span class="math display">\[
+\begin{align*}
+−3x_{1} + 2x_{2} − x_{3} = −1 \\ 
+6x_{1} − 6x_{2} + 7x_{3} = −7,  \\
+3x_{1} − 4x_{2} + 4x_{3} = −6, \\
+\end{align*}
+\]</span></p>
+<p>which can be written in matrix form as</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+-3 &amp; 2 &amp; -1 &amp; -1 \\
+6 &amp; -6 &amp; 7 &amp; -7 \\
+3 &amp; -4 &amp; 4 &amp; -6 \\
+\end{pmatrix}
+\]</span></p>
+<p>Row reduction is then performed on this augmented matrix. Allowed operations are (1) interchange the order of any rows, (2) multiply any row by a constant, (3) add a multiple of one row to another row. These three operations do not change the solution of the original equations. The goal here is to <strong>convert the matrix A into upper-triangular form</strong>, and then use this form to quickly solve for the unknowns x.</p>
+<p>We first form what is called an <strong>augmented matrix</strong> by combining the matrix A with the column vector b</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+-3 &amp; 2 &amp; -1 &amp; -1 \\
+0 &amp; -2 &amp; 5 &amp; -9 \\
+0 &amp; -2 &amp; 3 &amp; -7 \\
+\end{pmatrix}
+\]</span></p>
+<p>These equations can be solved by back substitution, starting from the last equation and working backwards. We have</p>
+<p><span class="math display">\[
+\begin{align*}
+&amp; x_{3} = −1, \\
+&amp; x_{2} = −\frac{1}{2}(−9−5x_{3})=2, \\
+&amp; x_{1} = −\frac{1}{3}(−1+x_{3}−2x_{2})=2
+\end{align*}
+\]</span></p>
+<p>We have thus found the solution</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+x_{1} \\
+x_{2} \\
+x_{3} \\
+\end{pmatrix} = 
+\begin{pmatrix}
+2 \\
+2 \\
+-1 \\
+\end{pmatrix}
+\]</span></p>
+<p>When performing Gaussian elimination, the diagonal element that is used during the elimination procedure is called the <strong>pivot</strong></p>
+<h2 id="reduced-row-echelon-form">Reduced row echelon form</h2>
+<p>If we continue the row elimination procedure so that all the pivots are one, and all the entries above and below the pivots are eliminated, then we say that the resulting matrix is in <strong>reduced row echelon form</strong></p>
+<p><span class="math display">\[
+\begin{pmatrix}
+1 &amp; 2 &amp; 3 &amp; 4 \\
+4 &amp; 5 &amp; 6 &amp; 7 \\
+6 &amp; 7 &amp; 8 &amp; 9 \\
+\end{pmatrix} \\
+\]</span> <span class="math display">\[
+rref(A) = \begin{pmatrix}
+1 &amp; 0 &amp; -1 &amp; -2 \\
+0 &amp; 1 &amp; 2 &amp; 3 \\
+0 &amp; 0 &amp; 0 &amp; 0 \\
+\end{pmatrix}
+\]</span></p>
+<h2 id="computing-inverses">Computing inverses</h2>
+<p><span class="math display">\[(A | E) \rightarrow (E | A^{-1})\]</span></p>
+<p>Because: <span class="math display">\[\begin{align}
+&amp; p_{1}p_{2}p_{3}p_{4}...p_{n}A \rightarrow E \\
+&amp; p_{1}p_{2}p_{3}p_{4}...p_{n} = A^{-1} \\
+&amp; p_{1}p_{2}p_{3}p_{4}...p_{n}E \rightarrow A^{-1}
+\end{align}\]</span></p>
+<p><span class="math display">\[
+\begin{pmatrix}
+-3 &amp; -2 &amp; -1 &amp; 1 &amp; 0 &amp; 0 \\
+6  &amp; -6 &amp; 7  &amp; 0 &amp; 1 &amp; 0\\
+3  &amp; -4 &amp; 4  &amp; 0 &amp; 0 &amp; 1 \\
+\end{pmatrix}\rightarrow
+\begin{pmatrix}
+1 &amp; 0 &amp; 0 &amp; -\frac{1}{3} &amp; \frac{1}{3}  &amp; -\frac{2}{3}  \\
+0 &amp; 1 &amp; 0 &amp; \frac{1}{4} &amp; \frac{3}{4} &amp; -\frac{5}{4} \\
+0 &amp; 0 &amp; 1 &amp; \frac{1}{2} &amp; \frac{1}{2} &amp; -\frac{1}{2}  \\
+\end{pmatrix} 
+\]</span></p>
+<h2 id="lu-decomposition">LU decomposition</h2>
+<p>row reduction of a matrix A can be written as</p>
+<p><span class="math display">\[M_{3}M_{2}M_{1}A = U\]</span></p>
+<p>where U is upper triangular. Upon inverting the elementary matrices, we have</p>
+<p><span class="math display">\[A = M_{3}^{-1}M_{2}^{-1}M_{1}^{-1}U\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[L = M_{3}^{-1}M_{2}^{-1}M_{1}^{-1}\]</span></p>
+<p>Our LU decomposition of A is therefore:</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+-3 &amp; -2 &amp; -1\\
+6 &amp; -6 &amp; 7\\
+3 &amp; -4 &amp; 4\\
+\end{pmatrix} = 
+\begin{pmatrix}
+1 &amp; 0 &amp; 0\\
+-2 &amp; 1 &amp; 0\\
+-1 &amp; 1 &amp; 1\\
+\end{pmatrix}
+\begin{pmatrix}
+-3 &amp; 2 &amp; -1\\
+0 &amp; -2 &amp; 5\\
+0 &amp; 0 &amp; -2\\
+\end{pmatrix}
+\]</span></p>
+<h2 id="solving-lux-b">Solving (LU)x = b</h2>
+<p>The LU decomposition is useful when one needs to solve <strong>Ax = b</strong> for many right-hand-sides. With the LU decomposition in hand, one writes</p>
+<p><span class="math display">\[(LU)x = L(Ux) = b\]</span></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Course-Note/" rel="tag"># Course Note</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Fluent-Python/2019/03/05/" rel="prev" title="Fluent Python">
+      <i class="fa fa-chevron-left"></i> Fluent Python
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Matrix-Algebra-for-Engineers-part-two/2019/03/17/" rel="next" title="Matrix Algebra for Engineers (part two)">
+      Matrix Algebra for Engineers (part two) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#inner-and-outer-products"><span class="nav-number">1.</span> <span class="nav-text">Inner and outer products</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#inverse-matrix"><span class="nav-number">2.</span> <span class="nav-text">Inverse matrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#orthogonal-matrices"><span class="nav-number">3.</span> <span class="nav-text">Orthogonal matrices</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rotation-matrices"><span class="nav-number">4.</span> <span class="nav-text">Rotation matrices</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#permutation-matrices"><span class="nav-number">5.</span> <span class="nav-text">Permutation matrices</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gaussian-elimination"><span class="nav-number">6.</span> <span class="nav-text">Gaussian elimination</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reduced-row-echelon-form"><span class="nav-number">7.</span> <span class="nav-text">Reduced row echelon form</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#computing-inverses"><span class="nav-number">8.</span> <span class="nav-text">Computing inverses</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lu-decomposition"><span class="nav-number">9.</span> <span class="nav-text">LU decomposition</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#solving-lux-b"><span class="nav-number">10.</span> <span class="nav-text">Solving (LU)x &#x3D; b</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="This is course note of the deep learning specialization at lectured by Andrew Ng.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Convolutional Neural Networks">
+<meta property="og:url" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="This is course note of the deep learning specialization at lectured by Andrew Ng.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/01.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/02.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/03.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/04.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/05.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/06.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/resNet.jpg">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/12.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/16.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/17.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/13.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/14.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/inception_block1a.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/15.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/Classification.jpg">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/ClassificationLoc.jpg">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/ObjectDetection.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/SemanticSegmentation.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/InstanceSegmentation.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/34.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/35.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/36.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/37.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/38.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/39.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/receptiveField.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/40.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/41.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/42.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/43.png">
+<meta property="og:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/44.png">
+<meta property="article:published_time" content="2019-03-27T04:41:11.000Z">
+<meta property="article:modified_time" content="2019-07-05T10:31:57.000Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="Convolutional Neural Networks">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/01.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Convolutional Neural Networks | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Convolutional-Neural-Networks/2019/03/27/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Convolutional Neural Networks
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-03-27 12:41:11" itemprop="dateCreated datePublished" datetime="2019-03-27T12:41:11+08:00">2019-03-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-07-05 18:31:57" itemprop="dateModified" datetime="2019-07-05T18:31:57+08:00">2019-07-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Convolutional-Neural-Networks/2019/03/27/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Convolutional-Neural-Networks/2019/03/27/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">This is course note of the deep learning specialization at lectured by Andrew Ng.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>Reference from lecture slides of Andrew Ng and github repo from <a target="_blank" rel="noopener" href="https://github.com/mbadry1/DeepLearning.ai-Summary">DeepLearning.ai-Summary</a></strong></p>
+<h1 id="convolutional-neural-networks">Convolutional Neural Networks</h1>
+<p>This is the forth course of the deep learning specialization at <a target="_blank" rel="noopener" href="https://www.coursera.org/specializations/deep-learning">Coursera</a> which is moderated by <a target="_blank" rel="noopener" href="http://deeplearning.ai/">DeepLearning.ai</a>. The course is taught by Andrew Ng.</p>
+<h2 id="table-of-contents">Table of contents</h2>
+<ul>
+<li><a href="#convolutional-neural-networks">Convolutional Neural Networks</a>
+<ul>
+<li><a href="#table-of-contents">Table of contents</a></li>
+<li><a href="#course-summary">Course summary</a></li>
+<li><a href="#foundations-of-cnns">Foundations of CNNs</a>
+<ul>
+<li><a href="#computer-vision">Computer vision</a></li>
+<li><a href="#edge-detection-example">Edge detection example</a></li>
+<li><a href="#padding">Padding</a></li>
+<li><a href="#strided-convolution">Strided convolution</a></li>
+<li><a href="#convolutions-over-volumes">Convolutions over volumes</a></li>
+<li><a href="#one-layer-of-a-convolutional-network">One Layer of a Convolutional Network</a></li>
+<li><a href="#a-simple-convolution-network-example">A simple convolution network example</a></li>
+<li><a href="#pooling-layers">Pooling layers</a></li>
+<li><a href="#convolutional-neural-network-example">Convolutional neural network example</a></li>
+<li><a href="#why-convolutions">Why convolutions?</a></li>
+</ul></li>
+<li><a href="#deep-convolutional-models-case-studies">Deep convolutional models: case studies</a>
+<ul>
+<li><a href="#why-look-at-case-studies">Why look at case studies?</a></li>
+<li><a href="#classic-networks">Classic networks</a></li>
+<li><a href="#residual-networks-resnets">Residual Networks (ResNets)</a></li>
+<li><a href="#why-resnets-work">Why ResNets work</a></li>
+<li><a href="#network-in-network-and-1-X-1-convolutions">Network in Network and 1×1 convolutions</a></li>
+<li><a href="#inception-network-motivation">Inception network motivation</a></li>
+<li><a href="#inception-network-googlenet">Inception network (GoogleNet)</a></li>
+<li><a href="#using-open-source-implementation">Using Open-Source Implementation</a></li>
+<li><a href="#transfer-learning">Transfer Learning</a></li>
+<li><a href="#data-augmentation">Data Augmentation</a></li>
+<li><a href="#state-of-computer-vision">State of Computer Vision</a></li>
+</ul></li>
+<li><a href="#object-detection">Object detection</a>
+<ul>
+<li><a href="#object-localization">Object Localization</a></li>
+<li><a href="#landmark-detection">Landmark Detection</a></li>
+<li><a href="#object-detection-1">Object Detection</a></li>
+<li><a href="#convolutional-implementation-of-sliding-windows">Convolutional Implementation of Sliding Windows</a></li>
+<li><a href="#bounding-box-predictions">Bounding Box Predictions</a></li>
+<li><a href="#intersection-over-union">Intersection Over Union</a></li>
+<li><a href="#non-max-suppression">Non-max Suppression</a></li>
+<li><a href="#anchor-boxes">Anchor Boxes</a></li>
+<li><a href="#yolo-algorithm">YOLO Algorithm</a></li>
+<li><a href="#region-proposals-r-cnn">Region Proposals (R-CNN)</a></li>
+</ul></li>
+<li><a href="#special-applications-face-recognition--neural-style-transfer">Special applications: Face recognition &amp; Neural style transfer</a>
+<ul>
+<li><a href="#face-recognition">Face Recognition</a>
+<ul>
+<li><a href="#what-is-face-recognition">What is face recognition?</a></li>
+<li><a href="#one-shot-learning">One Shot Learning</a></li>
+<li><a href="#siamese-network">Siamese Network</a></li>
+<li><a href="#triplet-loss">Triplet Loss</a></li>
+<li><a href="#face-verification-and-binary-classification">Face Verification and Binary Classification</a></li>
+</ul></li>
+<li><a href="#neural-style-transfer">Neural Style Transfer</a>
+<ul>
+<li><a href="#what-is-neural-style-transfer">What is neural style transfer?</a></li>
+<li><a href="#what-are-deep-convnets-learning">What are deep ConvNets learning?</a></li>
+<li><a href="#cost-function">Cost Function</a></li>
+<li><a href="#content-cost-function">Content Cost Function</a></li>
+<li><a href="#style-cost-function">Style Cost Function</a></li>
+<li><a href="#1d-and-3d-generalizations">1D and 3D Generalizations</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#extras">Extras</a>
+<ul>
+<li><a href="#keras">Keras</a></li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="course-summary">Course summary</h2>
+<p>Here is the course summary as given on the course <a target="_blank" rel="noopener" href="https://www.coursera.org/learn/convolutional-neural-networks">link</a>:</p>
+<blockquote>
+<p>This course will teach you how to build convolutional neural networks and apply it to image data. Thanks to deep learning, computer vision is working far better than just two years ago, and this is enabling numerous exciting applications ranging from safe autonomous driving, to accurate face recognition, to automatic reading of radiology images.</p>
+<p>You will: - Understand how to build a convolutional neural network, including recent variations such as residual networks. - Know how to apply convolutional networks to visual detection and recognition tasks. - Know to use neural style transfer to generate art. - Be able to apply these algorithms to a variety of image, video, and other 2D or 3D data.</p>
+<p>This is the fourth course of the Deep Learning Specialization.</p>
+</blockquote>
+<h2 id="foundations-of-cnns">Foundations of CNNs</h2>
+<blockquote>
+<p>Learn to implement the foundational layers of CNNs (pooling, convolutions) and to stack them properly in a deep network to solve multi-class image classification problems.</p>
+</blockquote>
+<h3 id="computer-vision">Computer vision</h3>
+<ul>
+<li>Computer vision is one of the applications that are rapidly active thanks to deep learning.</li>
+<li>Some of the applications of computer vision that are using deep learning includes:
+<ul>
+<li>Self driving cars.</li>
+<li>Face recognition.</li>
+</ul></li>
+<li>Deep learning is also enabling new types of art to be created.</li>
+<li>Rapid changes to computer vision are making new applications that weren't possible a few years ago.</li>
+<li>Computer vision deep leaning techniques are always evolving making a new architectures which can help us in other areas other than computer vision.
+<ul>
+<li>For example, Andrew Ng took some ideas of computer vision and applied it in speech recognition.</li>
+</ul></li>
+<li>Examples of a computer vision problems includes:
+<ul>
+<li>Image classification.</li>
+<li>Object detection.
+<ul>
+<li>Detect object and localize them.</li>
+</ul></li>
+<li>Neural style transfer
+<ul>
+<li>Changes the style of an image using another image.</li>
+</ul></li>
+</ul></li>
+<li>One of the challenges of computer vision problem that images can be so large and we want a fast and accurate algorithm to work with that.
+<ul>
+<li>For example, a <code>1000x1000</code> image will represent 3 million feature/input to the full connected neural network. If the following hidden layer contains 1000, then we will want to learn weights of the shape <code>[1000, 3 million]</code> which is 3 billion parameter only in the first layer and thats so computationally expensive!</li>
+</ul></li>
+<li>One of the solutions is to build this using <strong>convolution layers</strong> instead of the <strong>fully connected layers</strong>.</li>
+</ul>
+<h3 id="edge-detection-example">Edge detection example</h3>
+<ul>
+<li><p>The convolution operation is one of the fundamentals blocks of a CNN. One of the examples about convolution is the image edge detection operation.</p></li>
+<li><p>Early layers of CNN might detect edges then the middle layers will detect parts of objects and the later layers will put the these parts together to produce an output.</p></li>
+<li><p>In an image we can detect vertical edges, horizontal edges, or full edge detector.</p></li>
+<li><p>Vertical edge detection:</p>
+<ul>
+<li>An example of convolution operation to detect vertical edges:
+<ul>
+<li><img src="01.png" /></li>
+</ul></li>
+<li>In the last example a <code>6x6</code> matrix convolved with <code>3x3</code> filter/kernel gives us a <code>4x4</code> matrix.</li>
+<li>If you make the convolution operation in TensorFlow you will find the function <code>tf.nn.conv2d</code>. In keras you will find <code>Conv2d</code> function.</li>
+<li>The vertical edge detection filter will find a <code>3x3</code> place in an image where there are a bright region followed by a dark region.</li>
+<li>If we applied this filter to a white region followed by a dark region, it should find the edges in between the two colors as a positive value. But if we applied the same filter to a dark region followed by a white region it will give us negative values. To solve this we can use the abs function to make it positive.</li>
+</ul></li>
+<li><p>Horizontal edge detection</p>
+<ul>
+<li><p>Filter would be like this</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1   1   1</span><br><span class="line">0   0   0</span><br><span class="line">-1  -1  -1</span><br></pre></td></tr></table></figure></li>
+</ul></li>
+<li><p>There are a lot of ways we can put number inside the horizontal or vertical edge detections. For example here are the vertical <strong>Sobel</strong> filter (The idea is taking care of the middle row):</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1 0   -1</span><br><span class="line">2 0   -2</span><br><span class="line">1 0   -1</span><br></pre></td></tr></table></figure></li>
+<li><p>Also something called <strong>Scharr</strong> filter (The idea is taking great care of the middle row):</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">3 0   -3</span><br><span class="line">10    0   -10</span><br><span class="line">3 0   -3</span><br></pre></td></tr></table></figure></li>
+<li><p>What we learned in the deep learning is that we don't need to hand craft these numbers, we can treat them as weights and then learn them. It can learn horizontal, vertical, angled, or any edge type automatically rather than getting them by hand.</p></li>
+</ul>
+<h3 id="padding">Padding</h3>
+<ul>
+<li><p>In order to to use deep neural networks we really need to use <strong>paddings</strong>.</p></li>
+<li><p>In the last section we saw that a <code>6x6</code> matrix convolved with <code>3x3</code> filter/kernel gives us a <code>4x4</code> matrix.</p></li>
+<li><p>To give it a general rule, if a matrix <code>nxn</code> is convolved with <code>fxf</code> filter/kernel give us <code>n-f+1,n-f+1</code> matrix.</p></li>
+<li><p>The convolution operation shrinks the matrix if f&gt;1.</p></li>
+<li><p>We want to apply convolution operation multiple times, but if the image shrinks we will lose a lot of data on this process. Also the edges pixels are used less than other pixels in an image.</p></li>
+<li><p>So the problems with convolutions are:</p>
+<ul>
+<li>Shrinks output.</li>
+<li>throwing away a lot of information that are in the edges.</li>
+</ul></li>
+<li><p>To solve these problems we can pad the input image before convolution by adding some rows and columns to it. We will call the padding amount <code>P</code> the number of row/columns that we will insert in top, bottom, left and right of the image.</p></li>
+<li><p>In almost all the cases the padding values are zeros.</p></li>
+<li><p>The general rule now, if a matrix <code>nxn</code> is convolved with <code>fxf</code> filter/kernel and padding <code>p</code> give us <code>n+2p-f+1,n+2p-f+1</code> matrix.</p></li>
+<li><p>If n = 6, f = 3, and p = 1 Then the output image will have <code>n+2p-f+1 = 6+2-3+1 = 6</code>. We maintain the size of the image.</p></li>
+<li><p>Same convolutions is a convolution with a pad so that output size is the same as the input size. Its given by the equation:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">P = (f-1) / 2</span><br></pre></td></tr></table></figure></li>
+<li><p>In computer vision f is usually odd. Some of the reasons is that its have a center value.</p></li>
+</ul>
+<h3 id="strided-convolution">Strided convolution</h3>
+<ul>
+<li><p>Strided convolution is another piece that are used in CNNs.</p></li>
+<li><p>We will call stride <code>S</code>.</p></li>
+<li><p>When we are making the convolution operation we used <code>S</code> to tell us the number of pixels we will jump when we are convolving filter/kernel. The last examples we described S was 1.</p></li>
+<li><p>Now the general rule are:</p>
+<ul>
+<li>if a matrix <code>nxn</code> is convolved with <code>fxf</code> filter/kernel and padding <code>p</code> and stride <code>s</code> it give us <code>(n+2p-f)/s + 1,(n+2p-f)/s + 1</code> matrix.</li>
+</ul></li>
+<li><p>In case <code>(n+2p-f)/s + 1</code> is fraction we can take <strong>floor</strong> of this value.</p></li>
+<li><p>In math textbooks the conv operation is filpping the filter before using it. What we were doing is called cross-correlation operation but the state of art of deep learning is using this as conv operation.</p></li>
+<li><p>Same convolutions is a convolution with a padding so that output size is the same as the input size. Its given by the equation:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">p = (n*s - n + f - s) / 2</span><br><span class="line">When s = 1 ==&gt; P = (f-1) / 2</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="convolutions-over-volumes">Convolutions over volumes</h3>
+<ul>
+<li>We see how convolution works with 2D images, now lets see if we want to convolve 3D images (RGB image)</li>
+<li>We will convolve an image of height, width, # of channels with a filter of a height, width, same # of channels. Hint that the image number channels and the filter number of channels are the same.</li>
+<li>We can call this as stacked filters for each channel!</li>
+<li>Example:
+<ul>
+<li>Input image: <code>6x6x3</code></li>
+<li>Filter: <code>3x3x3</code></li>
+<li>Result image: <code>4x4x1</code></li>
+<li>In the last result p=0, s=1</li>
+</ul></li>
+<li>Hint the output here is only 2D.</li>
+<li>We can use multiple filters to detect multiple features or edges. Example.
+<ul>
+<li>Input image: <code>6x6x3</code></li>
+<li>10 Filters: <code>3x3x3</code></li>
+<li>Result image: <code>4x4x10</code></li>
+<li>In the last result p=0, s=1</li>
+</ul></li>
+</ul>
+<h3 id="one-layer-of-a-convolutional-network">One Layer of a Convolutional Network</h3>
+<ul>
+<li><p>First we convolve some filters to a given input and then add a bias to each filter output and then get RELU of the result. Example:</p>
+<ul>
+<li>Input image: <code>6x6x3</code> <code># a0</code></li>
+<li>10 Filters: <code>3x3x3</code> <code>#W1</code></li>
+<li>Result image: <code>4x4x10</code> <code>#W1a0</code></li>
+<li>Add b (bias) with <code>10x1</code> will get us : <code>4x4x10</code> image <code>#W1a0 + b</code></li>
+<li>Apply RELU will get us: <code>4x4x10</code> image <code>#A1 = RELU(W1a0 + b)</code></li>
+<li>In the last result p=0, s=1</li>
+<li>Hint number of parameters here are: <code>(3x3x3x10) + 10 = 280</code></li>
+</ul></li>
+<li><p>The last example forms a layer in the CNN.</p></li>
+<li><p>Hint: no matter the size of the input, the number of the parameters is same if filter size is same. That makes it less prone to overfitting.</p></li>
+<li><p>Here are some notations we will use. If layer l is a conv layer:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Hyperparameters</span><br><span class="line">f[l] = filter size</span><br><span class="line">p[l] = padding    # Default is zero</span><br><span class="line">s[l] = stride</span><br><span class="line">nc[l] = number of filters</span><br><span class="line"></span><br><span class="line">Input:  n[l-1] x n[l-1] x nc[l-1] Or   nH[l-1] x nW[l-1] x nc[l-1]</span><br><span class="line">Output: n[l] x n[l] x nc[l]   Or   nH[l] x nW[l] x nc[l]</span><br><span class="line">Where n[l] = (n[l-1] + 2p[l] - f[l] / s[l]) + 1</span><br><span class="line"></span><br><span class="line">Each filter is: f[l] x f[l] x nc[l-1]</span><br><span class="line"></span><br><span class="line">Activations: a[l] is nH[l] x nW[l] x nc[l]</span><br><span class="line">           A[l] is m x nH[l] x nW[l] x nc[l]   # In batch or minbatch training</span><br><span class="line">           </span><br><span class="line">Weights: f[l] * f[l] * nc[l-1] * nc[l]</span><br><span class="line">bias:  (1, 1, 1, nc[l])</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="a-simple-convolution-network-example">A simple convolution network example</h3>
+<ul>
+<li>Lets build a big example.
+<ul>
+<li>Input Image are: <code>a0 = 39x39x3</code>
+<ul>
+<li><code>n0 = 39</code> and <code>nc0 = 3</code></li>
+</ul></li>
+<li>First layer (Conv layer):
+<ul>
+<li><code>f1 = 3</code>, <code>s1 = 1</code>, and <code>p1 = 0</code></li>
+<li><code>number of filters = 10</code></li>
+<li>Then output are <code>a1 = 37x37x10</code>
+<ul>
+<li><code>n1 = 37</code> and <code>nc1 = 10</code></li>
+</ul></li>
+</ul></li>
+<li>Second layer (Conv layer):
+<ul>
+<li><code>f2 = 5</code>, <code>s2 = 2</code>, <code>p2 = 0</code></li>
+<li><code>number of filters = 20</code></li>
+<li>The output are <code>a2 = 17x17x20</code>
+<ul>
+<li><code>n2 = 17</code>, <code>nc2 = 20</code></li>
+</ul></li>
+<li>Hint shrinking goes much faster because the stride is 2</li>
+</ul></li>
+<li>Third layer (Conv layer):
+<ul>
+<li><code>f3 = 5</code>, <code>s3 = 2</code>, <code>p2 = 0</code></li>
+<li><code>number of filters = 40</code></li>
+<li>The output are <code>a3 = 7x7x40</code>
+<ul>
+<li><code>n3 = 7</code>, <code>nc3 = 40</code></li>
+</ul></li>
+</ul></li>
+<li>Forth layer (Fully connected Softmax)
+<ul>
+<li><code>a3 = 7x7x40 = 1960</code> as a vector..</li>
+</ul></li>
+</ul></li>
+<li>In the last example you seen that the image are getting smaller after each layer and thats the trend now.</li>
+<li>Types of layer in a convolutional network:
+<ul>
+<li>Convolution. <code>#Conv</code></li>
+<li>Pooling <code>#Pool</code></li>
+<li>Fully connected <code>#FC</code></li>
+</ul></li>
+</ul>
+<h3 id="pooling-layers">Pooling layers</h3>
+<ul>
+<li>Other than the conv layers, CNNs often uses pooling layers to reduce the size of the inputs, speed up computation, and to make some of the features it detects more robust.</li>
+<li>Max pooling example:
+<ul>
+<li><img src="02.png" /></li>
+<li>This example has <code>f = 2</code>, <code>s = 2</code>, and <code>p = 0</code> hyperparameters</li>
+</ul></li>
+<li>The max pooling is saying, if the feature is detected anywhere in this filter then keep a high number. But the main reason why people are using pooling because its works well in practice and reduce computations.</li>
+<li>Max pooling has no parameters to learn.</li>
+<li>Example of Max pooling on 3D input:
+<ul>
+<li>Input: <code>4x4x10</code></li>
+<li><code>Max pooling size = 2</code> and <code>stride = 2</code></li>
+<li>Output: <code>2x2x10</code></li>
+</ul></li>
+<li>Average pooling is taking the averages of the values instead of taking the max values.</li>
+<li>Max pooling is used more often than average pooling in practice.</li>
+<li>If stride of pooling equals the size, it will then apply the effect of shrinking.</li>
+<li>Hyperparameters summary
+<ul>
+<li>f : filter size.</li>
+<li>s : stride.</li>
+<li>Padding are rarely uses here.</li>
+<li>Max or average pooling.</li>
+</ul></li>
+</ul>
+<h3 id="convolutional-neural-network-example">Convolutional neural network example</h3>
+<ul>
+<li>Now we will deal with a full CNN example. This example is something like the <strong><em>LeNet-5</em></strong> that was invented by Yann Lecun.
+<ul>
+<li>Input Image are: <code>a0 = 32x32x3</code>
+<ul>
+<li><code>n0 = 32</code> and <code>nc0 = 3</code></li>
+</ul></li>
+<li>First layer (Conv layer): <code>#Conv1</code>
+<ul>
+<li><code>f1 = 5</code>, <code>s1 = 1</code>, and <code>p1 = 0</code></li>
+<li><code>number of filters = 6</code></li>
+<li>Then output are <code>a1 = 28x28x6</code>
+<ul>
+<li><code>n1 = 28</code> and <code>nc1 = 6</code></li>
+</ul></li>
+<li>Then apply (Max pooling): <code>#Pool1</code>
+<ul>
+<li><code>f1p = 2</code>, and <code>s1p = 2</code></li>
+<li>The output are <code>a1 = 14x14x6</code></li>
+</ul></li>
+</ul></li>
+<li>Second layer (Conv layer): <code>#Conv2</code>
+<ul>
+<li><code>f2 = 5</code>, <code>s2 = 1</code>, <code>p2 = 0</code></li>
+<li><code>number of filters = 16</code></li>
+<li>The output are <code>a2 = 10x10x16</code>
+<ul>
+<li><code>n2 = 10</code>, <code>nc2 = 16</code></li>
+</ul></li>
+<li>Then apply (Max pooling): <code>#Pool2</code>
+<ul>
+<li><code>f1p = 2</code>, and <code>s1p = 2</code></li>
+<li>The output are <code>a2 = 5x5x16</code></li>
+</ul></li>
+</ul></li>
+<li>Third layer (Fully connected) <code>#FC3</code>
+<ul>
+<li>Number of neurons are 120</li>
+<li>The output <code>a3 = 120 x 1</code> . 400 came from <code>5x5x16</code></li>
+</ul></li>
+<li>Forth layer (Fully connected) <code>#FC4</code>
+<ul>
+<li>Number of neurons are 84</li>
+<li>The output <code>a4 = 84 x 1</code> .</li>
+</ul></li>
+<li>Fifth layer (Softmax)
+<ul>
+<li>Number of neurons is 10 if we need to identify for example the 10 digits.</li>
+</ul></li>
+</ul></li>
+<li>Hint a Conv1 and Pool1 is treated as one layer.</li>
+<li>Some statistics about the last example:
+<ul>
+<li><img src="03.png" /></li>
+</ul></li>
+<li>Hyperparameters are a lot. For choosing the value of each you should follow the guideline that we will discuss later or check the literature and takes some ideas and numbers from it.</li>
+<li>Usually the input size decreases over layers while the number of filters increases.</li>
+<li>A CNN usually consists of one or more convolution (Not just one as the shown examples) followed by a pooling.</li>
+<li>Fully connected layers has the most parameters in the network.</li>
+<li>To consider using these blocks together you should look at other working examples firsts to get some intuitions.</li>
+</ul>
+<h3 id="why-convolutions">Why convolutions?</h3>
+<ul>
+<li>Two main advantages of Convs are:
+<ul>
+<li>Parameter sharing.
+<ul>
+<li>A feature detector (such as a vertical edge detector) that's useful in one part of the image is probably useful in another part of the image.</li>
+</ul></li>
+<li>sparsity of connections.
+<ul>
+<li>In each layer, each output value depends only on a small number of inputs which makes it translation invariance.</li>
+</ul></li>
+</ul></li>
+<li>Putting it all together:
+<ul>
+<li><img src="04.png" /></li>
+</ul></li>
+</ul>
+<h2 id="deep-convolutional-models-case-studies">Deep convolutional models: case studies</h2>
+<blockquote>
+<p>Learn about the practical tricks and methods used in deep CNNs straight from the research papers.</p>
+</blockquote>
+<h3 id="why-look-at-case-studies">Why look at case studies?</h3>
+<ul>
+<li>We learned about Conv layer, pooling layer, and fully connected layers. It turns out that computer vision researchers spent the past few years on how to put these layers together.</li>
+<li>To get some intuitions you have to see the examples that has been made.</li>
+<li>Some neural networks architecture that works well in some tasks can also work well in other tasks.</li>
+<li>Here are some classical CNN networks:
+<ul>
+<li><strong>LeNet-5</strong></li>
+<li><strong>AlexNet</strong></li>
+<li><strong>VGG</strong></li>
+</ul></li>
+<li>The best CNN architecture that won the last ImageNet competition is called <strong>ResNet</strong> and it has 152 layers!</li>
+<li>There are also an architecture called <strong>Inception</strong> that was made by Google that are very useful to learn and apply to your tasks.</li>
+<li>Reading and trying the mentioned models can boost you and give you a lot of ideas to solve your task.</li>
+</ul>
+<h3 id="classic-networks">Classic networks</h3>
+<ul>
+<li><p>In this section we will talk about classic networks which are <strong>LeNet-5</strong>, <strong>AlexNet</strong>, and <strong>VGG</strong>.</p></li>
+<li><p><strong>LeNet-5</strong></p>
+<ul>
+<li>The goal for this model was to identify handwritten digits in a <code>32x32x1</code> gray image. Here are the drawing of it:</li>
+<li><img src="05.png" /></li>
+<li>This model was published in 1998. The last layer wasn't using softmax back then.</li>
+<li>It has 60k parameters.</li>
+<li>The dimensions of the image decreases as the number of channels increases.</li>
+<li><code>Conv ==&gt; Pool ==&gt; Conv ==&gt; Pool ==&gt; FC ==&gt; FC ==&gt; softmax</code> this type of arrangement is quite common.</li>
+<li>The activation function used in the paper was Sigmoid and Tanh. Modern implementation uses RELU in most of the cases.</li>
+<li><a target="_blank" rel="noopener" href="http://ieeexplore.ieee.org/document/726791/?reload=true">[LeCun et al., 1998. Gradient-based learning applied to document recognition]</a></li>
+</ul></li>
+<li><p><strong>AlexNet</strong></p>
+<ul>
+<li><p>Named after Alex Krizhevsky who was the first author of this paper. The other authors includes Jeoffery Hinton.</p></li>
+<li><p>The goal for the model was the ImageNet challenge which classifies images into 1000 classes. Here are the drawing of the model:</p></li>
+<li><p><img src="06.png" /></p></li>
+<li><p>Summary:</p>
+<ul>
+<li>``` Conv =&gt; Max-pool =&gt; Conv =&gt; Max-pool =&gt; Conv =&gt; Conv =&gt; Conv =&gt; Max-pool ==&gt; Flatten ==&gt; FC ==&gt; FC ==&gt; Softmax <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  - Similar to LeNet-5 but bigger.</span><br><span class="line"></span><br><span class="line">  - Has 60 Million parameter compared to 60k parameter of LeNet-5.</span><br><span class="line"></span><br><span class="line">  - It used the RELU activation function.</span><br><span class="line"></span><br><span class="line">  - The original paper contains Multiple GPUs and Local Response normalization (RN).</span><br><span class="line"></span><br><span class="line">    - Multiple GPUs were used because the GPUs were not so fast back then.</span><br><span class="line">    - Researchers proved that Local Response normalization doesn&#x27;t help much so for now don&#x27;t bother yourself for understanding or implementing it. </span><br><span class="line"></span><br><span class="line">  - This paper convinced the computer vision researchers that deep learning is so important.</span><br><span class="line"></span><br><span class="line">  - [[Krizhevsky et al., 2012. ImageNet classification with deep convolutional neural networks]](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)</span><br><span class="line"></span><br><span class="line">- **VGG-16**</span><br><span class="line"></span><br><span class="line">  - A modification for AlexNet.</span><br><span class="line">  - Instead of having a lot of hyperparameters lets have some simpler network.</span><br><span class="line">  - Focus on having only these blocks:</span><br><span class="line">    - CONV = 3 X 3 filter, s = 1, same  </span><br><span class="line">    - MAX-POOL = 2 X 2 , s = 2</span><br><span class="line">  - Here are the architecture:</span><br><span class="line">    - ![](07.png)</span><br><span class="line">  - This network is large even by modern standards. It has around 138 million parameters.</span><br><span class="line">    - Most of the parameters are in the fully connected layers.</span><br><span class="line">  - It has a total memory of 96MB per image for only forward propagation!</span><br><span class="line">    - Most memory are in the earlier layers.</span><br><span class="line">  - Number of filters increases from 64 to 128 to 256 to 512. 512 was made twice.</span><br><span class="line">  - Pooling was the only one who is responsible for shrinking the dimensions.</span><br><span class="line">  - There are another version called **VGG-19** which is a bigger version. But most people uses the VGG-16 instead of the VGG-19 because it does the same.</span><br><span class="line">  - VGG paper is attractive it tries to make some rules regarding using CNNs.</span><br><span class="line">  - [[Simonyan &amp; Zisserman 2015. Very deep convolutional networks for large-scale image recognition]](https://arxiv.org/abs/1409.1556)</span><br><span class="line"></span><br><span class="line">### Residual Networks (ResNets)</span><br><span class="line"></span><br><span class="line">- Very, very deep NNs are difficult to train because of vanishing and exploding gradients problems.</span><br><span class="line">- In this section we will learn about skip connection which makes you take the activation from one layer and suddenly feed it to another layer even much deeper in NN which allows you to train large NNs even with layers greater than 100.</span><br><span class="line">- **Residual block**</span><br><span class="line">  - ResNets are built out of some Residual blocks.</span><br><span class="line">  - ![](08.png)</span><br><span class="line">  - They add a shortcut/skip connection before the second activation.</span><br><span class="line">  - The authors of this block find that you can train a deeper NNs using stacking this block.</span><br><span class="line">  - [[He et al., 2015. Deep residual networks for image recognition]](https://arxiv.org/abs/1512.03385)</span><br><span class="line">- **Residual Network**</span><br><span class="line">  - Are a NN that consists of some Residual blocks.</span><br><span class="line">  - ![](09.png)</span><br><span class="line">  - These networks can go deeper without hurting the performance. In the normal NN - Plain networks - the theory tell us that if we go deeper we will get a better solution to our problem, but because of the vanishing and exploding gradients problems the performance of the network suffers as it goes deeper. Thanks to Residual Network we can go deeper as we want now.</span><br><span class="line">  - ![](10.png)</span><br><span class="line">  - On the left is the normal NN and on the right are the ResNet. As you can see the performance of ResNet increases as the network goes deeper.</span><br><span class="line">  - In some cases going deeper won&#x27;t effect the performance and that depends on the problem on your hand.</span><br><span class="line">  - Some people are trying to train 1000 layer now which isn&#x27;t used in practice. </span><br><span class="line">  - [He et al., 2015. Deep residual networks for image recognition]</span><br><span class="line"></span><br><span class="line">### Why ResNets work</span><br><span class="line"></span><br><span class="line">- Lets see some example that illustrates why resNet work.</span><br><span class="line"></span><br><span class="line">  - We have a big NN as the following:</span><br><span class="line"></span><br><span class="line">    - `X --&gt; Big NN --&gt; a[l]`</span><br><span class="line"></span><br><span class="line">  - Lets add two layers to this network as a residual block:</span><br><span class="line"></span><br><span class="line">    - `X --&gt; Big NN --&gt; a[l] --&gt; Layer1 --&gt; Layer2 --&gt; a[l+2]`</span><br><span class="line">    - And a`[l]` has a direct connection to `a[l+2]`</span><br><span class="line"></span><br><span class="line">  - Suppose we are using RELU activations.</span><br><span class="line"></span><br><span class="line">  - Then:</span><br><span class="line"></span><br><span class="line">    - ```</span><br><span class="line">      a[l+2] = g( z[l+2] + a[l] )</span><br><span class="line">           = g( W[l+2] a[l+1] + b[l+2] + a[l] )</span><br></pre></td></tr></table></figure></li>
+</ul></li>
+<li><p>Then if we are using L2 regularization for example, <code>W[l+2]</code> will be zero. Lets say that <code>b[l+2]</code> will be zero too.</p></li>
+<li><p>Then <code>a[l+2] = g( a[l] ) = a[l]</code> with no negative values.</p></li>
+<li><p>This show that identity function is easy for a residual block to learn. And that why it can train deeper NNs.</p></li>
+<li><p>Also that the two layers we added doesn't hurt the performance of big NN we made.</p></li>
+<li><p>Hint: dimensions of z[l+2] and a[l] have to be the same in resNets. In case they have different dimensions what we put a matrix parameters (Which can be learned or fixed)</p>
+<ul>
+<li><code>a[l+2] = g( z[l+2] + ws * a[l] ) # The added Ws should make the dimentions equal</code></li>
+<li>ws also can be a zero padding.</li>
+</ul></li>
+</ul></li>
+<li><p>Using a skip-connection helps the gradient to backpropagate and thus helps you to train deeper networks</p></li>
+<li><p>Lets take a look at ResNet on images.</p>
+<ul>
+<li>Here are the architecture of <strong>ResNet-34</strong>:</li>
+<li><img src="resNet.jpg" /></li>
+<li>All the 3x3 Conv are same Convs.</li>
+<li>Keep it simple in design of the network.</li>
+<li>spatial size /2 =&gt; # filters x2</li>
+<li>No FC layers, No dropout is used.</li>
+<li>Two main types of blocks are used in a ResNet, depending mainly on whether the input/output dimensions are same or different. You are going to implement both of them.</li>
+<li>The dotted lines is the case when the dimensions are different. To solve then they down-sample the input by 2 and then pad zeros to match the two dimensions. There's another trick which is called bottleneck which we will explore later.</li>
+</ul></li>
+<li><p>Useful concept (<strong>Spectrum of Depth</strong>):</p>
+<ul>
+<li><img src="12.png" /></li>
+<li>Taken from <a href="icml.cc/2016/tutorials/icml2016_tutorial_deep_residual_networks_kaiminghe.pdf">icml.cc/2016/tutorials/icml2016_tutorial_deep_residual_networks_kaiminghe.pdf</a></li>
+</ul></li>
+<li><p>Residual blocks types:</p>
+<ul>
+<li>Identity block:
+<ul>
+<li><img src="16.png" /></li>
+<li>Hint the conv is followed by a batch norm <code>BN</code> before <code>RELU</code>. Dimensions here are same.</li>
+<li>This skip is over 2 layers. The skip connection can jump n connections where n&gt;2</li>
+<li>This drawing represents <a target="_blank" rel="noopener" href="https://keras.io/">Keras</a> layers.</li>
+</ul></li>
+<li>The convolutional block:
+<ul>
+<li><img src="17.png" /></li>
+<li>The conv can be bottleneck 1 x 1 conv</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="network-in-network-and-1-x-1-convolutions">Network in Network and 1 X 1 convolutions</h3>
+<ul>
+<li><p>A 1 x 1 convolution - We also call it Network in Network- is so useful in many CNN models.</p></li>
+<li><p>What does a 1 X 1 convolution do? Isn't it just multiplying by a number?</p>
+<ul>
+<li>Lets first consider an example:
+<ul>
+<li>Input: <code>6x6x1</code></li>
+<li>Conv: <code>1x1x1</code> one filter. <code># The 1 x 1 Conv</code></li>
+<li>Output: <code>6x6x1</code></li>
+</ul></li>
+<li>Another example:
+<ul>
+<li>Input: <code>6x6x32</code></li>
+<li>Conv: <code>1x1x32</code> 5 filters. <code># The 1 x 1 Conv</code></li>
+<li>Output: <code>6x6x5</code></li>
+</ul></li>
+</ul></li>
+<li><p>The Network in Network is proposed in [Lin et al., 2013. Network in network]</p></li>
+<li><p>It has been used in a lot of modern CNN implementations like ResNet and Inception models.</p></li>
+<li><p>A 1 x 1 convolution is useful when:</p>
+<ul>
+<li>We want to shrink the number of channels. We also call this feature transformation.
+<ul>
+<li>In the second discussed example above we have shrinked the input from 32 to 5 channels.</li>
+</ul></li>
+<li>We will later see that by shrinking it we can save a lot of computations.</li>
+<li>If we have specified the number of 1 x 1 Conv filters to be the same as the input number of channels then the output will contain the same number of channels. Then the 1 x 1 Conv will act like a non linearity and will learn non linearity operator.</li>
+</ul></li>
+<li><p>Replace fully connected layers with 1 x 1 convolutions as Yann LeCun believes they are the same.</p>
+<ul>
+<li><blockquote>
+<p>In Convolutional Nets, there is no such thing as "fully-connected layers". There are only convolution layers with 1x1 convolution kernels and a full connection table. <a target="_blank" rel="noopener" href="https://www.facebook.com/yann.lecun/posts/10152820758292143">Yann LeCun</a></p>
+</blockquote></li>
+</ul></li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1312.4400">[Lin et al., 2013. Network in network]</a></p></li>
+</ul>
+<h3 id="inception-network-motivation">Inception network motivation</h3>
+<ul>
+<li>When you design a CNN you have to decide all the layers yourself. Will you pick a 3 x 3 Conv or 5 x 5 Conv or maybe a max pooling layer. You have so many choices.</li>
+<li>What <strong>inception</strong> tells us is, Why not use all of them at once?</li>
+<li><strong>Inception module</strong>, naive version:
+<ul>
+<li><img src="13.png" /></li>
+<li>Hint that max-pool are same here.</li>
+<li>Input to the inception module are 28 x 28 x 192 and the output are 28 x 28 x 256</li>
+<li>We have done all the Convs and pools we might want and will let the NN learn and decide which it want to use most.</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1409.4842">[Szegedy et al. 2014. Going deeper with convolutions]</a></li>
+</ul></li>
+<li>The problem of computational cost in Inception model:
+<ul>
+<li>If we have just focused on a 5 x 5 Conv that we have done in the last example.</li>
+<li>There are 32 same filters of 5 x 5, and the input are 28 x 28 x 192.</li>
+<li>Output should be 28 x 28 x 32</li>
+<li>The total number of multiplications needed here are:
+<ul>
+<li>Number of outputs * Filter size * Filter size * Input dimensions</li>
+<li>Which equals: <code>28 * 28 * 32 * 5 * 5 * 192 = 120 Mil</code></li>
+<li>120 Mil multiply operation still a problem in the modern day computers.</li>
+</ul></li>
+<li>Using a 1 x 1 convolution we can reduce 120 mil to just 12 mil. Lets see how.</li>
+</ul></li>
+<li>Using 1 X 1 convolution to reduce computational cost:
+<ul>
+<li>The new architecture are:
+<ul>
+<li>X0 shape is (28, 28, 192)</li>
+<li>We then apply 16 (1 x 1 Convolution)</li>
+<li>That produces X1 of shape (28, 28, 16)
+<ul>
+<li>Hint, we have reduced the dimensions here.</li>
+</ul></li>
+<li>Then apply 32 (5 x 5 Convolution)</li>
+<li>That produces X2 of shape (28, 28, 32)</li>
+</ul></li>
+<li>Now lets calculate the number of multiplications:
+<ul>
+<li>For the first Conv: <code>28 * 28 * 16 * 1 * 1 * 192 = 2.5 Mil</code></li>
+<li>For the second Conv: <code>28 * 28 * 32 * 5 * 5 * 16 = 10 Mil</code></li>
+<li>So the total number are 12.5 Mil approx. which is so good compared to 120 Mil</li>
+</ul></li>
+</ul></li>
+<li>A 1 x 1 Conv here is called Bottleneck <code>BN</code>.</li>
+<li>It turns out that the 1 x 1 Conv won't hurt the performance.</li>
+<li><strong>Inception module</strong>, dimensions reduction version:
+<ul>
+<li><img src="14.png" /></li>
+</ul></li>
+<li>Example of inception model in Keras:
+<ul>
+<li><img src="inception_block1a.png" /></li>
+</ul></li>
+</ul>
+<h3 id="inception-network-googlenet">Inception network (GoogleNet)</h3>
+<ul>
+<li>The inception network consist of concatenated blocks of the Inception module.</li>
+<li>The name inception was taken from a <em>meme</em> image which was taken from <strong>Inception movie</strong></li>
+<li>Here are the full model:
+<ul>
+<li><img src="15.png" /></li>
+</ul></li>
+<li>Some times a Max-Pool block is used before the inception module to reduce the dimensions of the inputs.</li>
+<li>There are a 3 Sofmax branches at different positions to push the network toward its goal. and helps to ensure that the intermediate features are good enough to the network to learn and it turns out that softmax0 and sofmax1 gives regularization effect.</li>
+<li>Since the development of the Inception module, the authors and the others have built another versions of this network. Like inception v2, v3, and v4. Also there is a network that has used the inception module and the ResNet together.</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1409.4842">[Szegedy et al., 2014, Going Deeper with Convolutions]</a></li>
+</ul>
+<h3 id="using-open-source-implementation">Using Open-Source Implementation</h3>
+<ul>
+<li>We have learned a lot of NNs and ConvNets architectures.</li>
+<li>It turns out that a lot of these NN are difficult to replicated. because there are some details that may not presented on its papers. There are some other reasons like:
+<ul>
+<li>Learning decay.</li>
+<li>Parameter tuning.</li>
+</ul></li>
+<li>A lot of deep learning researchers are opening sourcing their code into Internet on sites like <a href="Github.com">Github</a>.</li>
+<li>If you see a research paper and you want to build over it, the first thing you should do is to look for an open source implementation for this paper.</li>
+<li>Some advantage of doing this is that you might download the network implementation along with its parameters/weights. The author might have used multiple GPUs and spent some weeks to reach this result and its right in front of you after you download it.</li>
+</ul>
+<h3 id="transfer-learning">Transfer Learning</h3>
+<ul>
+<li>If you are using a specific NN architecture that has been trained before, you can use this pretrained parameters/weights instead of random initialization to solve your problem.</li>
+<li>It can help you boost the performance of the NN.</li>
+<li>The pretrained models might have trained on a large datasets like ImageNet, Ms COCO, or pascal and took a lot of time to learn those parameters/weights with optimized hyperparameters. This can save you a lot of time.</li>
+<li>Lets see an example:
+<ul>
+<li>Lets say you have a cat classification problem which contains 3 classes Tigger, Misty and neither.</li>
+<li>You don't have much a lot of data to train a NN on these images.</li>
+<li>Andrew recommends to go online and download a good NN with its weights, remove the softmax activation layer and put your own one and make the network learn only the new layer while other layer weights are fixed/frozen.</li>
+<li>Frameworks have options to make the parameters frozen in some layers using <code>trainable = 0</code> or <code>freeze = 0</code></li>
+<li>One of the tricks that can speed up your training, is to run the pretrained NN without final softmax layer and get an intermediate representation of your images and save them to disk. And then use these representation to a shallow NN network. This can save you the time needed to run an image through all the layers.
+<ul>
+<li>Its like converting your images into vectors.</li>
+</ul></li>
+</ul></li>
+<li>Another example:
+<ul>
+<li>What if in the last example you have a lot of pictures for your cats.</li>
+<li>One thing you can do is to freeze few layers from the beginning of the pretrained network and learn the other weights in the network.</li>
+<li>Some other idea is to throw away the layers that aren't frozen and put your own layers there.</li>
+</ul></li>
+<li>Another example:
+<ul>
+<li>If you have enough data, you can fine tune all the layers in your pretrained network but don't random initialize the parameters, leave the learned parameters as it is and learn from there.</li>
+</ul></li>
+</ul>
+<h3 id="data-augmentation">Data Augmentation</h3>
+<ul>
+<li>If data is increased, your deep NN will perform better. Data augmentation is one of the techniques that deep learning uses to increase the performance of deep NN.</li>
+<li>The majority of computer vision applications needs more data right now.</li>
+<li>Some data augmentation methods that are used for computer vision tasks includes:
+<ul>
+<li>Mirroring.</li>
+<li>Random cropping.
+<ul>
+<li>The issue with this technique is that you might take a wrong crop.</li>
+<li>The solution is to make your crops big enough.</li>
+</ul></li>
+<li>Rotation.</li>
+<li>Shearing.</li>
+<li>Local warping.</li>
+<li>Color shifting.
+<ul>
+<li>For example, we add to R, G, and B some distortions that will make the image identified as the same for the human but is different for the computer.</li>
+<li>In practice the added value are pulled from some probability distribution and these shifts are some small.</li>
+<li>Makes your algorithm more robust in changing colors in images.</li>
+<li>There are an algorithm which is called <strong><em>PCA color augmentation</em></strong> that decides the shifts needed automatically.</li>
+</ul></li>
+</ul></li>
+<li>Implementing distortions during training:
+<ul>
+<li>You can use a different CPU thread to make you a distorted mini batches while you are training your NN.</li>
+</ul></li>
+<li>Data Augmentation has also some hyperparameters. A good place to start is to find an open source data augmentation implementation and then use it or fine tune these hyperparameters.</li>
+</ul>
+<h3 id="state-of-computer-vision">State of Computer Vision</h3>
+<ul>
+<li>For a specific problem we may have a little data for it or a lots of data.</li>
+<li>Speech recognition problems for example has a big amount of data, while image recognition has a medium amount of data and the object detection has a small amount of data nowadays.</li>
+<li>If your problem has a large amount of data, researchers are tend to use:
+<ul>
+<li>Simpler algorithms.</li>
+<li>Less hand engineering.</li>
+</ul></li>
+<li>If you don't have that much data people tend to try more hand engineering for the problem "Hacks". Like choosing a more complex NN architecture.</li>
+<li>Because we haven't got that much data in a lot of computer vision problems, it relies a lot on hand engineering.</li>
+<li>We will see in the next chapter that because the object detection has less data, a more complex NN architectures will be presented.</li>
+<li>Tips for doing well on benchmarks/winning competitions:
+<ul>
+<li>Ensembling.
+<ul>
+<li>Train several networks independently and average their outputs. Merging down some classifiers.</li>
+<li>After you decide the best architecture for your problem, initialize some of that randomly and train them independently.</li>
+<li>This can give you a push by 2%</li>
+<li>But this will slow down your production by the number of the ensembles. Also it takes more memory as it saves all the models in the memory.</li>
+<li>People use this in competitions but few uses this in a real production.</li>
+</ul></li>
+<li>Multi-crop at test time.
+<ul>
+<li>Run classifier on multiple versions of test versions and average results.</li>
+<li>There is a technique called 10 crops that uses this.</li>
+<li>This can give you a better result in the production.</li>
+</ul></li>
+</ul></li>
+<li>Use open source code
+<ul>
+<li>Use architectures of networks published in the literature.</li>
+<li>Use open source implementations if possible.</li>
+<li>Use pretrained models and fine-tune on your dataset.</li>
+</ul></li>
+</ul>
+<h2 id="object-detection">Object detection</h2>
+<blockquote>
+<p>Learn how to apply your knowledge of CNNs to one of the toughest but hottest field of computer vision: Object detection.</p>
+</blockquote>
+<h3 id="object-localization">Object Localization</h3>
+<ul>
+<li><p>Object detection is one of the areas in which deep learning is doing great in the past two years.</p></li>
+<li><p>What are localization and detection?</p>
+<ul>
+<li><strong>Image Classification</strong>:
+<ul>
+<li>Classify an image to a specific class. The whole image represents one class. We don't want to know exactly where are the object. Usually only one object is presented.</li>
+<li><img src="Classification.jpg" /></li>
+</ul></li>
+<li><strong>Classification with localization</strong>:
+<ul>
+<li>Given an image we want to learn the class of the image and where are the class location in the image. We need to detect a class and a rectangle of where that object is. Usually only one object is presented.</li>
+<li><img src="ClassificationLoc.jpg" /></li>
+</ul></li>
+<li><strong>Object detection</strong>:
+<ul>
+<li>Given an image we want to detect all the object in the image that belong to a specific classes and give their location. An image can contain more than one object with different classes.</li>
+<li><img src="ObjectDetection.png" /></li>
+</ul></li>
+<li><strong>Semantic Segmentation</strong>:
+<ul>
+<li>We want to Label each pixel in the image with a category label. Semantic Segmentation Don't differentiate instances, only care about pixels. It detects no objects just pixels.</li>
+<li>If there are two objects of the same class is intersected, we won't be able to separate them.</li>
+<li><img src="SemanticSegmentation.png" /></li>
+</ul></li>
+<li><strong>Instance Segmentation</strong>
+<ul>
+<li>This is like the full problem. Rather than we want to predict the bounding box, we want to know which pixel label but also distinguish them.</li>
+<li><img src="InstanceSegmentation.png" /></li>
+</ul></li>
+</ul></li>
+<li><p>To make image classification we use a Conv Net with a Softmax attached to the end of it.</p></li>
+<li><p>To make classification with localization we use a Conv Net with a softmax attached to the end of it and a four numbers <code>bx</code>, <code>by</code>, <code>bh</code>, and <code>bw</code> to tell you the location of the class in the image. The dataset should contain this four numbers with the class too.</p></li>
+<li><p>Defining the target label Y in classification with localization problem:</p>
+<ul>
+<li><p>``` Y = [ Pc # Probability of an object is presented bx # Bounding box by # Bounding box bh # Bounding box bw # Bounding box c1 # The classes c2 ...] <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- Example (Object is present):</span><br><span class="line"></span><br><span class="line">  - ```</span><br><span class="line">    Y = [</span><br><span class="line">              1       # Object is present</span><br><span class="line">              0</span><br><span class="line">              0</span><br><span class="line">              100</span><br><span class="line">              100</span><br><span class="line">              0</span><br><span class="line">              1</span><br><span class="line">              0</span><br><span class="line">    ]</span><br></pre></td></tr></table></figure></p></li>
+<li><p>Example (When object isn't presented):</p>
+<ul>
+<li>``` Y = [ 0 # Object isn't presented ? # ? means we dont care with other values ? ? ? ? ? ?] <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- The loss function for the Y we have created (Example of the square error):</span><br><span class="line"></span><br><span class="line">  - ```</span><br><span class="line">    L(y&#x27;,y) = &#123;</span><br><span class="line">                (y1&#x27;-y1)^2 + (y2&#x27;-y2)^2 + ...           if y1 = 1</span><br><span class="line">                (y1&#x27;-y1)^2                      if y1 = 0</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure></li>
+</ul></li>
+<li><p>In practice we use logistic regression for <code>pc</code>, log likely hood loss for classes, and squared error for the bounding box.</p></li>
+</ul></li>
+</ul>
+<h3 id="landmark-detection">Landmark Detection</h3>
+<ul>
+<li><p>In some of the computer vision problems you will need to output some points. That is called <strong>landmark detection</strong>.</p></li>
+<li><p>For example, if you are working in a face recognition problem you might want some points on the face like corners of the eyes, corners of the mouth, and corners of the nose and so on. This can help in a lot of application like detecting the pose of the face.</p></li>
+<li><p>Y shape for the face recognition problem that needs to output 64 landmarks:</p>
+<ul>
+<li>``` Y = [ THereIsAface # Probability of face is presented 0 or 1 l1x, l1y, ...., l64x, l64y] <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- Another application is when you need to get the skeleton of the person using different landmarks/points in the person which helps in some applications.</span><br><span class="line"></span><br><span class="line">- Hint, in your labeled data, if `l1x,l1y` is the left corner of left eye, all other `l1x,l1y` of the other examples has to be the same.</span><br><span class="line"></span><br><span class="line">### Object Detection</span><br><span class="line"></span><br><span class="line">- We will use a Conv net to solve the object detection problem using a technique called the sliding windows detection algorithm.</span><br><span class="line">- For example lets say we are working on Car object detection.</span><br><span class="line">- The first thing, we will train a Conv net on cropped car images and non car images.</span><br><span class="line">  - ![](18.png)</span><br><span class="line">- After we finish training of this Conv net we will then use it with the sliding windows technique.</span><br><span class="line">- Sliding windows detection algorithm:</span><br><span class="line">  1. Decide a rectangle size.</span><br><span class="line">  2. Split your image into rectangles of the size you picked. Each region should be covered. You can use some strides.</span><br><span class="line">  3. For each rectangle feed the image into the Conv net and decide if its a car or not.</span><br><span class="line">  4. Pick larger/smaller rectangles and repeat the process from 2 to 3.</span><br><span class="line">  5. Store the rectangles that contains the cars.</span><br><span class="line">  6. If two or more rectangles intersects choose the rectangle with the best accuracy.</span><br><span class="line">- Disadvantage of sliding window is the computation time.</span><br><span class="line">- In the era of machine learning before deep learning, people used a hand crafted linear classifiers that classifies the object and then use the sliding window technique. The linear classier make it a cheap computation. But in the deep learning era that is so  computational expensive due to the complexity of the deep learning model.</span><br><span class="line">- To solve this problem, we can implement the sliding windows with a ***Convolutional approach***.</span><br><span class="line">- One other idea is to compress your deep learning model.</span><br><span class="line"></span><br><span class="line">### Convolutional Implementation of Sliding Windows</span><br><span class="line"></span><br><span class="line">- Turning FC layer into convolutional layers (predict image class from four classes):</span><br><span class="line">  - ![](19.png)</span><br><span class="line">  - As you can see in the above image, we turned the FC layer into a Conv layer using a convolution with the width and height of the filter is the same as the width and height of the input.</span><br><span class="line">- **Convolution implementation of sliding windows**:</span><br><span class="line">  - First lets consider that the Conv net you trained is like this (No FC all is conv layers):</span><br><span class="line">    - ![](20.png)</span><br><span class="line">  - Say now we have a 16 x 16 x 3 image that we need to apply the sliding windows in. By the normal implementation that have been mentioned in the section before this, we would run this Conv net four times each rectangle size will be 16 x 16.</span><br><span class="line">  - The convolution implementation will be as follows:</span><br><span class="line">    - ![](21.png)</span><br><span class="line">  - Simply we have feed the image into the same Conv net we have trained.</span><br><span class="line">  - The left cell of the result &quot;The blue one&quot; will represent the the first sliding window of the normal implementation. The other cells will represent the others.</span><br><span class="line">  - Its more efficient because it now shares the computations of the four times needed.</span><br><span class="line">  - Another example would be:</span><br><span class="line">    - ![](22.png)</span><br><span class="line">  - This example has a total of 16 sliding windows that shares the computation together.</span><br><span class="line">  - [[Sermanet et al., 2014, OverFeat: Integrated recognition, localization and detection using convolutional networks]](https://arxiv.org/abs/1312.6229)</span><br><span class="line">- The weakness of the algorithm is that the position of the rectangle wont be so accurate. Maybe none of the rectangles is exactly on the object you want to recognize.</span><br><span class="line">  - ![](23.png)</span><br><span class="line">  - In red, the rectangle we want and in blue is the required car rectangle.</span><br><span class="line"></span><br><span class="line">### Bounding Box Predictions</span><br><span class="line"></span><br><span class="line">- A better algorithm than the one described in the last section is the [YOLO algorithm](https://arxiv.org/abs/1506.02640).</span><br><span class="line"></span><br><span class="line">- YOLO stands for *you only look once* and was developed back in 2015.</span><br><span class="line"></span><br><span class="line">- Yolo Algorithm:</span><br><span class="line"></span><br><span class="line">  - ![](24.png)</span><br><span class="line"></span><br><span class="line">  1. Lets say we have an image of 100 X 100</span><br><span class="line">  2. Place a  3 x 3 grid on the image. For more smother results you should use 19 x 19 for the 100 x 100</span><br><span class="line">  3. Apply the classification and localization algorithm we discussed in a previous section to each section of the grid. `bx` and `by` will represent the center point of the object in each grid and will be relative to the box so the range is between 0 and 1 while `bh` and `bw` will represent the height and width of the object which can be greater than 1.0 but still a floating point value.</span><br><span class="line">  4. Do everything at once with the convolution sliding window. If Y shape is 1 x 8 as we discussed before then the output of the 100 x 100 image should be 3 x 3 x 8 which corresponds to 9 cell results.</span><br><span class="line">  5. Merging the results using predicted localization mid point.</span><br><span class="line"></span><br><span class="line">- We have a problem if we have found more than one object in one grid box.</span><br><span class="line"></span><br><span class="line">- One of the best advantages that makes the YOLO algorithm popular is that it has a great speed and a Conv net implementation.</span><br><span class="line"></span><br><span class="line">- How is YOLO different from other Object detectors?  YOLO uses a single CNN</span><br><span class="line">  network for both classification and localizing the object using bounding boxes.</span><br><span class="line"></span><br><span class="line">- In the next sections we will see some ideas that can make the YOLO algorithm better.</span><br><span class="line"></span><br><span class="line">### Intersection Over Union</span><br><span class="line"></span><br><span class="line">- Intersection Over Union is a function used to evaluate the object detection algorithm.</span><br><span class="line">- It computes size of intersection and divide it by the union. More generally, *IoU* *is a measure of the overlap between two bounding boxes*.</span><br><span class="line">- For example:</span><br><span class="line">  - ![](25.png)</span><br><span class="line">  - The red is the labeled output and the purple is the predicted output.</span><br><span class="line">  - To compute Intersection Over Union we first compute the union area of the two rectangles which is &quot;the first rectangle + second rectangle&quot; Then compute the intersection area between these two rectangles.</span><br><span class="line">  - Finally `IOU = intersection area / Union area`</span><br><span class="line">- If `IOU &gt;=0.5` then its good. The best answer will be 1.</span><br><span class="line">- The higher the IOU the better is the accuracy.</span><br><span class="line"></span><br><span class="line">### Non-max Suppression</span><br><span class="line"></span><br><span class="line">- One of the problems we have addressed in YOLO is that it can detect an object multiple times.</span><br><span class="line">- Non-max Suppression is a way to make sure that YOLO detects the object just once.</span><br><span class="line">- For example:</span><br><span class="line">  - ![](26.png)</span><br><span class="line">  - Each car has two or more detections with different probabilities. This came from some of the grids that thinks that this is the center point of the object.</span><br><span class="line">- Non-max suppression algorithm:</span><br><span class="line">  1. Lets assume that we are targeting one class as an output class.</span><br><span class="line">  2. Y shape should be `[Pc, bx, by, bh, hw]` Where Pc is the probability if that object occurs.</span><br><span class="line">  3. Discard all boxes with `Pc &lt; 0.6`  </span><br><span class="line">  4. While there are any remaining boxes:</span><br><span class="line">     1. Pick the box with the largest Pc Output that as a prediction.</span><br><span class="line">     2. Discard any remaining box with `IoU &gt; 0.5` with that box output in the previous step i.e any box with high overlap(greater than overlap threshold of 0.5).</span><br><span class="line">- If there are multiple classes/object types `c` you want to detect, you should run the Non-max suppression `c` times, once for every output class.</span><br><span class="line"></span><br><span class="line">### Anchor Boxes</span><br><span class="line"></span><br><span class="line">- In YOLO, a grid only detects one object. What if a grid cell wants to detect multiple object?</span><br><span class="line">  - ![](27.png)</span><br><span class="line">  - Car and person grid is same here.</span><br><span class="line">  - In practice this happens rarely.</span><br><span class="line">- The idea of Anchor boxes helps us solving this issue.</span><br><span class="line">- If Y = `[Pc, bx, by, bh, bw, c1, c2, c3]` Then to use two anchor boxes like this:</span><br><span class="line">  - Y = `[Pc, bx, by, bh, bw, c1, c2, c3, Pc, bx, by, bh, bw, c1, c2, c3]`  We simply have repeated  the one anchor Y.</span><br><span class="line">  - The two anchor boxes you choose should be known as a shape:</span><br><span class="line">    - ![](28.png)</span><br><span class="line">- So Previously, each object in training image is assigned to grid cell that contains that object&#x27;s midpoint.</span><br><span class="line">- With two anchor boxes, Each object in training image is assigned to grid cell that contains object&#x27;s midpoint and anchor box for the grid cell with &lt;u&gt;highest IoU&lt;/u&gt;. You have to check where your object should be based on its rectangle closest to which anchor box.</span><br><span class="line">- Example of data:</span><br><span class="line">  - ![](29.png)</span><br><span class="line">  - Where the car was near the anchor 2 than anchor 1.</span><br><span class="line">- You may have two or more anchor boxes but you should know their shapes.</span><br><span class="line">  - how do you choose the anchor boxes and people used to just choose them by hand. Maybe five or ten anchor box shapes that spans a variety  of shapes that cover the types of objects you seem to detect frequently.</span><br><span class="line">  - You may also use a k-means algorithm on your dataset to specify that.</span><br><span class="line">- Anchor boxes allows your algorithm to specialize, means in our case to easily detect wider images or taller ones.</span><br><span class="line"></span><br><span class="line">### YOLO Algorithm</span><br><span class="line"></span><br><span class="line">- YOLO is a state-of-the-art object detection model that is fast and accurate</span><br><span class="line"></span><br><span class="line">- Lets sum up and introduce the whole YOLO algorithm given an example.</span><br><span class="line"></span><br><span class="line">- Suppose we need to do object detection for our autonomous driver system.It needs to identify three classes:</span><br><span class="line"></span><br><span class="line">  1. Pedestrian (Walks on ground).</span><br><span class="line">  2. Car.</span><br><span class="line">  3. Motorcycle.</span><br><span class="line"></span><br><span class="line">- We decided to choose two anchor boxes, a taller one and a wide one.</span><br><span class="line"></span><br><span class="line">  - Like we said in practice they use five or more anchor boxes hand made or generated using k-means.</span><br><span class="line"></span><br><span class="line">- Our labeled Y shape will be `[Ny, HeightOfGrid, WidthOfGrid, 16]`, where Ny is number of instances and each row (of size 16) is as follows:</span><br><span class="line"></span><br><span class="line">  - `[Pc, bx, by, bh, bw, c1, c2, c3, Pc, bx, by, bh, bw, c1, c2, c3]`</span><br><span class="line"></span><br><span class="line">- Your dataset could be an image with a multiple labels and a rectangle for each label, we should go to your dataset and make the shape and values of Y like we agreed.</span><br><span class="line"></span><br><span class="line">  - An example:</span><br><span class="line">    - ![](30.png)</span><br><span class="line">  - We first initialize all of them to zeros and ?, then for each label and rectangle choose its closest grid point then the shape to fill it and then the best anchor point based on the IOU. so that the shape of Y for one image should be `[HeightOfGrid, WidthOfGrid,16]`</span><br><span class="line"></span><br><span class="line">- Train the labeled images on a Conv net. you should receive an output of `[HeightOfGrid, WidthOfGrid,16]` for our case.</span><br><span class="line"></span><br><span class="line">- To make predictions, run the Conv net on an image and run Non-max suppression algorithm for each class you have in our case there are 3 classes.</span><br><span class="line"></span><br><span class="line">  - You could get something like that:</span><br><span class="line">    - ![](31.png)</span><br><span class="line">    - Total number of generated boxes are grid_width * grid_height * no_of_anchors = 3 x 3 x 2</span><br><span class="line">  - By removing the low probability predictions you should have:</span><br><span class="line">    - ![](32.png)</span><br><span class="line">  - Then get the best probability followed by the IOU filtering:</span><br><span class="line">    - ![](33.png)</span><br><span class="line"></span><br><span class="line">- YOLO are not good at detecting smaller object.</span><br><span class="line"></span><br><span class="line">- [YOLO9000 Better, faster, stronger](https://arxiv.org/abs/1612.08242)</span><br><span class="line"></span><br><span class="line">  - Summary:</span><br><span class="line"></span><br><span class="line">  - ```</span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    Layer (type)                     Output Shape          Param #     Connected to                </span><br><span class="line">    ========================================================================================</span><br><span class="line">    input_1 (InputLayer)             (None, 608, 608, 3)   0                                 </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_1 (Conv2D)                (None, 608, 608, 32)  864         input_1[0][0]         </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_1 (BatchNorm (None, 608, 608, 32)  128         conv2d_1[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_1 (LeakyReLU)        (None, 608, 608, 32)  0     batch_normalization_1[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    max_pooling2d_1 (MaxPooling2D)   (None, 304, 304, 32)  0           leaky_re_lu_1[0][0]   </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_2 (Conv2D)                (None, 304, 304, 64)  18432       max_pooling2d_1[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_2 (BatchNorm (None, 304, 304, 64)  256         conv2d_2[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_2 (LeakyReLU)        (None, 304, 304, 64)  0     batch_normalization_2[0][0] </span><br><span class="line">    _______________________________________________________________________________________</span><br><span class="line">    max_pooling2d_2 (MaxPooling2D)   (None, 152, 152, 64)  0           leaky_re_lu_2[0][0]   </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_3 (Conv2D)                (None, 152, 152, 128) 73728       max_pooling2d_2[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_3 (BatchNorm (None, 152, 152, 128) 512         conv2d_3[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_3 (LeakyReLU)        (None, 152, 152, 128) 0     batch_normalization_3[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_4 (Conv2D)                (None, 152, 152, 64)  8192        leaky_re_lu_3[0][0]   </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_4 (BatchNorm (None, 152, 152, 64)  256         conv2d_4[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_4 (LeakyReLU)        (None, 152, 152, 64)  0     batch_normalization_4[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_5 (Conv2D)                (None, 152, 152, 128) 73728       leaky_re_lu_4[0][0]   </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_5 (BatchNorm (None, 152, 152, 128) 512         conv2d_5[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_5 (LeakyReLU)        (None, 152, 152, 128) 0     batch_normalization_5[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    max_pooling2d_3 (MaxPooling2D)   (None, 76, 76, 128)   0           leaky_re_lu_5[0][0]   </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_6 (Conv2D)                (None, 76, 76, 256)   294912      max_pooling2d_3[0][0] </span><br><span class="line">    _______________________________________________________________________________________</span><br><span class="line">    batch_normalization_6 (BatchNorm (None, 76, 76, 256)   1024        conv2d_6[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_6 (LeakyReLU)        (None, 76, 76, 256)   0     batch_normalization_6[0][0] </span><br><span class="line">    _______________________________________________________________________________________</span><br><span class="line">    conv2d_7 (Conv2D)                (None, 76, 76, 128)   32768       leaky_re_lu_6[0][0]   </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_7 (BatchNorm (None, 76, 76, 128)   512         conv2d_7[0][0]       </span><br><span class="line">    _______________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_7 (LeakyReLU)        (None, 76, 76, 128)   0     batch_normalization_7[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_8 (Conv2D)                (None, 76, 76, 256)   294912      leaky_re_lu_7[0][0]   </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_8 (BatchNorm (None, 76, 76, 256)   1024        conv2d_8[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_8 (LeakyReLU)        (None, 76, 76, 256)   0     batch_normalization_8[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    max_pooling2d_4 (MaxPooling2D)   (None, 38, 38, 256)   0           leaky_re_lu_8[0][0]   </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_9 (Conv2D)                (None, 38, 38, 512)   1179648     max_pooling2d_4[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_9 (BatchNorm (None, 38, 38, 512)   2048        conv2d_9[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_9 (LeakyReLU)        (None, 38, 38, 512)   0     batch_normalization_9[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_10 (Conv2D)               (None, 38, 38, 256)   131072      leaky_re_lu_9[0][0]   </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_10 (BatchNor (None, 38, 38, 256)   1024        conv2d_10[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_10 (LeakyReLU)       (None, 38, 38, 256)   0    batch_normalization_10[0][0]</span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_11 (Conv2D)               (None, 38, 38, 512)   1179648    leaky_re_lu_10[0][0]   </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_11 (BatchNor (None, 38, 38, 512)   2048        conv2d_11[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_11 (LeakyReLU)       (None, 38, 38, 512)   0    batch_normalization_11[0][0]</span><br><span class="line">    _______________________________________________________________________________________</span><br><span class="line">    conv2d_12 (Conv2D)               (None, 38, 38, 256)   131072      leaky_re_lu_11[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_12 (BatchNor (None, 38, 38, 256)   1024        conv2d_12[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_12 (LeakyReLU)       (None, 38, 38, 256)   0   batch_normalization_12[0][0]</span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_13 (Conv2D)               (None, 38, 38, 512)   1179648     leaky_re_lu_12[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_13 (BatchNor (None, 38, 38, 512)   2048        conv2d_13[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_13 (LeakyReLU)       (None, 38, 38, 512)   0    batch_normalization_13[0][0]</span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    max_pooling2d_5 (MaxPooling2D)   (None, 19, 19, 512)   0           leaky_re_lu_13[0][0] </span><br><span class="line">    _______________________________________________________________________________________</span><br><span class="line">    conv2d_14 (Conv2D)               (None, 19, 19, 1024)  4718592     max_pooling2d_5[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_14 (BatchNor (None, 19, 19, 1024)  4096        conv2d_14[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_14 (LeakyReLU)       (None, 19, 19, 1024)  0    batch_normalization_14[0][0]</span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_15 (Conv2D)               (None, 19, 19, 512)   524288      leaky_re_lu_14[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_15 (BatchNor (None, 19, 19, 512)   2048        conv2d_15[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_15 (LeakyReLU)       (None, 19, 19, 512)   0    batch_normalization_15[0][0]</span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_16 (Conv2D)               (None, 19, 19, 1024)  4718592     leaky_re_lu_15[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_16 (BatchNor (None, 19, 19, 1024)  4096        conv2d_16[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_16 (LeakyReLU)       (None, 19, 19, 1024)  0    batch_normalization_16[0][0]</span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_17 (Conv2D)               (None, 19, 19, 512)   524288      leaky_re_lu_16[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_17 (BatchNor (None, 19, 19, 512)   2048        conv2d_17[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_17 (LeakyReLU)       (None, 19, 19, 512)   0    batch_normalization_17[0][0]</span><br><span class="line">    _______________________________________________________________________________________</span><br><span class="line">    conv2d_18 (Conv2D)               (None, 19, 19, 1024)  4718592     leaky_re_lu_17[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_18 (BatchNor (None, 19, 19, 1024)  4096        conv2d_18[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_18 (LeakyReLU)       (None, 19, 19, 1024)  0    batch_normalization_18[0][0]</span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_19 (Conv2D)               (None, 19, 19, 1024)  9437184     leaky_re_lu_18[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_19 (BatchNor (None, 19, 19, 1024)  4096        conv2d_19[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_21 (Conv2D)               (None, 38, 38, 64)    32768       leaky_re_lu_13[0][0]</span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_19 (LeakyReLU)       (None, 19, 19, 1024)  0    batch_normalization_19[0][0]</span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_21 (BatchNor (None, 38, 38, 64)    256         conv2d_21[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_20 (Conv2D)               (None, 19, 19, 1024)  9437184     leaky_re_lu_19[0][0]</span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_21 (LeakyReLU)       (None, 38, 38, 64)    0    batch_normalization_21[0][0]</span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_20 (BatchNor (None, 19, 19, 1024)  4096        conv2d_20[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    space_to_depth_x2 (Lambda)       (None, 19, 19, 256)   0           leaky_re_lu_21[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_20 (LeakyReLU)       (None, 19, 19, 1024)  0    batch_normalization_20[0][0]</span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    concatenate_1 (Concatenate)      (None, 19, 19, 1280)  0         space_to_depth_x2[0][0] </span><br><span class="line">                                                                      leaky_re_lu_20[0][0] </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_22 (Conv2D)               (None, 19, 19, 1024)  11796480    concatenate_1[0][0]   </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    batch_normalization_22 (BatchNor (None, 19, 19, 1024)  4096        conv2d_22[0][0]       </span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    leaky_re_lu_22 (LeakyReLU)       (None, 19, 19, 1024)  0    batch_normalization_22[0][0]</span><br><span class="line">    ________________________________________________________________________________________</span><br><span class="line">    conv2d_23 (Conv2D)               (None, 19, 19, 425)   435625      leaky_re_lu_22[0][0] </span><br><span class="line">    ===============================================================================================</span><br><span class="line">    Total params: 50,983,561</span><br><span class="line">    Trainable params: 50,962,889</span><br><span class="line">    Non-trainable params: 20,672</span><br><span class="line">    _______________________________________________________________________________________________</span><br></pre></td></tr></table></figure></li>
+</ul></li>
+<li><p>You can find implementations for YOLO here:</p>
+<ul>
+<li>https://github.com/allanzelener/YAD2K</li>
+<li>https://github.com/thtrieu/darkflow</li>
+<li>https://pjreddie.com/darknet/yolo/</li>
+</ul></li>
+</ul>
+<h3 id="region-proposals-r-cnn">Region Proposals (R-CNN)</h3>
+<ul>
+<li><p>R-CNN is an algorithm that also makes an object detection.</p></li>
+<li><p>Yolo tells that its faster:</p>
+<ul>
+<li><blockquote>
+<p>Our model has several advantages over classifier-based systems. It looks at the whole image at test time so its predictions are informed by global context in the image. It also makes predictions with a single network evaluation unlike systems like R-CNN which require thousands for a single image. This makes it extremely fast, more than 1000x faster than R-CNN and 100x faster than Fast R-CNN. See our paper for more details on the full system.</p>
+</blockquote></li>
+</ul></li>
+<li><p>But one of the downsides of YOLO that it process a lot of areas where no objects are present.</p></li>
+<li><p><strong>R-CNN</strong> stands for regions with Conv Nets.</p></li>
+<li><p>R-CNN tries to pick a few windows and run a Conv net (your confident classifier) on top of them.</p></li>
+<li><p>The algorithm R-CNN uses to pick windows is called a segmentation algorithm. Outputs something like this:</p>
+<ul>
+<li><img src="34.png" /></li>
+</ul></li>
+<li><p>If for example the segmentation algorithm produces 2000 blob then we should run our classifier/CNN on top of these blobs.</p></li>
+<li><p>There has been a lot of work regarding R-CNN tries to make it faster:</p>
+<ul>
+<li>R-CNN:
+<ul>
+<li>Propose regions. Classify proposed regions one at a time. Output label + bounding box.</li>
+<li>Downside is that its slow.</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1311.2524">[Girshik et. al, 2013. Rich feature hierarchies for accurate object detection and semantic segmentation]</a></li>
+</ul></li>
+<li>Fast R-CNN:
+<ul>
+<li>Propose regions. Use convolution implementation of sliding windows to classify all the proposed regions.</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1504.08083">[Girshik, 2015. Fast R-CNN]</a></li>
+</ul></li>
+<li>Faster R-CNN:
+<ul>
+<li>Use convolutional network to propose regions.</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1506.01497">[Ren et. al, 2016. Faster R-CNN: Towards real-time object detection with region proposal networks]</a></li>
+</ul></li>
+<li>Mask R-CNN:
+<ul>
+<li>https://arxiv.org/abs/1703.06870</li>
+</ul></li>
+</ul></li>
+<li><p>Most of the implementation of faster R-CNN are still slower than YOLO.</p></li>
+<li><p>Andew Ng thinks that the idea behind YOLO is better than R-CNN because you are able to do all the things in just one time instead of two times.</p></li>
+<li><p>Other algorithms that uses one shot to get the output includes <strong>SSD</strong> and <strong>MultiBox</strong>.</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1512.02325">[Wei Liu, et. al 2015 SSD: Single Shot MultiBox Detector]</a></li>
+</ul></li>
+<li><p><strong>R-FCN</strong> is similar to Faster R-CNN but more efficient.</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1605.06409">[Jifeng Dai, et. al 2016 R-FCN: Object Detection via Region-based Fully Convolutional Networks ]</a></li>
+</ul></li>
+</ul>
+<h2 id="special-applications-face-recognition-neural-style-transfer">Special applications: Face recognition &amp; Neural style transfer</h2>
+<blockquote>
+<p>Discover how CNNs can be applied to multiple fields, including art generation and face recognition. Implement your own algorithm to generate art and recognize faces!</p>
+</blockquote>
+<h3 id="face-recognition">Face Recognition</h3>
+<h4 id="what-is-face-recognition">What is face recognition?</h4>
+<ul>
+<li>Face recognition system identifies a person's face. It can work on both images or videos.</li>
+<li><strong><u>Liveness detection</u></strong> within a video face recognition system prevents the network from identifying a face in an image. It can be learned by supervised deep learning using a dataset for live human and in-live human and sequence learning.</li>
+<li>Face verification vs. face recognition:
+<ul>
+<li>Verification:
+<ul>
+<li>Input: image, name/ID. (1 : 1)</li>
+<li>Output: whether the input image is that of the claimed person.</li>
+<li>"is this the claimed person?"</li>
+</ul></li>
+<li>Recognition:
+<ul>
+<li>Has a database of K persons</li>
+<li>Get an input image</li>
+<li>Output ID if the image is any of the K persons (or not recognized)</li>
+<li>"who is this person?"</li>
+</ul></li>
+</ul></li>
+<li>We can use a face verification system to make a face recognition system. The accuracy of the verification system has to be high (around 99.9% or more) to be use accurately within a recognition system because the recognition system accuracy will be less than the verification system given K persons.</li>
+</ul>
+<h4 id="one-shot-learning">One Shot Learning</h4>
+<ul>
+<li>One of the face recognition challenges is to solve one shot learning problem.</li>
+<li>One Shot Learning: A recognition system is able to recognize a person, learning from one image.</li>
+<li>Historically deep learning doesn't work well with a small number of data.</li>
+<li>Instead to make this work, we will learn a <strong>similarity function</strong>:
+<ul>
+<li>d( <strong>img1</strong>, <strong>img2</strong> ) = degree of difference between images.</li>
+<li>We want d result to be low in case of the same faces.</li>
+<li>We use tau T as a threshold for d:
+<ul>
+<li>If d( <strong>img1</strong>, <strong>img2</strong> ) &lt;= T Then the faces are the same.</li>
+</ul></li>
+</ul></li>
+<li>Similarity function helps us solving the one shot learning. Also its robust to new inputs.</li>
+</ul>
+<h4 id="siamese-network">Siamese Network</h4>
+<ul>
+<li>We will implement the similarity function using a type of NNs called Siamease Network in which we can pass multiple inputs to the two or more networks with the same architecture and parameters.</li>
+<li>Siamese network architecture are as the following:
+<ul>
+<li><img src="35.png" /></li>
+<li>We make 2 identical conv nets which encodes an input image into a vector. In the above image the vector shape is (128, )</li>
+<li>The loss function will be <code>d(x1, x2) = || f(x1) - f(x2) ||^2</code></li>
+<li>If <code>X1</code>, <code>X2</code> are the same person, we want d to be low. If they are different persons, we want d to be high.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cv-foundation.org/openaccess/content_cvpr_2014/html/Taigman_DeepFace_Closing_the_2014_CVPR_paper.html">[Taigman et. al., 2014. DeepFace closing the gap to human level performance]</a></li>
+</ul></li>
+</ul>
+<h4 id="triplet-loss">Triplet Loss</h4>
+<ul>
+<li>Triplet Loss is one of the loss functions we can use to solve the similarity distance in a Siamese network.</li>
+<li>Our learning objective in the triplet loss function is to get the distance between an <strong>Anchor</strong> image and a <strong>positive</strong> or a <strong>negative</strong> image.
+<ul>
+<li>Positive means same person, while negative means different person.</li>
+</ul></li>
+<li>The triplet name came from that we are comparing an anchor A with a positive P and a negative N image.</li>
+<li>Formally we want:
+<ul>
+<li>Positive distance to be less than negative distance</li>
+<li><code>||f(A) - f(P)||^2  &lt;= ||f(A) - f(N)||^2</code></li>
+<li>Then</li>
+<li><code>||f(A) - f(P)||^2  - ||f(A) - f(N)||^2 &lt;= 0</code></li>
+<li>To make sure the NN won't get an output of zeros easily:</li>
+<li><code>||f(A) - f(P)||^2  - ||f(A) - f(N)||^2 &lt;= -alpha</code>
+<ul>
+<li>Alpha is a small number. Sometimes its called the margin.</li>
+</ul></li>
+<li>Then</li>
+<li><code>||f(A) - f(P)||^2  - ||f(A) - f(N)||^2 + alpha &lt;= 0</code></li>
+</ul></li>
+<li>Final Loss function:
+<ul>
+<li>Given 3 images (A, P, N)</li>
+<li><code>L(A, P, N) = max (||f(A) - f(P)||^2  - ||f(A) - f(N)||^2 + alpha , 0)</code></li>
+<li><code>J = Sum(L(A[i], P[i], N[i]) , i)</code> for all triplets of images.</li>
+</ul></li>
+<li>You need multiple images of the same person in your dataset. Then get some triplets out of your dataset. Dataset should be big enough.</li>
+<li>Choosing the triplets A, P, N:
+<ul>
+<li>During training if A, P, N are chosen randomly (Subjet to A and P are the same and A and N aren't the same) then one of the problems this constrain is easily satisfied
+<ul>
+<li><code>d(A, P) + alpha &lt;= d (A, N)</code></li>
+<li>So the NN wont learn much</li>
+</ul></li>
+<li>What we want to do is choose triplets that are <strong>hard</strong> to train on.
+<ul>
+<li>So for all the triplets we want this to be satisfied:</li>
+<li><code>d(A, P) + alpha &lt;= d (A, N)</code></li>
+<li>This can be achieved by for example same poses!</li>
+<li>Find more at the paper.</li>
+</ul></li>
+</ul></li>
+<li>Details are in this paper <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1503.03832">[Schroff et al.,2015, FaceNet: A unified embedding for face recognition and clustering]</a></li>
+<li>Commercial recognition systems are trained on a large datasets like 10/100 million images.</li>
+<li>There are a lot of pretrained models and parameters online for face recognition.</li>
+</ul>
+<h4 id="face-verification-and-binary-classification">Face Verification and Binary Classification</h4>
+<ul>
+<li>Triplet loss is one way to learn the parameters of a conv net for face recognition there's another way to learn these parameters as a straight binary classification problem.</li>
+<li>Learning the similarity function another way:
+<ul>
+<li><img src="36.png" /></li>
+<li>The final layer is a sigmoid layer.</li>
+<li><code>Y' = wi * Sigmoid ( f(x(i)) - f(x(j)) ) + b</code> where the subtraction is the Manhattan distance between f(x(i)) and f(x(j))</li>
+<li>Some other similarities can be Euclidean and Ki square similarity.</li>
+<li>The NN here is Siamese means the top and bottom convs has the same parameters.</li>
+</ul></li>
+<li>The paper for this work: <a target="_blank" rel="noopener" href="https://www.cv-foundation.org/openaccess/content_cvpr_2014/html/Taigman_DeepFace_Closing_the_2014_CVPR_paper.html">[Taigman et. al., 2014. DeepFace closing the gap to human level performance]</a></li>
+<li>A good performance/deployment trick:
+<ul>
+<li>Pre-compute all the images that you are using as a comparison to the vector f(x(j))</li>
+<li>When a new image that needs to be compared, get its vector f(x(i)) then put it with all the pre computed vectors and pass it to the sigmoid function.</li>
+</ul></li>
+<li>This version works quite as well as the triplet loss function.</li>
+<li>Available implementations for face recognition using deep learning includes:
+<ul>
+<li><a target="_blank" rel="noopener" href="https://cmusatyalab.github.io/openface/">Openface</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/davidsandberg/facenet">FaceNet</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/RiweiChen/DeepFace">DeepFace</a></li>
+</ul></li>
+</ul>
+<h3 id="neural-style-transfer">Neural Style Transfer</h3>
+<h4 id="what-is-neural-style-transfer">What is neural style transfer?</h4>
+<ul>
+<li>Neural style transfer is one of the application of Conv nets.</li>
+<li>Neural style transfer takes a content image <code>C</code> and a style image <code>S</code> and generates the content image <code>G</code> with the style of style image.</li>
+<li><img src="37.png" /></li>
+<li>In order to implement this you need to look at the features extracted by the Conv net at the shallower and deeper layers.</li>
+<li>It uses a previously trained convolutional network like VGG, and builds on top of that. The idea of using a network trained on a different task and applying it to a new task is called transfer learning.</li>
+</ul>
+<h4 id="what-are-deep-convnets-learning">What are deep ConvNets learning?</h4>
+<ul>
+<li>Visualizing what a deep network is learning:
+<ul>
+<li>Given this AlexNet like Conv net:
+<ul>
+<li><img src="38.png" /></li>
+</ul></li>
+<li>Pick a unit in layer l. Find the nine image patches that maximize the unit's activation.
+<ul>
+<li>Notice that a hidden unit in layer one will see relatively small portion of NN, so if you plotted it it will match a small image in the shallower layers while it will get larger image in deeper layers.</li>
+</ul></li>
+<li>Repeat for other units and layers.</li>
+<li>It turns out that layer 1 are learning the low level representations like colors and edges.</li>
+</ul></li>
+<li>You will find out that each layer are learning more complex representations.
+<ul>
+<li><img src="39.png" /></li>
+</ul></li>
+<li>The first layer was created using the weights of the first layer. Other images are generated using the receptive field in the image that triggered the neuron to be max.</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1311.2901">[Zeiler and Fergus., 2013, Visualizing and understanding convolutional networks]</a></li>
+<li>A good explanation on how to get <strong>receptive field</strong> given a layer:
+<ul>
+<li><img src="receptiveField.png" /></li>
+<li>From <a target="_blank" rel="noopener" href="https://medium.com/@nikasa1889/a-guide-to-receptive-field-arithmetic-for-convolutional-neural-networks-e0f514068807">A guide to receptive field arithmetic for Convolutional Neural Networks</a></li>
+</ul></li>
+</ul>
+<h4 id="cost-function">Cost Function</h4>
+<ul>
+<li>We will define a cost function for the generated image that measures how good it is.</li>
+<li>Give a content image C, a style image S, and a generated image G:
+<ul>
+<li><code>J(G) = alpha * J(C,G) + beta * J(S,G)</code></li>
+<li><code>J(C, G)</code> measures how similar is the generated image to the Content image.</li>
+<li><code>J(S, G)</code> measures how similar is the generated image to the Style image.</li>
+<li>alpha and beta are relative weighting to the similarity and these are hyperparameters.</li>
+</ul></li>
+<li>Find the generated image G:
+<ol type="1">
+<li>Initiate G randomly
+<ul>
+<li>For example G: 100 X 100 X 3</li>
+</ul></li>
+<li>Use gradient descent to minimize <code>J(G)</code>
+<ul>
+<li><code>G = G - dG</code> We compute the gradient image and use gradient decent to minimize the cost function.</li>
+</ul></li>
+</ol></li>
+<li>The iterations might be as following image:
+<ul>
+<li>To Generate this:
+<ul>
+<li><img src="40.png" /></li>
+</ul></li>
+<li>You will go through this:
+<ul>
+<li><img src="41.png" /></li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="content-cost-function">Content Cost Function</h4>
+<ul>
+<li>In the previous section we showed that we need a cost function for the content image and the style image to measure how similar is them to each other.</li>
+<li>Say you use hidden layer <code>l</code> to compute content cost.
+<ul>
+<li>If we choose <code>l</code> to be small (like layer 1), we will force the network to get similar output to the original content image.</li>
+<li>In practice <code>l</code> is not too shallow and not too deep but in the middle.</li>
+</ul></li>
+<li>Use pre-trained ConvNet. (E.g., VGG network)</li>
+<li>Let <code>a(c)[l]</code> and <code>a(G)[l]</code> be the activation of layer <code>l</code> on the images.</li>
+<li>If <code>a(c)[l]</code> and <code>a(G)[l]</code> are similar then they will have the same content
+<ul>
+<li><code>J(C, G) at a layer l = 1/2 || a(c)[l] - a(G)[l] ||^2</code></li>
+</ul></li>
+</ul>
+<h4 id="style-cost-function">Style Cost Function</h4>
+<ul>
+<li>Meaning of the <strong><em>style</em></strong> of an image:
+<ul>
+<li>Say you are using layer l's activation to measure <strong><em>style</em></strong>.</li>
+<li>Define style as correlation between <strong>activations</strong> across <strong>channels</strong>.
+<ul>
+<li>That means given an activation like this:
+<ul>
+<li><img src="42.png" /></li>
+</ul></li>
+<li>How correlate is the orange channel with the yellow channel?</li>
+<li>Correlated means if a value appeared in a specific channel a specific value will appear too (Depends on each other).</li>
+<li>Uncorrelated means if a value appeared in a specific channel doesn't mean that another value will appear (Not depend on each other)</li>
+</ul></li>
+<li>The correlation tells you how a components might occur or not occur together in the same image.</li>
+</ul></li>
+<li>The correlation of style image channels should appear in the generated image channels.</li>
+<li>Style matrix (Gram matrix):
+<ul>
+<li>Let <code>a(l)[i, j, k]</code> be the activation at l with <code>(i=H, j=W, k=C)</code></li>
+<li>Also <code>G(l)(s)</code> is matrix of shape <code>nc(l) x nc(l)</code>
+<ul>
+<li>We call this matrix style matrix or Gram matrix.</li>
+<li>In this matrix each cell will tell us how correlated is a channel to another channel.</li>
+</ul></li>
+<li>To populate the matrix we use these equations to compute style matrix of the style image and the generated image.
+<ul>
+<li><img src="43.png" /></li>
+<li>As it appears its the sum of the multiplication of each member in the matrix.</li>
+</ul></li>
+</ul></li>
+<li>To compute gram matrix efficiently:
+<ul>
+<li>Reshape activation from H X W X C to HW X C</li>
+<li>Name the reshaped activation F.</li>
+<li><code>G[l] = F * F.T</code></li>
+</ul></li>
+<li>Finally the cost function will be as following:
+<ul>
+<li><code>J(S, G) at layer l = (1/ 2 * H * W * C) || G(l)(s) - G(l)(G) ||</code></li>
+</ul></li>
+<li>And if you have used it from some layers
+<ul>
+<li><code>J(S, G) = Sum (lamda[l]*J(S, G)[l], for all layers)</code></li>
+</ul></li>
+<li>Steps to be made if you want to create a tensorflow model for neural style transfer:
+<ol type="1">
+<li>Create an Interactive Session.</li>
+<li>Load the content image.</li>
+<li>Load the style image</li>
+<li>Randomly initialize the image to be generated</li>
+<li>Load the VGG16 model</li>
+<li>Build the TensorFlow graph:
+<ul>
+<li>Run the content image through the VGG16 model and compute the content cost</li>
+<li>Run the style image through the VGG16 model and compute the style cost</li>
+<li>Compute the total cost</li>
+<li>Define the optimizer and the learning rate</li>
+</ul></li>
+<li>Initialize the TensorFlow graph and run it for a large number of iterations, updating the generated image at every step.</li>
+</ol></li>
+</ul>
+<h4 id="d-and-3d-generalizations">1D and 3D Generalizations</h4>
+<ul>
+<li>So far we have used the Conv nets for images which are 2D.</li>
+<li>Conv nets can work with 1D and 3D data as well.</li>
+<li>An example of 1D convolution:
+<ul>
+<li>Input shape (14, 1)</li>
+<li>Applying 16 filters with F = 5 , S = 1</li>
+<li>Output shape will be 10 X 16</li>
+<li>Applying 32 filters with F = 5, S = 1</li>
+<li>Output shape will be 6 X 32</li>
+</ul></li>
+<li>The general equation <code>(N - F)/S + 1</code> can be applied here but here it gives a vector rather than a 2D matrix.</li>
+<li>1D data comes from a lot of resources such as waves, sounds, heartbeat signals.</li>
+<li>In most of the applications that uses 1D data we use Recurrent Neural Network RNN.</li>
+<li>3D data also are available in some applications like CT scan:
+<ul>
+<li><img src="44.png" /></li>
+</ul></li>
+<li>Example of 3D convolution:
+<ul>
+<li>Input shape (14, 14,14, 1)</li>
+<li>Applying 16 filters with F = 5 , S = 1</li>
+<li>Output shape (10, 10, 10, 16)</li>
+<li>Applying 32 filters with F = 5, S = 1</li>
+<li>Output shape will be (6, 6, 6, 32)</li>
+</ul></li>
+</ul>
+<h2 id="extras">Extras</h2>
+<h3 id="keras">Keras</h3>
+<ul>
+<li>Keras is a high-level neural networks API (programming framework), written in Python and capable of running on top of several lower-level frameworks including TensorFlow, Theano, and CNTK.</li>
+<li>Keras was developed to enable deep learning engineers to build and experiment with different models very quickly.</li>
+<li>Just as TensorFlow is a higher-level framework than Python, Keras is an even higher-level framework and provides additional abstractions.</li>
+<li>Keras will work fine for many common models.</li>
+<li>Layers in Keras:
+<ul>
+<li>Dense (Fully connected layers).
+<ul>
+<li>A linear function followed by a non linear function.</li>
+</ul></li>
+<li>Convolutional layer.</li>
+<li>Pooling layer.</li>
+<li>Normalisation layer.
+<ul>
+<li>A batch normalization layer.</li>
+</ul></li>
+<li>Flatten layer
+<ul>
+<li>Flatten a matrix into vector.</li>
+</ul></li>
+<li>Activation layer
+<ul>
+<li>Different activations include: relu, tanh, sigmoid, and softmax.</li>
+</ul></li>
+</ul></li>
+<li>To train and test a model in Keras there are four steps:
+<ol type="1">
+<li>Create the model.</li>
+<li>Compile the model by calling <code>model.compile(optimizer = "...", loss = "...", metrics = ["accuracy"])</code></li>
+<li>Train the model on train data by calling <code>model.fit(x = ..., y = ..., epochs = ..., batch_size = ...)</code>
+<ul>
+<li>You can add a validation set while training too.</li>
+</ul></li>
+<li>Test the model on test data by calling <code>model.evaluate(x = ..., y = ...)</code></li>
+</ol></li>
+<li>Summarize of step in Keras: Create-&gt;Compile-&gt;Fit/Train-&gt;Evaluate/Test</li>
+<li><code>Model.summary()</code> gives a lot of useful informations regarding your model including each layers inputs, outputs, and number of parameters at each layer.</li>
+<li>To choose the Keras backend you should go to <code>$HOME/.keras/keras.json</code> and change the file to the desired backend like Theano or Tensorflow or whatever backend you want.</li>
+<li>After you create the model you can run it in a tensorflow session without compiling, training, and testing capabilities.</li>
+<li>You can save your model with <code>model_save</code> and load your model using <code>model_load</code> This will save your whole trained model to disk with the trained weights.</li>
+</ul>
+<p><br><br> <br><br> These Notes were made by <a href="mailto:mma18@fayoum.edu.eg">Mahmoud Badry</a> <span class="citation" data-cites="2017">@2017</span></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Convolutional-Neural-Networks/" rel="tag"># Convolutional Neural Networks</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Sequence-Models/2019/03/27/" rel="prev" title="Sequence Models">
+      <i class="fa fa-chevron-left"></i> Sequence Models
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Improvise-a-Jazz-Solo-with-an-LSTM-Network/2019/03/28/" rel="next" title="Improvise a Jazz Solo with an LSTM Network">
+      Improvise a Jazz Solo with an LSTM Network <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#convolutional-neural-networks"><span class="nav-number">1.</span> <span class="nav-text">Convolutional Neural Networks</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#table-of-contents"><span class="nav-number">1.1.</span> <span class="nav-text">Table of contents</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#course-summary"><span class="nav-number">1.2.</span> <span class="nav-text">Course summary</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#foundations-of-cnns"><span class="nav-number">1.3.</span> <span class="nav-text">Foundations of CNNs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#computer-vision"><span class="nav-number">1.3.1.</span> <span class="nav-text">Computer vision</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#edge-detection-example"><span class="nav-number">1.3.2.</span> <span class="nav-text">Edge detection example</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#padding"><span class="nav-number">1.3.3.</span> <span class="nav-text">Padding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#strided-convolution"><span class="nav-number">1.3.4.</span> <span class="nav-text">Strided convolution</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#convolutions-over-volumes"><span class="nav-number">1.3.5.</span> <span class="nav-text">Convolutions over volumes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#one-layer-of-a-convolutional-network"><span class="nav-number">1.3.6.</span> <span class="nav-text">One Layer of a Convolutional Network</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-simple-convolution-network-example"><span class="nav-number">1.3.7.</span> <span class="nav-text">A simple convolution network example</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pooling-layers"><span class="nav-number">1.3.8.</span> <span class="nav-text">Pooling layers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#convolutional-neural-network-example"><span class="nav-number">1.3.9.</span> <span class="nav-text">Convolutional neural network example</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#why-convolutions"><span class="nav-number">1.3.10.</span> <span class="nav-text">Why convolutions?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deep-convolutional-models-case-studies"><span class="nav-number">1.4.</span> <span class="nav-text">Deep convolutional models: case studies</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#why-look-at-case-studies"><span class="nav-number">1.4.1.</span> <span class="nav-text">Why look at case studies?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#classic-networks"><span class="nav-number">1.4.2.</span> <span class="nav-text">Classic networks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#network-in-network-and-1-x-1-convolutions"><span class="nav-number">1.4.3.</span> <span class="nav-text">Network in Network and 1 X 1 convolutions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inception-network-motivation"><span class="nav-number">1.4.4.</span> <span class="nav-text">Inception network motivation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inception-network-googlenet"><span class="nav-number">1.4.5.</span> <span class="nav-text">Inception network (GoogleNet)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#using-open-source-implementation"><span class="nav-number">1.4.6.</span> <span class="nav-text">Using Open-Source Implementation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transfer-learning"><span class="nav-number">1.4.7.</span> <span class="nav-text">Transfer Learning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-augmentation"><span class="nav-number">1.4.8.</span> <span class="nav-text">Data Augmentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#state-of-computer-vision"><span class="nav-number">1.4.9.</span> <span class="nav-text">State of Computer Vision</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#object-detection"><span class="nav-number">1.5.</span> <span class="nav-text">Object detection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#object-localization"><span class="nav-number">1.5.1.</span> <span class="nav-text">Object Localization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#landmark-detection"><span class="nav-number">1.5.2.</span> <span class="nav-text">Landmark Detection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#region-proposals-r-cnn"><span class="nav-number">1.5.3.</span> <span class="nav-text">Region Proposals (R-CNN)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#special-applications-face-recognition-neural-style-transfer"><span class="nav-number">1.6.</span> <span class="nav-text">Special applications: Face recognition &amp; Neural style transfer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#face-recognition"><span class="nav-number">1.6.1.</span> <span class="nav-text">Face Recognition</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#what-is-face-recognition"><span class="nav-number">1.6.1.1.</span> <span class="nav-text">What is face recognition?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#one-shot-learning"><span class="nav-number">1.6.1.2.</span> <span class="nav-text">One Shot Learning</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#siamese-network"><span class="nav-number">1.6.1.3.</span> <span class="nav-text">Siamese Network</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#triplet-loss"><span class="nav-number">1.6.1.4.</span> <span class="nav-text">Triplet Loss</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#face-verification-and-binary-classification"><span class="nav-number">1.6.1.5.</span> <span class="nav-text">Face Verification and Binary Classification</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#neural-style-transfer"><span class="nav-number">1.6.2.</span> <span class="nav-text">Neural Style Transfer</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#what-is-neural-style-transfer"><span class="nav-number">1.6.2.1.</span> <span class="nav-text">What is neural style transfer?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#what-are-deep-convnets-learning"><span class="nav-number">1.6.2.2.</span> <span class="nav-text">What are deep ConvNets learning?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cost-function"><span class="nav-number">1.6.2.3.</span> <span class="nav-text">Cost Function</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#content-cost-function"><span class="nav-number">1.6.2.4.</span> <span class="nav-text">Content Cost Function</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#style-cost-function"><span class="nav-number">1.6.2.5.</span> <span class="nav-text">Style Cost Function</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d-and-3d-generalizations"><span class="nav-number">1.6.2.6.</span> <span class="nav-text">1D and 3D Generalizations</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#extras"><span class="nav-number">1.7.</span> <span class="nav-text">Extras</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#keras"><span class="nav-number">1.7.1.</span> <span class="nav-text">Keras</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Binary Search and it&#39;s variations">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Binary Search">
+<meta property="og:url" content="https://zhangruochi.com/Binary-Search/2019/08/26/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="Binary Search and it&#39;s variations">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/Binary-Search/2019/08/26/58B426D25E95FF0AA3BE110012AE70DB.png">
+<meta property="og:image" content="https://zhangruochi.com/Binary-Search/2019/08/26/2E002A53F11C0E7F4D5CB28B2D0936CC.png">
+<meta property="og:image" content="https://zhangruochi.com/Binary-Search/2019/08/26/5FCE08FCE36A524F5A70BE48C51E6E27.png">
+<meta property="article:published_time" content="2019-08-26T09:34:41.000Z">
+<meta property="article:modified_time" content="2019-08-26T09:36:01.826Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/Binary-Search/2019/08/26/58B426D25E95FF0AA3BE110012AE70DB.png">
+
+<link rel="canonical" href="https://zhangruochi.com/Binary-Search/2019/08/26/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Binary Search | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Binary-Search/2019/08/26/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Binary Search
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2019-08-26 17:34:41 / Modified: 17:36:01" itemprop="dateCreated datePublished" datetime="2019-08-26T17:34:41+08:00">2019-08-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure-and-Algorithm/" itemprop="url" rel="index"><span itemprop="name">Data Structure and Algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Binary-Search/2019/08/26/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Binary-Search/2019/08/26/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">Binary Search and it's variations</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>二分查找的对象是：有序数组。这点特别需要注意。要把数组排好序先。</p>
+<p>基本步骤：</p>
+<ul>
+<li>从数组的中间元素开始，如果中间元素正好是要查找的元素，则搜素过程结束；</li>
+<li>如果某一特定元素大于或者小于中间元素，则在数组大于或小于中间元素的那一半中查找，而且跟开始一样从中间元素开始比较。</li>
+<li>如果在某一步骤数组为空，则代表找不到。</li>
+</ul>
+<p>这种搜索算法每一次比较都使搜索范围缩小一半。时间复杂度：O(logn)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 递归版本</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binarySearch</span>(<span class="params">array, key, low, high</span>):</span></span><br><span class="line">    <span class="keyword">if</span> high &lt; low:</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">    mid = (low + high)//<span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> array[mid] == key:</span><br><span class="line">        <span class="keyword">return</span> mid</span><br><span class="line">    <span class="keyword">elif</span> array[mid] &gt; key:</span><br><span class="line">        <span class="keyword">return</span> binarySearch(array, key, low, mid-<span class="number">1</span>)    </span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> binarySearch(array,key,mid+<span class="number">1</span>,high)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 非递归版本</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binarySearch2</span>(<span class="params">array,key</span>):</span></span><br><span class="line">    low,high = <span class="number">0</span>,<span class="built_in">len</span>(array)-<span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> low &lt;= high:</span><br><span class="line">        mid = (low + high)//<span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> array[mid] &lt; key:</span><br><span class="line">            low = mid+<span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> array[mid] &gt; key:</span><br><span class="line">            high = mid-<span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> mid        </span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>        </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    array = [<span class="number">1</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(binarySearch(array,<span class="number">1</span>,<span class="number">0</span>,<span class="built_in">len</span>(array)-<span class="number">1</span>))</span><br><span class="line">    <span class="built_in">print</span>(binarySearch2(array,<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+<p>-<img src="58B426D25E95FF0AA3BE110012AE70DB.png" alt="Screen Shot 2018-10-26 at 14.41.41.png" /></p>
+<h2 id="局限性">局限性</h2>
+<ul>
+<li>数据结构必须是顺序表，也就是数组</li>
+<li>数据必须有序</li>
+<li>数据量太小不适合二分查找
+<ul>
+<li>比如10个数据，一次遍历就可以了 <img src="2E002A53F11C0E7F4D5CB28B2D0936CC.png" alt="Screen Shot 2018-10-26 at 14.51.08.png" /></li>
+</ul></li>
+<li>数据量太大也不适合
+<ul>
+<li>因为数据必须以连续内存的形式存储在 memory 当中</li>
+</ul></li>
+</ul>
+<h2 id="二叉搜索的四种变形">二叉搜索的四种变形</h2>
+<figure>
+<img src="5FCE08FCE36A524F5A70BE48C51E6E27.png" alt="Screen Shot 2018-10-26 at 15.05.26.png" /><figcaption aria-hidden="true">Screen Shot 2018-10-26 at 15.05.26.png</figcaption>
+</figure>
+<h3 id="变体1查找第一个值等于给定值的元素">变体1,查找第一个值等于给定值的元素</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binarySearch</span>(<span class="params">nums,key,low,high</span>):</span></span><br><span class="line">    <span class="keyword">if</span> high &lt; low:</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">    mid = ((high - low) &gt;&gt; <span class="number">1</span>) + low</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> nums[mid] &lt; key:</span><br><span class="line">        <span class="keyword">return</span> binarySearch(nums,key,mid+<span class="number">1</span>,high )</span><br><span class="line">    <span class="keyword">elif</span> nums[mid] &gt; key:</span><br><span class="line">        <span class="keyword">return</span> binarySearch(nums,key,low,mid-<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">if</span> mid == <span class="number">0</span> <span class="keyword">or</span> nums[mid-<span class="number">1</span>] != key: </span><br><span class="line">            <span class="keyword">return</span> mid</span><br><span class="line">        <span class="keyword">else</span>: </span><br><span class="line">            high = mid - <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> binarySearch(nums,key,low,mid-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="变体2-查找最后一个值等于给定值的元素">变体2, 查找最后一个值等于给定值的元素</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binarySearch2</span>(<span class="params">nums,key</span>):</span></span><br><span class="line">    low,high,n = <span class="number">0</span>, <span class="built_in">len</span>(nums)-<span class="number">1</span>, <span class="built_in">len</span>(nums)-<span class="number">1</span>  </span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> low &lt;= high:</span><br><span class="line">        mid = ((high-low) &gt;&gt; <span class="number">1</span>) + low</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> nums[mid] &lt; key:</span><br><span class="line">            low = mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> nums[mid] &gt; key:</span><br><span class="line">            high = mid - <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">if</span> mid == n <span class="keyword">or</span> nums[mid+<span class="number">1</span>] != key:</span><br><span class="line">                <span class="keyword">return</span> mid</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                low = mid + <span class="number">1</span> </span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span> </span><br></pre></td></tr></table></figure>
+<h3 id="变体3查找第一个大于等于给定值的元素">变体3,查找第一个大于等于给定值的元素</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binarySearch3</span>(<span class="params">nums,key,low,high</span>):</span></span><br><span class="line">    <span class="keyword">if</span> high &lt; low:</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line"></span><br><span class="line">    mid = ((high - low) &gt;&gt; <span class="number">1</span>) + low</span><br><span class="line">    <span class="keyword">if</span> nums[mid] &gt;= key:</span><br><span class="line">        <span class="keyword">if</span> mid == <span class="number">0</span> <span class="keyword">or</span> nums[mid-<span class="number">1</span>] &lt; key: <span class="keyword">return</span> mid</span><br><span class="line">        <span class="keyword">else</span>:   <span class="keyword">return</span> binarySearch3(nums,key,low,mid-<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> binarySearch3(nums,key,mid+<span class="number">1</span>,high)</span><br></pre></td></tr></table></figure>
+<h3 id="变体4查找第一个小于等于给定值的元素">变体4,查找第一个小于等于给定值的元素</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binarySearch4</span>(<span class="params">nums,key</span>):</span></span><br><span class="line">    low,high,n = <span class="number">0</span>,<span class="built_in">len</span>(nums)-<span class="number">1</span>,<span class="built_in">len</span>(nums)-<span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> low&lt;= high:</span><br><span class="line">        mid = ((high - low) &gt;&gt; <span class="number">1</span>) + low</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> nums[mid] &lt;= key:</span><br><span class="line">            <span class="keyword">if</span> mid == n <span class="keyword">or</span> nums[mid+<span class="number">1</span>] &gt; key: </span><br><span class="line">                <span class="keyword">return</span> mid</span><br><span class="line">            <span class="keyword">else</span>: </span><br><span class="line">                low = mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            high = mid - <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h2 id="变体5查找第一个比某元素大的元素">变体5,查找第一个比某元素大的元素</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_first_big</span>(<span class="params">nums,key</span>):</span></span><br><span class="line">    low,high,n = <span class="number">0</span>,<span class="built_in">len</span>(nums)-<span class="number">1</span>,<span class="built_in">len</span>(nums)-<span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> low &lt;= high:</span><br><span class="line">        mid = ((high-low)&gt;&gt;<span class="number">1</span>) + low</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> nums[mid] &lt;= key:</span><br><span class="line">            low = mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">if</span> mid == n <span class="keyword">or</span> nums[mid-<span class="number">1</span>] &lt;= key:</span><br><span class="line">                <span class="keyword">return</span> nums[mid]</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                high = mid - <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>   </span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Hash-Table/2019/08/23/" rel="prev" title="Hash Table">
+      <i class="fa fa-chevron-left"></i> Hash Table
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Sort/2019/09/08/" rel="next" title="Sort">
+      Sort <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%80%E9%99%90%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">局限性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E7%9A%84%E5%9B%9B%E7%A7%8D%E5%8F%98%E5%BD%A2"><span class="nav-number">2.</span> <span class="nav-text">二叉搜索的四种变形</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E4%BD%931%E6%9F%A5%E6%89%BE%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%80%BC%E7%AD%89%E4%BA%8E%E7%BB%99%E5%AE%9A%E5%80%BC%E7%9A%84%E5%85%83%E7%B4%A0"><span class="nav-number">2.1.</span> <span class="nav-text">变体1,查找第一个值等于给定值的元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E4%BD%932-%E6%9F%A5%E6%89%BE%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E5%80%BC%E7%AD%89%E4%BA%8E%E7%BB%99%E5%AE%9A%E5%80%BC%E7%9A%84%E5%85%83%E7%B4%A0"><span class="nav-number">2.2.</span> <span class="nav-text">变体2, 查找最后一个值等于给定值的元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E4%BD%933%E6%9F%A5%E6%89%BE%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%A4%A7%E4%BA%8E%E7%AD%89%E4%BA%8E%E7%BB%99%E5%AE%9A%E5%80%BC%E7%9A%84%E5%85%83%E7%B4%A0"><span class="nav-number">2.3.</span> <span class="nav-text">变体3,查找第一个大于等于给定值的元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E4%BD%934%E6%9F%A5%E6%89%BE%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%B0%8F%E4%BA%8E%E7%AD%89%E4%BA%8E%E7%BB%99%E5%AE%9A%E5%80%BC%E7%9A%84%E5%85%83%E7%B4%A0"><span class="nav-number">2.4.</span> <span class="nav-text">变体4,查找第一个小于等于给定值的元素</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E4%BD%935%E6%9F%A5%E6%89%BE%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AF%94%E6%9F%90%E5%85%83%E7%B4%A0%E5%A4%A7%E7%9A%84%E5%85%83%E7%B4%A0"><span class="nav-number">3.</span> <span class="nav-text">变体5,查找第一个比某元素大的元素</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

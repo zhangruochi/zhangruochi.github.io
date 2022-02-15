@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="The details of the assignments 2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CS224n Assignment 2">
+<meta property="og:url" content="https://zhangruochi.com/CS224n-Assignment-2/2019/12/07/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="The details of the assignments 2">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-12-07T11:57:10.000Z">
+<meta property="article:modified_time" content="2019-12-19T18:10:14.128Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta property="article:tag" content="cs224n">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhangruochi.com/CS224n-Assignment-2/2019/12/07/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>CS224n Assignment 2 | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/CS224n-Assignment-2/2019/12/07/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CS224n Assignment 2
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-07 19:57:10" itemprop="dateCreated datePublished" datetime="2019-12-07T19:57:10+08:00">2019-12-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-20 02:10:14" itemprop="dateModified" datetime="2019-12-20T02:10:14+08:00">2019-12-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/" itemprop="url" rel="index"><span itemprop="name">Artificial Intelligence</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Artificial-Intelligence/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/CS224n-Assignment-2/2019/12/07/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/CS224n-Assignment-2/2019/12/07/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">The details of the assignments 2</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> utils.gradcheck <span class="keyword">import</span> gradcheck_naive</span><br><span class="line"><span class="keyword">from</span> utils.utils <span class="keyword">import</span> normalizeRows, softmax</span><br></pre></td></tr></table></figure>
+<h2 id="helper-functions">Helper functions</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span>(<span class="params">x</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Compute the sigmoid function for the input here.</span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    x -- A scalar or numpy array.</span></span><br><span class="line"><span class="string">    Return:</span></span><br><span class="line"><span class="string">    s -- sigmoid(x)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">### YOUR CODE HERE</span></span><br><span class="line">    s = <span class="number">1.</span>/(<span class="number">1.</span> + np.exp(-x))</span><br><span class="line">    <span class="comment">### END YOUR CODE</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getNegativeSamples</span>(<span class="params">outsideWordIdx, dataset, K</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Samples K indexes which are not the outsideWordIdx &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    negSampleWordIndices = [<span class="literal">None</span>] * K</span><br><span class="line">    <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(K):</span><br><span class="line">        newidx = dataset.sampleTokenIdx()</span><br><span class="line">        <span class="keyword">while</span> newidx == outsideWordIdx:</span><br><span class="line">            newidx = dataset.sampleTokenIdx()</span><br><span class="line">        negSampleWordIndices[k] = newidx</span><br><span class="line">    <span class="keyword">return</span> negSampleWordIndices</span><br></pre></td></tr></table></figure>
+<h2 id="naive-softmax-loss-and-its-gradient">Naive Softmax Loss And Its Gradient</h2>
+<p>In word2vec, the conditional probability distribution is given by taking vector dot-products and applying the softmax function:</p>
+<p><span class="math display">\[P(o\|c) = \frac{exp^{u_o^{T}v_c}}{\sum_{w\in v}exp^{u_w^{T}v_c}} \]</span></p>
+<ul>
+<li><span class="math inline">\(u_o\)</span> is the ‘outside’ vector representing outside word o</li>
+<li><span class="math inline">\(v_c\)</span> is the ‘center’ vector representing center word c</li>
+</ul>
+<p>The Cross Entropy Loss between the true (discrete) probability distribution p and another distribution q is: <span class="math display">\[ -\sum_i p_i log(q_i)\]</span></p>
+<p>So that the naive-softmax loss for word2vec given in following equation is the same as the cross-entropy loss between <span class="math inline">\(y\)</span> and <span class="math inline">\(\hat{y}\)</span>:</p>
+<p><span class="math display">\[-\sum_{w \in Vocab} y_w log(\hat{y}_w) = -log(\hat{y}_o) \]</span></p>
+<p>For the backpropagation, lets introduce the intermediate variable <span class="math inline">\(p\)</span>, which is a vector of the (normalized) probabilities. The loss for one example is: <span class="math display">\[p_k = \frac{e^{f_k}}{ \sum_j e^{f_j} } \hspace{1in} L_i =-\log\left(p_{y_i}\right)\]</span></p>
+<p>We now wish to understand how the computed scores inside <span class="math inline">\(f\)</span> should change to decrease the loss <span class="math inline">\(L_i\)</span> that this example contributes to the full objective. In other words, we want to derive the gradient <span class="math inline">\(\frac{\partial L_i}{\partial f_k}\)</span>. The loss <span class="math inline">\(L_i\)</span> is computed from <span class="math inline">\(p\)</span> which in turn depends on <span class="math inline">\(f\)</span>.</p>
+<p><span class="math display">\[\frac{\partial L_i }{ \partial f_k } = p_k - \mathbb{1}(y_i = k)\]</span></p>
+<p>Notice how elegant and simple this expression is. Suppose the probabilities we computed were <code>p = [0.2, 0.3, 0.5]</code>, and that the correct class was the middle one (with probability <code>0.3</code>). According to this derivation the gradient on the scores would be <code>df = [0.2, -0.7, 0.5]</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">naiveSoftmaxLossAndGradient</span>(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="function">    centerWordVec,</span></span></span><br><span class="line"><span class="params"><span class="function">    outsideWordIdx,</span></span></span><br><span class="line"><span class="params"><span class="function">    outsideVectors,</span></span></span><br><span class="line"><span class="params"><span class="function">    dataset</span></span></span><br><span class="line"><span class="params"><span class="function"></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Naive Softmax loss &amp; gradient function for word2vec models</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Implement the naive softmax loss and gradients between a center word&#x27;s </span></span><br><span class="line"><span class="string">    embedding and an outside word&#x27;s embedding. This will be the building block</span></span><br><span class="line"><span class="string">    for our word2vec models.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    centerWordVec -- numpy ndarray, center word&#x27;s embedding</span></span><br><span class="line"><span class="string">                    (v_c in the pdf handout)</span></span><br><span class="line"><span class="string">    outsideWordIdx -- integer, the index of the outside word</span></span><br><span class="line"><span class="string">                    (o of u_o in the pdf handout)</span></span><br><span class="line"><span class="string">    outsideVectors -- outside vectors (rows of matrix) for all words in vocab</span></span><br><span class="line"><span class="string">                      (U in the pdf handout)</span></span><br><span class="line"><span class="string">    dataset -- needed for negative sampling, unused here.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Return:</span></span><br><span class="line"><span class="string">    loss -- naive softmax loss</span></span><br><span class="line"><span class="string">    gradCenterVec -- the gradient with respect to the center word vector</span></span><br><span class="line"><span class="string">                     (dJ / dv_c in the pdf handout)</span></span><br><span class="line"><span class="string">    gradOutsideVecs -- the gradient with respect to all the outside word vectors</span></span><br><span class="line"><span class="string">                    (dJ / dU)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">### YOUR CODE HERE</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">### Please use the provided softmax function (imported earlier in this file)</span></span><br><span class="line">    <span class="comment">### This numerically stable implementation helps you avoid issues pertaining</span></span><br><span class="line">    <span class="comment">### to integer overflow. </span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># centerWordVec:  (embedding_dim,1)</span></span><br><span class="line">    <span class="comment"># outsideVectors: (vocab_size,embedding_dim)</span></span><br><span class="line"></span><br><span class="line">    scores = np.matmul(outsideVectors, centerWordVec)   <span class="comment"># (vocab_size,1)</span></span><br><span class="line">    <span class="comment"># print(scores.shape)</span></span><br><span class="line">    probs = softmax(scores)                          <span class="comment"># (vocab_size,1)  y_hat</span></span><br><span class="line"></span><br><span class="line">    loss = -np.log(probs[outsideWordIdx])</span><br><span class="line"></span><br><span class="line">    dscores = probs.copy()   <span class="comment"># (vocab_size,1)</span></span><br><span class="line">    dscores[outsideWordIdx] = dscores[outsideWordIdx] - <span class="number">1</span>   <span class="comment">#  y_hat minus y</span></span><br><span class="line">    gradCenterVec = np.matmul(outsideVectors.T, dscores)  <span class="comment"># (embedding_dim,1)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># print(dscores.shape) # (5,)</span></span><br><span class="line">    <span class="comment"># print(centerWordVec.shape) # (3,)</span></span><br><span class="line">    <span class="comment"># exit()</span></span><br><span class="line"></span><br><span class="line">    gradOutsideVecs = np.outer(dscores, centerWordVec) <span class="comment"># (vocab_size,embedding_dim)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">### END YOUR CODE</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> loss, gradCenterVec, gradOutsideVecs</span><br></pre></td></tr></table></figure>
+<h2 id="negative-sampling-loss-and-its-gradient">Negative Sampling Loss And Its Gradient</h2>
+<p>Now we shall consider the Negative Sampling loss, which is an alternative to the Naive Softmax loss. Assume that K negative samples (words) are drawn from the vocabulary. For simplicity of notation we shall refer to them as <span class="math inline">\(w_1,w_2,\cdots,w_k\)</span> and their outside vectors as <span class="math inline">\(u_1,\cdots,u_k\)</span>. Note that <span class="math inline">\(o \in {w_1, \cdots, w_k}\)</span>. For a center word c and an outside word o, the negative sampling loss function is given by:</p>
+<p><span class="math display">\[J_{neg-sample}(v_c,o,U) = -log(\sigma(u_o^{T}v_c)) - \sum_{k=1}^{k}log(\sigma(-u_k^{T},v_c))\]</span></p>
+<p>The sigmoid function and its gradient is as follows:</p>
+<p><span class="math display">\[\sigma(x) = \frac{1}{1+e^{-x}} \\\\
+\rightarrow \hspace{0.3in} \frac{d\sigma(x)}{dx} = \frac{e^{-x}}{(1+e^{-x})^2} = \left( \frac{1 + e^{-x} - 1}{1 + e^{-x}} \right) \left( \frac{1}{1+e^{-x}} \right) 
+= \left( 1 - \sigma(x) \right) \sigma(x)\]</span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">negSamplingLossAndGradient</span>(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="function">    centerWordVec,</span></span></span><br><span class="line"><span class="params"><span class="function">    outsideWordIdx,</span></span></span><br><span class="line"><span class="params"><span class="function">    outsideVectors,</span></span></span><br><span class="line"><span class="params"><span class="function">    dataset,</span></span></span><br><span class="line"><span class="params"><span class="function">    K=<span class="number">10</span></span></span></span><br><span class="line"><span class="params"><span class="function"></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Negative sampling loss function for word2vec models</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Implement the negative sampling loss and gradients for a centerWordVec</span></span><br><span class="line"><span class="string">    and a outsideWordIdx word vector as a building block for word2vec</span></span><br><span class="line"><span class="string">    models. K is the number of negative samples to take.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Note: The same word may be negatively sampled multiple times. For</span></span><br><span class="line"><span class="string">    example if an outside word is sampled twice, you shall have to</span></span><br><span class="line"><span class="string">    double count the gradient with respect to this word. Thrice if</span></span><br><span class="line"><span class="string">    it was sampled three times, and so forth.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Arguments/Return Specifications: same as naiveSoftmaxLossAndGradient</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Negative sampling of words is done for you. Do not modify this if you</span></span><br><span class="line">    <span class="comment"># wish to match the autograder and receive points!</span></span><br><span class="line">    negSampleWordIndices = getNegativeSamples(outsideWordIdx, dataset, K)</span><br><span class="line">    indices = [outsideWordIdx] + negSampleWordIndices</span><br><span class="line"></span><br><span class="line">    <span class="comment">### YOUR CODE HERE</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">### Please use your implementation of sigmoid in here.</span></span><br><span class="line">    gradCenterVec   = np.zeros(centerWordVec.shape)</span><br><span class="line">    gradOutsideVecs = np.zeros(outsideVectors.shape)</span><br><span class="line">    loss = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line">    u_o = outsideVectors[outsideWordIdx]</span><br><span class="line">    z = sigmoid(np.dot(u_o,centerWordVec))</span><br><span class="line">    loss -= np.log(z)</span><br><span class="line">    gradCenterVec += u_o*(z-<span class="number">1</span>)</span><br><span class="line">    gradOutsideVecs[outsideWordIdx] = centerWordVec*(z-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(K):</span><br><span class="line">        neg_id = indices[i+<span class="number">1</span>]</span><br><span class="line">        u_k = outsideVectors[neg_id]</span><br><span class="line">        z = sigmoid(-np.dot(u_k,centerWordVec))</span><br><span class="line">        loss -= np.log(z)</span><br><span class="line">        gradCenterVec += u_k*(<span class="number">1</span>-z)</span><br><span class="line">        gradOutsideVecs[neg_id] += centerWordVec*(<span class="number">1</span>-z)</span><br><span class="line">    <span class="comment">### END YOUR CODE</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> loss, gradCenterVec, gradOutsideVecs</span><br></pre></td></tr></table></figure>
+<h2 id="skipgram">SkipGram</h2>
+<p>Suppose the center word is <span class="math inline">\(c = w_t\)</span> and the context window is <span class="math inline">\([w_{t-m},\cdots,w_{t-1},\cdots, w_{t}, \cdots, w_{t+1}, \cdots,w_{t+m} ]\)</span>, where m is the context window size. Recall that for the skip-gram version of word2vec, the total loss for the context window is:</p>
+<p><span class="math display">\[J_{skip-gram} (v_c,w_{t−m},\cdots,w_{t+m}, U) = \sum_{-m \leq j \leq m, j \neq 0} J(v_c,w_{t+j},U)\]</span></p>
+<p>Here, <span class="math inline">\(J(v_c,w_{t+j},U)\)</span> represents an arbitrary loss term for the center word <span class="math inline">\(c = w_t\)</span> and outside word</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">skipgram</span>(<span class="params">currentCenterWord, windowSize, outsideWords, word2Ind,</span></span></span><br><span class="line"><span class="params"><span class="function">             centerWordVectors, outsideVectors, dataset,</span></span></span><br><span class="line"><span class="params"><span class="function">             word2vecLossAndGradient=naiveSoftmaxLossAndGradient</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Skip-gram model in word2vec</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Implement the skip-gram model in this function.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">    currentCenterWord -- a string of the current center word</span></span><br><span class="line"><span class="string">    windowSize -- integer, context window size</span></span><br><span class="line"><span class="string">    outsideWords -- list of no more than 2*windowSize strings, the outside words</span></span><br><span class="line"><span class="string">    word2Ind -- a dictionary that maps words to their indices in</span></span><br><span class="line"><span class="string">              the word vector list</span></span><br><span class="line"><span class="string">    centerWordVectors -- center word vectors (as rows) for all words in vocab</span></span><br><span class="line"><span class="string">                        (V in pdf handout)</span></span><br><span class="line"><span class="string">    outsideVectors -- outside word vectors (as rows) for all words in vocab</span></span><br><span class="line"><span class="string">                    (U in pdf handout)</span></span><br><span class="line"><span class="string">    word2vecLossAndGradient -- the loss and gradient function for</span></span><br><span class="line"><span class="string">                               a prediction vector given the outsideWordIdx</span></span><br><span class="line"><span class="string">                               word vectors, could be one of the two</span></span><br><span class="line"><span class="string">                               loss functions you implemented above.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Return:</span></span><br><span class="line"><span class="string">    loss -- the loss function value for the skip-gram model</span></span><br><span class="line"><span class="string">            (J in the pdf handout)</span></span><br><span class="line"><span class="string">    gradCenterVecs -- the gradient with respect to the center word vectors</span></span><br><span class="line"><span class="string">            (dJ / dV in the pdf handout)</span></span><br><span class="line"><span class="string">    gradOutsideVectors -- the gradient with respect to the outside word vectors</span></span><br><span class="line"><span class="string">                        (dJ / dU in the pdf handout)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    loss = <span class="number">0.0</span></span><br><span class="line">    gradCenterVecs = np.zeros(centerWordVectors.shape)</span><br><span class="line">    gradOutsideVectors = np.zeros(outsideVectors.shape)</span><br><span class="line"></span><br><span class="line">    <span class="comment">### YOUR CODE HERE</span></span><br><span class="line">    center_id = word2Ind[currentCenterWord]</span><br><span class="line">    centerWordVec = centerWordVectors[center_id]</span><br><span class="line">    <span class="keyword">for</span> word <span class="keyword">in</span> outsideWords:</span><br><span class="line">        outside_id = word2Ind[word]</span><br><span class="line">        loss_mini, gradCenter_mini, gradOutside_mini= \</span><br><span class="line">        word2vecLossAndGradient(centerWordVec=centerWordVec,</span><br><span class="line">            outsideWordIdx=outside_id,outsideVectors=outsideVectors,dataset=dataset)</span><br><span class="line">        loss += loss_mini</span><br><span class="line">        <span class="comment"># print(gradCenterVecs[center_id].shape, gradCenter_mini.shape)</span></span><br><span class="line">        <span class="comment"># exit()</span></span><br><span class="line">        gradCenterVecs[center_id] += gradCenter_mini</span><br><span class="line">        gradOutsideVectors += gradOutside_mini</span><br><span class="line">    <span class="comment">### END YOUR CODE</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> loss, gradCenterVecs, gradOutsideVectors</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/cs224n/" rel="tag"># cs224n</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Computational-Graph/2019/12/06/" rel="prev" title="Computational Graph">
+      <i class="fa fa-chevron-left"></i> Computational Graph
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Dependency-Parsing-and-Assignment3-of-CS224n/2019/12/10/" rel="next" title="Dependency Parsing and Assignment3 of CS224n">
+      Dependency Parsing and Assignment3 of CS224n <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#helper-functions"><span class="nav-number">1.</span> <span class="nav-text">Helper functions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#naive-softmax-loss-and-its-gradient"><span class="nav-number">2.</span> <span class="nav-text">Naive Softmax Loss And Its Gradient</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#negative-sampling-loss-and-its-gradient"><span class="nav-number">3.</span> <span class="nav-text">Negative Sampling Loss And Its Gradient</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#skipgram"><span class="nav-number">4.</span> <span class="nav-text">SkipGram</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">215</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
