@@ -27,13 +27,13 @@
 <meta property="og:site_name" content="RUOCHI.AI">
 <meta property="og:description" content="Deep Generative Image Models using a Laplacian Pyramid of Adversarial Networks  Category: Article Created: January 24, 2022 6:36 PM Status: Open URL: https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;1506.05751.pdf Updated: Janu">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://zhangruochi.com/Deep-Generative-Image-Models-using-a-Laplacian-Pyramid-of-Adversarial-Networks/2022/02/15/Deep%20Generative%20Image%20Models%20using%20a%20Laplacian%20Pyr%2016ef31d5753a4726b669572d1b9d5dcf/Screen_Shot_2022-01-24_at_19.27.27.png">
-<meta property="og:image" content="https://zhangruochi.com/Deep-Generative-Image-Models-using-a-Laplacian-Pyramid-of-Adversarial-Networks/2022/02/15/Deep%20Generative%20Image%20Models%20using%20a%20Laplacian%20Pyr%2016ef31d5753a4726b669572d1b9d5dcf/Screen_Shot_2022-01-24_at_19.30.01.png">
+<meta property="og:image" content="https://zhangruochi.com/Deep-Generative-Image-Models-using-a-Laplacian-Pyramid-of-Adversarial-Networks/2022/02/15/Screen_Shot_2022-01-24_at_19.27.27.png">
+<meta property="og:image" content="https://zhangruochi.com/Deep-Generative-Image-Models-using-a-Laplacian-Pyramid-of-Adversarial-Networks/2022/02/15/Screen_Shot_2022-01-24_at_19.30.01.png">
 <meta property="article:published_time" content="2022-02-15T10:46:10.000Z">
-<meta property="article:modified_time" content="2022-02-15T10:47:52.891Z">
+<meta property="article:modified_time" content="2022-02-15T11:22:57.453Z">
 <meta property="article:author" content="Ruochi Zhang">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://zhangruochi.com/Deep-Generative-Image-Models-using-a-Laplacian-Pyramid-of-Adversarial-Networks/2022/02/15/Deep%20Generative%20Image%20Models%20using%20a%20Laplacian%20Pyr%2016ef31d5753a4726b669572d1b9d5dcf/Screen_Shot_2022-01-24_at_19.27.27.png">
+<meta name="twitter:image" content="https://zhangruochi.com/Deep-Generative-Image-Models-using-a-Laplacian-Pyramid-of-Adversarial-Networks/2022/02/15/Screen_Shot_2022-01-24_at_19.27.27.png">
 
 <link rel="canonical" href="https://zhangruochi.com/Deep-Generative-Image-Models-using-a-Laplacian-Pyramid-of-Adversarial-Networks/2022/02/15/">
 
@@ -220,7 +220,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-02-15 18:46:10 / Modified: 18:47:52" itemprop="dateCreated datePublished" datetime="2022-02-15T18:46:10+08:00">2022-02-15</time>
+              <time title="Created: 2022-02-15 18:46:10 / Modified: 19:22:57" itemprop="dateCreated datePublished" datetime="2022-02-15T18:46:10+08:00">2022-02-15</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -311,11 +311,11 @@ I_k = u(I_{k+1} + h_k)
 <h3 id="the-sampling-procedure-for-our-lapgan">The sampling procedure for our LAPGAN</h3>
 <p>Following training (explained below), we have a set of generative convnet models <span class="math inline">\({G_0 , . . . , G_K }\)</span>, each of which captures the distribution of coefficients <span class="math inline">\(h_k\)</span> for natural images at a different level of the Laplacian pyramid.</p>
 <figure>
-<img src="Deep%20Generative%20Image%20Models%20using%20a%20Laplacian%20Pyr%2016ef31d5753a4726b669572d1b9d5dcf/Screen_Shot_2022-01-24_at_19.27.27.png" alt="Screen Shot 2022-01-24 at 19.27.27.png" /><figcaption aria-hidden="true">Screen Shot 2022-01-24 at 19.27.27.png</figcaption>
+<img src="Screen_Shot_2022-01-24_at_19.27.27.png" alt="Screen Shot 2022-01-24 at 19.27.27.png" /><figcaption aria-hidden="true">Screen Shot 2022-01-24 at 19.27.27.png</figcaption>
 </figure>
 <h3 id="the-training-procedure-for-lapgan">The training procedure for LAPGAN</h3>
 <figure>
-<img src="Deep%20Generative%20Image%20Models%20using%20a%20Laplacian%20Pyr%2016ef31d5753a4726b669572d1b9d5dcf/Screen_Shot_2022-01-24_at_19.30.01.png" alt="Screen Shot 2022-01-24 at 19.30.01.png" /><figcaption aria-hidden="true">Screen Shot 2022-01-24 at 19.30.01.png</figcaption>
+<img src="Screen_Shot_2022-01-24_at_19.30.01.png" alt="Screen Shot 2022-01-24 at 19.30.01.png" /><figcaption aria-hidden="true">Screen Shot 2022-01-24 at 19.30.01.png</figcaption>
 </figure>
 <h1 id="conclusion">Conclusion</h1>
 <p><strong>Breaking the generation into successive refinements is the key idea in this work</strong>. Note that we give up any “global” notion of fidelity; we never make any attempt to train a network to discriminate between the output of a cascade and a real image and instead focus on making each step plausible. Furthermore, the independent training of each pyramid level has the advantage that it is far more difficult for the model to memorize training examples – a hazard when high capacity deep networks are used.</p>
