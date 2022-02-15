@@ -188,6 +188,122 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Unsupervised-representation-learning-with-deep-convolutional-generative-adversarial-network/2022/02/15/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/Unsupervised-representation-learning-with-deep-convolutional-generative-adversarial-network/2022/02/15/" class="post-title-link" itemprop="url">Unsupervised representation learning with deep convolutional generative adversarial network</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-15 18:49:11 / Modified: 18:50:44" itemprop="dateCreated datePublished" datetime="2022-02-15T18:49:11+08:00">2022-02-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper-Note/" itemprop="url" rel="index"><span itemprop="name">Paper Note</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper-Note/GANs/" itemprop="url" rel="index"><span itemprop="name">GANs</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Unsupervised-representation-learning-with-deep-convolutional-generative-adversarial-network/2022/02/15/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Unsupervised-representation-learning-with-deep-convolutional-generative-adversarial-network/2022/02/15/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="unsupervised-representation-learning-with-deep-convolutional-generative-adversarial-network">Unsupervised representation learning with deep convolutional generative adversarial network</h1>
+<ul>
+<li>Category: Article</li>
+<li>Created: January 24, 2022 5:31 PM</li>
+<li>Status: Open</li>
+<li>URL: https://arxiv.org/pdf/1511.06434.pdf</li>
+<li>Updated: February 15, 2022 6:49 PM</li>
+</ul>
+<h1 id="background">Background</h1>
+<ol type="1">
+<li>In this work we hope to help bridge the gap between the success of CNNs for supervised learning and unsupervised learning.</li>
+<li>We introduce a class of CNNs called deep convolutional generative adversarial networks (DCGANs), that have certain architectural constraints, and demonstrate that they are a strong candidate for unsupervised learning.</li>
+</ol>
+<h1 id="methods">Methods</h1>
+<h3 id="architecture-guidelines-for-stable-deep-convolutional-gans">Architecture guidelines for stable Deep Convolutional GANs</h3>
+<ol type="1">
+<li>Replace any pooling layers with strided convolutions (discriminator) and fractional-strided convolutions (generator).</li>
+<li>Use batchnorm in both the generator and the discriminator.</li>
+<li>Remove fully connected hidden layers for deeper architectures.</li>
+<li>Use ReLU activation in generator for all layers except for the output, which uses Tanh.</li>
+<li>Use LeakyReLU activation in the discriminator for all layers.</li>
+</ol>
+<h3 id="generator">Generator</h3>
+<figure>
+<img src="Unsupervised%20representation%20learning%20with%20deep%20con%20781de8a6566c41cda3f024dd07597a20/Screen_Shot_2022-01-24_at_18.03.16.png" alt="Screen Shot 2022-01-24 at 18.03.16.png" /><figcaption aria-hidden="true">Screen Shot 2022-01-24 at 18.03.16.png</figcaption>
+</figure>
+<p>DCGAN generator used for LSUN scene modeling. A 100 dimensional uniform distribu- tion Z is projected to a small spatial extent convolutional representation with many feature maps. A series of four fractionally-strided convolutions (in some recent papers, these are wrongly called deconvolutions) then convert this high level representation into a 64 × 64 pixel image. Notably, no fully connected or pooling layers are used.</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"># Generator Code</span><br><span class="line"># refrence <span class="keyword">from</span> https:<span class="comment">//pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html</span></span><br><span class="line"></span><br><span class="line"># Size <span class="keyword">of</span> z latent vector (i.e. size <span class="keyword">of</span> generator input)</span><br><span class="line">nz = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"># Size <span class="keyword">of</span> feature maps <span class="keyword">in</span> generator</span><br><span class="line">ngf = <span class="number">64</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Generator</span>(<span class="title">nn</span>.<span class="title">Module</span>):</span></span><br><span class="line"><span class="class">    <span class="title">def</span> <span class="title">__init__</span>(<span class="title">self</span>, <span class="title">ngpu</span>):</span></span><br><span class="line"><span class="class">        <span class="title">super</span>(<span class="title">Generator</span>, <span class="title">self</span>).<span class="title">__init__</span>()</span></span><br><span class="line"><span class="class">        <span class="title">self</span>.<span class="title">ngpu</span> </span>= ngpu</span><br><span class="line">        self.main = nn.Sequential(</span><br><span class="line">            # input is Z, going into a convolution</span><br><span class="line">            nn.ConvTranspose2d( nz, ngf * <span class="number">8</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">0</span>, bias=False),</span><br><span class="line">            nn.BatchNorm2d(ngf * <span class="number">8</span>),</span><br><span class="line">            nn.ReLU(True),</span><br><span class="line">            # state size. (ngf*<span class="number">8</span>) x <span class="number">4</span> x <span class="number">4</span></span><br><span class="line">            nn.ConvTranspose2d(ngf * <span class="number">8</span>, ngf * <span class="number">4</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">1</span>, bias=False),</span><br><span class="line">            nn.BatchNorm2d(ngf * <span class="number">4</span>),</span><br><span class="line">            nn.ReLU(True),</span><br><span class="line">            # state size. (ngf*<span class="number">4</span>) x <span class="number">8</span> x <span class="number">8</span></span><br><span class="line">            nn.ConvTranspose2d( ngf * <span class="number">4</span>, ngf * <span class="number">2</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">1</span>, bias=False),</span><br><span class="line">            nn.BatchNorm2d(ngf * <span class="number">2</span>),</span><br><span class="line">            nn.ReLU(True),</span><br><span class="line">            # state size. (ngf*<span class="number">2</span>) x <span class="number">16</span> x <span class="number">16</span></span><br><span class="line">            nn.ConvTranspose2d( ngf * <span class="number">2</span>, ngf, <span class="number">4</span>, <span class="number">2</span>, <span class="number">1</span>, bias=False),</span><br><span class="line">            nn.BatchNorm2d(ngf),</span><br><span class="line">            nn.ReLU(True),</span><br><span class="line">            # state size. (ngf) x <span class="number">32</span> x <span class="number">32</span></span><br><span class="line">            nn.ConvTranspose2d( ngf, nc, <span class="number">4</span>, <span class="number">2</span>, <span class="number">1</span>, bias=False),</span><br><span class="line">            nn.Tanh()</span><br><span class="line">            # state size. (nc) x <span class="number">64</span> x <span class="number">64</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    def forward(self, input):</span><br><span class="line">        <span class="keyword">return</span> self.main(input)</span><br></pre></td></tr></table></figure>
+<h3 id="descriminator">Descriminator</h3>
+<p>The DCGAN paper mentions it is a good practice to use strided convolution rather than pooling to downsample because it lets the network learn its own pooling function. Also batch norm and leakyRelu functions promote healthy gradient flow which is critical for the learning process of both <span class="math inline">\(G\)</span> and <span class="math inline">\(D\)</span>.</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Discriminator</span>(<span class="title">nn</span>.<span class="title">Module</span>):</span></span><br><span class="line"><span class="class">    <span class="title">def</span> <span class="title">__init__</span>(<span class="title">self</span>, <span class="title">ngpu</span>):</span></span><br><span class="line"><span class="class">        <span class="title">super</span>(<span class="title">Discriminator</span>, <span class="title">self</span>).<span class="title">__init__</span>()</span></span><br><span class="line"><span class="class">        <span class="title">self</span>.<span class="title">ngpu</span> </span>= ngpu</span><br><span class="line">        self.main = nn.Sequential(</span><br><span class="line">            # input is (nc) x <span class="number">64</span> x <span class="number">64</span></span><br><span class="line">            nn.Conv2d(nc, ndf, <span class="number">4</span>, <span class="number">2</span>, <span class="number">1</span>, bias=False),</span><br><span class="line">            nn.LeakyReLU(<span class="number">0.2</span>, inplace=True),</span><br><span class="line">            # state size. (ndf) x <span class="number">32</span> x <span class="number">32</span></span><br><span class="line">            nn.Conv2d(ndf, ndf * <span class="number">2</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">1</span>, bias=False),</span><br><span class="line">            nn.BatchNorm2d(ndf * <span class="number">2</span>),</span><br><span class="line">            nn.LeakyReLU(<span class="number">0.2</span>, inplace=True),</span><br><span class="line">            # state size. (ndf*<span class="number">2</span>) x <span class="number">16</span> x <span class="number">16</span></span><br><span class="line">            nn.Conv2d(ndf * <span class="number">2</span>, ndf * <span class="number">4</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">1</span>, bias=False),</span><br><span class="line">            nn.BatchNorm2d(ndf * <span class="number">4</span>),</span><br><span class="line">            nn.LeakyReLU(<span class="number">0.2</span>, inplace=True),</span><br><span class="line">            # state size. (ndf*<span class="number">4</span>) x <span class="number">8</span> x <span class="number">8</span></span><br><span class="line">            nn.Conv2d(ndf * <span class="number">4</span>, ndf * <span class="number">8</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">1</span>, bias=False),</span><br><span class="line">            nn.BatchNorm2d(ndf * <span class="number">8</span>),</span><br><span class="line">            nn.LeakyReLU(<span class="number">0.2</span>, inplace=True),</span><br><span class="line">            # state size. (ndf*<span class="number">8</span>) x <span class="number">4</span> x <span class="number">4</span></span><br><span class="line">            nn.Conv2d(ndf * <span class="number">8</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">0</span>, bias=False),</span><br><span class="line">            nn.Sigmoid()</span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Deep-Generative-Image-Models-using-a-Laplacian-Pyramid-of-Adversarial-Networks/2022/02/15/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1155,129 +1271,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Hidden-Technical-Debt-in-Machine-Learning-Systems/2022/01/18/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ruochi Zhang">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="RUOCHI.AI">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/Hidden-Technical-Debt-in-Machine-Learning-Systems/2022/01/18/" class="post-title-link" itemprop="url">Hidden Technical Debt in Machine Learning Systems</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-01-18 16:43:18" itemprop="dateCreated datePublished" datetime="2022-01-18T16:43:18+08:00">2022-01-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-15 18:34:14" itemprop="dateModified" datetime="2022-02-15T18:34:14+08:00">2022-02-15</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Paper-Note/" itemprop="url" rel="index"><span itemprop="name">Paper Note</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Paper-Note/MLOps/" itemprop="url" rel="index"><span itemprop="name">MLOps</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/Hidden-Technical-Debt-in-Machine-Learning-Systems/2022/01/18/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/Hidden-Technical-Debt-in-Machine-Learning-Systems/2022/01/18/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="hidden-technical-debt-in-machine-learning-systems">Hidden Technical Debt in Machine Learning Systems</h1>
-<ul>
-<li>Category: Article</li>
-<li>Created: January 17, 2022 3:28 PM</li>
-<li>Status: Open</li>
-<li>Updated: January 17, 2022 5:02 PM</li>
-<li>url: https://proceedings.neurips.cc/paper/2015/file/86df7dcfd896fcaf2674f757a2463eba-Paper.pdf</li>
-</ul>
-<h1 id="new-metaphors">New Metaphors</h1>
-<blockquote>
-<p><em>technical debt: long term costs incurred by moving quickly in software engineering.</em></p>
-</blockquote>
-<blockquote>
-<p><em>smell:</em> In software engineering, a design <em>smell</em> may indicate an underlying problem in a component or system.</p>
-</blockquote>
-<h1 id="background">Background</h1>
-<ol type="1">
-<li>This paper argues it is dangerous to think of machine learning’s quick wins as coming for free. Using the software engineering framework of <strong><em>technical debt</em></strong>, the authors find it is common to incur massive ongoing maintenance costs in real-world ML systems.</li>
-<li>Developing and deploying ML systems is relatively fast and cheap, but maintaining them over time is difficult and expensive.</li>
-<li>The authors argue that ML systems have a special capacity for incurring technical debt, because they have all of the maintenance problems of traditional code plus an additional set of ML-specific issues. This debt may be difficult to detect because it exists at the <strong><em>system</em> level</strong> rather than the code level.</li>
-</ol>
-<h1 id="highlights">Highlights</h1>
-<ol type="1">
-<li>This paper does not offer novel ML algorithms, but instead seeks to increase the community’s awareness of the difficult tradeoffs that must be considered in practice over the long term.</li>
-</ol>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/Hidden-Technical-Debt-in-Machine-Learning-Systems/2022/01/18/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1347,7 +1340,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">222</span>
+          <span class="site-state-item-count">223</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
