@@ -295,92 +295,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Conditional%20Generative%20Adversarial%20Nets/2022/02/15/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ruochi Zhang">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="RUOCHI.AI">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/Conditional%20Generative%20Adversarial%20Nets/2022/02/15/" class="post-title-link" itemprop="url">Untitled</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-02-15 19:06:07 / Modified: 19:06:49" itemprop="dateCreated datePublished" datetime="2022-02-15T19:06:07+08:00">2022-02-15</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/Conditional%20Generative%20Adversarial%20Nets/2022/02/15/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/Conditional%20Generative%20Adversarial%20Nets/2022/02/15/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="generative-adversarial-nets">Generative Adversarial Nets</h1>
-<h1 id="background">Background</h1>
-<ol type="1">
-<li>So far, the most striking successes in deep learning have involved discriminative models.</li>
-<li>Deep <em>generative</em> models have had less of an impact, due to the difficulty of approximating many intractable probabilistic computations that arise in maximum likelihood estimation and related strategies, and due to difficulty of leveraging the benefits of piecewise linear units in the generative context.</li>
-</ol>
-<h1 id="methods">Methods</h1>
-<p><span class="math display">\[
-\min _{G} \max _{D} V(D, G)=\mathbb{E}_{\boldsymbol{x} \sim p_{\text {data }}(\boldsymbol{x})}[\log D(\boldsymbol{x})]+\mathbb{E}_{\boldsymbol{z} \sim p_{\boldsymbol{z}}(\boldsymbol{z})}[\log (1-D(G(\boldsymbol{z})))]
-\]</span></p>
-<p>To learn the generator’s distribution <span class="math inline">\(p_{g}\)</span> over data <span class="math inline">\(x\)</span>, we define a prior on input noise variables <span class="math inline">\(p_z(z)\)</span>, then represent a mapping to data space as <span class="math inline">\(G(z; \theta_g)\)</span>, here is a differentiable function represented by a multilayer perceptron with parameters <span class="math inline">\(\theta_g\)</span>. We also define a second multilayer perceptron <span class="math inline">\(D(x, \theta_d)\)</span> that outputs a single scalar. <span class="math inline">\(D(x)\)</span> represents the probability that <span class="math inline">\(x\)</span> came from the data rather than <span class="math inline">\(p_{g}\)</span> . We train <span class="math inline">\(D\)</span> to maximize the probability of assigning the correct label to both training examples and samples from <span class="math inline">\(G\)</span>. We simultaneously train <span class="math inline">\(G\)</span> to minimize <span class="math inline">\(\log (1-D(G(\boldsymbol{z}))\)</span>.</p>
-<p>In practice, equation 1 may not provide sufficient gradient for <span class="math inline">\(G\)</span> to learn well. Rather than training G to minimize <span class="math inline">\(\log (1-D(G(\boldsymbol{z}))\)</span>, we can train <span class="math inline">\(G\)</span> to maximize <span class="math inline">\(log(D(G(z))\)</span>.</p>
-<h1 id="conclusion">Conclusion</h1>
-<p>This paper has demonstrated the viability of the adversarial modeling framework, suggesting that these research directions could prove useful.</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Generative-Adversarial-Nets/2022/02/15/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1234,6 +1148,113 @@
   
   
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/Progressive-growing-of-GANs-for-improved-quality/2022/02/15/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/Progressive-growing-of-GANs-for-improved-quality/2022/02/15/" class="post-title-link" itemprop="url">Progressive growing of GANs for improved quality</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-15 17:09:00 / Modified: 18:34:03" itemprop="dateCreated datePublished" datetime="2022-02-15T17:09:00+08:00">2022-02-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper-Note/" itemprop="url" rel="index"><span itemprop="name">Paper Note</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper-Note/GANs/" itemprop="url" rel="index"><span itemprop="name">GANs</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/Progressive-growing-of-GANs-for-improved-quality/2022/02/15/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Progressive-growing-of-GANs-for-improved-quality/2022/02/15/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="progressive-growing-of-gans-for-improved-quality-stability-and-variation">Progressive growing of GANs for improved quality, stability and variation</h1>
+<ul>
+<li>Category: Article</li>
+<li>Created: February 14, 2022 10:01 AM</li>
+<li>Status: Open</li>
+<li>URL: https://arxiv.org/pdf/1710.10196.pdf</li>
+<li>Updated: February 15, 2022 5:07 PM</li>
+</ul>
+<h1 id="highlights">Highlights</h1>
+<p>We describe a new training methodology for generative adversarial networks. The key idea is to grow both the generator and discriminator progressively: starting from a low resolution, we add new layers that model increasingly fine details as training progresses.</p>
+<h1 id="intuition">Intuition</h1>
+<ol type="1">
+<li>The generation of high-resolution images is difficult because higher resolution makes it easier to tell the generated images apart from training images, thus drastically amplifying the gradient problem.</li>
+<li>Our key insight is that we can grow both the generator and discriminator progressively, starting from easier low-resolution images, and add new layers that introduce higher-resolution details as the training progresses. This greatly speeds up training and improves stability in high resolutions.</li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/Progressive-growing-of-GANs-for-improved-quality/2022/02/15/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
 
   
   <nav class="pagination">
@@ -1303,7 +1324,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">227</span>
+          <span class="site-state-item-count">226</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
