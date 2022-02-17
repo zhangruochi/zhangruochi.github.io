@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruochi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="A Style-Based Generator Architecture for Generative Adversarial Networks  Category: Article Created: February 17, 2022 3:46 PM Status: Open URL: https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;1812.04948.pdf Updated: February">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A Style-Based Generator Architecture for Generative Adversarial Networks">
+<meta property="og:url" content="https://zhangruochi.com/A-Style-Based-Generator-Architecture-for-Generative-Adversarial-Networks/2022/02/17/index.html">
+<meta property="og:site_name" content="RUOCHI.AI">
+<meta property="og:description" content="A Style-Based Generator Architecture for Generative Adversarial Networks  Category: Article Created: February 17, 2022 3:46 PM Status: Open URL: https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;1812.04948.pdf Updated: February">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhangruochi.com/A-Style-Based-Generator-Architecture-for-Generative-Adversarial-Networks/2022/02/17/Screen_Shot_2022-02-17_at_18.07.16.png">
+<meta property="og:image" content="https://zhangruochi.com/A-Style-Based-Generator-Architecture-for-Generative-Adversarial-Networks/2022/02/17/Screen_Shot_2022-02-17_at_16.37.39.png">
+<meta property="og:image" content="https://zhangruochi.com/A-Style-Based-Generator-Architecture-for-Generative-Adversarial-Networks/2022/02/17/Screen_Shot_2022-02-17_at_16.40.30.png">
+<meta property="og:image" content="https://zhangruochi.com/A-Style-Based-Generator-Architecture-for-Generative-Adversarial-Networks/2022/02/17/Screen_Shot_2022-02-17_at_16.42.29.png">
+<meta property="og:image" content="https://zhangruochi.com/A-Style-Based-Generator-Architecture-for-Generative-Adversarial-Networks/2022/02/17/Screen_Shot_2022-02-17_at_16.43.52.png">
+<meta property="og:image" content="https://zhangruochi.com/A-Style-Based-Generator-Architecture-for-Generative-Adversarial-Networks/2022/02/17/Screen_Shot_2022-02-17_at_17.38.53.png">
+<meta property="og:image" content="https://zhangruochi.com/A-Style-Based-Generator-Architecture-for-Generative-Adversarial-Networks/2022/02/17/Screen_Shot_2022-02-17_at_17.31.04.png">
+<meta property="article:published_time" content="2022-02-17T10:12:59.000Z">
+<meta property="article:modified_time" content="2022-02-17T10:14:12.551Z">
+<meta property="article:author" content="Ruochi Zhang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangruochi.com/A-Style-Based-Generator-Architecture-for-Generative-Adversarial-Networks/2022/02/17/Screen_Shot_2022-02-17_at_18.07.16.png">
+
+<link rel="canonical" href="https://zhangruochi.com/A-Style-Based-Generator-Architecture-for-Generative-Adversarial-Networks/2022/02/17/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>A Style-Based Generator Architecture for Generative Adversarial Networks | RUOCHI.AI</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">RUOCHI.AI</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhangruochi.com/A-Style-Based-Generator-Architecture-for-Generative-Adversarial-Networks/2022/02/17/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ruochi Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RUOCHI.AI">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          A Style-Based Generator Architecture for Generative Adversarial Networks
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-17 18:12:59 / Modified: 18:14:12" itemprop="dateCreated datePublished" datetime="2022-02-17T18:12:59+08:00">2022-02-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper-Note/" itemprop="url" rel="index"><span itemprop="name">Paper Note</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper-Note/GANs/" itemprop="url" rel="index"><span itemprop="name">GANs</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/A-Style-Based-Generator-Architecture-for-Generative-Adversarial-Networks/2022/02/17/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/A-Style-Based-Generator-Architecture-for-Generative-Adversarial-Networks/2022/02/17/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="a-style-based-generator-architecture-for-generative-adversarial-networks">A Style-Based Generator Architecture for Generative Adversarial Networks</h1>
+<ul>
+<li>Category: Article</li>
+<li>Created: February 17, 2022 3:46 PM</li>
+<li>Status: Open</li>
+<li>URL: https://arxiv.org/pdf/1812.04948.pdf</li>
+<li>Updated: February 17, 2022 6:07 PM</li>
+</ul>
+<h3 id="reference-httpstowardsdatascience.comexplained-a-style-based-generator-architecture-for-gans-generating-and-tuning-realistic-6cb2be0f431">Reference: <a target="_blank" rel="noopener" href="https://towardsdatascience.com/explained-a-style-based-generator-architecture-for-gans-generating-and-tuning-realistic-6cb2be0f431">https://towardsdatascience.com/explained-a-style-based-generator-architecture-for-gans-generating-and-tuning-realistic-6cb2be0f431</a></h3>
+<h1 id="highlights">Highlights</h1>
+<ol type="1">
+<li><em>The new generator architecture leads to an automatically learned, unsupervised separation of high-level attributes (eg. pose and identity when trained on human faces) and stochastic variation in the generated images (freckles, hair). and it enables intuitive, scale-specific control of the synthesis.</em></li>
+<li><em>The new generator improves the state-of-the-art in terms of traditional distribution quality metrics, leads to demonstrably better interpolation properties, and also better disentangles the latent factors of variation.</em></li>
+</ol>
+<h1 id="methods">Methods</h1>
+<h3 id="mapping-network">Mapping Network</h3>
+<p>Given a latent code z in the input latent space <span class="math inline">\(z\)</span>, a non-linear mapping network <span class="math inline">\(f: z \rightarrow w\)</span> first produces <span class="math inline">\(\mathbf{w} \in \mathcal{W}\)</span>. For simplicity, we set the dimensionality of both spaces to 512, and the mapping f is implemented using an 8-layer MLP.</p>
+<span id="more"></span>
+<figure>
+<img src="Screen_Shot_2022-02-17_at_18.07.16.png" alt="Screen Shot 2022-02-17 at 18.07.16.png" /><figcaption aria-hidden="true">Screen Shot 2022-02-17 at 18.07.16.png</figcaption>
+</figure>
+<figure>
+<img src="Screen_Shot_2022-02-17_at_16.37.39.png" alt="Screen Shot 2022-02-17 at 16.37.39.png" /><figcaption aria-hidden="true">Screen Shot 2022-02-17 at 16.37.39.png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># The mapping network in StyleGAN is composed of 8 layers, but for your implementation, you will use a neural network with 3 layers. This is to save time training later.</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MappingLayers</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Mapping Layers Class</span></span><br><span class="line"><span class="string">    Values:</span></span><br><span class="line"><span class="string">        z_dim: the dimension of the noise vector, a scalar</span></span><br><span class="line"><span class="string">        hidden_dim: the inner dimension, a scalar</span></span><br><span class="line"><span class="string">        w_dim: the dimension of the intermediate noise vector, a scalar</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, z_dim, hidden_dim, w_dim</span>):</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.mapping = nn.Sequential(</span><br><span class="line">            <span class="comment"># Please write a neural network which takes in tensors of </span></span><br><span class="line">            <span class="comment"># shape (n_samples, z_dim) and outputs (n_samples, w_dim)</span></span><br><span class="line">            <span class="comment"># with a hidden layer with hidden_dim neurons</span></span><br><span class="line">            <span class="comment">#### START CODE HERE ####</span></span><br><span class="line">            nn.Linear(z_dim,hidden_dim,bias=<span class="literal">True</span>),</span><br><span class="line">            nn.ReLU(inplace=<span class="literal">True</span>),</span><br><span class="line">            nn.Linear(hidden_dim,hidden_dim,bias=<span class="literal">True</span>),</span><br><span class="line">            nn.ReLU(inplace=<span class="literal">True</span>),</span><br><span class="line">            nn.Linear(hidden_dim,w_dim,bias=<span class="literal">True</span>)</span><br><span class="line">            <span class="comment">#### END CODE HERE ####</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, noise</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        Function for completing a forward pass of MappingLayers: </span></span><br><span class="line"><span class="string">        Given an initial noise tensor, returns the intermediate noise tensor.</span></span><br><span class="line"><span class="string">        Parameters:</span></span><br><span class="line"><span class="string">            noise: a noise tensor with dimensions (n_samples, z_dim)</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">return</span> self.mapping(noise)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#UNIT TEST COMMENT: Required for grading</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_mapping</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.mapping</span><br></pre></td></tr></table></figure>
+<h3 id="style-modules">Style Modules</h3>
+<p>The AdaIN (Adaptive Instance Normalization) module transfers the encoded information ⱳ, created by the Mapping Network, into the generated image.</p>
+<p>Learned affine transformations then specialize w to <em>styles <span class="math inline">\(y = (y_s,y_b)\)</span></em> that control adaptive instance normalization(AdaIN) operations after each convolution layer of the synthesis network <span class="math inline">\(g\)</span>. The AdaIN operation is defined as</p>
+<p><span class="math display">\[
+\operatorname{AdaIN}\left(\mathbf{x}_{i}, \mathbf{y}\right)=\mathbf{y}_{s, i} \frac{\mathbf{x}_{i}-\mu\left(\mathbf{x}_{i}\right)}{\sigma\left(\mathbf{x}_{i}\right)}+\mathbf{y}_{b, i}
+\]</span></p>
+<figure>
+<img src="Screen_Shot_2022-02-17_at_16.40.30.png" alt="Screen Shot 2022-02-17 at 16.40.30.png" /><figcaption aria-hidden="true">Screen Shot 2022-02-17 at 16.40.30.png</figcaption>
+</figure>
+<p>where each feature map <span class="math inline">\(x_i\)</span> is normalized separately, and then scaled and biased using the corresponding scalar components from style <span class="math inline">\(y\)</span>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AdaIN</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    AdaIN Class</span></span><br><span class="line"><span class="string">    Values:</span></span><br><span class="line"><span class="string">        channels: the number of channels the image has, a scalar</span></span><br><span class="line"><span class="string">        w_dim: the dimension of the intermediate noise vector, a scalar</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, channels, w_dim</span>):</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Normalize the input per-dimension</span></span><br><span class="line">        self.instance_norm = nn.InstanceNorm2d(channels)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># You want to map w to a set of style weights per channel.</span></span><br><span class="line">        <span class="comment"># Replace the Nones with the correct dimensions - keep in mind that </span></span><br><span class="line">        <span class="comment"># both linear maps transform a w vector into style weights </span></span><br><span class="line">        <span class="comment"># corresponding to the number of image channels.</span></span><br><span class="line">        <span class="comment">#### START CODE HERE ####</span></span><br><span class="line">        self.style_scale_transform = nn.Linear(w_dim, channels)</span><br><span class="line">        self.style_shift_transform = nn.Linear(w_dim, channels)</span><br><span class="line">        <span class="comment">#### END CODE HERE ####</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, image, w</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        Function for completing a forward pass of AdaIN: Given an image and intermediate noise vector w, </span></span><br><span class="line"><span class="string">        returns the normalized image that has been scaled and shifted by the style.</span></span><br><span class="line"><span class="string">        Parameters:</span></span><br><span class="line"><span class="string">            image: the feature map of shape (n_samples, channels, width, height)</span></span><br><span class="line"><span class="string">            w: the intermediate noise vector</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        normalized_image = self.instance_norm(image)</span><br><span class="line">        style_scale = self.style_scale_transform(w)[:, :, <span class="literal">None</span>, <span class="literal">None</span>]</span><br><span class="line">        style_shift = self.style_shift_transform(w)[:, :, <span class="literal">None</span>, <span class="literal">None</span>]</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Calculate the transformed image</span></span><br><span class="line">        <span class="comment">#### START CODE HERE ####</span></span><br><span class="line">        transformed_image = style_scale * normalized_image + style_shift</span><br><span class="line">        <span class="comment">#### END CODE HERE ####</span></span><br><span class="line">        <span class="keyword">return</span> transformed_image</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#UNIT TEST COMMENT: Required for grading</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_style_scale_transform</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.style_scale_transform</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#UNIT TEST COMMENT: Required for grading</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_style_shift_transform</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.style_shift_transform</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#UNIT TEST COMMENT: Required for grading</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_self</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self</span><br></pre></td></tr></table></figure>
+<h3 id="removing-traditional-input">****Removing traditional input****</h3>
+<p>it’s easier for the network to learn only using ⱳ without relying on the entangled input vector.</p>
+<figure>
+<img src="Screen_Shot_2022-02-17_at_16.42.29.png" alt="Screen Shot 2022-02-17 at 16.42.29.png" /><figcaption aria-hidden="true">Screen Shot 2022-02-17 at 16.42.29.png</figcaption>
+</figure>
+<h3 id="stochastic-variation">****Stochastic variation****</h3>
+<p>A scaled noise is added to each channel before the AdaIN module and changes a bit the visual expression of the features of the resolution level it operates on.</p>
+<figure>
+<img src="Screen_Shot_2022-02-17_at_16.43.52.png" alt="Screen Shot 2022-02-17 at 16.43.52.png" /><figcaption aria-hidden="true">Screen Shot 2022-02-17 at 16.43.52.png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">InjectNoise</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Inject Noise Class</span></span><br><span class="line"><span class="string">    Values:</span></span><br><span class="line"><span class="string">        channels: the number of channels the image has, a scalar</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, channels</span>):</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.weight = nn.Parameter( <span class="comment"># You use nn.Parameter so that these weights can be optimized</span></span><br><span class="line">            <span class="comment"># Initiate the weights for the channels from a random normal distribution</span></span><br><span class="line">            <span class="comment">#### START CODE HERE ####</span></span><br><span class="line">            torch.randn(size = (<span class="number">1</span>, channels, <span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line">            <span class="comment">#### END CODE HERE ####</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, image</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        Function for completing a forward pass of InjectNoise: Given an image, </span></span><br><span class="line"><span class="string">        returns the image with random noise added.</span></span><br><span class="line"><span class="string">        Parameters:</span></span><br><span class="line"><span class="string">            image: the feature map of shape (n_samples, channels, width, height)</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="comment"># Set the appropriate shape for the noise!</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">#### START CODE HERE ####</span></span><br><span class="line">        n_samples, channels, width, height = image.shape</span><br><span class="line">        noise_shape = (n_samples, <span class="number">1</span>, width, height)</span><br><span class="line">        <span class="comment">#### END CODE HERE ####</span></span><br><span class="line">        </span><br><span class="line">        noise = torch.randn(noise_shape, device=image.device) <span class="comment"># Creates the random noise</span></span><br><span class="line">        <span class="keyword">return</span> image + self.weight * noise <span class="comment"># Applies to image after multiplying by the weight for each channel</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">#UNIT TEST COMMENT: Required for grading</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_weight</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.weight</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#UNIT TEST COMMENT: Required for grading</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_self</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self</span><br></pre></td></tr></table></figure>
+<h2 id="style-mixing">Style mixing</h2>
+<p>When generating such an image, we simply switch from one latent code to another — an operation we refer to as <em>style mixing</em> — at a randomly selected point in the synthesis network. To be specific, we run two latent codes <span class="math inline">\(z_1,z_2\)</span> through the mapping network, and have the corresponding <span class="math inline">\(w_1,w_2\)</span> control the styles so that <span class="math inline">\(w_1\)</span> applies before the crossover point and <span class="math inline">\(w_2\)</span> after it.</p>
+<figure>
+<img src="Screen_Shot_2022-02-17_at_17.38.53.png" alt="Screen Shot 2022-02-17 at 17.38.53.png" /><figcaption aria-hidden="true">Screen Shot 2022-02-17 at 17.38.53.png</figcaption>
+</figure>
+<h2 id="truncation-trick"><strong>Truncation Trick</strong></h2>
+<p>If we consider the distribution of training data, it is clear that areas of low density are poorly represented and thus likely to be difficult for the generator to learn. We can follow a similar strategy. To begin, we compute the center of mass of <span class="math inline">\(\mathcal{W}\)</span>. We can then scale the deviation of a given <span class="math inline">\(\mathcal{W}\)</span> from the center.</p>
+<p><span class="math display">\[
+\overline{\mathbf{w}}=\mathbb{E}_{\mathbf{z} \sim P(\mathbf{z})}[f(\mathbf{z})]
+\]</span></p>
+<p><span class="math display">\[
+\mathbf{w}^{\prime}=\overline{\mathbf{w}}+\psi(\mathbf{w}-\overline{\mathbf{w}})
+\]</span></p>
+<h2 id="full-generator-architecture">Full Generator Architecture</h2>
+<figure>
+<img src="Screen_Shot_2022-02-17_at_17.31.04.png" alt="Screen Shot 2022-02-17 at 17.31.04.png" /><figcaption aria-hidden="true">Screen Shot 2022-02-17 at 17.31.04.png</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MicroStyleGANGeneratorBlock</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Micro StyleGAN Generator Block Class</span></span><br><span class="line"><span class="string">    Values:</span></span><br><span class="line"><span class="string">        in_chan: the number of channels in the input, a scalar</span></span><br><span class="line"><span class="string">        out_chan: the number of channels wanted in the output, a scalar</span></span><br><span class="line"><span class="string">        w_dim: the dimension of the intermediate noise vector, a scalar</span></span><br><span class="line"><span class="string">        kernel_size: the size of the convolving kernel</span></span><br><span class="line"><span class="string">        starting_size: the size of the starting image</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, in_chan, out_chan, w_dim, kernel_size, starting_size, use_upsample=<span class="literal">True</span></span>):</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.use_upsample = use_upsample</span><br><span class="line">        <span class="comment"># Replace the Nones in order to:</span></span><br><span class="line">        <span class="comment"># 1. Upsample to the starting_size, bilinearly (https://pytorch.org/docs/master/generated/torch.nn.Upsample.html)</span></span><br><span class="line">        <span class="comment"># 2. Create a kernel_size convolution which takes in </span></span><br><span class="line">        <span class="comment">#    an image with in_chan and outputs one with out_chan (https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html)</span></span><br><span class="line">        <span class="comment"># 3. Create an object to inject noise</span></span><br><span class="line">        <span class="comment"># 4. Create an AdaIN object</span></span><br><span class="line">        <span class="comment"># 5. Create a LeakyReLU activation with slope 0.2</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">#### START CODE HERE ####</span></span><br><span class="line">        <span class="keyword">if</span> self.use_upsample:</span><br><span class="line">            self.upsample = nn.Upsample((starting_size, starting_size), mode=<span class="string">&quot;bilinear&quot;</span>)</span><br><span class="line">        self.conv = nn.Conv2d(in_chan, out_chan, <span class="number">3</span>, padding=<span class="number">1</span>) <span class="comment"># Padding is used to maintain the image size</span></span><br><span class="line">        self.inject_noise = InjectNoise(out_chan)</span><br><span class="line">        self.adain = AdaIN(out_chan, w_dim)</span><br><span class="line">        self.activation = nn.LeakyReLU(negative_slope = <span class="number">0.2</span>, inplace = <span class="literal">True</span>)</span><br><span class="line">        <span class="comment">#### END CODE HERE ####</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x, w</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        Function for completing a forward pass of MicroStyleGANGeneratorBlock: Given an x and w, </span></span><br><span class="line"><span class="string">        computes a StyleGAN generator block.</span></span><br><span class="line"><span class="string">        Parameters:</span></span><br><span class="line"><span class="string">            x: the input into the generator, feature map of shape (n_samples, channels, width, height)</span></span><br><span class="line"><span class="string">            w: the intermediate noise vector</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">if</span> self.use_upsample:</span><br><span class="line">            x = self.upsample(x)</span><br><span class="line">        x = self.conv(x)</span><br><span class="line">        x = self.inject_noise(x)</span><br><span class="line">        x = self.activation(x)</span><br><span class="line">        x = self.adain(x, w)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#UNIT TEST COMMENT: Required for grading</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_self</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self;</span><br></pre></td></tr></table></figure>
+<h3 id="progressive-growing.">Progressive growing.</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MicroStyleGANGenerator</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Micro StyleGAN Generator Class</span></span><br><span class="line"><span class="string">    Values:</span></span><br><span class="line"><span class="string">        z_dim: the dimension of the noise vector, a scalar</span></span><br><span class="line"><span class="string">        map_hidden_dim: the mapping inner dimension, a scalar</span></span><br><span class="line"><span class="string">        w_dim: the dimension of the intermediate noise vector, a scalar</span></span><br><span class="line"><span class="string">        in_chan: the dimension of the constant input, usually w_dim, a scalar</span></span><br><span class="line"><span class="string">        out_chan: the number of channels wanted in the output, a scalar</span></span><br><span class="line"><span class="string">        kernel_size: the size of the convolving kernel</span></span><br><span class="line"><span class="string">        hidden_chan: the inner dimension, a scalar</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, </span></span></span><br><span class="line"><span class="params"><span class="function">                 z_dim, </span></span></span><br><span class="line"><span class="params"><span class="function">                 map_hidden_dim,</span></span></span><br><span class="line"><span class="params"><span class="function">                 w_dim,</span></span></span><br><span class="line"><span class="params"><span class="function">                 in_chan,</span></span></span><br><span class="line"><span class="params"><span class="function">                 out_chan, </span></span></span><br><span class="line"><span class="params"><span class="function">                 kernel_size, </span></span></span><br><span class="line"><span class="params"><span class="function">                 hidden_chan</span>):</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.<span class="built_in">map</span> = MappingLayers(z_dim, map_hidden_dim, w_dim)</span><br><span class="line">        <span class="comment"># Typically this constant is initiated to all ones, but you will initiate to a</span></span><br><span class="line">        <span class="comment"># Gaussian to better visualize the network&#x27;s effect</span></span><br><span class="line">        self.starting_constant = nn.Parameter(torch.randn(<span class="number">1</span>, in_chan, <span class="number">4</span>, <span class="number">4</span>))</span><br><span class="line">        self.block0 = MicroStyleGANGeneratorBlock(in_chan, hidden_chan, w_dim, kernel_size, <span class="number">4</span>, use_upsample=<span class="literal">False</span>)</span><br><span class="line">        self.block1 = MicroStyleGANGeneratorBlock(hidden_chan, hidden_chan, w_dim, kernel_size, <span class="number">8</span>)</span><br><span class="line">        self.block2 = MicroStyleGANGeneratorBlock(hidden_chan, hidden_chan, w_dim, kernel_size, <span class="number">16</span>)</span><br><span class="line">        <span class="comment"># You need to have a way of mapping from the output noise to an image, </span></span><br><span class="line">        <span class="comment"># so you learn a 1x1 convolution to transform the e.g. 512 channels into 3 channels</span></span><br><span class="line">        <span class="comment"># (Note that this is simplified, with clipping used in the real StyleGAN)</span></span><br><span class="line">        self.block1_to_image = nn.Conv2d(hidden_chan, out_chan, kernel_size=<span class="number">1</span>)</span><br><span class="line">        self.block2_to_image = nn.Conv2d(hidden_chan, out_chan, kernel_size=<span class="number">1</span>)</span><br><span class="line">        self.alpha = <span class="number">0.2</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">upsample_to_match_size</span>(<span class="params">self, smaller_image, bigger_image</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        Function for upsampling an image to the size of another: Given a two images (smaller and bigger), </span></span><br><span class="line"><span class="string">        upsamples the first to have the same dimensions as the second.</span></span><br><span class="line"><span class="string">        Parameters:</span></span><br><span class="line"><span class="string">            smaller_image: the smaller image to upsample</span></span><br><span class="line"><span class="string">            bigger_image: the bigger image whose dimensions will be upsampled to</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">return</span> F.interpolate(smaller_image, size=bigger_image.shape[-<span class="number">2</span>:], mode=<span class="string">&#x27;bilinear&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, noise, return_intermediate=<span class="literal">False</span></span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        Function for completing a forward pass of MicroStyleGANGenerator: Given noise, </span></span><br><span class="line"><span class="string">        computes a StyleGAN iteration.</span></span><br><span class="line"><span class="string">        Parameters:</span></span><br><span class="line"><span class="string">            noise: a noise tensor with dimensions (n_samples, z_dim)</span></span><br><span class="line"><span class="string">            return_intermediate: a boolean, true to return the images as well (for testing) and false otherwise</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        x = self.starting_constant</span><br><span class="line">        w = self.<span class="built_in">map</span>(noise)</span><br><span class="line">        x = self.block0(x, w)</span><br><span class="line">        x_small = self.block1(x, w) <span class="comment"># First generator run output</span></span><br><span class="line">        x_small_image = self.block1_to_image(x_small)</span><br><span class="line">        x_big = self.block2(x_small, w) <span class="comment"># Second generator run output </span></span><br><span class="line">        x_big_image = self.block2_to_image(x_big)</span><br><span class="line">        x_small_upsample = self.upsample_to_match_size(x_small_image, x_big_image) <span class="comment"># Upsample first generator run output to be same size as second generator run output </span></span><br><span class="line">        <span class="comment"># Interpolate between the upsampled image and the image from the generator using alpha</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">#### START CODE HERE ####</span></span><br><span class="line">        interpolation = torch.lerp(x_small_upsample,x_big_image,self.alpha)</span><br><span class="line">        <span class="comment">#### END CODE HERE #### </span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> return_intermediate:</span><br><span class="line">            <span class="keyword">return</span> interpolation, x_small_upsample, x_big_image</span><br><span class="line">        <span class="keyword">return</span> interpolation</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#UNIT TEST COMMENT: Required for grading</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_self</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/StackGAN-Text-to-Photo-realistic-Image-Synthesis/2022/02/16/" rel="prev" title="StackGAN - Text to Photo-realistic Image Synthesis with Stacked Generative Adversarial Networks">
+      <i class="fa fa-chevron-left"></i> StackGAN - Text to Photo-realistic Image Synthesis with Stacked Generative Adversarial Networks
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#a-style-based-generator-architecture-for-generative-adversarial-networks"><span class="nav-number">1.</span> <span class="nav-text">A Style-Based Generator Architecture for Generative Adversarial Networks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#reference-httpstowardsdatascience.comexplained-a-style-based-generator-architecture-for-gans-generating-and-tuning-realistic-6cb2be0f431"><span class="nav-number">1.0.1.</span> <span class="nav-text">Reference: https:&#x2F;&#x2F;towardsdatascience.com&#x2F;explained-a-style-based-generator-architecture-for-gans-generating-and-tuning-realistic-6cb2be0f431</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#highlights"><span class="nav-number">2.</span> <span class="nav-text">Highlights</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#methods"><span class="nav-number">3.</span> <span class="nav-text">Methods</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mapping-network"><span class="nav-number">3.0.1.</span> <span class="nav-text">Mapping Network</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#style-modules"><span class="nav-number">3.0.2.</span> <span class="nav-text">Style Modules</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#removing-traditional-input"><span class="nav-number">3.0.3.</span> <span class="nav-text">****Removing traditional input****</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stochastic-variation"><span class="nav-number">3.0.4.</span> <span class="nav-text">****Stochastic variation****</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#style-mixing"><span class="nav-number">3.1.</span> <span class="nav-text">Style mixing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#truncation-trick"><span class="nav-number">3.2.</span> <span class="nav-text">Truncation Trick</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#full-generator-architecture"><span class="nav-number">3.3.</span> <span class="nav-text">Full Generator Architecture</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#progressive-growing."><span class="nav-number">3.3.1.</span> <span class="nav-text">Progressive growing.</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ruochi Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">227</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangruochi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangruochi" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zrc720@gmail.com" title="E-Mail → mailto:zrc720@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.healthinformaticslab.org/" title="http:&#x2F;&#x2F;www.healthinformaticslab.org" rel="noopener" target="_blank">HILab</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.shihaizhou.com/" title="http:&#x2F;&#x2F;www.shihaizhou.com" rel="noopener" target="_blank">Rose</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/cherish_CX/" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;cherish_CX&#x2F;" rel="noopener" target="_blank">Chunxia</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ruochi Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qW3MLcAgcX96sB6qbegeL7rP-gzGzoHsz',
+      appKey     : 'GL6JvT9DgGxqYrY5Vj6bXVuv',
+      placeholder: "Thank you for your reply",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
