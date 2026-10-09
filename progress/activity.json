@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "timezone": "UTC",
-  "observed_at": "2026-10-09T10:14:21.848082+00:00",
+  "observed_at": "2026-10-09T20:17:53.304281+00:00",
   "start_date": "2026-09-10",
   "end_date": "2026-10-09",
   "sources": [
@@ -527,7 +527,7 @@
       "sources": [
         {
           "source": "platform",
-          "commits": 12,
+          "commits": 37,
           "created_prs": null,
           "merged_prs": null
         },
@@ -545,7 +545,7 @@
       "sources": [
         {
           "source": "platform",
-          "commits": 0,
+          "commits": 21,
           "created_prs": null,
           "merged_prs": null
         },
