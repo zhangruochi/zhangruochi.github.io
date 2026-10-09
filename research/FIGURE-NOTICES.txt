@@ -1,20 +1,81 @@
-Scientific figure provenance — version-specific attribution
+Original paper figures for the ten selected research works. Images are not redrawn; complete original figures are displayed with retained scientific content. No blanket third-party rights are asserted for author-retained reuse.
 
-PepLand architecture, fragmentation and multi-view: original unmodified images from https://github.com/zhangruochi/PepLand/tree/master/doc . Repository Apache License 2.0; copyright/license notices retained in PEPLAND-LICENSE.txt. No diagram content modified. The separate final OUP paper's CC BY4.0 license is not substituted for this repository provenance.
+/research/pepharmony-architecture.png
+arXiv:2401.11360v1 (2024-01-21), Figure 1, PDF page 7; complete embedded figure decoded to PNG without substantive changes
+Zhang et al., PepHarmony, arXiv:2401.11360v1 (2024), Figure 1
+Source: https://arxiv.org/pdf/2401.11360v1
+Rights: CC BY-NC-ND 4.0
+https://creativecommons.org/licenses/by-nc-nd/4.0/
+Complete original figure, unchanged.
 
-PepHarmony: Figure 1 from Zhang et al., PepHarmony, arXiv:2401.11360v1 (2024-01-21), PDF page7. Source https://arxiv.org/abs/2401.11360v1 . CC BY-NC-ND4.0 https://creativecommons.org/licenses/by-nc-nd/4.0/ . Complete embedded figure extracted and decoded to PNG; no substantive changes, relabeling or diagram crop. Noncommercial attributed redistribution only under this license. 
+/research/pepddg-v4-figure1.png
+Author-provided PepDDG V4, Figure 1, page 2; conference link verifies title, not manuscript bytes
+Author-provided PepDDG V4, Figure 1, page 2; conference link verifies title, not manuscript bytes
+Source: https://neurips.cc/Downloads/2026
+Rights: Author-authorized reproduction; no blanket third-party reuse license asserted
 
-This license statement applies only to the identified arXiv version, not the Elsevier final article Neural Networks194(2026)108148, DOI10.1016/j.neunet.2025.108148, ©2025Elsevier. Author reuse rights are separate from general-public rights: https://www.elsevier.com/about/policies-and-standards/copyright . No blanket final-version CC license is asserted.
+Complete Figure 1 region rasterized from PDF page 2 at 3x; no diagram content edited; manuscript page text excluded
 
-PepDDG: Figure 1, page 2, author-provided V4; complete figure region reproduced without diagram-content edits. Author-authorized reproduction for the accepted paper's methods, figure and results. No general third-party reuse license is granted. Figures and results correspond to V4.
+/research/deepselective-v2-architecture.png
+Author manuscript v2 · 20 June 2025 · Figure 1
+Zhang et al. (2025), DeepSelective v2, Figure 1. Complete original image, unchanged.
+Source: https://arxiv.org/html/2504.11264v2
+Rights: CC BY-NC-ND 4.0
+https://creativecommons.org/licenses/by-nc-nd/4.0/
+None; complete original image retained
 
-DeepSelective: Figure 1 from arXiv:2504.11264v2, https://arxiv.org/html/2504.11264v2 . Complete original downloaded from its f1.png; unchanged. License CC BY-NC-ND 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/ . Noncommercial attributed redistribution.
+/research/molfescue-figure2.jpg
+Published article · 2024 · Figure 2
+Zhang et al. (2024), MolFeSCue, Figure 2. Complete original image, unchanged.
+Source: https://pmc.ncbi.nlm.nih.gov/articles/PMC10984949/
+Rights: CC BY 4.0
+https://creativecommons.org/licenses/by/4.0/
+None; complete original image retained
 
-# Additional research figure notices
+/research/molprophecy-figure1.jpg
+Final article · online 2025, volume 2026
+Zhao et al. (2025), MolProphecy, Figure 1. Complete original image, unchanged.
+Source: https://pmc.ncbi.nlm.nih.gov/articles/PMC13316437/
+Rights: CC BY 4.0
+https://creativecommons.org/licenses/by/4.0/
+None; complete original image retained
 
-- **DeepSelective** — Zhang et al., *DeepSelective: Interpretable Prognosis Prediction via Feature Selection and Compression in EHR Data*, arXiv:2504.11264v2 (20 June 2025), Figure1. Source https://arxiv.org/html/2504.11264v2 and original https://arxiv.org/html/2504.11264v2/f1.png . CC BY-NC-ND4.0: https://creativecommons.org/licenses/by-nc-nd/4.0/ . Complete image reproduced without changes; no permission to modify inferred.
-- **MolFeSCue** — Zhang et al., *MolFeSCue: enhancing molecular property prediction in data-limited and imbalanced contexts using few-shot and contrastive learning*, Bioinformatics40(4):btae118 (2024), Figure2. ©The Author(s)2024. Source https://pmc.ncbi.nlm.nih.gov/articles/PMC10984949/ ; original https://cdn.ncbi.nlm.nih.gov/pmc/blobs/0a8f/10984949/fb22d4d0a0b2/btae118f2.jpg . CC BY4.0 https://creativecommons.org/licenses/by/4.0/ . Complete image reproduced without changes.
-- **MolProphecy** — Zhao et al., *MolProphecy: Bridging medicinal chemists’ knowledge and molecular pre-trained models via a multi-modal framework*, Journal of Advanced Research85:577–594 (online2025; volume2026), Figure1. ©The Author(s)2025. Source https://pmc.ncbi.nlm.nih.gov/articles/PMC13316437/ ; original https://cdn.ncbi.nlm.nih.gov/pmc/blobs/b155/13316437/38fb40aa260a/gr1.jpg . CC BY4.0 https://creativecommons.org/licenses/by/4.0/ . Complete image reproduced without changes.
-- **HeFS** — Fan et al., *HeFS: Helper-Enhanced Feature Selection via Pareto-Optimized Genetic Search*, arXiv:2510.18575v1 (21 October2025), Figure1. Source https://arxiv.org/abs/2510.18575v1 . CC BY-NC-SA4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/ . Complete original embedded figure extracted from public PDF with its original transparency mask; no changes to labels, colors or panels. The figure retains this license.
+/research/hefs-v1-figure1.png
+Author manuscript v1 · 21 October 2025 · Figure 1
+Fan et al. (2025), HeFS v1, Figure 1. Complete original embedded image, unchanged.
+Source: https://arxiv.org/abs/2510.18575v1
+Rights: CC BY-NC-SA 4.0
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+None; complete original embedded RGB image with original soft-mask transparency extracted from public PDF
 
-These figure-specific licenses do not grant rights to unrelated site content. Existing PepLand, PepHarmony and PepDDG notices remain applicable and are not replaced.
+/research/ampcliff-v2-figure3.png
+arXiv:2404.09738v2 · Figure 3, all panels a–g · PDF page 12
+AMPCliff v2, Figure 3, all panels a–g. Complete original figure; no redraw or numerical edits. 
+Source: https://arxiv.org/abs/2404.09738v2
+Rights: CC BY-NC-SA 4.0
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+Original complete figure region rendered from PDF at 216 dpi; all panels retained; no redraw or numerical changes. Caption is separate in PDF.
+
+/research/faircare-published-figure1.png
+Published version of record · Figure 1, complete · PDF page 4
+FairCare (2024), Figure 1, complete. Complete original figure; no redraw or numerical edits. © 2024 Elsevier Ltd. All rights reserved.
+Source: https://doi.org/10.1016/j.ipm.2024.103682
+Rights: Author-retained reuse rights; Elsevier copyright policy
+https://www.elsevier.com/about/policies-and-standards/copyright
+Complete original figure region rendered from rotated PDF at 216 dpi; no redraw or numerical edits.
+
+/research/ocmr-published-figure1.png
+Published version of record · Figure 1, complete · PDF page 3
+OCMR (2023), Figure 1, complete. Complete original figure; no redraw or numerical edits. © 2023 Elsevier Ltd. All rights reserved.
+Source: https://doi.org/10.1016/j.compbiomed.2023.107187
+Rights: Author-retained reuse rights; Elsevier copyright policy
+https://www.elsevier.com/about/policies-and-standards/copyright
+Complete embedded original figure image xref 42 extracted at native resolution; no redraw or numerical edits.
+
+/research/pepland-published-figure1.png
+Briefings in Bioinformatics 26(4), bbaf367, published 2025 · Figure 1 · PDF page 3
+Zhang et al., PepLand (2025), Figure 1. © The Author(s) 2025. Published by Oxford University Press.
+Source: https://doi.org/10.1093/bib/bbaf367
+Rights: CC BY 4.0
+https://creativecommons.org/licenses/by/4.0/
+Complete original embedded Figure 1 image xref 65, native 2000×1190 pixels, unmodified. No redraw.

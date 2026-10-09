@@ -1,6 +1,6 @@
 {
   "checked_at": "2026-10-09T05:48:49.674001+00:00",
-  "scope": "Figures for the ten research works selected by Richard; version-specific attribution in FIGURE-NOTICES.txt",
+  "scope": "One complete original paper figure for each of ten selected research papers; version-specific attribution and licenses in FIGURE-NOTICES.txt",
   "assets": [
     {
       "asset": "/research/pepharmony-architecture.png",
@@ -11,36 +11,6 @@
       "license": "CC BY-NC-ND 4.0",
       "license_url": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
       "attribution": "Zhang et al., PepHarmony, arXiv:2401.11360v1 (2024), Figure 1"
-    },
-    {
-      "asset": "/research/pepland-architecture.png",
-      "source_url": "https://raw.githubusercontent.com/zhangruochi/PepLand/master/doc/arch.png",
-      "version": "Public repository default-branch image fetched 2026-10-08 UTC; exact bytes pinned by sha256",
-      "bytes": 359105,
-      "sha256": "89a8cfeea997cce41aec411c271347db717f041fc234ebef3af47581bd4efd54",
-      "license": "Apache-2.0",
-      "license_file": "/research/PEPLAND-LICENSE.txt",
-      "modifications": "None; original repository image retained"
-    },
-    {
-      "asset": "/research/pepland-fragmentation.png",
-      "source_url": "https://raw.githubusercontent.com/zhangruochi/PepLand/master/doc/fragmentation.png",
-      "version": "Public repository default-branch image fetched 2026-10-08 UTC; exact bytes pinned by sha256",
-      "bytes": 51051,
-      "sha256": "ca1434ef6dc11191b1c9cf8bbd74be2f4f4b96d34d64b59561e63d237bf16867",
-      "license": "Apache-2.0",
-      "license_file": "/research/PEPLAND-LICENSE.txt",
-      "modifications": "None; original repository image retained"
-    },
-    {
-      "asset": "/research/pepland-multiview.png",
-      "source_url": "https://raw.githubusercontent.com/zhangruochi/PepLand/master/doc/multi-view.png",
-      "version": "Public repository default-branch image fetched 2026-10-08 UTC; exact bytes pinned by sha256",
-      "bytes": 923858,
-      "sha256": "d4ea3c5ff4cb34c0a27b2eccd24271abf761c6207e7289d1a2dd77d2bfa89569",
-      "license": "Apache-2.0",
-      "license_file": "/research/PEPLAND-LICENSE.txt",
-      "modifications": "None; original repository image retained"
     },
     {
       "asset": "/research/pepddg-v4-figure1.png",
@@ -58,7 +28,7 @@
     {
       "asset": "/research/deepselective-v2-architecture.png",
       "source_url": "https://arxiv.org/html/2504.11264v2",
-      "version": "Author manuscript v2 · 20 June 2025 · Table 2",
+      "version": "Author manuscript v2 · 20 June 2025 · Figure 1",
       "bytes": 271056,
       "sha256": "69a63f38faa505736da0b26608a749de68516d6b242060a0d024a3f9e78b46fa",
       "license": "CC BY-NC-ND 4.0",
@@ -69,7 +39,7 @@
     {
       "asset": "/research/molfescue-figure2.jpg",
       "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10984949/",
-      "version": "Published article · 2024 · Table 3",
+      "version": "Published article · 2024 · Figure 2",
       "bytes": 68148,
       "sha256": "3947da6485f1e341181444215caa6a813adacac7ed020feba82331464553205b",
       "license": "CC BY 4.0",
@@ -91,13 +61,69 @@
     {
       "asset": "/research/hefs-v1-figure1.png",
       "source_url": "https://arxiv.org/abs/2510.18575v1",
-      "version": "Author manuscript v1 · 21 October 2025 · §§4–5 / Table 2",
+      "version": "Author manuscript v1 · 21 October 2025 · Figure 1",
       "bytes": 144808,
       "sha256": "3fca701c5bdb5abfecd1c9bcc2dacb2d2ef26b11fd5a9dabb9edc38fa8466915",
       "license": "CC BY-NC-SA 4.0",
       "license_url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
       "attribution": "Fan et al. (2025), HeFS v1, Figure 1. Complete original embedded image, unchanged.",
       "modifications": "None; complete original embedded RGB image with original soft-mask transparency extracted from public PDF"
+    },
+    {
+      "asset": "/research/ampcliff-v2-figure3.png",
+      "source_url": "https://arxiv.org/abs/2404.09738v2",
+      "source_kind": "public_licensed_manuscript_extract",
+      "version": "arXiv:2404.09738v2 · Figure 3, all panels a–g · PDF page 12",
+      "figure": "Figure 3, all panels a–g",
+      "page": 12,
+      "bytes": 120302,
+      "sha256": "5778e03557385adf0afdf87b62622311a978907c35fa6eef2bc9f5bdde5e44c6",
+      "license": "CC BY-NC-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+      "attribution": "AMPCliff v2, Figure 3, all panels a–g. Complete original figure; no redraw or numerical edits. ",
+      "modifications": "Original complete figure region rendered from PDF at 216 dpi; all panels retained; no redraw or numerical changes. Caption is separate in PDF."
+    },
+    {
+      "asset": "/research/faircare-published-figure1.png",
+      "source_url": "https://doi.org/10.1016/j.ipm.2024.103682",
+      "source_kind": "author_retained_own_figure_reuse",
+      "version": "Published version of record · Figure 1, complete · PDF page 4",
+      "figure": "Figure 1, complete",
+      "page": 4,
+      "bytes": 201973,
+      "sha256": "c4cf4e98bf0d8d181c53bfe6cd068fa516125aafaff8290e95d74427e157af76",
+      "license": "Author-retained reuse rights; Elsevier copyright policy",
+      "license_url": "https://www.elsevier.com/about/policies-and-standards/copyright",
+      "attribution": "FairCare (2024), Figure 1, complete. Complete original figure; no redraw or numerical edits. © 2024 Elsevier Ltd. All rights reserved.",
+      "modifications": "Complete original figure region rendered from rotated PDF at 216 dpi; no redraw or numerical edits."
+    },
+    {
+      "asset": "/research/ocmr-published-figure1.png",
+      "source_url": "https://doi.org/10.1016/j.compbiomed.2023.107187",
+      "source_kind": "author_retained_own_figure_reuse",
+      "version": "Published version of record · Figure 1, complete · PDF page 3",
+      "figure": "Figure 1, complete",
+      "page": 3,
+      "bytes": 315382,
+      "sha256": "d38ebe69a4468e9d9a17ddaf27425b2d1f2c68aecc00e8be750e0d6ce7d50239",
+      "license": "Author-retained reuse rights; Elsevier copyright policy",
+      "license_url": "https://www.elsevier.com/about/policies-and-standards/copyright",
+      "attribution": "OCMR (2023), Figure 1, complete. Complete original figure; no redraw or numerical edits. © 2023 Elsevier Ltd. All rights reserved.",
+      "modifications": "Complete embedded original figure image xref 42 extracted at native resolution; no redraw or numerical edits."
+    },
+    {
+      "asset": "/research/pepland-published-figure1.png",
+      "source_url": "https://doi.org/10.1093/bib/bbaf367",
+      "source_kind": "public_licensed_published_figure_extract",
+      "version": "Briefings in Bioinformatics 26(4), bbaf367, published 2025 · Figure 1 · PDF page 3",
+      "figure": 1,
+      "page": 3,
+      "bytes": 1244593,
+      "sha256": "90439be47623cdbbade5e4a3a86d820bcdf53d03e0ba099f468bea550a5cdabd",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Zhang et al., PepLand (2025), Figure 1. © The Author(s) 2025. Published by Oxford University Press.",
+      "modifications": "Complete original embedded Figure 1 image xref 65, native 2000×1190 pixels, unmodified. No redraw."
     }
   ]
 }
