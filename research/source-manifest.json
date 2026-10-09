@@ -1,0 +1,59 @@
+{
+  "checked_at": "2026-10-08T18:49:25Z",
+  "scope": "Version-specific public scientific figures; attribution and licenses in FIGURE-NOTICES.txt",
+  "assets": [
+    {
+      "asset": "/research/pepharmony-architecture.png",
+      "source_url": "https://arxiv.org/pdf/2401.11360v1",
+      "version": "arXiv:2401.11360v1 (2024-01-21), Figure 1, PDF page 7; complete embedded figure decoded to PNG without substantive changes",
+      "bytes": 326956,
+      "sha256": "94de26daeb275ca5dbac9d04b7cea98eb3501c9af4242220195ffe46c5b98ce5",
+      "license": "CC BY-NC-ND 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+      "attribution": "Zhang et al., PepHarmony, arXiv:2401.11360v1 (2024), Figure 1"
+    },
+    {
+      "asset": "/research/pepland-architecture.png",
+      "source_url": "https://raw.githubusercontent.com/zhangruochi/PepLand/master/doc/arch.png",
+      "version": "Public repository default-branch image fetched 2026-10-08 UTC; exact bytes pinned by sha256",
+      "bytes": 359105,
+      "sha256": "89a8cfeea997cce41aec411c271347db717f041fc234ebef3af47581bd4efd54",
+      "license": "Apache-2.0",
+      "license_file": "/research/PEPLAND-LICENSE.txt",
+      "modifications": "None; original repository image retained"
+    },
+    {
+      "asset": "/research/pepland-fragmentation.png",
+      "source_url": "https://raw.githubusercontent.com/zhangruochi/PepLand/master/doc/fragmentation.png",
+      "version": "Public repository default-branch image fetched 2026-10-08 UTC; exact bytes pinned by sha256",
+      "bytes": 51051,
+      "sha256": "ca1434ef6dc11191b1c9cf8bbd74be2f4f4b96d34d64b59561e63d237bf16867",
+      "license": "Apache-2.0",
+      "license_file": "/research/PEPLAND-LICENSE.txt",
+      "modifications": "None; original repository image retained"
+    },
+    {
+      "asset": "/research/pepland-multiview.png",
+      "source_url": "https://raw.githubusercontent.com/zhangruochi/PepLand/master/doc/multi-view.png",
+      "version": "Public repository default-branch image fetched 2026-10-08 UTC; exact bytes pinned by sha256",
+      "bytes": 923858,
+      "sha256": "d4ea3c5ff4cb34c0a27b2eccd24271abf761c6207e7289d1a2dd77d2bfa89569",
+      "license": "Apache-2.0",
+      "license_file": "/research/PEPLAND-LICENSE.txt",
+      "modifications": "None; original repository image retained"
+    },
+    {
+      "asset": "/research/pepddg-v4-figure1.png",
+      "source_url": "https://neurips.cc/Downloads/2026",
+      "version": "Author-provided PepDDG V4, Figure 1, page 2; conference link verifies title, not manuscript bytes",
+      "source_kind": "author_authorized_manuscript_extract",
+      "figure": 1,
+      "page": 2,
+      "authorization": "Author explicitly authorized own accepted manuscript figure/method/results publication 2026-10-08 UTC",
+      "license": "Author-authorized reproduction; no blanket third-party reuse license asserted",
+      "modifications": "Complete Figure 1 region rasterized from PDF page 2 at 3x; no diagram content edited; manuscript page text excluded",
+      "bytes": 157740,
+      "sha256": "9772b6ef07f48dd616dcbece79666484bb10b82e1463547dcde6aec9aac4dbfb"
+    }
+  ]
+}

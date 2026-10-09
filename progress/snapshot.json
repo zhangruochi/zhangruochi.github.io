@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "statistics_date": "2026-10-08",
+  "timezone": "UTC",
+  "window": {
+    "start": "2026-10-08T00:00:00+00:00",
+    "end_exclusive": "2026-10-09T00:00:00+00:00"
+  },
+  "observed_at": "2026-10-09T00:00:06.623232+00:00",
+  "sources": [
+    {
+      "source": "platform",
+      "unique_nonmerge_commits": 0,
+      "merged_prs": null,
+      "stale": false,
+      "coverage": {
+        "commits": "local_git_snapshot_only",
+        "remote": "not_refreshed",
+        "prs": "unavailable_no_verified_merged_at",
+        "counting_clock": "committer_timestamp",
+        "deduplication": "commit_object_id",
+        "history_walk": "git_date_pruned_local_snapshot_clock_skew_not_exhaustively_scanned"
+      }
+    },
+    {
+      "source": "wiki",
+      "unique_nonmerge_commits": 4,
+      "merged_prs": null,
+      "stale": false,
+      "coverage": {
+        "commits": "local_git_snapshot_only",
+        "remote": "not_refreshed",
+        "prs": "unavailable_no_verified_merged_at",
+        "counting_clock": "committer_timestamp",
+        "deduplication": "commit_object_id",
+        "history_walk": "git_date_pruned_local_snapshot_clock_skew_not_exhaustively_scanned"
+      }
+    }
+  ],
+  "capability_progress": null,
+  "capability_coverage": "private_candidates_require_review_and_public_case_verification",
+  "window_complete": true,
+  "automatic_publication": false
+}

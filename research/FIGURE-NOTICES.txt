@@ -1,0 +1,9 @@
+Scientific figure provenance — version-specific attribution
+
+PepLand architecture, fragmentation and multi-view: original unmodified images from https://github.com/zhangruochi/PepLand/tree/master/doc . Repository Apache License 2.0; copyright/license notices retained in PEPLAND-LICENSE.txt. No diagram content modified. The separate final OUP paper's CC BY4.0 license is not substituted for this repository provenance.
+
+PepHarmony: Figure 1 from Zhang et al., PepHarmony, arXiv:2401.11360v1 (2024-01-21), PDF page7. Source https://arxiv.org/abs/2401.11360v1 . CC BY-NC-ND4.0 https://creativecommons.org/licenses/by-nc-nd/4.0/ . Complete embedded figure extracted and decoded to PNG; no substantive changes, relabeling or diagram crop. Noncommercial attributed redistribution only under this license. The previous higher-resolution repository main.png was not byte-identical to the preprint embedded figure; this asset now uses the exact preprint figure content.
+
+This license statement applies only to the identified arXiv version, not the Elsevier final article Neural Networks194(2026)108148, DOI10.1016/j.neunet.2025.108148, ©2025Elsevier. Author reuse rights are separate from general-public rights: https://www.elsevier.com/about/policies-and-standards/copyright . No blanket final-version CC license is asserted.
+
+PepDDG: Figure 1, page 2, author-provided V4; complete figure region rasterized without diagram-content edits. Explicit author authorization2026-10-08 for accepted paper method/figure/results. No full manuscript PDF, anonymous review repository link, unrelated company raw data or inferred personal author contribution included. No blanket third-party reuse license asserted. V4 excerpts are not presented as final camera-ready.
