@@ -1,0 +1,561 @@
+{
+  "schema_version": 1,
+  "timezone": "UTC",
+  "observed_at": "2026-10-09T10:14:21.848082+00:00",
+  "start_date": "2026-09-10",
+  "end_date": "2026-10-09",
+  "sources": [
+    {
+      "source": "platform",
+      "commits_coverage": "server_default_main_snapshot_nonmerge_committer_time_full_history",
+      "prs_coverage": "unavailable_api_access_not_connected"
+    },
+    {
+      "source": "wiki",
+      "commits_coverage": "server_default_main_snapshot_nonmerge_committer_time_full_history",
+      "prs_coverage": "unavailable_api_access_not_connected"
+    }
+  ],
+  "days": [
+    {
+      "date": "2026-09-10",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 272,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-11",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 90,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-12",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 97,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 44,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-14",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 29,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-15",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 47,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-16",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 63,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-17",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 29,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-18",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 117,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-19",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 82,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-20",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 166,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-21",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 156,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-22",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 80,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-23",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 145,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-24",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 53,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-25",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 69,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-26",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 94,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-27",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 165,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-28",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 179,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-29",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 106,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-09-30",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 82,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 2,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-10-01",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-10-02",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 2,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-10-03",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 258,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-10-04",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 118,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 44,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-10-07",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 1,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-10-08",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 12,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 2,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-10-09",
+      "is_partial": true,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    }
+  ]
+}
