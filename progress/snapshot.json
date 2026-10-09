@@ -1,12 +1,12 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "statistics_date": "2026-10-08",
   "timezone": "UTC",
   "window": {
     "start": "2026-10-08T00:00:00+00:00",
     "end_exclusive": "2026-10-09T00:00:00+00:00"
   },
-  "observed_at": "2026-10-09T00:00:06.623232+00:00",
+  "observed_at": "2026-10-09T04:42:07.377636+00:00",
   "sources": [
     {
       "source": "platform",
@@ -37,8 +37,122 @@
       }
     }
   ],
-  "capability_progress": null,
-  "capability_coverage": "private_candidates_require_review_and_public_case_verification",
+  "capability_progress": [],
+  "capability_coverage": "reviewed_public_case_entries_only",
   "window_complete": true,
-  "automatic_publication": false
+  "automatic_publication": false,
+  "history": [
+    {
+      "date": "2026-10-02",
+      "sources": [
+        {
+          "source": "platform",
+          "unique_nonmerge_commits": null,
+          "status": "missing"
+        },
+        {
+          "source": "wiki",
+          "unique_nonmerge_commits": null,
+          "status": "missing"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-03",
+      "sources": [
+        {
+          "source": "platform",
+          "unique_nonmerge_commits": null,
+          "status": "missing"
+        },
+        {
+          "source": "wiki",
+          "unique_nonmerge_commits": null,
+          "status": "missing"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-04",
+      "sources": [
+        {
+          "source": "platform",
+          "unique_nonmerge_commits": null,
+          "status": "missing"
+        },
+        {
+          "source": "wiki",
+          "unique_nonmerge_commits": null,
+          "status": "missing"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "sources": [
+        {
+          "source": "platform",
+          "unique_nonmerge_commits": null,
+          "status": "missing"
+        },
+        {
+          "source": "wiki",
+          "unique_nonmerge_commits": null,
+          "status": "missing"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "sources": [
+        {
+          "source": "platform",
+          "unique_nonmerge_commits": null,
+          "status": "missing"
+        },
+        {
+          "source": "wiki",
+          "unique_nonmerge_commits": null,
+          "status": "missing"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-07",
+      "sources": [
+        {
+          "source": "platform",
+          "unique_nonmerge_commits": null,
+          "status": "missing"
+        },
+        {
+          "source": "wiki",
+          "unique_nonmerge_commits": null,
+          "status": "missing"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-08",
+      "sources": [
+        {
+          "source": "platform",
+          "unique_nonmerge_commits": 0,
+          "status": "observed"
+        },
+        {
+          "source": "wiki",
+          "unique_nonmerge_commits": 4,
+          "status": "observed"
+        }
+      ]
+    }
+  ],
+  "pipeline": {
+    "collection": "complete",
+    "review": "pending",
+    "publication": "pending",
+    "published_at": null,
+    "automatic_publication": false
+  }
 }

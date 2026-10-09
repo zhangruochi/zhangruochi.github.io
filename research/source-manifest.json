@@ -1,6 +1,6 @@
 {
-  "checked_at": "2026-10-08T18:49:25Z",
-  "scope": "Version-specific public scientific figures; attribution and licenses in FIGURE-NOTICES.txt",
+  "checked_at": "2026-10-09T05:48:49.674001+00:00",
+  "scope": "Figures for the ten research works selected by Richard; version-specific attribution in FIGURE-NOTICES.txt",
   "assets": [
     {
       "asset": "/research/pepharmony-architecture.png",
@@ -54,6 +54,50 @@
       "modifications": "Complete Figure 1 region rasterized from PDF page 2 at 3x; no diagram content edited; manuscript page text excluded",
       "bytes": 157740,
       "sha256": "9772b6ef07f48dd616dcbece79666484bb10b82e1463547dcde6aec9aac4dbfb"
+    },
+    {
+      "asset": "/research/deepselective-v2-architecture.png",
+      "source_url": "https://arxiv.org/html/2504.11264v2",
+      "version": "Author manuscript v2 · 20 June 2025 · Table 2",
+      "bytes": 271056,
+      "sha256": "69a63f38faa505736da0b26608a749de68516d6b242060a0d024a3f9e78b46fa",
+      "license": "CC BY-NC-ND 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+      "attribution": "Zhang et al. (2025), DeepSelective v2, Figure 1. Complete original image, unchanged.",
+      "modifications": "None; complete original image retained"
+    },
+    {
+      "asset": "/research/molfescue-figure2.jpg",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10984949/",
+      "version": "Published article · 2024 · Table 3",
+      "bytes": 68148,
+      "sha256": "3947da6485f1e341181444215caa6a813adacac7ed020feba82331464553205b",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Zhang et al. (2024), MolFeSCue, Figure 2. Complete original image, unchanged.",
+      "modifications": "None; complete original image retained"
+    },
+    {
+      "asset": "/research/molprophecy-figure1.jpg",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13316437/",
+      "version": "Final article · online 2025, volume 2026",
+      "bytes": 55483,
+      "sha256": "921478ab08ec97992e84ee2ae58b5e8d0ee418c975c73696caf3f833dc7c8a87",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Zhao et al. (2025), MolProphecy, Figure 1. Complete original image, unchanged.",
+      "modifications": "None; complete original image retained"
+    },
+    {
+      "asset": "/research/hefs-v1-figure1.png",
+      "source_url": "https://arxiv.org/abs/2510.18575v1",
+      "version": "Author manuscript v1 · 21 October 2025 · §§4–5 / Table 2",
+      "bytes": 144808,
+      "sha256": "3fca701c5bdb5abfecd1c9bcc2dacb2d2ef26b11fd5a9dabb9edc38fa8466915",
+      "license": "CC BY-NC-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+      "attribution": "Fan et al. (2025), HeFS v1, Figure 1. Complete original embedded image, unchanged.",
+      "modifications": "None; complete original embedded RGB image with original soft-mask transparency extracted from public PDF"
     }
   ]
 }
