@@ -2,8 +2,8 @@
   "schema_version": 1,
   "kind": "reviewed_capability_ledger",
   "timezone": "UTC",
-  "coverage_through": "2026-10-08",
-  "observed_at": "2026-10-09T20:15:32.723537+00:00",
+  "coverage_through": "2026-10-09",
+  "observed_at": "2026-10-10T19:40:17.842398+00:00",
   "coverage": "reviewed_public_case_entries_only",
   "entries": []
 }
