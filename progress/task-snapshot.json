@@ -1,0 +1,362 @@
+{
+  "schema_version": 1,
+  "kind": "task_organization_snapshot",
+  "snapshot_at": "2026-10-11T19:00:45Z",
+  "coverage_through": "2026-10-11",
+  "collection": {
+    "attempted_at": "2026-10-11T19:00:45Z",
+    "status": "observed",
+    "sources": [
+      {
+        "source": "platform",
+        "status": "observed"
+      },
+      {
+        "source": "ops",
+        "status": "observed"
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "id": "optimization-interface",
+      "source": "platform",
+      "campaign": {
+        "zh": "科研平台与优化流程",
+        "en": "Research platform and optimization workflows"
+      },
+      "title": {
+        "zh": "先导优化方法整合",
+        "en": "Lead optimization integration"
+      },
+      "goal": {
+        "zh": "把不同优化方法接入共享约束、候选来源、反馈与恢复流程。",
+        "en": "Connect optimization methods through shared constraints, candidate provenance, feedback and recovery."
+      },
+      "constraints": {
+        "zh": "平台组织这些方法，优化器主要覆盖序列梯度与局部扩散。前次工程检查未完成；本次未重新核对检查，不代表分子有效性得到证明。",
+        "en": "The platform organizes these methods; the optimizer mainly covers sequence gradients and local diffusion. Earlier engineering checks were incomplete; checks were not rechecked here, and molecular effectiveness is not established."
+      },
+      "acceptance": {
+        "zh": "该快照核对变更范围与阶段；完整任务验收条件尚未独立核对。",
+        "en": "This snapshot checks change scope and stage; complete task acceptance criteria have not been independently inspected."
+      },
+      "validation": {
+        "zh": "本次核对选定变更或议题元数据；未重新运行测试。完整验收与科学有效性不能据此推断。",
+        "en": "Selected change or issue metadata was checked; tests were not rerun. Complete acceptance and scientific effectiveness cannot be inferred."
+      },
+      "next_step": {
+        "zh": "核对对应阶段的独立验收证据后，再更新公开状态。",
+        "en": "Update the public state after checking independent acceptance evidence for the relevant stage."
+      },
+      "state": "integration_testing",
+      "evidence_at": "2026-10-11T17:33:40Z",
+      "support": [
+        {
+          "kind": "algorithm",
+          "label": {
+            "zh": "序列梯度优化：借助模型反馈逐步调整序列表示，并遵守预先声明的约束。",
+            "en": "Sequence-gradient optimization: adjust a sequence representation using model feedback within declared constraints."
+          }
+        },
+        {
+          "kind": "algorithm",
+          "label": {
+            "zh": "局部扩散：在已有候选附近探索受约束的局部变化。",
+            "en": "Local diffusion: explore constrained local changes around an existing candidate."
+          }
+        },
+        {
+          "kind": "algorithm",
+          "label": {
+            "zh": "突变扫描：比较有界的单点或组合变化。",
+            "en": "Mutation scanning: compare bounded single or combined changes."
+          }
+        },
+        {
+          "kind": "algorithm",
+          "label": {
+            "zh": "骨架条件 MPNN：以给定骨架为条件生成序列候选。",
+            "en": "Backbone-conditioned MPNN: generate candidate sequences conditioned on a backbone."
+          }
+        },
+        {
+          "kind": "algorithm",
+          "label": {
+            "zh": "MPNN 与 FastRelax：结合序列采样和结构松弛；计算评分需要独立评估。",
+            "en": "MPNN plus FastRelax: combine sequence sampling and structural relaxation; computational scores need independent evaluation."
+          }
+        }
+      ],
+      "role": null,
+      "team": null
+    },
+    {
+      "id": "validation-query",
+      "source": "platform",
+      "campaign": {
+        "zh": "科研平台与优化流程",
+        "en": "Research platform and optimization workflows"
+      },
+      "title": {
+        "zh": "改进代码复用检查",
+        "en": "Improve code reuse checks"
+      },
+      "goal": {
+        "zh": "避免为名称查询重复构建无关信息，同时保留校验边界。",
+        "en": "Avoid constructing unused information for name queries while preserving validation boundaries."
+      },
+      "constraints": {
+        "zh": "变更尚未合并；新版本完整测试结果本次未核对，保留为待验证。",
+        "en": "The change is not merged; complete tests for the new version were not checked in this collection and remain unverified."
+      },
+      "acceptance": {
+        "zh": "该快照核对变更范围与阶段；完整任务验收条件尚未独立核对。",
+        "en": "This snapshot checks change scope and stage; complete task acceptance criteria have not been independently inspected."
+      },
+      "validation": {
+        "zh": "本次核对选定变更或议题元数据；未重新运行测试。完整验收与科学有效性不能据此推断。",
+        "en": "Selected change or issue metadata was checked; tests were not rerun. Complete acceptance and scientific effectiveness cannot be inferred."
+      },
+      "next_step": {
+        "zh": "核对对应阶段的独立验收证据后，再更新公开状态。",
+        "en": "Update the public state after checking independent acceptance evidence for the relevant stage."
+      },
+      "state": "integration_testing",
+      "evidence_at": "2026-10-11T18:49:29Z",
+      "support": [],
+      "role": null,
+      "team": null
+    },
+    {
+      "id": "explicit-root",
+      "source": "platform",
+      "campaign": {
+        "zh": "科研平台与优化流程",
+        "en": "Research platform and optimization workflows"
+      },
+      "title": {
+        "zh": "修复检查入口定位",
+        "en": "Repair validation entry resolution"
+      },
+      "goal": {
+        "zh": "让检查在明确指定源码范围时正确定位共享工具。",
+        "en": "Resolve shared validation tools correctly for an explicitly selected source scope."
+      },
+      "constraints": {
+        "zh": "代码已合并；不代表全部下游任务已交付。",
+        "en": "Code is merged; this does not establish delivery of every downstream task."
+      },
+      "acceptance": {
+        "zh": "该快照核对变更范围与阶段；完整任务验收条件尚未独立核对。",
+        "en": "This snapshot checks change scope and stage; complete task acceptance criteria have not been independently inspected."
+      },
+      "validation": {
+        "zh": "本次核对选定变更或议题元数据；未重新运行测试。完整验收与科学有效性不能据此推断。",
+        "en": "Selected change or issue metadata was checked; tests were not rerun. Complete acceptance and scientific effectiveness cannot be inferred."
+      },
+      "next_step": {
+        "zh": "核对对应阶段的独立验收证据后，再更新公开状态。",
+        "en": "Update the public state after checking independent acceptance evidence for the relevant stage."
+      },
+      "state": "merged",
+      "evidence_at": "2026-10-11T15:23:08Z",
+      "support": [],
+      "role": null,
+      "team": null
+    },
+    {
+      "id": "calendar-readback",
+      "source": "ops",
+      "campaign": {
+        "zh": "个人操作工具与可靠性",
+        "en": "Personal operations and reliability"
+      },
+      "title": {
+        "zh": "日历操作与回读",
+        "en": "Calendar operations and readback"
+      },
+      "goal": {
+        "zh": "完善有界查询、去重检查和操作后确认，让不完整结果保持未知。",
+        "en": "Improve bounded queries, duplicate checks and operation readback while keeping incomplete results unknown."
+      },
+      "constraints": {
+        "zh": "代码已合并；此快照不声明当前设备部署状态。",
+        "en": "Code is merged; this snapshot does not assert current device deployment."
+      },
+      "acceptance": {
+        "zh": "该快照核对变更范围与阶段；完整任务验收条件尚未独立核对。",
+        "en": "This snapshot checks change scope and stage; complete task acceptance criteria have not been independently inspected."
+      },
+      "validation": {
+        "zh": "本次核对选定变更或议题元数据；未重新运行测试。完整验收与科学有效性不能据此推断。",
+        "en": "Selected change or issue metadata was checked; tests were not rerun. Complete acceptance and scientific effectiveness cannot be inferred."
+      },
+      "next_step": {
+        "zh": "核对对应阶段的独立验收证据后，再更新公开状态。",
+        "en": "Update the public state after checking independent acceptance evidence for the relevant stage."
+      },
+      "state": "merged",
+      "evidence_at": "2026-10-11T11:27:53Z",
+      "support": [],
+      "role": null,
+      "team": null
+    },
+    {
+      "id": "agent-cancellation",
+      "source": "ops",
+      "campaign": {
+        "zh": "个人操作工具与可靠性",
+        "en": "Personal operations and reliability"
+      },
+      "title": {
+        "zh": "代理取消与操作回执",
+        "en": "Agent cancellation and receipts"
+      },
+      "goal": {
+        "zh": "修正取消、审批顺序与回执确认，保留不确定操作并避免重复发送。",
+        "en": "Correct cancellation, approval ordering and receipt validation; preserve uncertain operations without replay."
+      },
+      "constraints": {
+        "zh": "代码已合并；现场验收与当前运行状态分别记录。",
+        "en": "Code is merged; native acceptance and current runtime state are separate evidence."
+      },
+      "acceptance": {
+        "zh": "该快照核对变更范围与阶段；完整任务验收条件尚未独立核对。",
+        "en": "This snapshot checks change scope and stage; complete task acceptance criteria have not been independently inspected."
+      },
+      "validation": {
+        "zh": "本次核对选定变更或议题元数据；未重新运行测试。完整验收与科学有效性不能据此推断。",
+        "en": "Selected change or issue metadata was checked; tests were not rerun. Complete acceptance and scientific effectiveness cannot be inferred."
+      },
+      "next_step": {
+        "zh": "核对对应阶段的独立验收证据后，再更新公开状态。",
+        "en": "Update the public state after checking independent acceptance evidence for the relevant stage."
+      },
+      "state": "merged",
+      "evidence_at": "2026-10-11T05:40:53Z",
+      "support": [],
+      "role": null,
+      "team": null
+    },
+    {
+      "id": "installation-recovery",
+      "source": "ops",
+      "campaign": {
+        "zh": "个人操作工具与可靠性",
+        "en": "Personal operations and reliability"
+      },
+      "title": {
+        "zh": "安装中断后的恢复边界",
+        "en": "Recovery after interrupted installation"
+      },
+      "goal": {
+        "zh": "首次安装被中断后的恢复方式，需要明确所有权与人工决策。",
+        "en": "Recovery from an interrupted first installation needs explicit ownership rules and an operator decision."
+      },
+      "constraints": {
+        "zh": "待决策；不代表已运行服务出现故障。",
+        "en": "Decision pending; this does not imply a failure in running services."
+      },
+      "acceptance": {
+        "zh": "该快照核对变更范围与阶段；完整任务验收条件尚未独立核对。",
+        "en": "This snapshot checks change scope and stage; complete task acceptance criteria have not been independently inspected."
+      },
+      "validation": {
+        "zh": "本次核对选定变更或议题元数据；未重新运行测试。完整验收与科学有效性不能据此推断。",
+        "en": "Selected change or issue metadata was checked; tests were not rerun. Complete acceptance and scientific effectiveness cannot be inferred."
+      },
+      "next_step": {
+        "zh": "核对对应阶段的独立验收证据后，再更新公开状态。",
+        "en": "Update the public state after checking independent acceptance evidence for the relevant stage."
+      },
+      "state": "blocked",
+      "evidence_at": "2026-10-11T05:28:40Z",
+      "support": [],
+      "role": null,
+      "team": null
+    },
+    {
+      "id": "admet-method-research",
+      "source": "platform",
+      "campaign": {
+        "zh": "科研平台与优化流程",
+        "en": "Research platform and optimization workflows"
+      },
+      "title": {
+        "zh": "性质预测方法研究",
+        "en": "Property prediction method research"
+      },
+      "goal": {
+        "zh": "围绕性质预测方法的上下文使用与证据整理开展研究变更。",
+        "en": "Develop research changes around contextual use of property prediction methods and supporting evidence."
+      },
+      "constraints": {
+        "zh": "研究记录报告目标受阻，科学验收尚未完成；不公开未发表结果或内部数据。",
+        "en": "The research record reports a blocked goal and incomplete scientific acceptance; unpublished results and internal data stay private."
+      },
+      "acceptance": {
+        "zh": "该快照核对变更范围与阶段；完整任务验收条件尚未独立核对。",
+        "en": "This snapshot checks change scope and stage; complete task acceptance criteria have not been independently inspected."
+      },
+      "validation": {
+        "zh": "本次核对选定变更或议题元数据；未重新运行测试。完整验收与科学有效性不能据此推断。",
+        "en": "Selected change or issue metadata was checked; tests were not rerun. Complete acceptance and scientific effectiveness cannot be inferred."
+      },
+      "next_step": {
+        "zh": "补齐缺失前提并独立核对验收证据，再更新状态。",
+        "en": "Resolve the missing prerequisites and independently check acceptance evidence before updating the state."
+      },
+      "state": "blocked",
+      "evidence_at": "2026-10-08T20:53:26Z",
+      "support": [
+        {
+          "kind": "algorithm",
+          "label": {
+            "zh": "上下文学习：以给定参考样本为条件进行预测，适用性须由明确的对照验证。",
+            "en": "In-context learning: predict conditioned on reference examples; applicability requires explicit controlled evaluation."
+          }
+        }
+      ],
+      "role": null,
+      "team": null
+    },
+    {
+      "id": "test-qualification",
+      "source": "platform",
+      "campaign": {
+        "zh": "科研平台与优化流程",
+        "en": "Research platform and optimization workflows"
+      },
+      "title": {
+        "zh": "测试收集与回放资格检查",
+        "en": "Test collection and replay qualification"
+      },
+      "goal": {
+        "zh": "改进测试收集与保留记录的回放资格检查，让证据范围保持可追溯。",
+        "en": "Improve test collection and qualification of retained replay records so evidence scope remains traceable."
+      },
+      "constraints": {
+        "zh": "记录保留独立审查失败，当前变更不能作为已通过的验收；未重新运行平台测试。",
+        "en": "The record retains failed independent review; the change cannot be presented as accepted. Platform tests were not rerun."
+      },
+      "acceptance": {
+        "zh": "该快照核对变更范围与阶段；完整任务验收条件尚未独立核对。",
+        "en": "This snapshot checks change scope and stage; complete task acceptance criteria have not been independently inspected."
+      },
+      "validation": {
+        "zh": "本次核对选定变更或议题元数据；未重新运行测试。完整验收与科学有效性不能据此推断。",
+        "en": "Selected change or issue metadata was checked; tests were not rerun. Complete acceptance and scientific effectiveness cannot be inferred."
+      },
+      "next_step": {
+        "zh": "补齐缺失前提并独立核对验收证据，再更新状态。",
+        "en": "Resolve the missing prerequisites and independently check acceptance evidence before updating the state."
+      },
+      "state": "blocked",
+      "evidence_at": "2026-10-05T21:37:40Z",
+      "support": [],
+      "role": null,
+      "team": null
+    }
+  ]
+}

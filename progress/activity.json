@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "timezone": "UTC",
-  "observed_at": "2026-10-10T19:40:16.926504+00:00",
-  "start_date": "2026-09-11",
-  "end_date": "2026-10-10",
+  "observed_at": "2026-10-11T13:02:04.679242+00:00",
+  "start_date": "2026-09-12",
+  "end_date": "2026-10-11",
   "sources": [
     {
       "source": "platform",
@@ -17,24 +17,6 @@
     }
   ],
   "days": [
-    {
-      "date": "2026-09-11",
-      "is_partial": false,
-      "sources": [
-        {
-          "source": "platform",
-          "commits": 90,
-          "created_prs": null,
-          "merged_prs": null
-        },
-        {
-          "source": "wiki",
-          "commits": 0,
-          "created_prs": null,
-          "merged_prs": null
-        }
-      ]
-    },
     {
       "date": "2026-09-12",
       "is_partial": false,
@@ -541,11 +523,29 @@
     },
     {
       "date": "2026-10-10",
+      "is_partial": false,
+      "sources": [
+        {
+          "source": "platform",
+          "commits": 29,
+          "created_prs": null,
+          "merged_prs": null
+        },
+        {
+          "source": "wiki",
+          "commits": 0,
+          "created_prs": null,
+          "merged_prs": null
+        }
+      ]
+    },
+    {
+      "date": "2026-10-11",
       "is_partial": true,
       "sources": [
         {
           "source": "platform",
-          "commits": 23,
+          "commits": 14,
           "created_prs": null,
           "merged_prs": null
         },
