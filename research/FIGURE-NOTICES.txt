@@ -1,20 +1,17 @@
-Original paper figures for the ten selected research works. Images are not redrawn; complete original figures are displayed with retained scientific content. No blanket third-party rights are asserted for author-retained reuse.
+Paper figure sources and rights. Original figures are reproduced without substantive modification; author-retained permission does not grant blanket third-party reuse rights.
 
 /research/pepharmony-architecture.png
-arXiv:2401.11360v1 (2024-01-21), Figure 1, PDF page 7; complete embedded figure decoded to PNG without substantive changes
+arXiv:2401.11360v1 (2024-01-21), Figure 1, PDF page 7
 Zhang et al., PepHarmony, arXiv:2401.11360v1 (2024), Figure 1
 Source: https://arxiv.org/pdf/2401.11360v1
 Rights: CC BY-NC-ND 4.0
 https://creativecommons.org/licenses/by-nc-nd/4.0/
-Complete original figure, unchanged.
 
 /research/pepddg-v4-figure1.png
-Author-provided PepDDG V4, Figure 1, page 2; conference link verifies title, not manuscript bytes
-Author-provided PepDDG V4, Figure 1, page 2; conference link verifies title, not manuscript bytes
+Author-provided PepDDG V4, Figure 1, page 2
+Author-provided PepDDG V4, Figure 1, page 2
 Source: https://neurips.cc/Downloads/2026
 Rights: Author-authorized reproduction; no blanket third-party reuse license asserted
-
-Complete Figure 1 region rasterized from PDF page 2 at 3x; no diagram content edited; manuscript page text excluded
 
 /research/deepselective-v2-architecture.png
 Author manuscript v2 · 20 June 2025 · Figure 1
@@ -22,7 +19,6 @@ Zhang et al. (2025), DeepSelective v2, Figure 1. Complete original image, unchan
 Source: https://arxiv.org/html/2504.11264v2
 Rights: CC BY-NC-ND 4.0
 https://creativecommons.org/licenses/by-nc-nd/4.0/
-None; complete original image retained
 
 /research/molfescue-figure2.jpg
 Published article · 2024 · Figure 2
@@ -30,7 +26,6 @@ Zhang et al. (2024), MolFeSCue, Figure 2. Complete original image, unchanged.
 Source: https://pmc.ncbi.nlm.nih.gov/articles/PMC10984949/
 Rights: CC BY 4.0
 https://creativecommons.org/licenses/by/4.0/
-None; complete original image retained
 
 /research/molprophecy-figure1.jpg
 Final article · online 2025, volume 2026
@@ -38,7 +33,6 @@ Zhao et al. (2025), MolProphecy, Figure 1. Complete original image, unchanged.
 Source: https://pmc.ncbi.nlm.nih.gov/articles/PMC13316437/
 Rights: CC BY 4.0
 https://creativecommons.org/licenses/by/4.0/
-None; complete original image retained
 
 /research/hefs-v1-figure1.png
 Author manuscript v1 · 21 October 2025 · Figure 1
@@ -46,7 +40,6 @@ Fan et al. (2025), HeFS v1, Figure 1. Complete original embedded image, unchange
 Source: https://arxiv.org/abs/2510.18575v1
 Rights: CC BY-NC-SA 4.0
 https://creativecommons.org/licenses/by-nc-sa/4.0/
-None; complete original embedded RGB image with original soft-mask transparency extracted from public PDF
 
 /research/ampcliff-v2-figure3.png
 arXiv:2404.09738v2 · Figure 3, all panels a–g · PDF page 12
@@ -54,7 +47,6 @@ AMPCliff v2, Figure 3, all panels a–g. Complete original figure; no redraw or 
 Source: https://arxiv.org/abs/2404.09738v2
 Rights: CC BY-NC-SA 4.0
 https://creativecommons.org/licenses/by-nc-sa/4.0/
-Original complete figure region rendered from PDF at 216 dpi; all panels retained; no redraw or numerical changes. Caption is separate in PDF.
 
 /research/faircare-published-figure1.png
 Published version of record · Figure 1, complete · PDF page 4
@@ -62,7 +54,6 @@ FairCare (2024), Figure 1, complete. Complete original figure; no redraw or nume
 Source: https://doi.org/10.1016/j.ipm.2024.103682
 Rights: Author-retained reuse rights; Elsevier copyright policy
 https://www.elsevier.com/about/policies-and-standards/copyright
-Complete original figure region rendered from rotated PDF at 216 dpi; no redraw or numerical edits.
 
 /research/ocmr-published-figure1.png
 Published version of record · Figure 1, complete · PDF page 3
@@ -70,7 +61,6 @@ OCMR (2023), Figure 1, complete. Complete original figure; no redraw or numerica
 Source: https://doi.org/10.1016/j.compbiomed.2023.107187
 Rights: Author-retained reuse rights; Elsevier copyright policy
 https://www.elsevier.com/about/policies-and-standards/copyright
-Complete embedded original figure image xref 42 extracted at native resolution; no redraw or numerical edits.
 
 /research/pepland-published-figure1.png
 Briefings in Bioinformatics 26(4), bbaf367, published 2025 · Figure 1 · PDF page 3
@@ -78,4 +68,3 @@ Zhang et al., PepLand (2025), Figure 1. © The Author(s) 2025. Published by Oxfo
 Source: https://doi.org/10.1093/bib/bbaf367
 Rights: CC BY 4.0
 https://creativecommons.org/licenses/by/4.0/
-Complete original embedded Figure 1 image xref 65, native 2000×1190 pixels, unmodified. No redraw.
