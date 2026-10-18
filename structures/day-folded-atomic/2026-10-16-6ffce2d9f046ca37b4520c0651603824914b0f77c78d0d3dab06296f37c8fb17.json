@@ -1,0 +1,1837 @@
+{
+  "schemaVersion": 1,
+  "sequence": "WEKEEPTHESPARK",
+  "chain": "A",
+  "atoms": [
+    {
+      "serial": 1,
+      "index": 1,
+      "aminoAcid": "W",
+      "residueName": "TRP",
+      "name": "N",
+      "element": "N",
+      "position": [
+        -6.624,
+        -11.11,
+        12.707
+      ],
+      "plddt": 83.26,
+      "occupancy": 1
+    },
+    {
+      "serial": 2,
+      "index": 1,
+      "aminoAcid": "W",
+      "residueName": "TRP",
+      "name": "CA",
+      "element": "C",
+      "position": [
+        -6.019,
+        -10.736,
+        11.411
+      ],
+      "plddt": 85.87,
+      "occupancy": 1
+    },
+    {
+      "serial": 3,
+      "index": 1,
+      "aminoAcid": "W",
+      "residueName": "TRP",
+      "name": "C",
+      "element": "C",
+      "position": [
+        -5.735,
+        -9.24,
+        11.35
+      ],
+      "plddt": 87.48,
+      "occupancy": 1
+    },
+    {
+      "serial": 4,
+      "index": 1,
+      "aminoAcid": "W",
+      "residueName": "TRP",
+      "name": "O",
+      "element": "O",
+      "position": [
+        -6.672,
+        -8.431,
+        11.332
+      ],
+      "plddt": 84.29,
+      "occupancy": 1
+    },
+    {
+      "serial": 5,
+      "index": 1,
+      "aminoAcid": "W",
+      "residueName": "TRP",
+      "name": "CB",
+      "element": "C",
+      "position": [
+        -6.941,
+        -11.126,
+        10.256
+      ],
+      "plddt": 81.97,
+      "occupancy": 1
+    },
+    {
+      "serial": 6,
+      "index": 1,
+      "aminoAcid": "W",
+      "residueName": "TRP",
+      "name": "CG",
+      "element": "C",
+      "position": [
+        -6.237,
+        -11.375,
+        8.953
+      ],
+      "plddt": 77.87,
+      "occupancy": 1
+    },
+    {
+      "serial": 7,
+      "index": 1,
+      "aminoAcid": "W",
+      "residueName": "TRP",
+      "name": "CD1",
+      "element": "C",
+      "position": [
+        -5.235,
+        -12.268,
+        8.725
+      ],
+      "plddt": 77,
+      "occupancy": 1
+    },
+    {
+      "serial": 8,
+      "index": 1,
+      "aminoAcid": "W",
+      "residueName": "TRP",
+      "name": "CD2",
+      "element": "C",
+      "position": [
+        -6.489,
+        -10.751,
+        7.679
+      ],
+      "plddt": 78.77,
+      "occupancy": 1
+    },
+    {
+      "serial": 9,
+      "index": 1,
+      "aminoAcid": "W",
+      "residueName": "TRP",
+      "name": "NE1",
+      "element": "N",
+      "position": [
+        -4.831,
+        -12.233,
+        7.403
+      ],
+      "plddt": 76.32,
+      "occupancy": 1
+    },
+    {
+      "serial": 10,
+      "index": 1,
+      "aminoAcid": "W",
+      "residueName": "TRP",
+      "name": "CE2",
+      "element": "C",
+      "position": [
+        -5.586,
+        -11.312,
+        6.73
+      ],
+      "plddt": 79.9,
+      "occupancy": 1
+    },
+    {
+      "serial": 11,
+      "index": 1,
+      "aminoAcid": "W",
+      "residueName": "TRP",
+      "name": "CE3",
+      "element": "C",
+      "position": [
+        -7.382,
+        -9.759,
+        7.25
+      ],
+      "plddt": 75.6,
+      "occupancy": 1
+    },
+    {
+      "serial": 12,
+      "index": 1,
+      "aminoAcid": "W",
+      "residueName": "TRP",
+      "name": "CZ2",
+      "element": "C",
+      "position": [
+        -5.561,
+        -10.913,
+        5.397
+      ],
+      "plddt": 73.6,
+      "occupancy": 1
+    },
+    {
+      "serial": 13,
+      "index": 1,
+      "aminoAcid": "W",
+      "residueName": "TRP",
+      "name": "CZ3",
+      "element": "C",
+      "position": [
+        -7.364,
+        -9.362,
+        5.93
+      ],
+      "plddt": 70.34,
+      "occupancy": 1
+    },
+    {
+      "serial": 14,
+      "index": 1,
+      "aminoAcid": "W",
+      "residueName": "TRP",
+      "name": "CH2",
+      "element": "C",
+      "position": [
+        -6.466,
+        -9.937,
+        5.014
+      ],
+      "plddt": 68.59,
+      "occupancy": 1
+    },
+    {
+      "serial": 15,
+      "index": 2,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "N",
+      "element": "N",
+      "position": [
+        -4.47,
+        -8.878,
+        11.366
+      ],
+      "plddt": 84.33,
+      "occupancy": 1
+    },
+    {
+      "serial": 16,
+      "index": 2,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CA",
+      "element": "C",
+      "position": [
+        -4.059,
+        -7.473,
+        11.366
+      ],
+      "plddt": 86.85,
+      "occupancy": 1
+    },
+    {
+      "serial": 17,
+      "index": 2,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "C",
+      "element": "C",
+      "position": [
+        -4.399,
+        -6.778,
+        10.047
+      ],
+      "plddt": 87.91,
+      "occupancy": 1
+    },
+    {
+      "serial": 18,
+      "index": 2,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "O",
+      "element": "O",
+      "position": [
+        -4.431,
+        -7.413,
+        8.988
+      ],
+      "plddt": 85.78,
+      "occupancy": 1
+    },
+    {
+      "serial": 19,
+      "index": 2,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CB",
+      "element": "C",
+      "position": [
+        -2.552,
+        -7.376,
+        11.625
+      ],
+      "plddt": 83.18,
+      "occupancy": 1
+    },
+    {
+      "serial": 20,
+      "index": 2,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CG",
+      "element": "C",
+      "position": [
+        -2.159,
+        -7.665,
+        13.059
+      ],
+      "plddt": 76.92,
+      "occupancy": 1
+    },
+    {
+      "serial": 21,
+      "index": 2,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CD",
+      "element": "C",
+      "position": [
+        -2.252,
+        -9.136,
+        13.399
+      ],
+      "plddt": 74.65,
+      "occupancy": 1
+    },
+    {
+      "serial": 22,
+      "index": 2,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "OE1",
+      "element": "O",
+      "position": [
+        -1.625,
+        -9.945,
+        12.7
+      ],
+      "plddt": 67.79,
+      "occupancy": 1
+    },
+    {
+      "serial": 23,
+      "index": 2,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "OE2",
+      "element": "O",
+      "position": [
+        -2.972,
+        -9.464,
+        14.36
+      ],
+      "plddt": 70.75,
+      "occupancy": 1
+    },
+    {
+      "serial": 24,
+      "index": 3,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "N",
+      "element": "N",
+      "position": [
+        -4.624,
+        -5.463,
+        10.118
+      ],
+      "plddt": 87.94,
+      "occupancy": 1
+    },
+    {
+      "serial": 25,
+      "index": 3,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "CA",
+      "element": "C",
+      "position": [
+        -4.971,
+        -4.666,
+        8.939
+      ],
+      "plddt": 89.23,
+      "occupancy": 1
+    },
+    {
+      "serial": 26,
+      "index": 3,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "C",
+      "element": "C",
+      "position": [
+        -3.814,
+        -3.729,
+        8.573
+      ],
+      "plddt": 89.22,
+      "occupancy": 1
+    },
+    {
+      "serial": 27,
+      "index": 3,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "O",
+      "element": "O",
+      "position": [
+        -3.851,
+        -2.536,
+        8.865
+      ],
+      "plddt": 87.39,
+      "occupancy": 1
+    },
+    {
+      "serial": 28,
+      "index": 3,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "CB",
+      "element": "C",
+      "position": [
+        -6.245,
+        -3.867,
+        9.215
+      ],
+      "plddt": 85.61,
+      "occupancy": 1
+    },
+    {
+      "serial": 29,
+      "index": 3,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "CG",
+      "element": "C",
+      "position": [
+        -7.477,
+        -4.736,
+        9.428
+      ],
+      "plddt": 80.88,
+      "occupancy": 1
+    },
+    {
+      "serial": 30,
+      "index": 3,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "CD",
+      "element": "C",
+      "position": [
+        -8.084,
+        -5.169,
+        8.112
+      ],
+      "plddt": 79.09,
+      "occupancy": 1
+    },
+    {
+      "serial": 31,
+      "index": 3,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "CE",
+      "element": "C",
+      "position": [
+        -9.246,
+        -6.133,
+        8.319
+      ],
+      "plddt": 72.68,
+      "occupancy": 1
+    },
+    {
+      "serial": 32,
+      "index": 3,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "NZ",
+      "element": "N",
+      "position": [
+        -10.397,
+        -5.485,
+        9.001
+      ],
+      "plddt": 66.5,
+      "occupancy": 1
+    },
+    {
+      "serial": 33,
+      "index": 4,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "N",
+      "element": "N",
+      "position": [
+        -2.777,
+        -4.272,
+        7.919
+      ],
+      "plddt": 89.11,
+      "occupancy": 1
+    },
+    {
+      "serial": 34,
+      "index": 4,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CA",
+      "element": "C",
+      "position": [
+        -1.607,
+        -3.494,
+        7.511
+      ],
+      "plddt": 88.48,
+      "occupancy": 1
+    },
+    {
+      "serial": 35,
+      "index": 4,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "C",
+      "element": "C",
+      "position": [
+        -1.856,
+        -2.823,
+        6.157
+      ],
+      "plddt": 89.5,
+      "occupancy": 1
+    },
+    {
+      "serial": 36,
+      "index": 4,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "O",
+      "element": "O",
+      "position": [
+        -1.302,
+        -3.221,
+        5.131
+      ],
+      "plddt": 86.51,
+      "occupancy": 1
+    },
+    {
+      "serial": 37,
+      "index": 4,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CB",
+      "element": "C",
+      "position": [
+        -0.368,
+        -4.394,
+        7.431
+      ],
+      "plddt": 85.71,
+      "occupancy": 1
+    },
+    {
+      "serial": 38,
+      "index": 4,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CG",
+      "element": "C",
+      "position": [
+        0.284,
+        -4.621,
+        8.772
+      ],
+      "plddt": 80.24,
+      "occupancy": 1
+    },
+    {
+      "serial": 39,
+      "index": 4,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CD",
+      "element": "C",
+      "position": [
+        1.02,
+        -3.389,
+        9.265
+      ],
+      "plddt": 76.2,
+      "occupancy": 1
+    },
+    {
+      "serial": 40,
+      "index": 4,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "OE1",
+      "element": "O",
+      "position": [
+        1.843,
+        -2.851,
+        8.511
+      ],
+      "plddt": 68.86,
+      "occupancy": 1
+    },
+    {
+      "serial": 41,
+      "index": 4,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "OE2",
+      "element": "O",
+      "position": [
+        0.766,
+        -2.979,
+        10.407
+      ],
+      "plddt": 71.27,
+      "occupancy": 1
+    },
+    {
+      "serial": 42,
+      "index": 5,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "N",
+      "element": "N",
+      "position": [
+        -2.693,
+        -1.811,
+        6.168
+      ],
+      "plddt": 89.41,
+      "occupancy": 1
+    },
+    {
+      "serial": 43,
+      "index": 5,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CA",
+      "element": "C",
+      "position": [
+        -3.046,
+        -1.09,
+        4.944
+      ],
+      "plddt": 88.86,
+      "occupancy": 1
+    },
+    {
+      "serial": 44,
+      "index": 5,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "C",
+      "element": "C",
+      "position": [
+        -2.057,
+        0.051,
+        4.675
+      ],
+      "plddt": 89.3,
+      "occupancy": 1
+    },
+    {
+      "serial": 45,
+      "index": 5,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "O",
+      "element": "O",
+      "position": [
+        -1.971,
+        0.988,
+        5.462
+      ],
+      "plddt": 86.84,
+      "occupancy": 1
+    },
+    {
+      "serial": 46,
+      "index": 5,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CB",
+      "element": "C",
+      "position": [
+        -4.473,
+        -0.54,
+        5.058
+      ],
+      "plddt": 86.32,
+      "occupancy": 1
+    },
+    {
+      "serial": 47,
+      "index": 5,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CG",
+      "element": "C",
+      "position": [
+        -5.011,
+        -0.002,
+        3.747
+      ],
+      "plddt": 81.64,
+      "occupancy": 1
+    },
+    {
+      "serial": 48,
+      "index": 5,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CD",
+      "element": "C",
+      "position": [
+        -6.462,
+        0.428,
+        3.843
+      ],
+      "plddt": 78.59,
+      "occupancy": 1
+    },
+    {
+      "serial": 49,
+      "index": 5,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "OE1",
+      "element": "O",
+      "position": [
+        -6.873,
+        0.905,
+        4.918
+      ],
+      "plddt": 72.89,
+      "occupancy": 1
+    },
+    {
+      "serial": 50,
+      "index": 5,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "OE2",
+      "element": "O",
+      "position": [
+        -7.186,
+        0.296,
+        2.837
+      ],
+      "plddt": 76.1,
+      "occupancy": 1
+    },
+    {
+      "serial": 51,
+      "index": 6,
+      "aminoAcid": "P",
+      "residueName": "PRO",
+      "name": "N",
+      "element": "N",
+      "position": [
+        -1.308,
+        0.006,
+        3.555
+      ],
+      "plddt": 89.38,
+      "occupancy": 1
+    },
+    {
+      "serial": 52,
+      "index": 6,
+      "aminoAcid": "P",
+      "residueName": "PRO",
+      "name": "CA",
+      "element": "C",
+      "position": [
+        -0.332,
+        1.048,
+        3.211
+      ],
+      "plddt": 88.93,
+      "occupancy": 1
+    },
+    {
+      "serial": 53,
+      "index": 6,
+      "aminoAcid": "P",
+      "residueName": "PRO",
+      "name": "C",
+      "element": "C",
+      "position": [
+        -1.026,
+        2.334,
+        2.751
+      ],
+      "plddt": 89.66,
+      "occupancy": 1
+    },
+    {
+      "serial": 54,
+      "index": 6,
+      "aminoAcid": "P",
+      "residueName": "PRO",
+      "name": "O",
+      "element": "O",
+      "position": [
+        -1.596,
+        2.39,
+        1.66
+      ],
+      "plddt": 86.45,
+      "occupancy": 1
+    },
+    {
+      "serial": 55,
+      "index": 6,
+      "aminoAcid": "P",
+      "residueName": "PRO",
+      "name": "CB",
+      "element": "C",
+      "position": [
+        0.485,
+        0.422,
+        2.073
+      ],
+      "plddt": 86.66,
+      "occupancy": 1
+    },
+    {
+      "serial": 56,
+      "index": 6,
+      "aminoAcid": "P",
+      "residueName": "PRO",
+      "name": "CG",
+      "element": "C",
+      "position": [
+        -0.426,
+        -0.574,
+        1.441
+      ],
+      "plddt": 85.09,
+      "occupancy": 1
+    },
+    {
+      "serial": 57,
+      "index": 6,
+      "aminoAcid": "P",
+      "residueName": "PRO",
+      "name": "CD",
+      "element": "C",
+      "position": [
+        -1.344,
+        -1.064,
+        2.533
+      ],
+      "plddt": 89.25,
+      "occupancy": 1
+    },
+    {
+      "serial": 58,
+      "index": 7,
+      "aminoAcid": "T",
+      "residueName": "THR",
+      "name": "N",
+      "element": "N",
+      "position": [
+        -0.946,
+        3.359,
+        3.604
+      ],
+      "plddt": 88.51,
+      "occupancy": 1
+    },
+    {
+      "serial": 59,
+      "index": 7,
+      "aminoAcid": "T",
+      "residueName": "THR",
+      "name": "CA",
+      "element": "C",
+      "position": [
+        -1.585,
+        4.645,
+        3.304
+      ],
+      "plddt": 88.73,
+      "occupancy": 1
+    },
+    {
+      "serial": 60,
+      "index": 7,
+      "aminoAcid": "T",
+      "residueName": "THR",
+      "name": "C",
+      "element": "C",
+      "position": [
+        -0.627,
+        5.604,
+        2.601
+      ],
+      "plddt": 88.88,
+      "occupancy": 1
+    },
+    {
+      "serial": 61,
+      "index": 7,
+      "aminoAcid": "T",
+      "residueName": "THR",
+      "name": "O",
+      "element": "O",
+      "position": [
+        -1.028,
+        6.332,
+        1.691
+      ],
+      "plddt": 86.73,
+      "occupancy": 1
+    },
+    {
+      "serial": 62,
+      "index": 7,
+      "aminoAcid": "T",
+      "residueName": "THR",
+      "name": "CB",
+      "element": "C",
+      "position": [
+        -2.11,
+        5.285,
+        4.588
+      ],
+      "plddt": 86.65,
+      "occupancy": 1
+    },
+    {
+      "serial": 63,
+      "index": 7,
+      "aminoAcid": "T",
+      "residueName": "THR",
+      "name": "OG1",
+      "element": "O",
+      "position": [
+        -2.81,
+        4.31,
+        5.353
+      ],
+      "plddt": 82.11,
+      "occupancy": 1
+    },
+    {
+      "serial": 64,
+      "index": 7,
+      "aminoAcid": "T",
+      "residueName": "THR",
+      "name": "CG2",
+      "element": "C",
+      "position": [
+        -3.053,
+        6.44,
+        4.289
+      ],
+      "plddt": 79.45,
+      "occupancy": 1
+    },
+    {
+      "serial": 65,
+      "index": 8,
+      "aminoAcid": "H",
+      "residueName": "HIS",
+      "name": "N",
+      "element": "N",
+      "position": [
+        0.653,
+        5.594,
+        3.026
+      ],
+      "plddt": 89.88,
+      "occupancy": 1
+    },
+    {
+      "serial": 66,
+      "index": 8,
+      "aminoAcid": "H",
+      "residueName": "HIS",
+      "name": "CA",
+      "element": "C",
+      "position": [
+        1.658,
+        6.495,
+        2.452
+      ],
+      "plddt": 91.02,
+      "occupancy": 1
+    },
+    {
+      "serial": 67,
+      "index": 8,
+      "aminoAcid": "H",
+      "residueName": "HIS",
+      "name": "C",
+      "element": "C",
+      "position": [
+        2.72,
+        5.743,
+        1.641
+      ],
+      "plddt": 92.12,
+      "occupancy": 1
+    },
+    {
+      "serial": 68,
+      "index": 8,
+      "aminoAcid": "H",
+      "residueName": "HIS",
+      "name": "O",
+      "element": "O",
+      "position": [
+        3.845,
+        6.203,
+        1.49
+      ],
+      "plddt": 89.94,
+      "occupancy": 1
+    },
+    {
+      "serial": 69,
+      "index": 8,
+      "aminoAcid": "H",
+      "residueName": "HIS",
+      "name": "CB",
+      "element": "C",
+      "position": [
+        2.314,
+        7.315,
+        3.57
+      ],
+      "plddt": 88.24,
+      "occupancy": 1
+    },
+    {
+      "serial": 70,
+      "index": 8,
+      "aminoAcid": "H",
+      "residueName": "HIS",
+      "name": "CG",
+      "element": "C",
+      "position": [
+        2.777,
+        8.671,
+        3.124
+      ],
+      "plddt": 84.58,
+      "occupancy": 1
+    },
+    {
+      "serial": 71,
+      "index": 8,
+      "aminoAcid": "H",
+      "residueName": "HIS",
+      "name": "ND1",
+      "element": "N",
+      "position": [
+        4.093,
+        9.062,
+        3.157
+      ],
+      "plddt": 79.32,
+      "occupancy": 1
+    },
+    {
+      "serial": 72,
+      "index": 8,
+      "aminoAcid": "H",
+      "residueName": "HIS",
+      "name": "CD2",
+      "element": "C",
+      "position": [
+        2.07,
+        9.718,
+        2.646
+      ],
+      "plddt": 75.54,
+      "occupancy": 1
+    },
+    {
+      "serial": 73,
+      "index": 8,
+      "aminoAcid": "H",
+      "residueName": "HIS",
+      "name": "CE1",
+      "element": "C",
+      "position": [
+        4.188,
+        10.305,
+        2.711
+      ],
+      "plddt": 76.94,
+      "occupancy": 1
+    },
+    {
+      "serial": 74,
+      "index": 8,
+      "aminoAcid": "H",
+      "residueName": "HIS",
+      "name": "NE2",
+      "element": "N",
+      "position": [
+        2.968,
+        10.741,
+        2.389
+      ],
+      "plddt": 76.05,
+      "occupancy": 1
+    },
+    {
+      "serial": 75,
+      "index": 9,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "N",
+      "element": "N",
+      "position": [
+        2.378,
+        4.597,
+        1.109
+      ],
+      "plddt": 90.74,
+      "occupancy": 1
+    },
+    {
+      "serial": 76,
+      "index": 9,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CA",
+      "element": "C",
+      "position": [
+        3.315,
+        3.782,
+        0.336
+      ],
+      "plddt": 91.24,
+      "occupancy": 1
+    },
+    {
+      "serial": 77,
+      "index": 9,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "C",
+      "element": "C",
+      "position": [
+        2.592,
+        3.054,
+        -0.801
+      ],
+      "plddt": 91.9,
+      "occupancy": 1
+    },
+    {
+      "serial": 78,
+      "index": 9,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "O",
+      "element": "O",
+      "position": [
+        2.499,
+        1.83,
+        -0.825
+      ],
+      "plddt": 89.25,
+      "occupancy": 1
+    },
+    {
+      "serial": 79,
+      "index": 9,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CB",
+      "element": "C",
+      "position": [
+        4.033,
+        2.79,
+        1.256
+      ],
+      "plddt": 88.76,
+      "occupancy": 1
+    },
+    {
+      "serial": 80,
+      "index": 9,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CG",
+      "element": "C",
+      "position": [
+        5.247,
+        2.164,
+        0.595
+      ],
+      "plddt": 82.46,
+      "occupancy": 1
+    },
+    {
+      "serial": 81,
+      "index": 9,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "CD",
+      "element": "C",
+      "position": [
+        6.062,
+        1.325,
+        1.555
+      ],
+      "plddt": 79.79,
+      "occupancy": 1
+    },
+    {
+      "serial": 82,
+      "index": 9,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "OE1",
+      "element": "O",
+      "position": [
+        5.467,
+        0.72,
+        2.465
+      ],
+      "plddt": 74.66,
+      "occupancy": 1
+    },
+    {
+      "serial": 83,
+      "index": 9,
+      "aminoAcid": "E",
+      "residueName": "GLU",
+      "name": "OE2",
+      "element": "O",
+      "position": [
+        7.294,
+        1.263,
+        1.385
+      ],
+      "plddt": 76.99,
+      "occupancy": 1
+    },
+    {
+      "serial": 84,
+      "index": 10,
+      "aminoAcid": "S",
+      "residueName": "SER",
+      "name": "N",
+      "element": "N",
+      "position": [
+        2.1,
+        3.845,
+        -1.742
+      ],
+      "plddt": 90.41,
+      "occupancy": 1
+    },
+    {
+      "serial": 85,
+      "index": 10,
+      "aminoAcid": "S",
+      "residueName": "SER",
+      "name": "CA",
+      "element": "C",
+      "position": [
+        1.385,
+        3.291,
+        -2.889
+      ],
+      "plddt": 90.31,
+      "occupancy": 1
+    },
+    {
+      "serial": 86,
+      "index": 10,
+      "aminoAcid": "S",
+      "residueName": "SER",
+      "name": "C",
+      "element": "C",
+      "position": [
+        1.827,
+        3.964,
+        -4.192
+      ],
+      "plddt": 91.02,
+      "occupancy": 1
+    },
+    {
+      "serial": 87,
+      "index": 10,
+      "aminoAcid": "S",
+      "residueName": "SER",
+      "name": "O",
+      "element": "O",
+      "position": [
+        1.91,
+        5.194,
+        -4.252
+      ],
+      "plddt": 89.71,
+      "occupancy": 1
+    },
+    {
+      "serial": 88,
+      "index": 10,
+      "aminoAcid": "S",
+      "residueName": "SER",
+      "name": "CB",
+      "element": "C",
+      "position": [
+        -0.123,
+        3.46,
+        -2.698
+      ],
+      "plddt": 88.09,
+      "occupancy": 1
+    },
+    {
+      "serial": 89,
+      "index": 10,
+      "aminoAcid": "S",
+      "residueName": "SER",
+      "name": "OG",
+      "element": "O",
+      "position": [
+        -0.47,
+        4.803,
+        -2.461
+      ],
+      "plddt": 82.01,
+      "occupancy": 1
+    },
+    {
+      "serial": 90,
+      "index": 11,
+      "aminoAcid": "P",
+      "residueName": "PRO",
+      "name": "N",
+      "element": "N",
+      "position": [
+        2.115,
+        3.187,
+        -5.258
+      ],
+      "plddt": 91.25,
+      "occupancy": 1
+    },
+    {
+      "serial": 91,
+      "index": 11,
+      "aminoAcid": "P",
+      "residueName": "PRO",
+      "name": "CA",
+      "element": "C",
+      "position": [
+        2.543,
+        3.744,
+        -6.548
+      ],
+      "plddt": 90.98,
+      "occupancy": 1
+    },
+    {
+      "serial": 92,
+      "index": 11,
+      "aminoAcid": "P",
+      "residueName": "PRO",
+      "name": "C",
+      "element": "C",
+      "position": [
+        1.392,
+        4.431,
+        -7.289
+      ],
+      "plddt": 91,
+      "occupancy": 1
+    },
+    {
+      "serial": 93,
+      "index": 11,
+      "aminoAcid": "P",
+      "residueName": "PRO",
+      "name": "O",
+      "element": "O",
+      "position": [
+        0.511,
+        3.776,
+        -7.846
+      ],
+      "plddt": 88.28,
+      "occupancy": 1
+    },
+    {
+      "serial": 94,
+      "index": 11,
+      "aminoAcid": "P",
+      "residueName": "PRO",
+      "name": "CB",
+      "element": "C",
+      "position": [
+        3.041,
+        2.519,
+        -7.313
+      ],
+      "plddt": 89.52,
+      "occupancy": 1
+    },
+    {
+      "serial": 95,
+      "index": 11,
+      "aminoAcid": "P",
+      "residueName": "PRO",
+      "name": "CG",
+      "element": "C",
+      "position": [
+        2.32,
+        1.369,
+        -6.705
+      ],
+      "plddt": 87.72,
+      "occupancy": 1
+    },
+    {
+      "serial": 96,
+      "index": 11,
+      "aminoAcid": "P",
+      "residueName": "PRO",
+      "name": "CD",
+      "element": "C",
+      "position": [
+        2.063,
+        1.735,
+        -5.264
+      ],
+      "plddt": 91.13,
+      "occupancy": 1
+    },
+    {
+      "serial": 97,
+      "index": 12,
+      "aminoAcid": "A",
+      "residueName": "ALA",
+      "name": "N",
+      "element": "N",
+      "position": [
+        1.428,
+        5.769,
+        -7.298
+      ],
+      "plddt": 88.53,
+      "occupancy": 1
+    },
+    {
+      "serial": 98,
+      "index": 12,
+      "aminoAcid": "A",
+      "residueName": "ALA",
+      "name": "CA",
+      "element": "C",
+      "position": [
+        0.392,
+        6.548,
+        -7.975
+      ],
+      "plddt": 88.45,
+      "occupancy": 1
+    },
+    {
+      "serial": 99,
+      "index": 12,
+      "aminoAcid": "A",
+      "residueName": "ALA",
+      "name": "C",
+      "element": "C",
+      "position": [
+        0.685,
+        6.713,
+        -9.466
+      ],
+      "plddt": 88.54,
+      "occupancy": 1
+    },
+    {
+      "serial": 100,
+      "index": 12,
+      "aminoAcid": "A",
+      "residueName": "ALA",
+      "name": "O",
+      "element": "O",
+      "position": [
+        -0.229,
+        6.788,
+        -10.285
+      ],
+      "plddt": 85.44,
+      "occupancy": 1
+    },
+    {
+      "serial": 101,
+      "index": 12,
+      "aminoAcid": "A",
+      "residueName": "ALA",
+      "name": "CB",
+      "element": "C",
+      "position": [
+        0.25,
+        7.913,
+        -7.309
+      ],
+      "plddt": 86.45,
+      "occupancy": 1
+    },
+    {
+      "serial": 102,
+      "index": 13,
+      "aminoAcid": "R",
+      "residueName": "ARG",
+      "name": "N",
+      "element": "N",
+      "position": [
+        1.986,
+        6.746,
+        -9.83
+      ],
+      "plddt": 85.14,
+      "occupancy": 1
+    },
+    {
+      "serial": 103,
+      "index": 13,
+      "aminoAcid": "R",
+      "residueName": "ARG",
+      "name": "CA",
+      "element": "C",
+      "position": [
+        2.419,
+        6.907,
+        -11.218
+      ],
+      "plddt": 83.22,
+      "occupancy": 1
+    },
+    {
+      "serial": 104,
+      "index": 13,
+      "aminoAcid": "R",
+      "residueName": "ARG",
+      "name": "C",
+      "element": "C",
+      "position": [
+        3.221,
+        5.689,
+        -11.682
+      ],
+      "plddt": 80.23,
+      "occupancy": 1
+    },
+    {
+      "serial": 105,
+      "index": 13,
+      "aminoAcid": "R",
+      "residueName": "ARG",
+      "name": "O",
+      "element": "O",
+      "position": [
+        4.44,
+        5.741,
+        -11.787
+      ],
+      "plddt": 75.76,
+      "occupancy": 1
+    },
+    {
+      "serial": 106,
+      "index": 13,
+      "aminoAcid": "R",
+      "residueName": "ARG",
+      "name": "CB",
+      "element": "C",
+      "position": [
+        3.255,
+        8.191,
+        -11.357
+      ],
+      "plddt": 81.45,
+      "occupancy": 1
+    },
+    {
+      "serial": 107,
+      "index": 13,
+      "aminoAcid": "R",
+      "residueName": "ARG",
+      "name": "CG",
+      "element": "C",
+      "position": [
+        2.432,
+        9.464,
+        -11.213
+      ],
+      "plddt": 77.42,
+      "occupancy": 1
+    },
+    {
+      "serial": 108,
+      "index": 13,
+      "aminoAcid": "R",
+      "residueName": "ARG",
+      "name": "CD",
+      "element": "C",
+      "position": [
+        3.308,
+        10.692,
+        -11.398
+      ],
+      "plddt": 75.9,
+      "occupancy": 1
+    },
+    {
+      "serial": 109,
+      "index": 13,
+      "aminoAcid": "R",
+      "residueName": "ARG",
+      "name": "NE",
+      "element": "N",
+      "position": [
+        2.529,
+        11.929,
+        -11.407
+      ],
+      "plddt": 71.47,
+      "occupancy": 1
+    },
+    {
+      "serial": 110,
+      "index": 13,
+      "aminoAcid": "R",
+      "residueName": "ARG",
+      "name": "CZ",
+      "element": "C",
+      "position": [
+        3.061,
+        13.146,
+        -11.528
+      ],
+      "plddt": 68.59,
+      "occupancy": 1
+    },
+    {
+      "serial": 111,
+      "index": 13,
+      "aminoAcid": "R",
+      "residueName": "ARG",
+      "name": "NH1",
+      "element": "N",
+      "position": [
+        4.374,
+        13.302,
+        -11.637
+      ],
+      "plddt": 64.85,
+      "occupancy": 1
+    },
+    {
+      "serial": 112,
+      "index": 13,
+      "aminoAcid": "R",
+      "residueName": "ARG",
+      "name": "NH2",
+      "element": "N",
+      "position": [
+        2.284,
+        14.208,
+        -11.534
+      ],
+      "plddt": 62.24,
+      "occupancy": 1
+    },
+    {
+      "serial": 113,
+      "index": 14,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "N",
+      "element": "N",
+      "position": [
+        2.503,
+        4.601,
+        -11.943
+      ],
+      "plddt": 81.26,
+      "occupancy": 1
+    },
+    {
+      "serial": 114,
+      "index": 14,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "CA",
+      "element": "C",
+      "position": [
+        3.128,
+        3.352,
+        -12.408
+      ],
+      "plddt": 79.61,
+      "occupancy": 1
+    },
+    {
+      "serial": 115,
+      "index": 14,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "C",
+      "element": "C",
+      "position": [
+        4.272,
+        2.919,
+        -11.478
+      ],
+      "plddt": 77.27,
+      "occupancy": 1
+    },
+    {
+      "serial": 116,
+      "index": 14,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "O",
+      "element": "O",
+      "position": [
+        4,
+        2.669,
+        -10.288
+      ],
+      "plddt": 72.22,
+      "occupancy": 1
+    },
+    {
+      "serial": 117,
+      "index": 14,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "CB",
+      "element": "C",
+      "position": [
+        3.614,
+        3.521,
+        -13.866
+      ],
+      "plddt": 75.54,
+      "occupancy": 1
+    },
+    {
+      "serial": 118,
+      "index": 14,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "CG",
+      "element": "C",
+      "position": [
+        3.831,
+        2.209,
+        -14.606
+      ],
+      "plddt": 74.31,
+      "occupancy": 1
+    },
+    {
+      "serial": 119,
+      "index": 14,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "CD",
+      "element": "C",
+      "position": [
+        4.317,
+        2.43,
+        -16.041
+      ],
+      "plddt": 72.29,
+      "occupancy": 1
+    },
+    {
+      "serial": 120,
+      "index": 14,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "CE",
+      "element": "C",
+      "position": [
+        5.79,
+        2.785,
+        -16.085
+      ],
+      "plddt": 67.12,
+      "occupancy": 1
+    },
+    {
+      "serial": 121,
+      "index": 14,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "NZ",
+      "element": "N",
+      "position": [
+        6.305,
+        2.846,
+        -17.472
+      ],
+      "plddt": 61.55,
+      "occupancy": 1
+    },
+    {
+      "serial": 122,
+      "index": 14,
+      "aminoAcid": "K",
+      "residueName": "LYS",
+      "name": "OXT",
+      "element": "O",
+      "position": [
+        5.398,
+        2.799,
+        -11.902
+      ],
+      "plddt": 69.1,
+      "occupancy": 1
+    }
+  ]
+}
