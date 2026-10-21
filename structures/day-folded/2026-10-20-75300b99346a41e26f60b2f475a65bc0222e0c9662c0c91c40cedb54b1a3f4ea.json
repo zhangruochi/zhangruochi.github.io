@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "sequence": "STAYGENTLE",
+  "chain": "A",
+  "residues": [
+    {
+      "index": 1,
+      "aminoAcid": "S",
+      "ca": [
+        -1.238,
+        2.425,
+        -0.553
+      ],
+      "plddt": 87.37
+    },
+    {
+      "index": 2,
+      "aminoAcid": "T",
+      "ca": [
+        -3.607,
+        -0.444,
+        0.198
+      ],
+      "plddt": 86.6
+    },
+    {
+      "index": 3,
+      "aminoAcid": "A",
+      "ca": [
+        -3.369,
+        -2.668,
+        -2.876
+      ],
+      "plddt": 89.76
+    },
+    {
+      "index": 4,
+      "aminoAcid": "Y",
+      "ca": [
+        0.227,
+        -3.834,
+        -2.632
+      ],
+      "plddt": 89.99
+    },
+    {
+      "index": 5,
+      "aminoAcid": "G",
+      "ca": [
+        -0.01,
+        -5.963,
+        0.489
+      ],
+      "plddt": 90.94
+    },
+    {
+      "index": 6,
+      "aminoAcid": "E",
+      "ca": [
+        0.631,
+        -2.988,
+        2.734
+      ],
+      "plddt": 91.12
+    },
+    {
+      "index": 7,
+      "aminoAcid": "N",
+      "ca": [
+        -1.303,
+        -1.154,
+        5.426
+      ],
+      "plddt": 92.38
+    },
+    {
+      "index": 8,
+      "aminoAcid": "T",
+      "ca": [
+        -0.192,
+        2.444,
+        4.983
+      ],
+      "plddt": 90.67
+    },
+    {
+      "index": 9,
+      "aminoAcid": "L",
+      "ca": [
+        -2.31,
+        5.088,
+        3.285
+      ],
+      "plddt": 88.68
+    },
+    {
+      "index": 10,
+      "aminoAcid": "E",
+      "ca": [
+        -0.089,
+        7.489,
+        1.44
+      ],
+      "plddt": 88.7
+    }
+  ]
+}
